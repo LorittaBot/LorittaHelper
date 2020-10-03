@@ -8,7 +8,7 @@ import java.util.regex.Pattern
 
 class DJLorittaResponse : RegExResponse() {
     init {
-        patterns.add(WHERE_IT_IS.toPattern(Pattern.CASE_INSENSITIVE))
+        patterns.add(("$WHERE_IT_IS|loritta").toPattern(Pattern.CASE_INSENSITIVE))
         patterns.add("coloc[ar|a|o]|toc[ar|a|an]|adicion[a|o|ar]|ouvir|escuta|escuto|ouvo|ativa|bota|config".toPattern(Pattern.CASE_INSENSITIVE))
         patterns.add("musicas|musica|música|músicas|msc|dj".toPattern(Pattern.CASE_INSENSITIVE))
     }
