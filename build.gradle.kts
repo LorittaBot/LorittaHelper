@@ -36,6 +36,15 @@ tasks {
         archiveBaseName.set("${project.name}-fat")
 
         manifest {
+            fun addIfAvailable(name: String, attrName: String) {
+                attributes[attrName] = System.getProperty(name) ?: "Unknown"
+            }
+
+            addIfAvailable("build.number", "Build-Number")
+            addIfAvailable("commit.hash", "Commit-Hash")
+            addIfAvailable("git.branch", "Git-Branch")
+            addIfAvailable("compiled.at", "Compiled-At")
+
             attributes["Main-Class"] = "net.perfectdreams.loritta.helper.LorittaHelperLauncher"
             attributes["Class-Path"] = configurations.runtimeClasspath.get().joinToString(" ", transform = { "libs/" + it.name })
         }
