@@ -7,8 +7,11 @@ import net.perfectdreams.loritta.helper.utils.Emotes
 import java.util.regex.Pattern
 
 class LoriBrothersResponse : RegExResponse() {
+    override val priority: Int
+        get() = -2
+
     init {
-        patterns.add("lori".toPattern(Pattern.CASE_INSENSITIVE))
+        patterns.add(LORI_NAME.toPattern(Pattern.CASE_INSENSITIVE))
         patterns.add("(irmã|irma)".toPattern(Pattern.CASE_INSENSITIVE))
         patterns.add("\\?".toPattern(Pattern.CASE_INSENSITIVE))
     }

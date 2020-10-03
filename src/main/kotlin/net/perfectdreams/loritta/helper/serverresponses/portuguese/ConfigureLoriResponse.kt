@@ -12,7 +12,7 @@ class ConfigureLoriResponse : RegExResponse() {
 
     init {
         patterns.add("configu|painel".toPattern(Pattern.CASE_INSENSITIVE))
-        patterns.add("lori|297153970613387264|painel".toPattern(Pattern.CASE_INSENSITIVE))
+        patterns.add("$LORI_NAME|painel".toPattern(Pattern.CASE_INSENSITIVE))
         patterns.add("\\?".toPattern(Pattern.CASE_INSENSITIVE))
     }
 

@@ -12,7 +12,7 @@ class AddLoriResponse : RegExResponse() {
 
     init {
         patterns.add("ativ|coloc|uso|adicio|add|boto|bota|coloca|adissiona".toPattern(Pattern.CASE_INSENSITIVE))
-        patterns.add("(lori)".toPattern(Pattern.CASE_INSENSITIVE))
+        patterns.add(LORI_NAME.toPattern(Pattern.CASE_INSENSITIVE))
     }
 
     override fun getResponse(event: GuildMessageReceivedEvent, message: String) =

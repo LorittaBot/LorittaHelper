@@ -14,7 +14,7 @@ class SayResponse : RegExResponse() {
         patterns.add(WHERE_IT_IS.toPattern(Pattern.CASE_INSENSITIVE))
         patterns.add("(falar|say|enviar)".toPattern(Pattern.CASE_INSENSITIVE))
         patterns.add("(mensagem|mensage|texto|palavra|algo)".toPattern(Pattern.CASE_INSENSITIVE))
-        patterns.add("lori".toPattern(Pattern.CASE_INSENSITIVE))
+        patterns.add(LORI_NAME.toPattern(Pattern.CASE_INSENSITIVE))
     }
 
     override fun getResponse(event: GuildMessageReceivedEvent, message: String) =
