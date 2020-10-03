@@ -33,7 +33,7 @@ jobs:
     - uses: actions/upload-artifact@v2
       name: "Upload Loritta Helper"
       with:
-        name: Loritta (Discord)
+        name: Loritta Helper (Discord)
         path: build/libs/loritta-helper-*.jar
 
     # Libs
