@@ -1,0 +1,23 @@
+package net.perfectdreams.loritta.helper.serverresponses.portuguese
+
+import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent
+import net.perfectdreams.loritta.api.messages.LorittaReply
+import net.perfectdreams.loritta.helper.serverresponses.RegExResponse
+import net.perfectdreams.loritta.helper.utils.Emotes
+import java.util.regex.Pattern
+
+class CommandsResponse : RegExResponse() {
+    init {
+        patterns.add("como|onde|saber|cad(e|ê)|qual".toPattern(Pattern.CASE_INSENSITIVE))
+        patterns.add("tem|vejo|v(e|ê)|mostr|lista".toPattern(Pattern.CASE_INSENSITIVE))
+        patterns.add("com(m)?andos".toPattern(Pattern.CASE_INSENSITIVE))
+    }
+
+    override fun getResponse(event: GuildMessageReceivedEvent, message: String) =
+        listOf(
+            LorittaReply(
+                "Veja todos os meus comandos no meu website! <https://loritta.website/commands>",
+                Emotes.WUMPUS_KEYBOARD
+            )
+        )
+}
