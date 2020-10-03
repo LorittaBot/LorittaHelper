@@ -44,13 +44,9 @@ class MessageListener(val m: LorittaHelper) : ListenerAdapter() {
                 it.onMessageReceived(event)
             }
         }
-
-        // Checking the message's language takes a while, so we do a >= length check to avoid checking spam messages and stuff like that
-        if (event.message.contentRaw.length >= 15) {
-            m.launch {
+                    m.launch {
                 goToTheCorrectLanguageChannel.onMessageReceived(event)
             }
-        }
 
         m.launch {
             val channelResponses = when (event.message.channel.idLong) {
