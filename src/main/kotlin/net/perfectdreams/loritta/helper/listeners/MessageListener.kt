@@ -10,12 +10,15 @@ import net.perfectdreams.loritta.helper.serverresponses.PortugueseResponses
 import net.perfectdreams.loritta.helper.utils.Constants
 import net.perfectdreams.loritta.helper.utils.dontmentionstaff.EnglishDontMentionStaff
 import net.perfectdreams.loritta.helper.utils.dontmentionstaff.PortugueseDontMentionStaff
+import net.perfectdreams.loritta.helper.utils.gotolangchannel.GoToCorrectLanguageChannel
 
 class MessageListener(val m: LorittaHelper) : ListenerAdapter() {
     private val dontMentionStaffs = listOf(
         EnglishDontMentionStaff(),
         PortugueseDontMentionStaff()
     )
+
+    val goToTheCorrectLanguageChannel = GoToCorrectLanguageChannel(m)
 
     override fun onGuildMessageReceived(event: GuildMessageReceivedEvent) {
         super.onGuildMessageReceived(event)
@@ -39,6 +42,13 @@ class MessageListener(val m: LorittaHelper) : ListenerAdapter() {
         m.launch {
             dontMentionStaffs.forEach {
                 it.onMessageReceived(event)
+            }
+        }
+
+        // Checking the message's language takes a while, so we do a >= length check to avoid checking spam messages and stuff like that
+        if (event.message.contentRaw.length >= 15) {
+            m.launch {
+                goToTheCorrectLanguageChannel.onMessageReceived(event)
             }
         }
 

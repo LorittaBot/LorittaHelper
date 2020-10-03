@@ -11,6 +11,7 @@ version = "1.0.0"
 repositories {
     mavenCentral()
     maven("https://jcenter.bintray.com")
+    maven("https://jitpack.io")
 }
 
 dependencies {
@@ -23,6 +24,7 @@ dependencies {
     implementation("com.github.ben-manes.caffeine:caffeine:2.8.5")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.0.0-RC2")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-hocon:1.0.0-RC2")
+    implementation("com.github.pemistahl:lingua:v1.1.0-wip-SNAPSHOT")
     testImplementation("org.junit.jupiter:junit-jupiter:5.4.2")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.4.2")
 
