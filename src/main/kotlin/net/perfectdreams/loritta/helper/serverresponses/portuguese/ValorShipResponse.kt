@@ -8,7 +8,7 @@ import java.util.regex.Pattern
 
 class ValorShipResponse : RegExResponse() {
     init {
-        patterns.add("alter|mudar|mudo|paga|pago|suborn|manipul|aument".toPattern(Pattern.CASE_INSENSITIVE))
+        patterns.add("alter|muda|mudo|paga|pago|suborn|manipul|aument".toPattern(Pattern.CASE_INSENSITIVE))
         patterns.add("(ship)".toPattern(Pattern.CASE_INSENSITIVE))
     }
 
