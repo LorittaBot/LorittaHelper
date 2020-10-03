@@ -52,4 +52,4 @@ jobs:
         path: libs/*
 
     - name: Send Webhook
-      run: "curl -X POST -H \"Content-Type: application/json\" -d '{\"content\": \"Atualização OwO! $GITHUB_SHA \"}' ${{ secrets.DiscordWebhookUrl }}"
+      run: "curl -X POST -H \"Content-Type: application/json\" -d '{\"content\": \"Atualização OwO! ${{ github.sha }}\"}' ${{ secrets.DiscordWebhookUrl }}"
