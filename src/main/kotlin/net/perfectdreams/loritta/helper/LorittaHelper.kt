@@ -18,10 +18,13 @@ import net.perfectdreams.loritta.helper.utils.faqembed.FAQEmbedUpdaterPortuguese
 import net.perfectdreams.loritta.helper.utils.supporttimer.EnglishSupportTimer
 import net.perfectdreams.loritta.helper.utils.supporttimer.PortugueseSupportTimer
 import java.io.File
+import java.time.Instant
+import java.time.format.DateTimeFormatter
 import java.util.concurrent.Executors
 import java.util.jar.Attributes
 import java.util.jar.JarFile
 import java.util.zip.ZipInputStream
+
 
 class LorittaHelper(val config: LorittaHelperConfig) {
     companion object {
@@ -73,21 +76,42 @@ class LorittaHelper(val config: LorittaHelperConfig) {
      * Downloads the latest artifact from GitHub and shuts down
      */
     suspend fun update() {
-        val response = http.get<String>("https://api.github.com/repos/LorittaBot/LorittaHelper/actions/artifacts") {
-            header("Accept", "application/vnd.github.v3+json")
+        var archiveDownloadUrl: String? = null
+
+        for (i in 0 until 5) {
+            val response = http.get<String>("https://api.github.com/repos/LorittaBot/LorittaHelper/actions/artifacts") {
+                header("Accept", "application/vnd.github.v3+json")
+            }
+
+            println(response)
+
+            val result = Json.parseToJsonElement(response)
+                .jsonObject
+            val artifacts = result["artifacts"]!!.jsonArray
+            val artifact =
+                artifacts.first { it.jsonObject["name"]!!.jsonPrimitive.content == "Loritta Helper (Discord)" }
+                    .jsonObject
+
+            val createdAt = artifact["created_at"]!!.jsonPrimitive.content
+
+            val ta = DateTimeFormatter.ISO_INSTANT.parse(createdAt)
+            val i = Instant.from(ta)
+
+            val now = Instant.now()
+                .minusMillis(120_000) // 2 minutes
+
+            archiveDownloadUrl = artifact["archive_download_url"]!!.jsonPrimitive.content
+
+            if (now.isBefore(i)) {
+                println("Seems to be a fresh update... continuing! Created At: $i; Now: $now")
+                break
+            } else {
+                println("Doesn't seem to be a fresh update... waiting a few seconds... Checks: $i Created At: $i; Now: $now")
+            }
+            delay(5_000)
         }
 
-        println(response)
-
-        val result = Json.parseToJsonElement(response)
-            .jsonObject
-        val artifacts = result["artifacts"]!!.jsonArray
-        val artifact = artifacts.first { it.jsonObject["name"]!!.jsonPrimitive.content == "Loritta Helper (Discord)" }
-            .jsonObject
-
-        val archiveDownloadUrl = artifact["archive_download_url"]!!.jsonPrimitive.content
-
-        val response2 = http.get<HttpResponse>(archiveDownloadUrl) {
+        val response2 = http.get<HttpResponse>(archiveDownloadUrl ?: throw RuntimeException("Missing Archive Download URL!")) {
             header("Accept", "application/vnd.github.v3+json")
             header("Authorization", "token ${config.githubToken}")
         }
