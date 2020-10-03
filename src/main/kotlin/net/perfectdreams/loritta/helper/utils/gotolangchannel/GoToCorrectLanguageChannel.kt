@@ -27,35 +27,44 @@ class GoToCorrectLanguageChannel(val m: LorittaHelper) {
     )
 
     fun onMessageReceived(event: GuildMessageReceivedEvent) {
-        val language = detector.detectLanguageOf(event.message.contentRaw)
+        // Only in channels that do have a language-specific channel ID
+        if (languageChannel.values.contains(event.channel.idLong)) {
+            val language = detector.detectLanguageOf(event.message.contentRaw)
 
-        val channelIdForLanguage = languageChannel[language]
+            val channelIdForLanguage = languageChannel[language]
 
-        if (channelIdForLanguage != event.channel.idLong) {
-            val messages = when (language) {
-                Language.PORTUGUESE -> listOf(
-                    LorittaReply(
-                        "Parece que você está falando em Português no canal de suporte Inglês! Por favor pergunte a sua pergunta no <#761337439095881748> e mencione <@&${Constants.PORTUGUESE_LORITTA_SUPPORT_ROLE_ID}> ao enviar a sua mensagem lá, obrigada!",
-                        Emotes.LORI_SOB
+            if (channelIdForLanguage != event.channel.idLong) {
+                val messages = when (language) {
+                    Language.PORTUGUESE -> listOf(
+                        LorittaReply(
+                            "Parece que você está falando em Português no canal de suporte Inglês! Por favor pergunte a sua pergunta no <#761337439095881748> e mencione <@&${Constants.PORTUGUESE_LORITTA_SUPPORT_ROLE_ID}> ao enviar a sua mensagem lá, obrigada!",
+                            Emotes.LORI_SOB
+                        )
                     )
-                )
-                Language.ENGLISH -> listOf(
-                    LorittaReply(
-                        "It looks like you are talking in English on the Portuguese support channel! Please ask your question in the <#420628148044955648> channel and mention <@&${Constants.ENGLISH_LORITTA_SUPPORT_ROLE_ID}> when sending your message there, thank you!",
-                        Emotes.LORI_SOB
+                    Language.ENGLISH -> listOf(
+                        LorittaReply(
+                            "It looks like you are talking in English on the Portuguese support channel! Please ask your question in the <#420628148044955648> channel and mention <@&${Constants.ENGLISH_LORITTA_SUPPORT_ROLE_ID}> when sending your message there, thank you!",
+                            Emotes.LORI_SOB
+                        )
                     )
-                )
-                else -> null
-            }
+                    else -> null
+                }
 
-            if (messages != null) {
-                event.channel.sendMessage(
-                    MessageBuilder()
-                        // We mention roles in some of the messages, so we don't want the mention to actually go off!
-                        .setAllowedMentions(listOf(Message.MentionType.USER, Message.MentionType.CHANNEL, Message.MentionType.EMOTE))
-                        .setContent(messages.joinToString("\n") { it.build(event) })
-                        .build()
-                ).queue()
+                if (messages != null) {
+                    event.channel.sendMessage(
+                        MessageBuilder()
+                            // We mention roles in some of the messages, so we don't want the mention to actually go off!
+                            .setAllowedMentions(
+                                listOf(
+                                    Message.MentionType.USER,
+                                    Message.MentionType.CHANNEL,
+                                    Message.MentionType.EMOTE
+                                )
+                            )
+                            .setContent(messages.joinToString("\n") { it.build(event) })
+                            .build()
+                    ).queue()
+                }
             }
         }
     }
