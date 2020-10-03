@@ -39,5 +39,6 @@ object PortugueseResponses {
         ValorShipResponse(),
         VotarResponse(),
         WhoIsVieirinhaResponse(),
+        NoStaffSpotResponse()
     ).sortedByDescending { it.priority }
 }
