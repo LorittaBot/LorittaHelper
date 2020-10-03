@@ -32,11 +32,12 @@ object PortugueseResponses {
         PantufaResponse(),
         ProfileBackgroundResponse(),
         ReceiveSonhosResponse(),
+        SendSonhosResponse(),
         SlowModeResponse(),
         StarboardResponse(),
         SugestoesResponse(),
         ValorShipResponse(),
         VotarResponse(),
-        WhoIsVieirinhaResponse()
+        WhoIsVieirinhaResponse(),
     ).sortedByDescending { it.priority }
 }

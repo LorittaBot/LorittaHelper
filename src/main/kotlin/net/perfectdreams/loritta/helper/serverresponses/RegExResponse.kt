@@ -4,7 +4,7 @@ import java.util.regex.Pattern
 
 abstract class RegExResponse : LorittaResponse {
     companion object {
-        const val WHERE_IT_IS = "como|onde|qual.*(e|é)|existe|tem( )?jeito"
+        const val WHERE_IT_IS = "como|onde|qual|existe|tem( )?jeito"
         const val ACTIVATE_OR_CHANGE = "pega|pego|coloc|clc|faço|faco|fasso|alter|boto|bota|alter"
     }
 
