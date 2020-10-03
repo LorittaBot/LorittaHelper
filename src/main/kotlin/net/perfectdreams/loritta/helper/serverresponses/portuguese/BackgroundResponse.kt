@@ -8,9 +8,9 @@ import java.util.regex.Pattern
 
 class BackgroundResponse : RegExResponse() {
     init {
-        patterns.add("pega|pego|coloc|clc|faço|fasso|alter|boto|bota".toPattern(Pattern.CASE_INSENSITIVE))
+        patterns.add(ACTIVATE_OR_CHANGE.toPattern(Pattern.CASE_INSENSITIVE))
         patterns.add(
-            "(back( )?ground|(plano|foto|imagem)( )?(de|no|na)( )?fundo|(papel|foto|imagem)( )?(de|no|na)( )?parede)".toPattern(
+            "(back( )?ground|(plano|foto|imagem)( )?(de|no|na)( )?fundo|(papel|foto|imagem)( )?(de|no|na)( )?parede|(plano|foto|imagem|fundo)( )?(de|no|na)( )?(perfil|profile))".toPattern(
                 Pattern.CASE_INSENSITIVE
             )
         )
