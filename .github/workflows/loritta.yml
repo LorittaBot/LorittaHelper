@@ -50,3 +50,6 @@ jobs:
       with:
         name: Loritta Helper (Libs)
         path: libs/*
+
+    - name: Send Webhook
+      run: "curl -X POST -H \"Content-Type: application/json\" -d '{\"content\": \"Atualização OwO! $GITHUB_SHA\"}' ${{ secrets.DiscordWebhookUrl }}"
