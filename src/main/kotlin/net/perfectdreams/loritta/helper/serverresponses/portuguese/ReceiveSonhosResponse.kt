@@ -7,6 +7,8 @@ import net.perfectdreams.loritta.helper.utils.Emotes
 import java.util.regex.Pattern
 
 class ReceiveSonhosResponse : RegExResponse() {
+    override val priority = -1
+
     init {
         patterns.add("conseg|peg|ganh".toPattern(Pattern.CASE_INSENSITIVE))
         patterns.add("sonhos".toPattern(Pattern.CASE_INSENSITIVE))

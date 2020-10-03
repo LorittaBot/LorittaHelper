@@ -17,7 +17,7 @@ abstract class ResponseTestBase(
             for (response in responses) {
                 if (response.handleResponse(question)) {
                     if (clazzName != response::class.simpleName)
-                        throw IllegalArgumentException("Matched ${response::class.simpleName} when it shouldn't match")
+                        throw IllegalArgumentException("Matched ${response::class.simpleName} when it shouldn't match. Try changing the ${response::class.simpleName} priority!")
                     else {
                         continue@questionLoop
                     }

@@ -11,9 +11,8 @@ class EmbedsResponse : RegExResponse() {
         patterns.add("ativ|coloc|uso|adicion|faç|fass".toPattern(Pattern.CASE_INSENSITIVE))
         patterns.add("(embed)".toPattern(Pattern.CASE_INSENSITIVE))
         patterns.add("\\?".toPattern(Pattern.CASE_INSENSITIVE))
+    }
 
-
-        }
     override fun getResponse(event: GuildMessageReceivedEvent, message: String) =
             listOf(
                 LorittaReply(
