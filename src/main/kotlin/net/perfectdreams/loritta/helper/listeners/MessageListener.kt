@@ -35,10 +35,10 @@ class MessageListener(val m: LorittaHelper) : ListenerAdapter() {
 
         m.launch {
             val channelResponses = when (event.message.channel.idLong) {
-                Constants.PORTUGUESE_SUPPORT_CHANNEL_ID -> {
+                Constants.PORTUGUESE_SUPPORT_CHANNEL_ID, 547119872568459284L /* open bar */ -> {
                     PortugueseResponses.responses
                 }
-                Constants.ENGLISH_SUPPORT_CHANNEL_ID -> {
+                Constants.ENGLISH_SUPPORT_CHANNEL_ID, 422103894462824468L /* support server staff channel */ -> {
                     EnglishResponses.responses
                 }
                 else -> null
