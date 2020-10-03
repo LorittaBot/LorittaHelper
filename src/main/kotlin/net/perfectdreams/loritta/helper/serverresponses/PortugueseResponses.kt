@@ -33,6 +33,7 @@ object PortugueseResponses {
         PantufaResponse(),
         ProfileBackgroundResponse(),
         ReceiveSonhosResponse(),
+        SayResponse(),
         SendSonhosResponse(),
         SlowModeResponse(),
         StarboardResponse(),
