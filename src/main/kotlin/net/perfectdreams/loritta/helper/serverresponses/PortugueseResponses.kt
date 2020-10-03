@@ -15,6 +15,7 @@ object PortugueseResponses {
         ChangePrefixResponse(),
         CommandsResponse(),
         ConfigureLoriResponse(),
+        ConfigurePunishmentsResponse(),
         DJLorittaResponse(),
         EmbedsArbitraryResponse(),
         EmbedsResponse(),
