@@ -1,4 +1,4 @@
-name: Build Loritta Pull Request
+name: Build Loritta Helper Pull Request
 
 on: [ pull_request ]
 
