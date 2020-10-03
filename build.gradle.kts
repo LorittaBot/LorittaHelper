@@ -21,9 +21,12 @@ dependencies {
     implementation("net.dv8tion:JDA:4.2.0_207")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.9")
     implementation("com.github.ben-manes.caffeine:caffeine:2.8.5")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.0.0-RC2")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-hocon:1.0.0-RC2")
     testImplementation("org.junit.jupiter:junit-jupiter:5.4.2")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.4.2")
+
+    implementation("io.ktor:ktor-client-cio:1.4.0")
 }
 
 tasks {

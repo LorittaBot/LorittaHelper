@@ -47,11 +47,13 @@ class LorittaHelper(val config: LorittaHelperConfig) {
             .build()
 
         val path = this::class.java.protectionDomain.codeSource.location.path
-        val jar = JarFile(path)
-        val mf = jar.manifest
-        val mattr = mf.mainAttributes
+        val commitHash = try {
+            val jar = JarFile(path)
+            val mf = jar.manifest
+            val mattr = mf.mainAttributes
 
-        val commitHash = mattr[Attributes.Name("Commit-Hash")] as String
+            mattr[Attributes.Name("Commit-Hash")] as String
+        } catch (e: Exception) { "Unknown" }
 
         // OwO whats this???
         jda.presence.activity = Activity.listening("OwO | commit $commitHash")
