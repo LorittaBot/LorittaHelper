@@ -34,11 +34,11 @@ jobs:
       name: "Upload Loritta Helper"
       with:
         name: Loritta (Discord)
-        path: /build/libs/loritta-helper-*.jar
+        path: build/libs/loritta-helper-*.jar
 
     # Libs
     - uses: actions/upload-artifact@v2
       name: "Upload Loritta Helper's Libs"
       with:
-        name: Loritta (Libs)
+        name: Loritta Helper (Libs)
         path: libs/*
