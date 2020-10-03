@@ -1,0 +1,44 @@
+name: Build Loritta Pull Request
+
+on: [ pull_request ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Get current time
+      uses: gerred/actions/current-time@master
+      id: current-time
+
+    - name: Get PR info
+      run: echo ::set-env name=PR::$(echo $GITHUB_REF | awk 'BEGIN { FS = "/" } ; { print $3 }')
+
+    - name: Setup Java JDK
+      uses: actions/setup-java@v1.3.0
+      with:
+        java-version: 13
+
+    - name: Grant execute permission for gradlew
+      run: chmod +x gradlew
+
+    # Runs a single command using the runners shell
+    - name: Build with Gradle
+      run: "./gradlew build -Dbuild.number=$GITHUB_RUN_NUMBER -Dgit.branch=$GITHUB_REF -Dcommit.hash=$GITHUB_SHA -Dcompiled.at=${{ steps.current-time.outputs.time }}"
+
+    # Upload Artifacts to GitHub
+    # Loritta
+    - uses: actions/upload-artifact@v2
+      name: "Upload Loritta Helper"
+      with:
+        name: Loritta (Discord)
+        path: /build/libs/loritta-helper-*.jar
+
+    # Libs
+    - uses: actions/upload-artifact@v2
+      name: "Upload Loritta Helper's Libs"
+      with:
+        name: Loritta (Libs)
+        path: libs/*
