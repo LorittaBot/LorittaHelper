@@ -7,8 +7,8 @@ import java.util.regex.Pattern
 
 class LoriXpResponse : RegExResponse() {
     init {
-        patterns.add("ganh(a|o)|sobe|subi|pega|pego|dá|vejo|ver".toPattern(Pattern.CASE_INSENSITIVE))
-        patterns.add("(experi(ê|e)ncia|xp)".toPattern(Pattern.CASE_INSENSITIVE))
+        patterns.add("ganh(a|o)|sobe|subi|pega|pego|dá|vejo|ver|saber".toPattern(Pattern.CASE_INSENSITIVE))
+        patterns.add("(experi(ê|e)ncia|xp|n(í|i)vel)".toPattern(Pattern.CASE_INSENSITIVE))
     }
 
     override fun getResponse(event: GuildMessageReceivedEvent, message: String) =
