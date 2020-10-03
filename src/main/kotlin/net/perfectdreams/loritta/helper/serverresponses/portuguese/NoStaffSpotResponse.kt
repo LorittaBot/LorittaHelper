@@ -9,7 +9,7 @@ class NoStaffSpotResponse : RegExResponse() {
     init {
         patterns.add("como|tem".toPattern(Pattern.CASE_INSENSITIVE))
         patterns.add("vaga|vira|ser".toPattern(Pattern.CASE_INSENSITIVE))
-        patterns.add("(guarda(-|)?costas|adm|mod|ajudante|staff|suporte)".toPattern(Pattern.CASE_INSENSITIVE))
+        patterns.add("(guarda(-| )?costas|adm|mod|ajudante|staff|suporte)".toPattern(Pattern.CASE_INSENSITIVE))
     }
 
     override fun getResponse(event: GuildMessageReceivedEvent, message: String): List<LorittaReply> =
