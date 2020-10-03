@@ -12,7 +12,7 @@ abstract class ResponseTestBase(
         val clazzName = this::class.simpleName!!.removeSuffix("Test")
 
         questionLoop@for (question in questions) {
-            println("Testing $question")
+            println("[$clazzName] Testing $question")
 
             for (response in responses) {
                 if (response.handleResponse(question)) {

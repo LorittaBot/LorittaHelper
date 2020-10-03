@@ -45,7 +45,7 @@ class MessageListener(val m: LorittaHelper) : ListenerAdapter() {
             }
 
             if (channelResponses != null) {
-                val responses = channelResponses.sortedByDescending { it.priority }
+                val responses = channelResponses
                     .firstOrNull { it.handleResponse(event, event.message.contentRaw) }?.getResponse(event, event.message.contentRaw) ?: return@launch
 
                 if (responses.isNotEmpty())

@@ -5,4 +5,5 @@ package net.perfectdreams.loritta.helper.serverresponses
  */
 object EnglishResponses {
     val responses = listOf<RegExResponse>()
+        .sortedByDescending { it.priority }
 }
