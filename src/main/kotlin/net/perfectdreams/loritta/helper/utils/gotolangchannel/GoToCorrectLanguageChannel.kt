@@ -36,22 +36,15 @@ class GoToCorrectLanguageChannel(val m: LorittaHelper) {
                     event.message.mentionedRoles.forEach {
                         newMessage = newMessage.replace(it.asMention, "")
                     }
-                    newMessage
-                }
-                .let { message ->
-                    var newMessage = message
                     event.message.mentionedUsers.forEach {
                         newMessage = newMessage.replace(it.asMention, "")
                     }
-                    newMessage
-                }
-                .let { message ->
-                    var newMessage = message
                     event.message.mentionedChannels.forEach {
                         newMessage = newMessage.replace(it.asMention, "")
                     }
                     newMessage
                 }
+                .let { stripLinks(it) }
                 .lines()
                 .dropWhile { it.startsWith(">") || it.startsWith("<") || it.startsWith("{") || it.startsWith("}") }
                 .joinToString("\n")
@@ -99,5 +92,22 @@ class GoToCorrectLanguageChannel(val m: LorittaHelper) {
                 }
             }
         }
+    }
+
+    /**
+     * Strips all links from the [string]
+     */
+    fun stripLinks(string: String): String {
+        var output = string
+        val matcher = Constants.URL_PATTERN.matcher(
+            string.replace("\u200B", "")
+                .replace("\\", "")
+        )
+
+        while (matcher.find()) {
+            val url = matcher.group()
+            output = string.replace(url, "")
+        }
+        return output
     }
 }
