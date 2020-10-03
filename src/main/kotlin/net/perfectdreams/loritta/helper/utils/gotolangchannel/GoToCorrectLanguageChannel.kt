@@ -50,10 +50,11 @@ class GoToCorrectLanguageChannel(val m: LorittaHelper) {
                 .joinToString("\n")
                 .split(" ")
                 .dropWhile { it.startsWith(">") || it.startsWith("<") || it.startsWith(":") || it.startsWith("#") }
+                .joinToString(" ")
 
             // Checking the message's language takes a while, so we do a >= length check to avoid checking spam messages and stuff like that
-            if (cleanMessage.size >= 15) {
-                val language = detector.detectLanguageOf(event.message.contentRaw)
+            if (cleanMessage.length >= 15) {
+                val language = detector.detectLanguageOf(cleanMessage)
 
                 val channelIdForLanguage = languageChannel[language]
 
