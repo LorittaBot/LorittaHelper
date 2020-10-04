@@ -7,6 +7,8 @@ import net.perfectdreams.loritta.helper.utils.Emotes
 import java.util.regex.Pattern
 
 class LoriMandarCmdsResponse : RegExResponse() {
+    override val priority = -999
+
     init {
         patterns.add("enviando|mandando|mandar|responde".toPattern(Pattern.CASE_INSENSITIVE))
         patterns.add("comando|cmd".toPattern(Pattern.CASE_INSENSITIVE))
