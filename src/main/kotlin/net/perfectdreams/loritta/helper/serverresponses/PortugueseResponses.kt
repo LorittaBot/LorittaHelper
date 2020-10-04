@@ -20,6 +20,7 @@ object PortugueseResponses {
         EmbedsArbitraryResponse(),
         EmbedsResponse(),
         HelpMeResponse(),
+        HowToUseCommandsResponse(),
         JoinLeaveResponse(),
         LanguageResponse(),
         LoriBrothersResponse(),
