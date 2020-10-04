@@ -21,7 +21,12 @@ class LorittaLandRoleSynchronizationTask(val m: LorittaHelper, val jda: JDA) : R
                 653207737798230037L to 762377857149829163L,
                 653207795084165121L to 762377866368254053L,
                 653207830261923840L to 762377874891603979L,
-                653207858707562497L to 762377883339325460L
+                653207858707562497L to 762377883339325460L,
+                341343754336337921L to 467750037812936704L, // Desenhistas
+                385579854336360449L to 467750852610752561L, // Tradutores
+                364201981016801281L to 420640526711390208L, // Doador
+                463652112656629760L to 568506127977938977L, // Super Doador
+                534659343656681474L to 568505810825642029L, // Magnata
         )
 
         private val roleFieldComparators = listOf(
