@@ -8,11 +8,10 @@ import java.util.regex.Pattern
 
 class ProfileBackgroundResponse : RegExResponse() {
     init {
-        patterns.add("como".toPattern(Pattern.CASE_INSENSITIVE))
-        patterns.add("coloc[ar|a|o]|mud[a|o]|troc[a|o]|alter[a|o]".toPattern(Pattern.CASE_INSENSITIVE))
-        patterns.add("banner|background|imagem|fundo|foto".toPattern(Pattern.CASE_INSENSITIVE))
-        patterns.add("perfil|profile".toPattern(Pattern.CASE_INSENSITIVE))
-        patterns.add("\\?".toPattern(Pattern.CASE_INSENSITIVE))
+        patterns.add(WHERE_IT_IS.toPattern(Pattern.CASE_INSENSITIVE))
+        patterns.add(ACTIVATE_OR_CHANGE.toPattern(Pattern.CASE_INSENSITIVE))
+        patterns.add("banner|background|imagem|fundo|foto|papel".toPattern(Pattern.CASE_INSENSITIVE))
+        patterns.add("perfil|profile|\\?".toPattern(Pattern.CASE_INSENSITIVE))
     }
 
     override fun getResponse(event: GuildMessageReceivedEvent, message: String) =

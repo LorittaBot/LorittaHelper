@@ -10,7 +10,6 @@ object PortugueseResponses {
         AddEmotesOnMessageResponse(),
         AddLoriResponse(),
         AnnouncementsResponse(),
-        BackgroundResponse(),
         BadgeResponse(),
         CanaryResponse(),
         ChangePrefixResponse(),

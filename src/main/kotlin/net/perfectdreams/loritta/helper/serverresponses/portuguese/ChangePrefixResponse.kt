@@ -7,6 +7,8 @@ import net.perfectdreams.loritta.helper.utils.Emotes
 import java.util.regex.Pattern
 
 class ChangePrefixResponse : RegExResponse() {
+    override val priority = -1000
+
     init {
         patterns.add("troc|mud|alter|vem|padr(ã|a)o".toPattern(Pattern.CASE_INSENSITIVE))
         patterns.add("(prefixo|\\+)".toPattern(Pattern.CASE_INSENSITIVE))
