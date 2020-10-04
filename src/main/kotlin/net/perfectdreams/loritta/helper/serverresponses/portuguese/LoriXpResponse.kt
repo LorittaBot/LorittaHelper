@@ -7,7 +7,7 @@ import java.util.regex.Pattern
 
 class LoriXpResponse : RegExResponse() {
     init {
-        patterns.add("ganh(a|o)|sobe|subi|pega|pego|dá|vejo|ver|saber|calcul|quanto".toPattern(Pattern.CASE_INSENSITIVE))
+        patterns.add("ganh(a|o)|sobe|subi|pega|pego|dá|vejo|ver|saber|calcul|quanto|mostr".toPattern(Pattern.CASE_INSENSITIVE))
         patterns.add("(experi(ê|e)ncia|xp|n(í|i)vel)".toPattern(Pattern.CASE_INSENSITIVE))
     }
 
