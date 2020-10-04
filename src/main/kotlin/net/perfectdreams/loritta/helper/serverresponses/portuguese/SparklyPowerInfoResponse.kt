@@ -8,15 +8,23 @@ import net.perfectdreams.loritta.helper.utils.Emotes
 import java.util.regex.Pattern
 
 class SparklyPowerInfoResponse: RegExResponse() {
-    
+
     init {
         patterns.add("sparkly".toPattern(Pattern.CASE_INSENSITIVE))
     }
 
     override fun getResponse(event: GuildMessageReceivedEvent, message: String): List<LorittaReply> = listOf(
-        LorittaReply(
-            message = "Psiu! Se você precisa de ajuda com coisas relatadas ao **SparklyPower:tm:**, recomendo que procure por ajuda no servidor direcionado a ele: ${Constants.SPARKLY_POWER_INVITE_CODE}!",
-            prefix = Emotes.WUMPUS_KEYBOARD
-        )
+            LorittaReply(
+                    message = "SparklyPower é o servidor de Minecraft Survival da Loritta & Pantufa! **IP:** `mc.sparklypower.net`",
+                    prefix = Emotes.LORI_PAT
+            ),
+            LorittaReply(
+                    message = "Você pode transferir seus sonhos da Loritta para o SparklyPower e vice-versa utilizando `-lsx` no servidor no Discord do SparklyPower",
+                    prefix = Emotes.LORI_COFFEE
+            ),
+            LorittaReply(
+                    message = "Se você precisa de ajuda com coisas relacionadas ao **SparklyPower**, recomendo que procure por ajuda aqui: ${Constants.SPARKLY_POWER_INVITE_CODE}",
+                    prefix = Emotes.WUMPUS_KEYBOARD
+            )
     )
 }

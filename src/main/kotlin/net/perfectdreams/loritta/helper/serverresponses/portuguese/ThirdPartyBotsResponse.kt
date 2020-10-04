@@ -16,7 +16,7 @@ class ThirdPartyBotsResponse: RegExResponse() {
 
     override fun getResponse(event: GuildMessageReceivedEvent, message: String): List<LorittaReply> = listOf(
         LorittaReply(
-            message = "Aparentemente você precisa de ajuda com outros bots, hm... Não damos suporte para outros bots aqui, se você precisa de ajuda, confira se o servidor de suporte deste bot está listado em <#${OTHER_BOTS_CHANNEL_ID}} e peça ajuda por lá!",
+            message = "Aparentemente você precisa de ajuda com outros bots, hm... Não damos suporte para outros bots aqui, se você precisa de ajuda, confira se o servidor de suporte deste bot está listado em <#${OTHER_BOTS_CHANNEL_ID}> e peça ajuda por lá!",
             prefix = Emotes.LORI_COFFEE
         )
     )
