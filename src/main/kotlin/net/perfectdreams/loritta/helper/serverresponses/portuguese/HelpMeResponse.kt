@@ -21,7 +21,7 @@ class HelpMeResponse : RegExResponse() {
             if (!message.contains(Constants.PORTUGUESE_LORITTA_SUPPORT_ROLE_ID.toString())) {
                 listOf(
                         LorittaReply(
-                                "Psiu! Se você está com uma dúvida, escreva a sua dúvida no chat e marque o cargo do <@&${Constants.PORTUGUESE_LORITTA_SUPPORT_ROLE_ID}>!",
+                                "Psiu! Se você está com uma dúvida, escreva a sua dúvida no chat e marque o cargo do <@&${Constants.PORTUGUESE_LORITTA_SUPPORT_ROLE_ID}>! Se já mandou a sua dúvida não precisa de deletar, é só marcar numa mensagem separada!",
                                 Emotes.LORI_PAT
                         )
                 )
