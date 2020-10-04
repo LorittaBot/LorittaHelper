@@ -1,5 +1,6 @@
 package net.perfectdreams.loritta.helper.utils.gotolangchannel
 
+import com.github.benmanes.caffeine.cache.Caffeine
 import com.github.pemistahl.lingua.api.Language
 import com.github.pemistahl.lingua.api.LanguageDetectorBuilder
 import net.dv8tion.jda.api.MessageBuilder
@@ -9,6 +10,8 @@ import net.perfectdreams.loritta.api.messages.LorittaReply
 import net.perfectdreams.loritta.helper.LorittaHelper
 import net.perfectdreams.loritta.helper.utils.Constants
 import net.perfectdreams.loritta.helper.utils.Emotes
+import java.util.*
+import java.util.concurrent.TimeUnit
 
 /**
  * Checks and points users to the correct channel if they are talking in the incorrect channel
@@ -26,9 +29,18 @@ class GoToCorrectLanguageChannel(val m: LorittaHelper) {
         Language.PORTUGUESE to Constants.PORTUGUESE_SUPPORT_CHANNEL_ID
     )
 
+    // Used to avoid checking the same user multiple times because some times false positives can happen
+    // So if we already checked, we are going to ignore the user until it is expired
+    val ignoreLanguageCheck = Collections.newSetFromMap(
+        Caffeine.newBuilder()
+            .expireAfterWrite(5, TimeUnit.MINUTES)
+            .build<Long, Boolean>()
+            .asMap()
+    )
+
     fun onMessageReceived(event: GuildMessageReceivedEvent) {
         // Only in channels that do have a language-specific channel ID
-        if (languageChannel.values.contains(event.channel.idLong)) {
+        if (languageChannel.values.contains(event.channel.idLong) && !ignoreLanguageCheck.contains(event.author.idLong)) {
             // We need to "clean up" the message a little bit before checking
             val cleanMessage = event.message.contentRaw
                 .let { message ->
@@ -90,6 +102,8 @@ class GoToCorrectLanguageChannel(val m: LorittaHelper) {
                                 .build()
                         ).queue()
                     }
+                } else {
+                    ignoreLanguageCheck.add(event.author.idLong)
                 }
             }
         }
