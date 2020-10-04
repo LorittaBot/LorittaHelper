@@ -38,6 +38,7 @@ object PortugueseResponses {
         SlowModeResponse(),
         StarboardResponse(),
         SugestoesResponse(),
+        TransferGarticosResponse(),
         ValorShipResponse(),
         VotarResponse(),
         WhoIsVieirinhaResponse(),
