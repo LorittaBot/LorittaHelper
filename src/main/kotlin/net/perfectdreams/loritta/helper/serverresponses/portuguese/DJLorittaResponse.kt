@@ -20,10 +20,6 @@ class DJLorittaResponse : RegExResponse() {
                 prefix = Emotes.LORI_SOB
             ),
             LorittaReply(
-                "No futuro o sistema de música irá voltar! Maaaas apenas para doadores, já que manter um sistema de música é beeeem difícil.",
-                mentionUser = false
-            ),
-            LorittaReply(
                 "Se você tá com fogo de escutar ondas sonoras no seu ouvido pelo Discord, nós recomendamos utilizar o Groovy! <https://groovy.bot/>",
                 mentionUser = false
             )
