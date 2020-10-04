@@ -8,6 +8,7 @@ import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.jsonArray
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
+import mu.KotlinLogging
 import net.dv8tion.jda.api.JDABuilder
 import net.dv8tion.jda.api.entities.Activity
 import net.dv8tion.jda.api.requests.GatewayIntent
@@ -32,6 +33,8 @@ class LorittaHelper(val config: LorittaHelperConfig) {
             expectSuccess = false
             followRedirects = false
         }
+
+        private val logger = KotlinLogging.logger {}
     }
 
     // We only need one single thread because <3 coroutines
@@ -78,15 +81,17 @@ class LorittaHelper(val config: LorittaHelperConfig) {
     suspend fun update() {
         var archiveDownloadUrl: String? = null
 
-        for (i in 0 until 10) {
-            delay(10_000)
+        logger.info { "Update Webhook received! Waiting 5 seconds until we check for a new build..." }
+
+        for (i in 0 until 12) {
+            delay(5_000)
 
             val response = http.get<String>("https://api.github.com/repos/LorittaBot/LorittaHelper/actions/artifacts") {
                 header("Authorization", "token ${config.githubToken}")
                 header("Accept", "application/vnd.github.v3+json")
             }
 
-            println(response)
+            logger.debug { response }
 
             val result = Json.parseToJsonElement(response)
                 .jsonObject
@@ -106,10 +111,10 @@ class LorittaHelper(val config: LorittaHelperConfig) {
             archiveDownloadUrl = artifact["archive_download_url"]!!.jsonPrimitive.content
 
             if (now.isBefore(i)) {
-                println("Seems to be a fresh update... continuing! Created At: $i; Now: $now")
+                logger.info { "Seems to be a fresh update... continuing! Created At: $i; Now: $now" }
                 break
             } else {
-                println("Doesn't seem to be a fresh update... waiting a few seconds... Checks: $i Created At: $i; Now: $now")
+                logger.info { "Doesn't seem to be a fresh update... waiting a few seconds... Checks: $i Created At: $i; Now: $now" }
             }
         }
 
@@ -120,7 +125,8 @@ class LorittaHelper(val config: LorittaHelperConfig) {
 
         val location = response2.headers["Location"]!!
 
-        println("Location: $location)")
+        logger.info { "Build Location URL: $location" }
+
         val response3 = http.get<HttpResponse>(location) {
         }
 
@@ -139,6 +145,7 @@ class LorittaHelper(val config: LorittaHelperConfig) {
             }
         }
 
+        logger.info { "Update finished, bye!" }
         System.exit(0)
     }
 }
