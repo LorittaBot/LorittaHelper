@@ -14,8 +14,8 @@ import net.perfectdreams.loritta.helper.utils.gotolangchannel.GoToCorrectLanguag
 
 class MessageListener(val m: LorittaHelper) : ListenerAdapter() {
     private val dontMentionStaffs = listOf(
-        EnglishDontMentionStaff(),
-        PortugueseDontMentionStaff()
+            EnglishDontMentionStaff(),
+            PortugueseDontMentionStaff()
     )
 
     val goToTheCorrectLanguageChannel = GoToCorrectLanguageChannel(m)
@@ -44,9 +44,10 @@ class MessageListener(val m: LorittaHelper) : ListenerAdapter() {
                 it.onMessageReceived(event)
             }
         }
-                    m.launch {
-                goToTheCorrectLanguageChannel.onMessageReceived(event)
-            }
+
+        m.launch {
+            goToTheCorrectLanguageChannel.onMessageReceived(event)
+        }
 
         m.launch {
             val channelResponses = when (event.message.channel.idLong) {
@@ -60,16 +61,21 @@ class MessageListener(val m: LorittaHelper) : ListenerAdapter() {
             }
 
             if (channelResponses != null) {
+                // We remove any lines starting with > (quote) because this sometimes causes responses to something inside a citation, and that looks kinda bad
+                val cleanMessage = event.message.contentRaw.lines()
+                        .dropWhile { it.startsWith(">") }
+                        .joinToString("\n")
+
                 val responses = channelResponses
-                    .firstOrNull { it.handleResponse(event, event.message.contentRaw) }?.getResponse(event, event.message.contentRaw) ?: return@launch
+                        .firstOrNull { it.handleResponse(cleanMessage) }?.getResponse(event, cleanMessage) ?: return@launch
 
                 if (responses.isNotEmpty())
                     event.channel.sendMessage(
-                        MessageBuilder()
-                            // We mention roles in some of the messages, so we don't want the mention to actually go off!
-                            .setAllowedMentions(listOf(Message.MentionType.USER, Message.MentionType.CHANNEL, Message.MentionType.EMOTE))
-                            .setContent(responses.joinToString("\n") { it.build(event) })
-                            .build()
+                            MessageBuilder()
+                                    // We mention roles in some of the messages, so we don't want the mention to actually go off!
+                                    .setAllowedMentions(listOf(Message.MentionType.USER, Message.MentionType.CHANNEL, Message.MentionType.EMOTE))
+                                    .setContent(responses.joinToString("\n") { it.build(event) })
+                                    .build()
                     ).queue()
                 return@launch
             }
