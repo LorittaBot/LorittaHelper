@@ -15,15 +15,20 @@ class ReceiveSonhosResponse : RegExResponse() {
     }
 
     override fun getResponse(event: GuildMessageReceivedEvent, message: String) =
-        listOf(
-            LorittaReply(
-                "**Você pode conseguir sonhos... dormindo!**",
-                Emotes.LORI_PAC
-            ),
-            LorittaReply(
-                "Brincadeirinha!! ^-^ Você pode pegar sonhos usando `+daily`",
-                prefix = Emotes.LORI_OWO,
-                mentionUser = false
-            ),
-        )
+            listOf(
+                    LorittaReply(
+                            "**Você pode conseguir sonhos... dormindo!**",
+                            Emotes.LORI_PAC
+                    ),
+                    LorittaReply(
+                            "Brincadeirinha!! ^-^ Você pode pegar sonhos usando `+daily`",
+                            prefix = Emotes.LORI_OWO,
+                            mentionUser = false
+                    ),
+                    LorittaReply(
+                            "Se você quer saber outros jeitos de ganhar e gastar sonhos, veja o <#761337893951635458>",
+                            prefix = Emotes.LORI_COFFEE,
+                            mentionUser = false
+                    )
+            )
 }
