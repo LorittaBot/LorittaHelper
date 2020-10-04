@@ -1,6 +1,7 @@
 package net.perfectdreams.loritta.helper.utils.faqembed
 
 import kotlinx.coroutines.delay
+import mu.KotlinLogging
 import net.dv8tion.jda.api.EmbedBuilder
 import net.dv8tion.jda.api.JDA
 import net.dv8tion.jda.api.entities.MessageEmbed
@@ -19,6 +20,8 @@ abstract class FAQEmbedUpdater(val m: LorittaHelper, val jda: JDA) {
         // Group 1 = Emoji
         // Group 2 == OwO whats this
         val regex = Regex("(.+)\\*\\*\\|(?:\\*\\*)?(.+)\\*\\*")
+
+        private val logger = KotlinLogging.logger {}
     }
 
     /**
@@ -37,11 +40,7 @@ abstract class FAQEmbedUpdater(val m: LorittaHelper, val jda: JDA) {
                 val channel = jda.getGuildById(Constants.SUPPORT_SERVER_ID)
                     ?.getTextChannelById(channelId)
 
-                println("Channel: $channel")
-
                 if (channel != null) {
-                    println("Getting messages owo")
-
                     val allMessagesInTheChannel = channel.history.retrieveAllMessages()
                         .sortedBy { it.timeCreated }
 
@@ -55,17 +54,13 @@ abstract class FAQEmbedUpdater(val m: LorittaHelper, val jda: JDA) {
                         .setColor(Color(114, 137, 218))
 
                     otherMessages.forEach {
-                        println(it.contentRaw)
                         val match = regex.find(it.contentRaw)
-                        println(match?.groupValues)
 
                         if (match != null) {
                             val emoji = match.groupValues[1].trim()
                             val text = match.groupValues[2].trim()
 
                             val newText = "$emoji **|** [$text](${it.jumpUrl})\n"
-
-                            println(newText)
 
                             if (newText.length + activeEmbed.descriptionBuilder.length >= MessageEmbed.TEXT_MAX_LENGTH) {
                                 embeds.add(activeEmbed.build())
@@ -74,7 +69,6 @@ abstract class FAQEmbedUpdater(val m: LorittaHelper, val jda: JDA) {
                                     .setColor(Color(114, 137, 218))
                             }
 
-                            println(it.jumpUrl)
                             activeEmbed.appendDescription(newText)
                         }
                     }
@@ -88,7 +82,6 @@ abstract class FAQEmbedUpdater(val m: LorittaHelper, val jda: JDA) {
                             val selfEmbed = selfMessages.getOrNull(index)?.embeds?.firstOrNull()
 
                             if (selfEmbed == null) {
-                                println("Embed is null")
                                 isDirty = true
                                 break
                             } else {
@@ -98,8 +91,6 @@ abstract class FAQEmbedUpdater(val m: LorittaHelper, val jda: JDA) {
                                         ""
                                     ) != createdEmbed.description?.replace("\n", "")
                                 ) {
-                                    println("Description doesn't match")
-
                                     isDirty = true
                                     break
                                 }
@@ -107,9 +98,8 @@ abstract class FAQEmbedUpdater(val m: LorittaHelper, val jda: JDA) {
                         }
                     }
 
-                    println("Is dirty? $isDirty")
-
                     if (isDirty) {
+                        logger.info { "Ew, the messages are *dirty*! We are going to delete the old embeds and resend them again!" }
                         selfMessages.forEach {
                             it.delete().queue()
                         }
@@ -119,8 +109,6 @@ abstract class FAQEmbedUpdater(val m: LorittaHelper, val jda: JDA) {
                                 .queue()
                         }
                     }
-
-                    println("Finished")
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
