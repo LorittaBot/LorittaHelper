@@ -88,18 +88,22 @@ class LorittaLandRoleSynchronizationTask(val m: LorittaHelper, val jda: JDA) : R
         val membersWithNewRole = toGuild.getMembersWithRoles(giveRole)
 
         for (member in membersWithNewRole) {
-            if (!membersWithOriginalRole.any { it.user.id == member.user.id }) {
-                logger.info { "Removing role ${giveRole.id} of ${member.effectiveName} (${member.user.id})..." }
-                toGuild.removeRoleFromMember(member, giveRole).queue()
+            if (fromGuild.isMember(member.user) && toGuild.isMember(member.user)) {
+                if (!membersWithOriginalRole.any { it.user.id == member.user.id }) {
+                    logger.info { "Removing role ${giveRole.id} of ${member.effectiveName} (${member.user.id})..." }
+                    toGuild.removeRoleFromMember(member, giveRole).queue()
+                }
             }
         }
 
         for (member in membersWithOriginalRole) {
-            if (!membersWithNewRole.any { it.user.id == member.user.id }) {
-                val usMember = toGuild.getMember(member.user) ?: continue
+            if (fromGuild.isMember(member.user) && toGuild.isMember(member.user)) {
+                if (!membersWithNewRole.any { it.user.id == member.user.id }) {
+                    val usMember = toGuild.getMember(member.user) ?: continue
 
-                logger.info { "Adding role ${giveRole.id} to ${member.effectiveName} (${member.user.id})..." }
-                toGuild.addRoleToMember(usMember, giveRole).queue()
+                    logger.info { "Adding role ${giveRole.id} to ${member.effectiveName} (${member.user.id})..." }
+                    toGuild.addRoleToMember(usMember, giveRole).queue()
+                }
             }
         }
     }
