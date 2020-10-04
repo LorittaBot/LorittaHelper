@@ -17,13 +17,7 @@ abstract class RegExResponse : LorittaResponse {
     /**
      * Handles the RegEx response
      */
-    override fun handleResponse(message: String): Boolean {
-        for (pattern in patterns) {
-            val matcher = pattern.matcher(message)
-
-            if (!matcher.find())
-                return false
-        }
-        return true
+    override fun handleResponse(message: String): Boolean = patterns.all {
+        it.matcher(message).find()
     }
 }

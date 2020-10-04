@@ -10,5 +10,9 @@ object Constants {
     const val PORTUGUESE_LORITTA_SUPPORT_ROLE_ID = 421325387889377291L
     const val ENGLISH_LORITTA_SUPPORT_ROLE_ID = 761586798971322370L
 
+    const val OTHER_BOTS_CHANNEL_ID = 761956906368892958L
+
+    const val SPARKLY_POWER_INVITE_CODE = "https://discord.gg/sparklypower"
+
     val URL_PATTERN = Pattern.compile("[-a-zA-Z0-9@:%._+~#=]{2,256}\\.[A-z]{2,7}\\b([-a-zA-Z0-9@:%_+.~#?&/=]*)")
 }
