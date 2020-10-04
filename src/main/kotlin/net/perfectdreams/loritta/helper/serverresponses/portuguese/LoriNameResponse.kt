@@ -7,6 +7,7 @@ import net.perfectdreams.loritta.helper.utils.Emotes
 import java.util.regex.Pattern
 
 class LoriNameResponse: RegExResponse() {
+    override val priority = -2000
 
     init {
         patterns.add("lorri|lorita".toPattern(Pattern.CASE_INSENSITIVE))
