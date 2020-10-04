@@ -22,10 +22,11 @@ class ProfileBackgroundResponse : RegExResponse() {
             ),
             LorittaReply(
                 "**Para mudar o design do seu perfil:** <https://loritta.website/user/@me/dashboard/backgrounds>",
-                Emotes.LORI_PAC
+                mentionUser = false
             ),
             LorittaReply(
-                "**Para comprar novas imagens de fundo e designs de perfil:** <https://loritta.website/user/@me/dashboard/daily-shop>"
+                "**Para comprar novas imagens de fundo e designs de perfil:** <https://loritta.website/user/@me/dashboard/daily-shop>",
+                    mentionUser = false
             )
         )
 }
