@@ -78,8 +78,11 @@ class LorittaHelper(val config: LorittaHelperConfig) {
     suspend fun update() {
         var archiveDownloadUrl: String? = null
 
-        for (i in 0 until 5) {
+        for (i in 0 until 10) {
+            delay(10_000)
+
             val response = http.get<String>("https://api.github.com/repos/LorittaBot/LorittaHelper/actions/artifacts") {
+                header("Authorization", "token ${config.githubToken}")
                 header("Accept", "application/vnd.github.v3+json")
             }
 
@@ -108,7 +111,6 @@ class LorittaHelper(val config: LorittaHelperConfig) {
             } else {
                 println("Doesn't seem to be a fresh update... waiting a few seconds... Checks: $i Created At: $i; Now: $now")
             }
-            delay(5_000)
         }
 
         val response2 = http.get<HttpResponse>(archiveDownloadUrl ?: throw RuntimeException("Missing Archive Download URL!")) {
