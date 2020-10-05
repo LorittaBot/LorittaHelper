@@ -37,12 +37,16 @@ abstract class FAQEmbedUpdater(val m: LorittaHelper, val jda: JDA) {
     fun start() = m.launch {
         while (true) {
             try {
+                logger.info { "Updating FAQ Embeds in $channelId" }
+
                 val channel = jda.getGuildById(Constants.SUPPORT_SERVER_ID)
                     ?.getTextChannelById(channelId)
 
                 if (channel != null) {
                     val allMessagesInTheChannel = channel.history.retrieveAllMessages()
                         .sortedBy { it.timeCreated }
+
+                    logger.info { "There are ${allMessagesInTheChannel.size} messages in $channelId" }
 
                     val selfMessages = allMessagesInTheChannel.filter { it.author.idLong == jda.selfUser.idLong }
                     val otherMessages = allMessagesInTheChannel - selfMessages
@@ -109,6 +113,8 @@ abstract class FAQEmbedUpdater(val m: LorittaHelper, val jda: JDA) {
                                 .queue()
                         }
                     }
+
+                    logger.info { "Finished updating the messages!" }
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
