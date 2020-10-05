@@ -20,7 +20,7 @@ abstract class FAQEmbedUpdater(val m: LorittaHelper, val jda: JDA) {
         // Group 1 = Emoji
         // Group 2 == OwO whats this
         // Also matches **Emoji | OwO whats this**
-        val regex = Regex("(?:\\*\\*)?([A-z0-9<>: ]+)(?:\\*\\*)?\\|(?:\\*\\*)?(.+)\\*\\*")
+        val regex = Regex("(?:\\*\\*)?(.+?)(?:\\*\\*)?\\|(?:\\*\\*)?(.+)\\*\\*")
 
         private val logger = KotlinLogging.logger {}
     }
