@@ -10,6 +10,7 @@ import java.util.regex.Pattern
  * Typing my name wrong is VERY usual, and this response reminds people about it.
  */
 class LoriNameResponse: RegExResponse() {
+    override val priority = -2000
 
     init {
         patterns.add("lorri|lorita".toPattern(Pattern.CASE_INSENSITIVE))
