@@ -7,8 +7,8 @@ import net.perfectdreams.loritta.helper.utils.Emotes
 import java.util.regex.Pattern
 
 /**
- * No, i don't have any brothers or sisters, and she don't will have one until
- * we feel that we need one more bot
+ * No, Loritta doesn't have any brothers or sisters, and she don't will have one until
+ * we feel that we need one more bot.
  */
 class LoriBrothersResponse : RegExResponse() {
     override val priority: Int
