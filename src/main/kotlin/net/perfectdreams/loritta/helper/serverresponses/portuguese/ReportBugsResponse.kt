@@ -5,6 +5,10 @@ import net.perfectdreams.loritta.api.messages.LorittaReply
 import net.perfectdreams.loritta.helper.serverresponses.RegExResponse
 import java.util.regex.Pattern
 
+/**
+ * If you found a bug, you should report it!
+ * This response teaches you how to do that on the finest way.
+ */
 class ReportBugsResponse : RegExResponse() {
     init {
         patterns.add("como|onde".toPattern(Pattern.CASE_INSENSITIVE))

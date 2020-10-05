@@ -6,6 +6,10 @@ import net.perfectdreams.loritta.helper.serverresponses.RegExResponse
 import net.perfectdreams.loritta.helper.utils.Emotes
 import java.util.regex.Pattern
 
+/**
+ * Replies to questions about ship customization
+ * on Loritta's website
+ */
 class ValorShipResponse : RegExResponse() {
     init {
         patterns.add("alter|muda|mudo|paga|pago|suborn|manipul|aument".toPattern(Pattern.CASE_INSENSITIVE))

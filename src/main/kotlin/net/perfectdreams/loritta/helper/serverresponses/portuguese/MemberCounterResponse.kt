@@ -6,6 +6,10 @@ import net.perfectdreams.loritta.helper.serverresponses.RegExResponse
 import net.perfectdreams.loritta.helper.utils.Emotes
 import java.util.regex.Pattern
 
+/**
+ * Just a simple guide to enable the members counter in your
+ * discord server
+ */
 class MemberCounterResponse : RegExResponse() {
     init {
         patterns.add("ativ|coloc|adicio|tem".toPattern(Pattern.CASE_INSENSITIVE))

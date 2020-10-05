@@ -6,6 +6,9 @@ import net.perfectdreams.loritta.helper.serverresponses.RegExResponse
 import net.perfectdreams.loritta.helper.utils.Emotes
 import java.util.regex.Pattern
 
+/**
+ * Typing my name wrong is VERY usual, and this response reminds people about it.
+ */
 class LoriNameResponse: RegExResponse() {
 
     init {

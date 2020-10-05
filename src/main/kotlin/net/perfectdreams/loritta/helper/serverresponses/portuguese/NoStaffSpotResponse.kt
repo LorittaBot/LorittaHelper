@@ -5,6 +5,10 @@ import net.perfectdreams.loritta.api.messages.LorittaReply
 import net.perfectdreams.loritta.helper.serverresponses.RegExResponse
 import java.util.regex.Pattern
 
+/**
+ * People always want to be one of my bodyguards...
+ * But currently we're out of slots!
+ */
 class NoStaffSpotResponse : RegExResponse() {
     init {
         patterns.add("como|tem".toPattern(Pattern.CASE_INSENSITIVE))

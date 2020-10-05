@@ -6,6 +6,10 @@ import net.perfectdreams.loritta.helper.serverresponses.RegExResponse
 import net.perfectdreams.loritta.helper.utils.Emotes
 import java.util.regex.Pattern
 
+/**
+ * Response when user asks how to add Loritta
+ * to their guilds
+ */
 class AddLoriResponse : RegExResponse() {
     override val priority: Int
         get() = -998

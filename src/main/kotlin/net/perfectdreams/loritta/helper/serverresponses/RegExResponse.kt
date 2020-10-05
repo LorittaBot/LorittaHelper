@@ -2,6 +2,10 @@ package net.perfectdreams.loritta.helper.serverresponses
 
 import java.util.regex.Pattern
 
+/**
+ * Represents a Helper's response that uses regex for indetification
+ * If the regex matches with the sent message, the response from [getResponse] will be sent
+ */
 abstract class RegExResponse : LorittaResponse {
     companion object {
         const val WHERE_IT_IS = "como|onde|qual|existe|tem( )?jeito|ajuda|quero|queria"

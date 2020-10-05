@@ -7,6 +7,10 @@ import net.perfectdreams.loritta.helper.utils.Constants
 import net.perfectdreams.loritta.helper.utils.Emotes
 import java.util.regex.Pattern
 
+/**
+ * Response when people don`t know how to solve
+ * a problem and need help with anything, telling them to mention the support
+ */
 class HelpMeResponse : RegExResponse() {
     override val priority: Int
         get() = -1000

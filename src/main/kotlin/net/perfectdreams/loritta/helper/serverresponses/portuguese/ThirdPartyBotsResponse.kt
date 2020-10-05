@@ -7,6 +7,10 @@ import net.perfectdreams.loritta.helper.utils.Constants.OTHER_BOTS_CHANNEL_ID
 import net.perfectdreams.loritta.helper.utils.Emotes
 import java.util.regex.Pattern
 
+/**
+ * We don't help people with third party bots, and some people don't understand that,
+ * so to keep things clean, we recommend you to go to the bot's support server
+ */
 class ThirdPartyBotsResponse: RegExResponse() {
 
     init {

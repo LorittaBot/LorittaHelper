@@ -6,6 +6,10 @@ import net.perfectdreams.loritta.helper.serverresponses.RegExResponse
 import net.perfectdreams.loritta.helper.utils.Emotes
 import java.util.regex.Pattern
 
+/**
+ * If you lost your account, we do **NOT** transfer your data to your
+ * new account.
+ */
 class LostAccountResponse : RegExResponse() {
     init {
         patterns.add("perdi".toPattern(Pattern.CASE_INSENSITIVE))

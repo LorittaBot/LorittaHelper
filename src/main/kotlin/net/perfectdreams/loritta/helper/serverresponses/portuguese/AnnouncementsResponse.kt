@@ -6,6 +6,10 @@ import net.perfectdreams.loritta.helper.serverresponses.RegExResponse
 import net.perfectdreams.loritta.helper.utils.Emotes
 import java.util.regex.Pattern.CASE_INSENSITIVE
 
+/**
+ * Response when people ask how to do an announcement with
+ * Loritta (usually using the private channel)
+ */
 class AnnouncementsResponse: RegExResponse() {
 
     init {

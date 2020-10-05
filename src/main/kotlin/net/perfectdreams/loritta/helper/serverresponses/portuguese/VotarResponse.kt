@@ -6,6 +6,10 @@ import net.perfectdreams.loritta.helper.serverresponses.RegExResponse
 import net.perfectdreams.loritta.helper.utils.Emotes
 import java.util.regex.Pattern
 
+/**
+ * Voting on me results in rewards, that's why people always want to know how
+ * to vote!
+ */
 class VotarResponse : RegExResponse() {
     init {
         patterns.add(WHERE_IT_IS.toPattern(Pattern.CASE_INSENSITIVE))

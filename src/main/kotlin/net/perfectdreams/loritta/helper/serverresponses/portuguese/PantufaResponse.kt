@@ -6,6 +6,10 @@ import net.perfectdreams.loritta.helper.serverresponses.RegExResponse
 import net.perfectdreams.loritta.helper.utils.Emotes
 import java.util.regex.Pattern
 
+/**
+ * Some people don't know what Pantufa's meaning,
+ * and this response will explain it.
+ */
 class PantufaResponse : RegExResponse() {
     init {
         patterns.add("como|dá|da|posso|que".toPattern(Pattern.CASE_INSENSITIVE))

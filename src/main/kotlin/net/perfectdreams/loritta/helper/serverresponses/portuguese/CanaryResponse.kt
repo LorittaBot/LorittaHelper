@@ -6,6 +6,10 @@ import net.perfectdreams.loritta.helper.serverresponses.RegExResponse
 import net.perfectdreams.loritta.helper.utils.Emotes
 import java.util.regex.Pattern
 
+/**
+ * Response when people talk about Loritta Canary
+ * (canary/experimental) version of Loritta
+ */
 class CanaryResponse : RegExResponse() {
     init {
         patterns.add("como|dá|da|posso|que|manda|quantos".toPattern(Pattern.CASE_INSENSITIVE))
