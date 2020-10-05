@@ -6,6 +6,9 @@ import net.perfectdreams.loritta.helper.serverresponses.RegExResponse
 import net.perfectdreams.loritta.helper.utils.Emotes
 import java.util.regex.Pattern
 
+/**
+ * Replies to people wanting to know about StarBoard system
+ */
 class StarboardResponse : RegExResponse() {
     init {
         patterns.add("ativ|usa|serve|o( )?que( )?(é|e)".toPattern(Pattern.CASE_INSENSITIVE))

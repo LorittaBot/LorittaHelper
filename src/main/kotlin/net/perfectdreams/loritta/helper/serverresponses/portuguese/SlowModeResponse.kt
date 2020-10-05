@@ -6,6 +6,9 @@ import net.perfectdreams.loritta.helper.serverresponses.RegExResponse
 import net.perfectdreams.loritta.helper.utils.Emotes
 import java.util.regex.Pattern
 
+/**
+ * Replies to people wanting to know about the SlowMode system (+slowmode)
+ */
 class SlowModeResponse : RegExResponse() {
     init {
         patterns.add("ativ|coloc|uso|adicio|add|boto|bota|coloca|adissiona".toPattern(Pattern.CASE_INSENSITIVE))

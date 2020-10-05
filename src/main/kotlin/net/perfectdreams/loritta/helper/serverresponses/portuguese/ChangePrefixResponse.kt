@@ -6,6 +6,10 @@ import net.perfectdreams.loritta.helper.serverresponses.RegExResponse
 import net.perfectdreams.loritta.helper.utils.Emotes
 import java.util.regex.Pattern
 
+/**
+ * Response when people ask how to change Loritta's
+ * current prefix on their guilds
+ */
 class ChangePrefixResponse : RegExResponse() {
     override val priority = -1000
 

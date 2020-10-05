@@ -6,6 +6,10 @@ import net.perfectdreams.loritta.helper.serverresponses.RegExResponse
 import net.perfectdreams.loritta.helper.utils.Emotes
 import java.util.regex.Pattern
 
+/**
+ * Response when people ask about Loritta's badges
+ * (not discord ones)
+ */
 class BadgeResponse : RegExResponse() {
     init {
         patterns.add("como".toPattern(Pattern.CASE_INSENSITIVE))

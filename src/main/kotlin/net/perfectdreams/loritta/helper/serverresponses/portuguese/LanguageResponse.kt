@@ -5,6 +5,10 @@ import net.perfectdreams.loritta.api.messages.LorittaReply
 import net.perfectdreams.loritta.helper.serverresponses.RegExResponse
 import java.util.regex.Pattern
 
+/**
+ * Response when people want to change Loritta's language
+ * on their discord guilds
+ */
 class LanguageResponse : RegExResponse() {
     init {
         patterns.add("troca|change|troco|altero|alterar".toPattern(Pattern.CASE_INSENSITIVE))

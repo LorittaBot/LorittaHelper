@@ -7,6 +7,9 @@ import net.perfectdreams.loritta.helper.utils.Constants
 import net.perfectdreams.loritta.helper.utils.Emotes
 import java.util.regex.Pattern
 
+/**
+ * Replies to people wanting to know about my minecraft's server, SparklyPower!
+ */
 class SparklyPowerInfoResponse: RegExResponse() {
 
     init {

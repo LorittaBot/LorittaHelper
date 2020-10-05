@@ -6,6 +6,10 @@ import net.perfectdreams.loritta.helper.serverresponses.RegExResponse
 import net.perfectdreams.loritta.helper.utils.Emotes
 import java.util.regex.Pattern
 
+/**
+ * Response when people want to know about
+ * Loritta's legacy music system (not currently available)
+ */
 class DJLorittaResponse : RegExResponse() {
     init {
         patterns.add(("$WHERE_IT_IS|loritta").toPattern(Pattern.CASE_INSENSITIVE))

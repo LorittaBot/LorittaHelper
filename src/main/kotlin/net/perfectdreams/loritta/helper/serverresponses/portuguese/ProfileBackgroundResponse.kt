@@ -6,6 +6,9 @@ import net.perfectdreams.loritta.helper.serverresponses.RegExResponse
 import net.perfectdreams.loritta.helper.utils.Emotes
 import java.util.regex.Pattern
 
+/**
+ * Response to questions about profile backgrounds
+ */
 class ProfileBackgroundResponse : RegExResponse() {
     init {
         patterns.add(WHERE_IT_IS.toPattern(Pattern.CASE_INSENSITIVE))

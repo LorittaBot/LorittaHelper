@@ -5,6 +5,10 @@ import net.perfectdreams.loritta.api.messages.LorittaReply
 import net.perfectdreams.loritta.helper.serverresponses.RegExResponse
 import java.util.regex.Pattern
 
+/**
+ * Response when people don't know how
+ * to mention a channel
+ */
 class MentionChannelResponse : RegExResponse() {
     init {
         patterns.add("coloco|menciono|mencionar|mention".toPattern(Pattern.CASE_INSENSITIVE))

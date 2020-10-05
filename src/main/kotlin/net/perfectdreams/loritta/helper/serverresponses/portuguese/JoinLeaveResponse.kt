@@ -6,6 +6,10 @@ import net.perfectdreams.loritta.helper.serverresponses.RegExResponse
 import net.perfectdreams.loritta.helper.utils.Emotes
 import java.util.regex.Pattern
 
+/**
+ * Response when people want to know how to enable
+ * the join and leave messages
+ */
 class JoinLeaveResponse : RegExResponse() {
     init {
         patterns.add("ativ|coloc|uso|adicio|add|boto|fasso|faz".toPattern(Pattern.CASE_INSENSITIVE))

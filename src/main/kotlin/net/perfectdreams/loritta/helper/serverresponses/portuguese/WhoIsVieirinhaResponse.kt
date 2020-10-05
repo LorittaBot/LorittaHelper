@@ -6,6 +6,9 @@ import net.perfectdreams.loritta.helper.serverresponses.RegExResponse
 import net.perfectdreams.loritta.helper.utils.Emotes
 import java.util.regex.Pattern
 
+/**
+ * Replies to questions about Vieirinha, the nowadays oracle!
+ */
 class WhoIsVieirinhaResponse : RegExResponse() {
     init {
         patterns.add("quem".toPattern(Pattern.CASE_INSENSITIVE))

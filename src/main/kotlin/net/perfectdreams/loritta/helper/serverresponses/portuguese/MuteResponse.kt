@@ -6,6 +6,9 @@ import net.perfectdreams.loritta.helper.serverresponses.RegExResponse
 import net.perfectdreams.loritta.helper.utils.Emotes
 import java.util.regex.Pattern
 
+/**
+ * Guide to mute and unmute members
+ */
 class MuteResponse : RegExResponse() {
     init {
         patterns.add("como|dá|sistema".toPattern(Pattern.CASE_INSENSITIVE))

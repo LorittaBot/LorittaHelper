@@ -6,6 +6,9 @@ import net.perfectdreams.loritta.helper.serverresponses.RegExResponse
 import net.perfectdreams.loritta.helper.utils.Emotes
 import java.util.regex.Pattern
 
+/**
+ * Replies to questions about our exchange system between GarticBot's coins (garticos) and dreams (A.K.A sonhos)
+ */
 class TransferGarticosResponse : RegExResponse() {
     init {
         patterns.add(WHERE_IT_IS.toPattern(Pattern.CASE_INSENSITIVE))

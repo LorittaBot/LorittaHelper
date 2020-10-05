@@ -28,7 +28,10 @@ import java.util.jar.Attributes
 import java.util.jar.JarFile
 import java.util.zip.ZipInputStream
 
-
+/**
+ * An instance of Loritta Helper, that is initialized at [LorittaHelperLauncher]
+ * With an custom [LorittaHelperConfig]
+ */
 class LorittaHelper(val config: LorittaHelperConfig) {
     companion object {
         val http = HttpClient {

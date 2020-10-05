@@ -6,6 +6,10 @@ import net.perfectdreams.loritta.helper.serverresponses.RegExResponse
 import net.perfectdreams.loritta.helper.utils.Emotes
 import java.util.regex.Pattern
 
+/**
+ * Response when user ask how to add emojis
+ * on a message
+ */
 class AddEmotesOnMessageResponse : RegExResponse() {
     init {
         patterns.add("coloco|menciono|por|coloca".toPattern(Pattern.CASE_INSENSITIVE))

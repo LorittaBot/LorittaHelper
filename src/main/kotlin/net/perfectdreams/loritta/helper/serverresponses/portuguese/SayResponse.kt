@@ -6,6 +6,9 @@ import net.perfectdreams.loritta.helper.serverresponses.RegExResponse
 import net.perfectdreams.loritta.helper.utils.Emotes
 import java.util.regex.Pattern
 
+/**
+ * Replies to people wanting to know how to use the (+say) command
+ */
 class SayResponse : RegExResponse() {
     override val priority: Int
         get() = -998

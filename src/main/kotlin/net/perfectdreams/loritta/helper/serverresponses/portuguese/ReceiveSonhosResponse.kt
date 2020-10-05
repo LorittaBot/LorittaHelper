@@ -6,6 +6,10 @@ import net.perfectdreams.loritta.helper.serverresponses.RegExResponse
 import net.perfectdreams.loritta.helper.utils.Emotes
 import java.util.regex.Pattern
 
+/**
+ * Usually people look for the best ways to earn dreams (A.K.A sonhos),
+ * and that's what this reply explains
+ */
 class ReceiveSonhosResponse : RegExResponse() {
     override val priority = -1
 

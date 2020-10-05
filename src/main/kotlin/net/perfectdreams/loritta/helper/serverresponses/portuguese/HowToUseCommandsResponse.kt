@@ -6,6 +6,9 @@ import net.perfectdreams.loritta.helper.serverresponses.RegExResponse
 import net.perfectdreams.loritta.helper.utils.Emotes
 import java.util.regex.Pattern
 
+/**
+ * Response when people don't know how to use commands
+ */
 class HowToUseCommandsResponse : RegExResponse() {
     override val priority = -999
 

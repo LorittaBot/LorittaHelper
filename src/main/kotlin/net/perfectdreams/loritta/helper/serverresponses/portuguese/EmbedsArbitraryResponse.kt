@@ -6,6 +6,10 @@ import net.perfectdreams.loritta.helper.serverresponses.RegExResponse
 import net.perfectdreams.loritta.helper.utils.Emotes
 import java.util.regex.Pattern
 
+/**
+ * Response that is sent when people want to know
+ * how to do discord embeds system
+ */
 class EmbedsArbitraryResponse : RegExResponse() {
     init {
         patterns.add("faç|fass|faz".toPattern(Pattern.CASE_INSENSITIVE))

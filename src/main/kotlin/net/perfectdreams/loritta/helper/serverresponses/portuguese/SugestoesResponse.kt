@@ -5,6 +5,10 @@ import net.perfectdreams.loritta.api.messages.LorittaReply
 import net.perfectdreams.loritta.helper.serverresponses.RegExResponse
 import java.util.regex.Pattern
 
+/**
+ * Replies to people wanting to know how to send suggestions to be implemented
+ * on me
+ */
 class SugestoesResponse : RegExResponse() {
     init {
         patterns.add("como|onde".toPattern(Pattern.CASE_INSENSITIVE))

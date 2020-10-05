@@ -5,6 +5,10 @@ import net.perfectdreams.loritta.api.messages.LorittaReply
 import net.perfectdreams.loritta.helper.serverresponses.RegExResponse
 import java.util.regex.Pattern
 
+/**
+ * Response to questions about the experience system
+ * and how we count XP in messages
+ */
 class LoriXpResponse : RegExResponse() {
     init {
         patterns.add("ganh(a|o)|sobe|subi|pega|pego|dá|vejo|ver|saber|calcul|quanto|mostr".toPattern(Pattern.CASE_INSENSITIVE))

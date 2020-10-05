@@ -6,6 +6,10 @@ import net.perfectdreams.loritta.helper.serverresponses.RegExResponse
 import net.perfectdreams.loritta.helper.utils.Emotes
 import java.util.regex.Pattern
 
+/**
+ * Response when people want to read about
+ * all Loritta's available commands
+ */
 class CommandsResponse : RegExResponse() {
     init {
         patterns.add("como|onde|saber|cad(e|ê)|qual".toPattern(Pattern.CASE_INSENSITIVE))

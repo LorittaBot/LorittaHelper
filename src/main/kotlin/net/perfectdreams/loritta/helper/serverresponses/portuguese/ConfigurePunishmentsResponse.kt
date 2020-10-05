@@ -6,6 +6,10 @@ import net.perfectdreams.loritta.helper.serverresponses.RegExResponse
 import net.perfectdreams.loritta.helper.utils.Emotes
 import java.util.regex.Pattern
 
+/**
+ * Response when people ask about Loritta's
+ * punishments system
+ */
 class ConfigurePunishmentsResponse : RegExResponse() {
     init {
         patterns.add(WHERE_IT_IS.toPattern(Pattern.CASE_INSENSITIVE))

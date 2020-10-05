@@ -6,6 +6,10 @@ import net.perfectdreams.loritta.helper.serverresponses.RegExResponse
 import net.perfectdreams.loritta.helper.utils.Emotes
 import java.util.regex.Pattern
 
+/**
+ * Loritta can be down sometimes and everytime this happens, the support channel
+ * turns into a complete chaos
+ */
 class LoriOfflineResponse : RegExResponse() {
     override val priority: Int
         get() = -999
