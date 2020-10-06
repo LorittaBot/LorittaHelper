@@ -19,7 +19,7 @@ class LanguageResponse : RegExResponse() {
     override fun getResponse(event: GuildMessageReceivedEvent, message: String) =
             listOf(
                     LorittaReply(
-                            "You can change my language using `+language` and picking the language you want!",
+                            "You can change my language using `+language` and picking the one that you want!",
                             "\uD83D\uDE09"
                     )
             )
