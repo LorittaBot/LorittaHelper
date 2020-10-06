@@ -18,7 +18,7 @@ class ValorShipResponse : RegExResponse() {
 
     override fun getResponse(event: GuildMessageReceivedEvent, message: String) = listOf(
         LorittaReply(
-            "The `+ship` result value is based on the name of the two people who shipped. shippou. By changing your Discord name alterar o seu nome no Discord, the ship value will also change! The value generated is random, and persists until you change your name again.",
+            "The `+ship` result value is based on the name of the two people you shipped. By changing your Discord name, the ship value will also change! The generated value is random, and persists until you change your name again.",
             prefix = "❤️"
         ),
         LorittaReply(

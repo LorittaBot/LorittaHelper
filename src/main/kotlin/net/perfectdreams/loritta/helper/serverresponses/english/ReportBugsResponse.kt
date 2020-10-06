@@ -19,7 +19,7 @@ class ReportBugsResponse : RegExResponse() {
     override fun getResponse(event: GuildMessageReceivedEvent, message: String) =
         listOf(
             LorittaReply(
-                "You can report bugs in our Loritta community server! <#761625835043291146>",
+                "You can report bugs on the official Loritta Community server! <#761625835043291146>",
                 prefix = "🐛"
             )
         )

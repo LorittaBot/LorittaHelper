@@ -38,7 +38,7 @@ class LoriMandarCmdsResponse : RegExResponse() {
                     mentionUser = false
                 ),
                 LorittaReply(
-                    "I didn't respond, I appear as typing but I never send anything? Then something went wrong!",
+                    "I didn't answer, it says that I'am typing but I don't send anything? Then something went wrong!",
                     mentionUser = false
                 ),
                 LorittaReply(

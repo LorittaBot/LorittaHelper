@@ -23,7 +23,7 @@ class LoriBrothersResponse : RegExResponse() {
     override fun getResponse(event: GuildMessageReceivedEvent, message: String) =
             listOf(
                     LorittaReply(
-                        "No, I don't have a brother or sister, I'm an only child and I'm happy that way! That way I don't have to share my stuff with other people.",
+                        "No, I don't have a brother or sister, I'm an only child and I'm happy with that! That way I don't have to share my stuff with other people.",
                                 Emotes.LORI_OWO
                     )
             )
