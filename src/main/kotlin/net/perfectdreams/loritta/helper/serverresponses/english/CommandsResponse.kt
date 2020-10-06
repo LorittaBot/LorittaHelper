@@ -20,7 +20,7 @@ class CommandsResponse : RegExResponse() {
     override fun getResponse(event: GuildMessageReceivedEvent, message: String) =
         listOf(
             LorittaReply(
-                "You can see all my commands in my website! <https://loritta.website/commands>",
+                "You can see all my commands on my website! <https://loritta.website/commands>",
                 Emotes.WUMPUS_KEYBOARD
             )
         )
