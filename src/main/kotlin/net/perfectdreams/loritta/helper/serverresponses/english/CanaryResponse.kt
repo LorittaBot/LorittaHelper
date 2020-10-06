@@ -24,7 +24,7 @@ class CanaryResponse : RegExResponse() {
                 prefix = Emotes.LORI_PAC
             ),
             LorittaReply(
-                "That means new feature go there first, get tested, and then go to my main account! We do it this way to avoid getting experimental and unstable features on my main account.",
+                "That means new features go there first, get tested, and then go to my main account! We do it this way to avoid getting experimental and unstable features on my main account.",
                 mentionUser = false
             ),
             LorittaReply(
