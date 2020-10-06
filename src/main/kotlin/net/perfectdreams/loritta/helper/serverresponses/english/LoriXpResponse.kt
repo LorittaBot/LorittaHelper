@@ -18,7 +18,7 @@ class LoriXpResponse : RegExResponse() {
     override fun getResponse(event: GuildMessageReceivedEvent, message: String) =
             listOf(
                 LorittaReply(
-                    "You can see how Loritta calculates XP in this message: https://discord.com/channels/420626099257475072/761337709720633392/762048853108981810",
+                    "You can see how Loritta calculates XP on this message: https://discord.com/channels/420626099257475072/761337709720633392/762048853108981810",
                     prefix = "<a:lori_yay_wobbly:638040459721310238>"
                 ),
                 LorittaReply(
