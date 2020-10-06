@@ -28,7 +28,7 @@ class EmbedsArbitraryResponse : RegExResponse() {
                 mentionUser = false
             ),
             LorittaReply(
-                "You can also use the same code in `+say`!",
+                "You can also use the same code in other commands like `+say`!",
                 mentionUser = false
             )
         )
