@@ -19,7 +19,7 @@ class TransferGarticosResponse : RegExResponse() {
     override fun getResponse(event: GuildMessageReceivedEvent, message: String) =
         listOf(
             LorittaReply(
-                "You can exchange Garticos for Sonhos using `gb.garticos Sonhos Quantia` in any server with GarticBot!",
+                "You can exchange Garticos for Sonhos using `gb.garticos Sonhos Quantia` in any guild that has GarticBot!",
                 Emotes.WUMPUS_KEYBOARD
             ),
             LorittaReply(
