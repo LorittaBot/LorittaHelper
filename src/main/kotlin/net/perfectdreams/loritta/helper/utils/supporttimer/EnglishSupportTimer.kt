@@ -14,7 +14,7 @@ class EnglishSupportTimer(m: LorittaHelper, jda: JDA) : SupportTimer(m, jda) {
             mentionUser = false
         ),
         LorittaReply(
-            "**If you are going to ask something about Loritta:** Check if your question has already been answered in the <#761337709720633392>! If it isn't there, send your question here and, in the message, mention <@&${Constants.ENGLISH_LORITTA_SUPPORT_ROLE_ID}>, we will try to help you as soon as possible!",
+            "**If you are going to ask something about Loritta:** Check if your question has already been answered in the <#${Constants.ENGLISH_FAQ_CHANNEL_ID}>! If it isn't there, send your question here and, in the message, mention <@&${Constants.ENGLISH_LORITTA_SUPPORT_ROLE_ID}>, we will try to help you as soon as possible!",
             "<:lori_ok:731873534036541500>",
             mentionUser = false
         ),
@@ -29,12 +29,12 @@ class EnglishSupportTimer(m: LorittaHelper, jda: JDA) : SupportTimer(m, jda) {
             mentionUser = false
         ),
         LorittaReply(
-            "**If you are going to ask \"aaaaw, lori's down <:smol_lori_putassa:395010059157110785>\"**: Check out <#761385919479414825> for more information!",
+            "**If you are going to ask \"aaaaw, lori's down <:smol_lori_putassa:395010059157110785>\"**: Check out <#${Constants.ENGLISH_STATUS_CHANNEL_ID}> for more information!",
             "<:smol_lori_putassa:395010059157110785>",
             mentionUser = false
         ),
         LorittaReply(
-            "**If you are going to ask if something was changed/added/removed**: Check out <#420627916028641280> to know!",
+            "**If you are going to ask if something was changed/added/removed**: Check out <#${Constants.ENGLISH_NEWS_CHANNEL_ID}> to know!",
             "<a:lori_dabbing:727888868711334287>",
             mentionUser = false
         )
