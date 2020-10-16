@@ -14,5 +14,5 @@ object Constants {
 
     const val SPARKLY_POWER_INVITE_CODE = "https://discord.gg/sparklypower"
 
-    val URL_PATTERN = Pattern.compile("[-a-zA-Z0-9@:%._+~#=]{2,256}\\.[A-z]{2,7}\\b([-a-zA-Z0-9@:%_+.~#?&/=]*)")
+    val URL_PATTERN : Pattern = Pattern.compile("[-a-zA-Z0-9@:%._+~#=]{2,256}\\.[A-z]{2,7}\\b([-a-zA-Z0-9@:%_+.~#?&/=]*)")
 }

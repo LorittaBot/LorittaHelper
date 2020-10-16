@@ -14,7 +14,7 @@ class PortugueseSupportTimer(m: LorittaHelper, jda: JDA) : SupportTimer(m, jda) 
             mentionUser = false
         ),
         LorittaReply(
-            "**Se for uma dúvida sobre a Loritta:** Veja se a resposta da sua pergunta está no <#574308431029207060>! Caso não esteja lá, envie a sua pergunta aqui e, na mensagem, mencione o <@&${Constants.PORTUGUESE_LORITTA_SUPPORT_ROLE_ID}>, nós iremos tentar te ajudar o mais breve possível!",
+            "**Se for uma dúvida sobre a Loritta:** Veja se a resposta da sua pergunta está no <#761337893951635458>! Caso não esteja lá, envie a sua pergunta aqui e, na mensagem, mencione o <@&${Constants.PORTUGUESE_LORITTA_SUPPORT_ROLE_ID}>, nós iremos tentar te ajudar o mais breve possível!",
             "<:lori_ok:731873534036541500>",
             mentionUser = false
         ),
@@ -24,12 +24,12 @@ class PortugueseSupportTimer(m: LorittaHelper, jda: JDA) : SupportTimer(m, jda) 
             mentionUser = false
         ),
         LorittaReply(
-            "**Se você irá perguntar \"aaaah lori caiu <:smol_lori_putassa:395010059157110785>\":** Veja o <#610094449737072660> e as <#302976807135739916> para mais informações!",
+            "**Se você irá perguntar \"aaaah lori caiu <:smol_lori_putassa:395010059157110785>\":** Veja o <#752294116708319324> e as <#761349260200509460> para mais informações!",
             "<:smol_lori_putassa:395010059157110785>",
             mentionUser = false
         ),
         LorittaReply(
-            "**Se você irá perguntar se algo foi mudado/adicionado/removido:** Veja as <#302976807135739916> para saber!",
+            "**Se você irá perguntar se algo foi mudado/adicionado/removido:** Veja as <#761349260200509460> para saber!",
             "<a:lori_dabbing:727888868711334287>",
             mentionUser = false
         )
