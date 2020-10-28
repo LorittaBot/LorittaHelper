@@ -29,7 +29,7 @@ class PortugueseSupportTimer(m: LorittaHelper, jda: JDA) : SupportTimer(m, jda) 
             mentionUser = false
         ),
         LorittaReply(
-            "**Se você irá perguntar se algo foi mudado/adicionado/removido:** Veja as <#${Constants.PORTUGUESE_NEWS_CHANNEL_ID}> para saber!",
+            "**Se você irá perguntar se algo foi alterado/adicionado/removido:** Veja as <#${Constants.PORTUGUESE_NEWS_CHANNEL_ID}> para saber!",
             "<a:lori_dabbing:727888868711334287>",
             mentionUser = false
         )
