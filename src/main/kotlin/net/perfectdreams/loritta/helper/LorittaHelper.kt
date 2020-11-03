@@ -13,8 +13,10 @@ import net.dv8tion.jda.api.JDABuilder
 import net.dv8tion.jda.api.entities.Activity
 import net.dv8tion.jda.api.requests.GatewayIntent
 import net.perfectdreams.loritta.helper.listeners.MessageListener
+import net.perfectdreams.loritta.helper.network.Databases
 import net.perfectdreams.loritta.helper.utils.LorittaLandRoleSynchronizationTask
 import net.perfectdreams.loritta.helper.utils.config.LorittaHelperConfig
+import net.perfectdreams.loritta.helper.utils.dailyshopwinners.DailyShopWinners
 import net.perfectdreams.loritta.helper.utils.faqembed.FAQEmbedUpdaterEnglish
 import net.perfectdreams.loritta.helper.utils.faqembed.FAQEmbedUpdaterPortuguese
 import net.perfectdreams.loritta.helper.utils.supporttimer.EnglishSupportTimer
@@ -46,21 +48,25 @@ class LorittaHelper(val config: LorittaHelperConfig) {
     // As long we don't do any blocking tasks inside of the executor, Loritta Helper will work fiiiine
     // and will be very lightweight!
     val executor = Executors.newSingleThreadExecutor()
-            .asCoroutineDispatcher()
+        .asCoroutineDispatcher()
 
     val timedTaskExecutor = Executors.newScheduledThreadPool(1)
+    val databases = Databases(this)
 
     fun start() {
         // We only care about GUILD MESSAGES and we don't need to cache any users
         val jda = JDABuilder.createLight(
-                config.token,
-                GatewayIntent.GUILD_MESSAGES
+            config.token,
+            GatewayIntent.GUILD_MESSAGES
         )
-                .addEventListeners(MessageListener(this))
-                .setMemberCachePolicy {
-                    it.roles.isNotEmpty() || it.user.isBot // role sync
-                }
-                .build()
+            .addEventListeners(MessageListener(this))
+            .setMemberCachePolicy {
+                it.roles.isNotEmpty() || it.user.isBot // role sync
+            }
+            .build()
+
+        if (config.lorittaDatabase != null)
+            DailyShopWinners(this, jda).start()
 
         val path = this::class.java.protectionDomain.codeSource.location.path
         val commitHash = try {
@@ -106,11 +112,11 @@ class LorittaHelper(val config: LorittaHelperConfig) {
             logger.debug { response }
 
             val result = Json.parseToJsonElement(response)
-                    .jsonObject
+                .jsonObject
             val artifacts = result["artifacts"]!!.jsonArray
             val artifact =
-                    artifacts.first { it.jsonObject["name"]!!.jsonPrimitive.content == "Loritta Helper (Discord)" }
-                            .jsonObject
+                artifacts.first { it.jsonObject["name"]!!.jsonPrimitive.content == "Loritta Helper (Discord)" }
+                    .jsonObject
 
             val createdAt = artifact["created_at"]!!.jsonPrimitive.content
 
@@ -118,7 +124,7 @@ class LorittaHelper(val config: LorittaHelperConfig) {
             val i = Instant.from(ta)
 
             val now = Instant.now()
-                    .minusMillis(120_000) // 2 minutes
+                .minusMillis(120_000) // 2 minutes
 
             archiveDownloadUrl = artifact["archive_download_url"]!!.jsonPrimitive.content
 
