@@ -16,7 +16,7 @@ class LoriOfflineResponse : RegExResponse() {
 
     init {
         patterns.add("lori|loritta|297153970613387264".toPattern(Pattern.CASE_INSENSITIVE))
-        patterns.add("(off|offline|down|maintenance".toPattern(Pattern.CASE_INSENSITIVE))
+        patterns.add("(off|offline|down|maintenance)".toPattern(Pattern.CASE_INSENSITIVE))
     }
 
     override fun getResponse(event: GuildMessageReceivedEvent, message: String) =
