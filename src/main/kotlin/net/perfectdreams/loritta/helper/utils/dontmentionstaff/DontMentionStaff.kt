@@ -52,6 +52,7 @@ abstract class DontMentionStaff {
                             .setContent(replies.joinToString("\n", transform = { it.build(event) }))
                             .build()
                     ).await()
+                    return
                 }
             }
         }
