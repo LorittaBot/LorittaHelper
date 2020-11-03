@@ -1,4 +1,4 @@
-package net.perfectdreams.loritta.helper.serverresponses.portuguese
+package net.perfectdreams.loritta.helper.serverresponses.english
 
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent
 import net.perfectdreams.loritta.api.messages.LorittaReply
@@ -7,21 +7,23 @@ import net.perfectdreams.loritta.helper.utils.Emotes
 import java.util.regex.Pattern
 
 /**
- * Response when people ask about Loritta's badges
- * (not discord ones)
+ * Response when people want to know how to configure Loritta
+ * on their guilds
  */
-class BadgeResponse : RegExResponse() {
+class ConfigureLoriResponse : RegExResponse() {
+    override val priority: Int
+        get() = -999
+
     init {
-        patterns.add("como".toPattern(Pattern.CASE_INSENSITIVE))
-        patterns.add("ter|cons[e|i]g[o|uir]".toPattern(Pattern.CASE_INSENSITIVE))
-        patterns.add("[í|i]con[e|es]|badg[e|s]|emblema|emblemas".toPattern(Pattern.CASE_INSENSITIVE))
+        patterns.add("configu|panel|dashboard|setting".toPattern(Pattern.CASE_INSENSITIVE))
+        patterns.add("$LORI_NAME|panel|dashboard".toPattern(Pattern.CASE_INSENSITIVE))
         patterns.add("\\?".toPattern(Pattern.CASE_INSENSITIVE))
     }
 
     override fun getResponse(event: GuildMessageReceivedEvent, message: String) =
         listOf(
             LorittaReply(
-                "Veja mais sobre as badges e como você pode ganhá-las em <#761337893951635458>",
+                "To change your server settings, you just have to click here! <https://loritta.website/dashboard>",
                 Emotes.LORI_OWO
             )
         )

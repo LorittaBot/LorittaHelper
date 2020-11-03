@@ -1,4 +1,4 @@
-package net.perfectdreams.loritta.helper.serverresponses.portuguese
+package net.perfectdreams.loritta.helper.serverresponses.english
 
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent
 import net.perfectdreams.loritta.api.messages.LorittaReply
@@ -11,15 +11,15 @@ import java.util.regex.Pattern
  */
 class SendSonhosResponse : RegExResponse() {
     init {
-        patterns.add(WHERE_IT_IS_PT.toPattern(Pattern.CASE_INSENSITIVE))
-        patterns.add("doa|paga|envia|envio|dar|dou|dá".toPattern(Pattern.CASE_INSENSITIVE))
-        patterns.add("sonhos".toPattern(Pattern.CASE_INSENSITIVE))
+        patterns.add(WHERE_IT_IS_EN.toPattern(Pattern.CASE_INSENSITIVE))
+        patterns.add("give|pay|send|donate".toPattern(Pattern.CASE_INSENSITIVE))
+        patterns.add("sonhos|money|dreams".toPattern(Pattern.CASE_INSENSITIVE))
     }
 
     override fun getResponse(event: GuildMessageReceivedEvent, message: String) =
         listOf(
             LorittaReply(
-                "Você pode enviar sonhos para uma pessoa utilizando `+pay @Usuário QuantidadeDeSonhos`",
+                "You can send someone Sonhos using `+pay @user SonhosAmount`",
                 Emotes.LORI_PAC
             )
         )

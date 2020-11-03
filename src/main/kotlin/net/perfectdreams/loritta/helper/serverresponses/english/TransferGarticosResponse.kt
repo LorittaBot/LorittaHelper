@@ -1,4 +1,4 @@
-package net.perfectdreams.loritta.helper.serverresponses.portuguese
+package net.perfectdreams.loritta.helper.serverresponses.english
 
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent
 import net.perfectdreams.loritta.api.messages.LorittaReply
@@ -11,19 +11,19 @@ import java.util.regex.Pattern
  */
 class TransferGarticosResponse : RegExResponse() {
     init {
-        patterns.add(WHERE_IT_IS_PT.toPattern(Pattern.CASE_INSENSITIVE))
-        patterns.add("pass|transf|troc|funciona".toPattern(Pattern.CASE_INSENSITIVE))
-        patterns.add("gartic".toPattern(Pattern.CASE_INSENSITIVE))
+        patterns.add(WHERE_IT_IS_EN.toPattern(Pattern.CASE_INSENSITIVE))
+        patterns.add("transfer|exchange|pass|get|work".toPattern(Pattern.CASE_INSENSITIVE))
+        patterns.add("garticos|gartic".toPattern(Pattern.CASE_INSENSITIVE))
     }
 
     override fun getResponse(event: GuildMessageReceivedEvent, message: String) =
         listOf(
             LorittaReply(
-                "Você pode transferir garticos por sonhos utilizando `gb.garticos Sonhos Quantia` em qualquer servidor que possua o GarticBot!",
+                "You can exchange Garticos for Sonhos using `gb.garticos Sonhos Quantia` in any guild that has GarticBot!",
                 Emotes.WUMPUS_KEYBOARD
             ),
             LorittaReply(
-                "Para mais informações, entre no servidor do Gartic! Você pode encontrar o convite em <#761956906368892958>",
+                "For more information, join Gartic's server! You can find the invite in <#761956906368892958>",
                 Emotes.LORI_OWO
             )
         )

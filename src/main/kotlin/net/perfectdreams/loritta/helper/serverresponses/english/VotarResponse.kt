@@ -1,4 +1,4 @@
-package net.perfectdreams.loritta.helper.serverresponses.portuguese
+package net.perfectdreams.loritta.helper.serverresponses.english
 
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent
 import net.perfectdreams.loritta.api.messages.LorittaReply
@@ -12,14 +12,14 @@ import java.util.regex.Pattern
  */
 class VotarResponse : RegExResponse() {
     init {
-        patterns.add(WHERE_IT_IS_PT.toPattern(Pattern.CASE_INSENSITIVE))
-        patterns.add("vota|voto".toPattern(Pattern.CASE_INSENSITIVE))
+        patterns.add(WHERE_IT_IS_EN.toPattern(Pattern.CASE_INSENSITIVE))
+        patterns.add("vote|voting|discord bot list|dbl".toPattern(Pattern.CASE_INSENSITIVE))
         patterns.add(LORI_NAME.toPattern(Pattern.CASE_INSENSITIVE))
     }
 
     override fun getResponse(event: GuildMessageReceivedEvent, message: String) = listOf(
         LorittaReply(
-            "Obrigada por querer votar em mim! Votar me ajuda a crescer e te recompensa com sonhos! Para ver o link, use `+dbl`!",
+            "Thanks for wanting to vote for me! It helps me grow and rewards you with Sonhos! To see the link, use `+dbl`!",
             Emotes.LORI_OWO
         )
     )

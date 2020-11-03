@@ -1,4 +1,4 @@
-package net.perfectdreams.loritta.helper.serverresponses.portuguese
+package net.perfectdreams.loritta.helper.serverresponses.english
 
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent
 import net.perfectdreams.loritta.api.messages.LorittaReply
@@ -12,31 +12,31 @@ import java.util.regex.Pattern
  */
 class ConfigurePunishmentsResponse : RegExResponse() {
     init {
-        patterns.add(WHERE_IT_IS_PT.toPattern(Pattern.CASE_INSENSITIVE))
-        patterns.add("avisar|falar|enviar".toPattern(Pattern.CASE_INSENSITIVE))
-        patterns.add("punid|banid|kickad|expuls|mutad|silenciad".toPattern(Pattern.CASE_INSENSITIVE))
+        patterns.add(WHERE_IT_IS_EN.toPattern(Pattern.CASE_INSENSITIVE))
+        patterns.add("warn|speak|send|say".toPattern(Pattern.CASE_INSENSITIVE))
+        patterns.add("punish|banned|kicked|muted|silenced|punished".toPattern(Pattern.CASE_INSENSITIVE))
     }
 
     override fun getResponse(event: GuildMessageReceivedEvent, message: String) =
         listOf(
             LorittaReply(
-                "**Ativar as mensagens de punição é bem fácil!**",
+                "**Enabling the punishment messages is very easy!**",
                 prefix = Emotes.LORI_COFFEE
             ),
             LorittaReply(
-                "Vá no painel de administração clicando aqui <https://loritta.website/dashboard> e escolha o servidor que você deseja ativar as mensagens!",
+                "Go to the admin dashboard here <https://loritta.website/dashboard> and pick the server you want to enable the messages on!",
                 mentionUser = false
             ),
             LorittaReply(
-                "Clique em \"Moderação\"",
+                "Click \"Moderation\"",
                 mentionUser = false
             ),
             LorittaReply(
-                "Agora é só configurar do jeito que você queira! <:eu_te_moido:366047906689581085>",
+                "Now you just have to set it up like you want it! <:eu_te_moido:366047906689581085>",
                 mentionUser = false
             ),
             LorittaReply(
-                "(Dica: Você pode criar mensagens diferentes para cada tipo de punição na seção de \"Mensagens específicas para cada punição\"!)",
+                "(Tip: You can make different messages for different kinds of punishments in the \"Specific messages for each punishment\" section!)",
                 prefix = Emotes.LORI_OWO,
                 mentionUser = false
             )

@@ -1,4 +1,4 @@
-package net.perfectdreams.loritta.helper.serverresponses.portuguese
+package net.perfectdreams.loritta.helper.serverresponses.english
 
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent
 import net.perfectdreams.loritta.api.messages.LorittaReply
@@ -13,22 +13,22 @@ class HowToUseCommandsResponse : RegExResponse() {
     override val priority = -999
 
     init {
-        patterns.add(WHERE_IT_IS_PT.toPattern(Pattern.CASE_INSENSITIVE))
-        patterns.add("comando|cmd".toPattern(Pattern.CASE_INSENSITIVE))
+        patterns.add(WHERE_IT_IS_EN.toPattern(Pattern.CASE_INSENSITIVE))
+        patterns.add("command|cmd".toPattern(Pattern.CASE_INSENSITIVE))
         patterns.add(LORI_NAME.toPattern(Pattern.CASE_INSENSITIVE))
     }
 
     override fun getResponse(event: GuildMessageReceivedEvent, message: String) =
         listOf(
             LorittaReply(
-                "Você pode usar meus comandos usando `+comando`, por padrão o meu prefixo é `+` mas em outros servidores o prefixo pode ser diferente!",
+                "You can use my commands using `+command`, default my prefix is `+` but in other servers it might be different!",
                 Emotes.LORI_COFFEE
             ),
             LorittaReply(
-                "Para ver o meu prefixo em qualquer servidor, envie uma mensagem *apenas me mencionando* no chat do seu servidor para ver qual é o meu prefixo!",
+                "To see what my prefix is in any server, send a message *just @pinging me* in the server's chat to see what the prefix is!",
             ),
             LorittaReply(
-                "Veja todos os meus comandos no meu website! <https://loritta.website/commands>",
+                "See all my commands in my website! <https://loritta.website/commands>",
                 Emotes.WUMPUS_KEYBOARD
             )
         )

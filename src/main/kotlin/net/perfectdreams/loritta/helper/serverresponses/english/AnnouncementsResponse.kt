@@ -1,4 +1,4 @@
-package net.perfectdreams.loritta.helper.serverresponses.portuguese
+package net.perfectdreams.loritta.helper.serverresponses.english
 
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent
 import net.perfectdreams.loritta.api.messages.LorittaReply
@@ -13,18 +13,17 @@ import java.util.regex.Pattern.CASE_INSENSITIVE
 class AnnouncementsResponse: RegExResponse() {
 
     init {
-        patterns.add(ACTIVATE_OR_CHANGE_PT.toPattern(CASE_INSENSITIVE))
-        patterns.add("anunci(o|a|ar)|an(ú | u)ncios".toPattern(CASE_INSENSITIVE))
+        patterns.add(ACTIVATE_OR_CHANGE_EN.toPattern(CASE_INSENSITIVE))
+        patterns.add("announc".toPattern(CASE_INSENSITIVE))
     }
 
     override fun getResponse(event: GuildMessageReceivedEvent, message: String): List<LorittaReply> = listOf(
         LorittaReply(
-            message = "Caso você queira fazer um anúncio utilizando a Loritta, você pode usar o `+say` para isto!",
+            message = "If you want to make an announcement using Loritta, you can use `+say` to do it!",
             prefix = Emotes.WUMPUS_KEYBOARD
         ), LorittaReply(
-            message = "Se você estiver procurando uma maneira de anunciar no privado de seus membros, eu não tenho essa opção, pois se encaixa como `Spam` nos Termos de Serviço do discord!",
+            message = "If you're looking for a way to advertise on people's DMs, then I can't help you, because that's considered `Spam` under Discord's Terms of Service!",
             prefix = Emotes.LORI_SOB
         )
     )
-
 }

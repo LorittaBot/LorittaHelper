@@ -1,4 +1,4 @@
-package net.perfectdreams.loritta.helper.serverresponses.portuguese
+package net.perfectdreams.loritta.helper.serverresponses.english
 
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent
 import net.perfectdreams.loritta.api.messages.LorittaReply
@@ -14,29 +14,29 @@ class SayResponse : RegExResponse() {
         get() = -998
 
     init {
-        patterns.add(WHERE_IT_IS_PT.toPattern(Pattern.CASE_INSENSITIVE))
-        patterns.add("(falar|say|enviar|mandar)".toPattern(Pattern.CASE_INSENSITIVE))
-        patterns.add("(mensagem|mensage|texto|palavra|algo)".toPattern(Pattern.CASE_INSENSITIVE))
+        patterns.add(WHERE_IT_IS_EN.toPattern(Pattern.CASE_INSENSITIVE))
+        patterns.add("(speak|say|send)".toPattern(Pattern.CASE_INSENSITIVE))
+        patterns.add("(message|text|word|something|string)".toPattern(Pattern.CASE_INSENSITIVE))
         patterns.add(LORI_NAME.toPattern(Pattern.CASE_INSENSITIVE))
     }
 
     override fun getResponse(event: GuildMessageReceivedEvent, message: String) =
             listOf(
                 LorittaReply(
-                    "Você pode *forçar* que eu fale algo utilizando `+say Sua Mensagem Aqui`",
+                    "You can *force* me to say something using `+say your message here`",
                     prefix = Emotes.LORI_PAC
                 ),
                 LorittaReply(
-                    "Você também pode *escolher* qual canal eu irei mandar a mensagem com `+say #CanalAqui Sua Mensagem Aqui`",
+                    "You can also *pick* what server I'll send the message in with `+say #channel-here your message here`",
                     mentionUser = false
                 ),
                 LorittaReply(
-                    "Mas por favor, não fique fazendo eu falar coisas feias... Se alguém vir reclamar que eu falei algo feio e eu descobrir que foi você que fez, você será banido de usar a Loritta!",
+                    "But please, don't make me say mean things... If someone complains that I said something bad and I find out you did it, you'll be banned from using Loritta!",
                     Emotes.LORI_SOB,
                     mentionUser = false
                 ),
                 LorittaReply(
-                    "(Dica: Se você quiser fazer aquelas mensagens bonitinhas quadradas, use o nosso editor de embeds! <https://embeds.loritta.website/>)",
+                    "(Tip: If you want to make one of those pretty square messages, use our embed editor! <https://embeds.loritta.website/>)",
                     prefix = Emotes.LORI_OWO,
                     mentionUser = false
                 )

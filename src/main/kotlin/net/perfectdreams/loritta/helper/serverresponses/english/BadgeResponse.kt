@@ -1,4 +1,4 @@
-package net.perfectdreams.loritta.helper.serverresponses.portuguese
+package net.perfectdreams.loritta.helper.serverresponses.english
 
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent
 import net.perfectdreams.loritta.api.messages.LorittaReply
@@ -12,16 +12,16 @@ import java.util.regex.Pattern
  */
 class BadgeResponse : RegExResponse() {
     init {
-        patterns.add("como".toPattern(Pattern.CASE_INSENSITIVE))
-        patterns.add("ter|cons[e|i]g[o|uir]".toPattern(Pattern.CASE_INSENSITIVE))
-        patterns.add("[í|i]con[e|es]|badg[e|s]|emblema|emblemas".toPattern(Pattern.CASE_INSENSITIVE))
+        patterns.add("how".toPattern(Pattern.CASE_INSENSITIVE))
+        patterns.add("get|have|add".toPattern(Pattern.CASE_INSENSITIVE))
+        patterns.add("icon|icons|badg[e|es]".toPattern(Pattern.CASE_INSENSITIVE))
         patterns.add("\\?".toPattern(Pattern.CASE_INSENSITIVE))
     }
 
     override fun getResponse(event: GuildMessageReceivedEvent, message: String) =
         listOf(
             LorittaReply(
-                "Veja mais sobre as badges e como você pode ganhá-las em <#761337893951635458>",
+                "Read more about badges and how you can get them in <#761337709720633392>",
                 Emotes.LORI_OWO
             )
         )
