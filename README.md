@@ -1,4 +1,4 @@
-<h1 align="center">🙋‍♀️ Loritta Helper</h1>
+<h1 align="center">🙋‍♀️ Loritta Helper 🙋‍♀️</h1>
 <img height="250" src="https://media.discordapp.net/attachments/297732013006389252/773299252553711667/LoriChibi_4.png" align="right">
 
 The bot that automatically answers **ALMOST** all questions about Loritta on its support server. 
