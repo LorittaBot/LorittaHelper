@@ -12,9 +12,9 @@ import java.util.regex.Pattern
  */
 class ConfigurePunishmentsResponse : RegExResponse() {
     init {
-        patterns.add(WHERE_IT_IS.toPattern(Pattern.CASE_INSENSITIVE))
-        patterns.add("warn|speak|send".toPattern(Pattern.CASE_INSENSITIVE))
-        patterns.add("punish|banned|kicked|muted|silenced".toPattern(Pattern.CASE_INSENSITIVE))
+        patterns.add(WHERE_IT_IS_EN.toPattern(Pattern.CASE_INSENSITIVE))
+        patterns.add("warn|speak|send|say".toPattern(Pattern.CASE_INSENSITIVE))
+        patterns.add("punish|banned|kicked|muted|silenced|punished".toPattern(Pattern.CASE_INSENSITIVE))
     }
 
     override fun getResponse(event: GuildMessageReceivedEvent, message: String) =

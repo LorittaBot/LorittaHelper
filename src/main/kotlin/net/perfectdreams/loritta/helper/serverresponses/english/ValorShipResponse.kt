@@ -12,7 +12,7 @@ import java.util.regex.Pattern
  */
 class ValorShipResponse : RegExResponse() {
     init {
-        patterns.add("change|alter|pay|bribe|set|rise|lower".toPattern(Pattern.CASE_INSENSITIVE))
+        patterns.add("change|alter|pay|bribe|set|rise|lower|make".toPattern(Pattern.CASE_INSENSITIVE))
         patterns.add("(ship)".toPattern(Pattern.CASE_INSENSITIVE))
     }
 

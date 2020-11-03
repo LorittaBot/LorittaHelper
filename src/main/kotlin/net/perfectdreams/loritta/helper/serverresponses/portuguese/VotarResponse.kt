@@ -12,7 +12,7 @@ import java.util.regex.Pattern
  */
 class VotarResponse : RegExResponse() {
     init {
-        patterns.add(WHERE_IT_IS.toPattern(Pattern.CASE_INSENSITIVE))
+        patterns.add(WHERE_IT_IS_PT.toPattern(Pattern.CASE_INSENSITIVE))
         patterns.add("vota|voto".toPattern(Pattern.CASE_INSENSITIVE))
         patterns.add(LORI_NAME.toPattern(Pattern.CASE_INSENSITIVE))
     }

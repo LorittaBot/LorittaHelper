@@ -12,7 +12,7 @@ import java.util.regex.Pattern
  */
 class DJLorittaResponse : RegExResponse() {
     init {
-        patterns.add(("$WHERE_IT_IS|loritta").toPattern(Pattern.CASE_INSENSITIVE))
+        patterns.add(("$WHERE_IT_IS_EN|loritta").toPattern(Pattern.CASE_INSENSITIVE))
         patterns.add("get|play|add|place|listen|enable|put|config|set".toPattern(Pattern.CASE_INSENSITIVE))
         patterns.add("music|song|dj".toPattern(Pattern.CASE_INSENSITIVE))
     }

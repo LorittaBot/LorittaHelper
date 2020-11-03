@@ -13,13 +13,13 @@ import java.util.regex.Pattern.CASE_INSENSITIVE
 class AnnouncementsResponse: RegExResponse() {
 
     init {
-        patterns.add(ACTIVATE_OR_CHANGE.toPattern(CASE_INSENSITIVE))
-        patterns.add("say|announce|announcment".toPattern(CASE_INSENSITIVE))
+        patterns.add(ACTIVATE_OR_CHANGE_EN.toPattern(CASE_INSENSITIVE))
+        patterns.add("announc".toPattern(CASE_INSENSITIVE))
     }
 
     override fun getResponse(event: GuildMessageReceivedEvent, message: String): List<LorittaReply> = listOf(
         LorittaReply(
-            message = "If you want to make an announcment using Loritta, you can use `+say` to do it!",
+            message = "If you want to make an announcement using Loritta, you can use `+say` to do it!",
             prefix = Emotes.WUMPUS_KEYBOARD
         ), LorittaReply(
             message = "If you're looking for a way to advertise on people's DMs, then I can't help you, because that's considered `Spam` under Discord's Terms of Service!",

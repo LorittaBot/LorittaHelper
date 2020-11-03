@@ -8,7 +8,7 @@ import java.util.regex.Pattern
 
 class HowToSeeLorittasSourceCodeResponse : RegExResponse()  {
         init {
-            patterns.add("where|how".toPattern(Pattern.CASE_INSENSITIVE))
+            patterns.add("where|how|what".toPattern(Pattern.CASE_INSENSITIVE))
             patterns.add("see|is|read|get".toPattern(Pattern.CASE_INSENSITIVE))
             patterns.add("code|source|git".toPattern(Pattern.CASE_INSENSITIVE))
             patterns.add("lori|lorri|loritta|lorrita".toPattern(Pattern.CASE_INSENSITIVE))

@@ -12,7 +12,7 @@ import java.util.regex.Pattern
  */
 class ConfigurePunishmentsResponse : RegExResponse() {
     init {
-        patterns.add(WHERE_IT_IS.toPattern(Pattern.CASE_INSENSITIVE))
+        patterns.add(WHERE_IT_IS_PT.toPattern(Pattern.CASE_INSENSITIVE))
         patterns.add("avisar|falar|enviar".toPattern(Pattern.CASE_INSENSITIVE))
         patterns.add("punid|banid|kickad|expuls|mutad|silenciad".toPattern(Pattern.CASE_INSENSITIVE))
     }

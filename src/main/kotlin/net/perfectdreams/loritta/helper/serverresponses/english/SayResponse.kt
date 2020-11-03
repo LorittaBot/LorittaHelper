@@ -14,9 +14,9 @@ class SayResponse : RegExResponse() {
         get() = -998
 
     init {
-        patterns.add(WHERE_IT_IS.toPattern(Pattern.CASE_INSENSITIVE))
+        patterns.add(WHERE_IT_IS_EN.toPattern(Pattern.CASE_INSENSITIVE))
         patterns.add("(speak|say|send)".toPattern(Pattern.CASE_INSENSITIVE))
-        patterns.add("(mensage|text|word|somithing|string)".toPattern(Pattern.CASE_INSENSITIVE))
+        patterns.add("(message|text|word|something|string)".toPattern(Pattern.CASE_INSENSITIVE))
         patterns.add(LORI_NAME.toPattern(Pattern.CASE_INSENSITIVE))
     }
 

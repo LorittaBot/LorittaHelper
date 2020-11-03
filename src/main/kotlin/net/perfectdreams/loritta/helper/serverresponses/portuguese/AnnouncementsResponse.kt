@@ -13,7 +13,7 @@ import java.util.regex.Pattern.CASE_INSENSITIVE
 class AnnouncementsResponse: RegExResponse() {
 
     init {
-        patterns.add(ACTIVATE_OR_CHANGE.toPattern(CASE_INSENSITIVE))
+        patterns.add(ACTIVATE_OR_CHANGE_PT.toPattern(CASE_INSENSITIVE))
         patterns.add("anunci(o|a|ar)|an(ú | u)ncios".toPattern(CASE_INSENSITIVE))
     }
 

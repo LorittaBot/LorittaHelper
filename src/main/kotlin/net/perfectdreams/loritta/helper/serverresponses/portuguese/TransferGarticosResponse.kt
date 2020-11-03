@@ -11,7 +11,7 @@ import java.util.regex.Pattern
  */
 class TransferGarticosResponse : RegExResponse() {
     init {
-        patterns.add(WHERE_IT_IS.toPattern(Pattern.CASE_INSENSITIVE))
+        patterns.add(WHERE_IT_IS_PT.toPattern(Pattern.CASE_INSENSITIVE))
         patterns.add("pass|transf|troc|funciona".toPattern(Pattern.CASE_INSENSITIVE))
         patterns.add("gartic".toPattern(Pattern.CASE_INSENSITIVE))
     }

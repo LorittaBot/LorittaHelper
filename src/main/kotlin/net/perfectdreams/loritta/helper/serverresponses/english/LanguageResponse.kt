@@ -12,7 +12,7 @@ import java.util.regex.Pattern
 class LanguageResponse : RegExResponse() {
     init {
         patterns.add("change|set|put|choose|pick".toPattern(Pattern.CASE_INSENSITIVE))
-        patterns.add("(language|portuguese|english|spanish|en)".toPattern(Pattern.CASE_INSENSITIVE))
+        patterns.add("(language|portuguese|english|spanish)".toPattern(Pattern.CASE_INSENSITIVE))
         patterns.add("\\?".toPattern(Pattern.CASE_INSENSITIVE))
     }
 

@@ -11,8 +11,8 @@ import java.util.regex.Pattern
  */
 class NoStaffSpotResponse : RegExResponse() {
     init {
-        patterns.add("how|have".toPattern(Pattern.CASE_INSENSITIVE))
-        patterns.add("be|become|get".toPattern(Pattern.CASE_INSENSITIVE))
+        patterns.add("how|have|are there".toPattern(Pattern.CASE_INSENSITIVE))
+        patterns.add("be|become|get|slots|spots".toPattern(Pattern.CASE_INSENSITIVE))
         patterns.add("(body(-| )?guard|adm|mod|helper|staff|support|team)".toPattern(Pattern.CASE_INSENSITIVE))
     }
 

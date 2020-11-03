@@ -12,7 +12,7 @@ import java.util.regex.Pattern
  */
 class VotarResponse : RegExResponse() {
     init {
-        patterns.add(WHERE_IT_IS.toPattern(Pattern.CASE_INSENSITIVE))
+        patterns.add(WHERE_IT_IS_EN.toPattern(Pattern.CASE_INSENSITIVE))
         patterns.add("vote|voting|discord bot list|dbl".toPattern(Pattern.CASE_INSENSITIVE))
         patterns.add(LORI_NAME.toPattern(Pattern.CASE_INSENSITIVE))
     }

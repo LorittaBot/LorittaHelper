@@ -15,7 +15,7 @@ class AddLoriResponse : RegExResponse() {
         get() = -998
 
     init {
-        patterns.add("enable|put|use|add|call|invite".toPattern(Pattern.CASE_INSENSITIVE))
+        patterns.add("put|add|call|invite|get".toPattern(Pattern.CASE_INSENSITIVE))
         patterns.add(LORI_NAME.toPattern(Pattern.CASE_INSENSITIVE))
     }
 

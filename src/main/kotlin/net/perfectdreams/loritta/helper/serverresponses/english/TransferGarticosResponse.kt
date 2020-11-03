@@ -11,9 +11,9 @@ import java.util.regex.Pattern
  */
 class TransferGarticosResponse : RegExResponse() {
     init {
-        patterns.add(WHERE_IT_IS.toPattern(Pattern.CASE_INSENSITIVE))
+        patterns.add(WHERE_IT_IS_EN.toPattern(Pattern.CASE_INSENSITIVE))
         patterns.add("transfer|exchange|pass|get|work".toPattern(Pattern.CASE_INSENSITIVE))
-        patterns.add("gartic".toPattern(Pattern.CASE_INSENSITIVE))
+        patterns.add("garticos|gartic".toPattern(Pattern.CASE_INSENSITIVE))
     }
 
     override fun getResponse(event: GuildMessageReceivedEvent, message: String) =

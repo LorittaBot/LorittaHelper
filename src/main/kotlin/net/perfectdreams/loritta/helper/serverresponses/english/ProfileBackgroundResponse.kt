@@ -11,8 +11,8 @@ import java.util.regex.Pattern
  */
 class ProfileBackgroundResponse : RegExResponse() {
     init {
-        patterns.add(WHERE_IT_IS.toPattern(Pattern.CASE_INSENSITIVE))
-        patterns.add(ACTIVATE_OR_CHANGE.toPattern(Pattern.CASE_INSENSITIVE))
+        patterns.add(WHERE_IT_IS_EN.toPattern(Pattern.CASE_INSENSITIVE))
+        patterns.add(ACTIVATE_OR_CHANGE_EN.toPattern(Pattern.CASE_INSENSITIVE))
         patterns.add("banner|background|image|photo|paper|layout|design".toPattern(Pattern.CASE_INSENSITIVE))
         patterns.add("profile|\\?".toPattern(Pattern.CASE_INSENSITIVE))
     }

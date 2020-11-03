@@ -13,7 +13,7 @@ class HowToUseCommandsResponse : RegExResponse() {
     override val priority = -999
 
     init {
-        patterns.add(WHERE_IT_IS.toPattern(Pattern.CASE_INSENSITIVE))
+        patterns.add(WHERE_IT_IS_EN.toPattern(Pattern.CASE_INSENSITIVE))
         patterns.add("command|cmd".toPattern(Pattern.CASE_INSENSITIVE))
         patterns.add(LORI_NAME.toPattern(Pattern.CASE_INSENSITIVE))
     }

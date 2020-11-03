@@ -8,8 +8,10 @@ import java.util.regex.Pattern
  */
 abstract class RegExResponse : LorittaResponse {
     companion object {
-        const val WHERE_IT_IS = "como|onde|qual|existe|tem( )?jeito|ajuda|quero|queria|tem algum"
-        const val ACTIVATE_OR_CHANGE = "pega|pego|coloc|clc|faço|faco|fasso|alter|boto|bota|ativ|troc"
+        const val WHERE_IT_IS_PT = "como|onde|qual|existe|tem( )?jeito|ajuda|quero|queria|tem algum"
+        const val WHERE_IT_IS_EN = "how|where|what|is there|can|help|want|could|would|does"
+        const val ACTIVATE_OR_CHANGE_PT = "pega|pego|coloc|clc|faço|faco|fasso|alter|boto|bota|ativ|troc"
+        const val ACTIVATE_OR_CHANGE_EN = "get|set|do|change|enable|configure|disable"
         const val LORI_NAME = "lori|lorri|297153970613387264"
     }
 

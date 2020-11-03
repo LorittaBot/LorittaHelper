@@ -11,7 +11,7 @@ import java.util.regex.Pattern
  */
 class SendSonhosResponse : RegExResponse() {
     init {
-        patterns.add(WHERE_IT_IS.toPattern(Pattern.CASE_INSENSITIVE))
+        patterns.add(WHERE_IT_IS_PT.toPattern(Pattern.CASE_INSENSITIVE))
         patterns.add("doa|paga|envia|envio|dar|dou|dá".toPattern(Pattern.CASE_INSENSITIVE))
         patterns.add("sonhos".toPattern(Pattern.CASE_INSENSITIVE))
     }
