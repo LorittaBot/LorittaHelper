@@ -12,7 +12,7 @@ import java.util.regex.Pattern
 class LoriXpResponse : RegExResponse() {
     init {
         patterns.add("win|up|get|give|see|calculate|calc|know|how many|show|".toPattern(Pattern.CASE_INSENSITIVE))
-        patterns.add("(experience|xp|level".toPattern(Pattern.CASE_INSENSITIVE))
+        patterns.add("(experience|xp|level)".toPattern(Pattern.CASE_INSENSITIVE))
     }
 
     override fun getResponse(event: GuildMessageReceivedEvent, message: String) =
