@@ -24,6 +24,14 @@ dependencies {
     implementation("com.github.ben-manes.caffeine:caffeine:2.8.5")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.0.0-RC2")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-hocon:1.0.0-RC2")
+
+    // Database
+    implementation("org.postgresql:postgresql:42.2.14")
+    implementation("com.zaxxer:HikariCP:3.4.5")
+    implementation("org.jetbrains.exposed:exposed-core:0.27.1")
+    implementation("org.jetbrains.exposed:exposed-dao:0.27.1")
+    implementation("org.jetbrains.exposed:exposed-jdbc:0.27.1")
+
     implementation("com.github.pemistahl:lingua:v1.1.0-wip-SNAPSHOT")
     testImplementation("org.junit.jupiter:junit-jupiter:5.4.2")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.4.2")
