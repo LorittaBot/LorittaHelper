@@ -6,7 +6,6 @@ import net.dv8tion.jda.api.EmbedBuilder
 import net.dv8tion.jda.api.JDA
 import net.dv8tion.jda.api.entities.MessageEmbed
 import net.perfectdreams.loritta.helper.LorittaHelper
-import net.perfectdreams.loritta.helper.utils.Constants
 import net.perfectdreams.loritta.helper.utils.Emotes
 import net.perfectdreams.loritta.helper.utils.extensions.retrieveAllMessages
 import java.awt.Color
@@ -40,8 +39,7 @@ abstract class FAQEmbedUpdater(val m: LorittaHelper, val jda: JDA) {
             try {
                 logger.info { "Updating FAQ Embeds in $channelId" }
 
-                val channel = jda.getGuildById(Constants.SUPPORT_SERVER_ID)
-                    ?.getTextChannelById(channelId)
+                val channel = jda.getTextChannelById(channelId)
 
                 if (channel != null) {
                     val allMessagesInTheChannel = channel.history.retrieveAllMessages()
