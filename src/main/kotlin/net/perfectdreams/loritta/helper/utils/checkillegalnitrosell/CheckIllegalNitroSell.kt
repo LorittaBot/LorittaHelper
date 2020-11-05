@@ -39,7 +39,7 @@ class CheckIllegalNitroSell {
             val channel = event.jda.getTextChannelById(Constants.PORTUGUESE_STAFF_CHANNEL_ID)
 
             channel?.sendMessage(
-                    "<:lori_ban_hammer:741058240455901254> **|** ${event.author.asMention} tem ${"%.2f".format(predictedCategory.probability * 100).toDouble()}% de estar querendo vender Nitro por Sonhos na mensagem <${event.message.jumpUrl}>! Verifique para mim!!"
+                    "<:lori_ban_hammer:741058240455901254> **|** ${event.author.asMention} tem ${"%.2f".format(predictedCategory.probability * 100).toDouble()}% de estar querendo vender Nitro por Sonhos na mensagem `${event.message.contentRaw}` <${event.message.jumpUrl}>! Verifique para mim!!"
             )?.queue()
         }
     }
