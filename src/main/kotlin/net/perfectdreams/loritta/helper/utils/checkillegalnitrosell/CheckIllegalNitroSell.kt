@@ -35,11 +35,11 @@ class CheckIllegalNitroSell {
         val input = event.message.contentStripped.replace("\n", " ").splitWords().toSet()
         val predictedCategory = nbc.predictWithProbability(input)
 
-        if (predictedCategory?.category == true && predictedCategory.probability >= 0.9) {
+        if (predictedCategory?.category == true && predictedCategory.probability >= 0.8) {
             val channel = event.jda.getTextChannelById(Constants.PORTUGUESE_STAFF_CHANNEL_ID)
 
             channel?.sendMessage(
-                    "<:lori_ban_hammer:741058240455901254> **|** ${event.author.asMention} tem ${predictedCategory.probability * 100}% de estar querendo vender Nitro por Sonhos na mensagem ${event.message.jumpUrl}! Verifique para mim!!"
+                    "<:lori_ban_hammer:741058240455901254> **|** ${event.author.asMention} tem ${"%.2f".format(predictedCategory.probability * 100).toDouble()}% de estar querendo vender Nitro por Sonhos na mensagem <${event.message.jumpUrl}>! Verifique para mim!!"
             )?.queue()
         }
     }
