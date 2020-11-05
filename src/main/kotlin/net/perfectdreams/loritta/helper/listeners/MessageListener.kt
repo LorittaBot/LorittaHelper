@@ -8,6 +8,7 @@ import net.perfectdreams.loritta.helper.LorittaHelper
 import net.perfectdreams.loritta.helper.serverresponses.EnglishResponses
 import net.perfectdreams.loritta.helper.serverresponses.PortugueseResponses
 import net.perfectdreams.loritta.helper.utils.Constants
+import net.perfectdreams.loritta.helper.utils.checkillegalnitrosell.CheckIllegalNitroSell
 import net.perfectdreams.loritta.helper.utils.dontmentionstaff.EnglishDontMentionStaff
 import net.perfectdreams.loritta.helper.utils.dontmentionstaff.PortugueseDontMentionStaff
 import net.perfectdreams.loritta.helper.utils.gotolangchannel.GoToCorrectLanguageChannel
@@ -19,6 +20,7 @@ class MessageListener(val m: LorittaHelper) : ListenerAdapter() {
     )
 
     val goToTheCorrectLanguageChannel = GoToCorrectLanguageChannel(m)
+    val checkIllegalNitroSell = CheckIllegalNitroSell()
 
     override fun onGuildMessageReceived(event: GuildMessageReceivedEvent) {
         super.onGuildMessageReceived(event)
@@ -47,6 +49,10 @@ class MessageListener(val m: LorittaHelper) : ListenerAdapter() {
 
         m.launch {
             goToTheCorrectLanguageChannel.onMessageReceived(event)
+        }
+
+        m.launch {
+            checkIllegalNitroSell.onMessageReceived(event)
         }
 
         m.launch {
