@@ -1,6 +1,7 @@
 package net.perfectdreams.loritta.helper.utils.checkillegalnitrosell
 
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent
+import net.dv8tion.jda.api.utils.MarkdownSanitizer
 import net.perfectdreams.loritta.helper.LorittaHelper
 import net.perfectdreams.loritta.helper.toNaiveBayesClassifier
 import net.perfectdreams.loritta.helper.utils.Constants
@@ -32,7 +33,15 @@ class CheckIllegalNitroSell {
         if (event.author.isBot)
             return
 
-        val input = event.message.contentStripped.replace("\n", " ").splitWords().toSet()
+        val rawContent = event.message.contentRaw
+                .lines()
+                .dropWhile { it.startsWith(">") }
+                .joinToString(" ")
+                .let {
+                    MarkdownSanitizer.sanitize(it)
+                }
+
+        val input = rawContent.splitWords().toSet()
         val predictedCategory = nbc.predictWithProbability(input)
 
         if (predictedCategory?.category == true && predictedCategory.probability >= 0.8) {
