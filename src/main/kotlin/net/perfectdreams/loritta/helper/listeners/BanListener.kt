@@ -30,10 +30,15 @@ class BanListener(val m: LorittaHelper) : ListenerAdapter() {
                 return@launch
             }
 
+            // This is from Loritta, this should be removed later when the feature is removed from Loritta.
+            if (banInfo?.reason == "Banned on LorittaLand (Brazilian Server)" || banInfo?.reason == "Banido na LorittaLand (English Server)")
+                return@launch
+
             val banForReason = "(Relayed Ban / ${event.guild.name}) ${banInfo?.reason}"
             logger.info { "Will relay ${event.user}'s ban with the reason $banForReason" }
 
             jda.guilds.forEach {
+                logger.info { "Checking if ${event.user} is banned in $it..." }
                 val banInfoOnGuild = try {
                     it.retrieveBan(event.user).await()
                 } catch (e: ErrorResponseException) {
