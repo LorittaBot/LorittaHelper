@@ -16,7 +16,7 @@ class BanListener(val m: LorittaHelper) : ListenerAdapter() {
         val jda = event.jda
 
         m.launch {
-            logger.info { "User ${event.user} was banned in ${event.guild}, synchronizing ban!" }
+            logger.info { "User ${event.user} was banned in ${event.guild}, relaying ban!" }
 
             val banInfo = try {
                 event.guild.retrieveBan(event.user).await()
@@ -25,7 +25,12 @@ class BanListener(val m: LorittaHelper) : ListenerAdapter() {
                 null
             }
 
-            val banForReason = "(Synchronized Ban / ${event.guild.name}) ${banInfo?.reason}"
+            if (banInfo?.reason?.startsWith("(Relayed Ban / ") == true) {
+                logger.info { "User ${event.user} was banned in ${event.guild} but it looks like it was a relayed ban, so we are going to just ignore the event..." }
+                return@launch
+            }
+
+            val banForReason = "(Relayed Ban / ${event.guild.name}) ${banInfo?.reason}"
             logger.info { "Will relay ${event.user}'s ban with the reason $banForReason" }
 
             jda.guilds.forEach {
