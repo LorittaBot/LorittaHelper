@@ -1,6 +1,7 @@
 package net.perfectdreams.loritta.helper.listeners
 
 import mu.KotlinLogging
+import net.dv8tion.jda.api.Permission
 import net.dv8tion.jda.api.events.guild.GuildBanEvent
 import net.dv8tion.jda.api.exceptions.ErrorResponseException
 import net.dv8tion.jda.api.hooks.ListenerAdapter
@@ -39,21 +40,25 @@ class BanListener(val m: LorittaHelper) : ListenerAdapter() {
 
             jda.guilds.forEach {
                 logger.info { "Checking if ${event.user} is banned in $it..." }
-                val banInfoOnGuild = try {
-                    it.retrieveBan(event.user).await()
-                } catch (e: ErrorResponseException) {
-                    // Ban does not exist
-                    null
-                }
+                if (!it.selfMember.hasPermission(Permission.BAN_MEMBERS))
+                    logger.warn { "I don't have permission to ban members in $it!" }
+                else {
+                    val banInfoOnGuild = try {
+                        it.retrieveBan(event.user).await()
+                    } catch (e: ErrorResponseException) {
+                        // Ban does not exist
+                        null
+                    }
 
-                // If the banInfoOnGuild is null, then it means that the user is *not* banned on the server!
-                if (banInfoOnGuild == null) {
-                    logger.info { "User ${event.user} is not banned yet in $it! Banning..." }
-                    it.ban(
-                            event.user,
-                            0,
-                            banForReason
-                    ).queue()
+                    // If the banInfoOnGuild is null, then it means that the user is *not* banned on the server!
+                    if (banInfoOnGuild == null) {
+                        logger.info { "User ${event.user} is not banned yet in $it! Banning..." }
+                        it.ban(
+                                event.user,
+                                0,
+                                banForReason
+                        ).queue()
+                    }
                 }
             }
         }
