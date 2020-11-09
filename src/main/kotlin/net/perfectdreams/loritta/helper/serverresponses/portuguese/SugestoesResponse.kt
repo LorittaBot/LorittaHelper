@@ -11,7 +11,7 @@ import java.util.regex.Pattern
  */
 class SugestoesResponse : RegExResponse() {
     init {
-        patterns.add("como|onde".toPattern(Pattern.CASE_INSENSITIVE))
+        patterns.add(WHERE_IT_IS_PT.toPattern(Pattern.CASE_INSENSITIVE))
         patterns.add("sugest(ã|a)o|sugere".toPattern(Pattern.CASE_INSENSITIVE))
     }
 
