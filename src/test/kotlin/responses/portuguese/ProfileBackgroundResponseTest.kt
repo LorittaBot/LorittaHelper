@@ -6,6 +6,7 @@ class ProfileBackgroundResponseTest : PortugueseResponseTestBase(
         "como coloca um plano de fundo?",
         "como fasso para colocar um papel de parede no perfil?",
         "Como troco a foto do +perfil ??",
-        "Como mudo o Wallpaper de fundo do meu perfil?"
+        "Como mudo o Wallpaper de fundo do meu perfil?",
+        "como muda o banner do seu perfil ?"
     )
 )
