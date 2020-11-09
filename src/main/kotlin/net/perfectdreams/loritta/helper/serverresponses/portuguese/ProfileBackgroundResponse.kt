@@ -13,7 +13,7 @@ class ProfileBackgroundResponse : RegExResponse() {
     init {
         patterns.add(WHERE_IT_IS_PT.toPattern(Pattern.CASE_INSENSITIVE))
         patterns.add(ACTIVATE_OR_CHANGE_PT.toPattern(Pattern.CASE_INSENSITIVE))
-        patterns.add("banner|background|imagem|fundo|foto|papel".toPattern(Pattern.CASE_INSENSITIVE))
+        patterns.add("banner|background|imagem|fundo|foto|papel|wall ?paper".toPattern(Pattern.CASE_INSENSITIVE))
         patterns.add("perfil|profile|\\?".toPattern(Pattern.CASE_INSENSITIVE))
     }
 
