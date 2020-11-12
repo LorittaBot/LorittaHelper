@@ -22,7 +22,7 @@ class LoriOfflineResponse : RegExResponse() {
     override fun getResponse(event: GuildMessageReceivedEvent, message: String) =
             listOf(
                     LorittaReply(
-                            "Se a Lori está offline, verifique o canal de <#610094449737072660> e <#593457503250022482> para ver se alguma coisa deu errada com ela! As vezes ela reiniciou e já irá voltar, só seja paciente que, daqui a pouco, já deve estar de volta!",
+                            "Se a Lori está offline, verifique o canal de <#752294116708319324> para ver se alguma coisa deu errada com ela! As vezes ela reiniciou e já irá voltar, só seja paciente que, daqui a pouco, já deve estar de volta!",
                             Emotes.LORI_SOB
                     )
             )
