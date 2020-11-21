@@ -51,7 +51,7 @@ abstract class DontMentionStaff {
                             .setAllowedMentions(listOf(Message.MentionType.USER, Message.MentionType.CHANNEL))
                             .setContent(replies.joinToString("\n", transform = { it.build(event) }))
                             .build()
-                    ).await()
+                    ).reference(event.message).await()
                     return
                 }
             }

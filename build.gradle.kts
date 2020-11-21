@@ -19,7 +19,7 @@ dependencies {
     implementation("ch.qos.logback:logback-classic:1.3.0-alpha5")
     implementation("io.github.microutils:kotlin-logging:1.8.3")
 
-    implementation("net.dv8tion:JDA:4.2.0_207")
+    implementation("net.dv8tion:JDA:4.2.0_221")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.9")
     implementation("com.github.ben-manes.caffeine:caffeine:2.8.5")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.0.0-RC2")

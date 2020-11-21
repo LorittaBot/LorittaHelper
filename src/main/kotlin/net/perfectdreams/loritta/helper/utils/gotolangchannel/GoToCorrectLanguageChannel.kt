@@ -100,7 +100,8 @@ class GoToCorrectLanguageChannel(val m: LorittaHelper) {
                                 )
                                 .setContent(messages.joinToString("\n") { it.build(event) })
                                 .build()
-                        ).queue()
+                        ).reference(event.message)
+                            .queue()
                     }
                 } else {
                     ignoreLanguageCheck.add(event.author.idLong)

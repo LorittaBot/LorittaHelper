@@ -82,7 +82,8 @@ class MessageListener(val m: LorittaHelper) : ListenerAdapter() {
                                     .setAllowedMentions(listOf(Message.MentionType.USER, Message.MentionType.CHANNEL, Message.MentionType.EMOTE))
                                     .setContent(responses.joinToString("\n") { it.build(event) })
                                     .build()
-                    ).queue()
+                    ).reference(event.message)
+                        .queue()
                 return@launch
             }
         }
