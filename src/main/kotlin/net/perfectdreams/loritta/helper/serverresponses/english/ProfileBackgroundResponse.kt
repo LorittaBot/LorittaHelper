@@ -20,11 +20,11 @@ class ProfileBackgroundResponse : RegExResponse() {
     override fun getResponse(event: GuildMessageReceivedEvent, message: String) =
         listOf(
             LorittaReply(
-                "**To change your profile's background:** <https://loritta.website/user/@me/dashboard/profiles>",
+                "**To change your profile's background:** <https://loritta.website/user/@me/dashboard/backgrounds>",
                 Emotes.LORI_PAC
             ),
             LorittaReply(
-                "**To change your profile's design:** <https://loritta.website/user/@me/dashboard/backgrounds>",
+                "**To change your profile's design:** <https://loritta.website/user/@me/dashboard/profiles>",
                 mentionUser = false
             ),
             LorittaReply(
