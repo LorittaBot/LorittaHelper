@@ -13,9 +13,6 @@ jobs:
       uses: gerred/actions/current-time@master
       id: current-time
 
-    - name: Get PR info
-      run: echo ::set-env name=PR::$(echo $GITHUB_REF | awk 'BEGIN { FS = "/" } ; { print $3 }')
-
     - name: Setup Java JDK
       uses: actions/setup-java@v1.4.3
       with:
