@@ -13,8 +13,10 @@ import net.dv8tion.jda.api.JDABuilder
 import net.dv8tion.jda.api.entities.Activity
 import net.dv8tion.jda.api.requests.GatewayIntent
 import net.perfectdreams.loritta.helper.listeners.BanListener
+import net.perfectdreams.loritta.helper.listeners.CheckLoriBannedUsersListener
 import net.perfectdreams.loritta.helper.listeners.MessageListener
 import net.perfectdreams.loritta.helper.network.Databases
+import net.perfectdreams.loritta.helper.utils.checkbannedusers.LorittaBannedRoleTask
 import net.perfectdreams.loritta.helper.utils.LorittaLandRoleSynchronizationTask
 import net.perfectdreams.loritta.helper.utils.config.LorittaHelperConfig
 import net.perfectdreams.loritta.helper.utils.dailyshopwinners.DailyShopWinners
@@ -60,11 +62,13 @@ class LorittaHelper(val config: LorittaHelperConfig) {
         val jda = JDABuilder.createLight(
                 config.token,
                 GatewayIntent.GUILD_MESSAGES,
-                GatewayIntent.GUILD_BANS
+                GatewayIntent.GUILD_BANS,
+                GatewayIntent.GUILD_MEMBERS
         )
                 .addEventListeners(
                         MessageListener(this),
-                        BanListener(this)
+                        BanListener(this),
+                        CheckLoriBannedUsersListener(this)
                 )
                 .setMemberCachePolicy {
                     it.roles.isNotEmpty() || it.user.isBot // role sync
@@ -94,6 +98,7 @@ class LorittaHelper(val config: LorittaHelperConfig) {
         EnglishSupportTimer(this, jda).start()
 
         timedTaskExecutor.scheduleWithFixedDelay(LorittaLandRoleSynchronizationTask(this, jda), 0, 15, TimeUnit.SECONDS)
+        timedTaskExecutor.scheduleWithFixedDelay(LorittaBannedRoleTask(this, jda), 0, 15, TimeUnit.SECONDS)
     }
 
     fun launch(block: suspend CoroutineScope.() -> Unit) = GlobalScope.launch(executor) {
