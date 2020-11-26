@@ -48,7 +48,8 @@ class CheckLoriBannedUsersListener(val m: LorittaHelper): ListenerAdapter() {
                         if (giveBannedRoleIfPossible(message.member!!, guild, bannedRole)) {
                             message.delete().queue()
                         } else {
-                            guild.removeRoleFromMember(message.member!!, bannedRole).queue()
+                            if (message.member!!.roles.contains(bannedRole))
+                                guild.removeRoleFromMember(message.member!!, bannedRole).queue()
                         }
                     }
 
