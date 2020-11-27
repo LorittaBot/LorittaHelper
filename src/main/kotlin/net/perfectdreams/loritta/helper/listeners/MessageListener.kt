@@ -54,7 +54,8 @@ class MessageListener(val m: LorittaHelper) : ListenerAdapter() {
         }
 
         m.launch {
-            generateBanStatusReport.onMessageReceived(event)
+            if (event.message.channel.idLong == 781878469427986452L)
+                generateBanStatusReport.onMessageReceived(event)
         }
 
         m.launch {
@@ -89,7 +90,7 @@ class MessageListener(val m: LorittaHelper) : ListenerAdapter() {
                                     .setContent(responses.joinToString("\n") { it.build(event) })
                                     .build()
                     ).reference(event.message)
-                        .queue()
+                            .queue()
                 return@launch
             }
         }
