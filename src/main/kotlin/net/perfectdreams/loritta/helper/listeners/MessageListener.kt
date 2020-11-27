@@ -11,6 +11,7 @@ import net.perfectdreams.loritta.helper.utils.Constants
 import net.perfectdreams.loritta.helper.utils.checkillegalnitrosell.CheckIllegalNitroSell
 import net.perfectdreams.loritta.helper.utils.dontmentionstaff.EnglishDontMentionStaff
 import net.perfectdreams.loritta.helper.utils.dontmentionstaff.PortugueseDontMentionStaff
+import net.perfectdreams.loritta.helper.utils.generatereport.GenerateBanStatusReport
 import net.perfectdreams.loritta.helper.utils.gotolangchannel.GoToCorrectLanguageChannel
 
 class MessageListener(val m: LorittaHelper) : ListenerAdapter() {
@@ -21,6 +22,7 @@ class MessageListener(val m: LorittaHelper) : ListenerAdapter() {
 
     val goToTheCorrectLanguageChannel = GoToCorrectLanguageChannel(m)
     val checkIllegalNitroSell = CheckIllegalNitroSell()
+    val generateBanStatusReport = GenerateBanStatusReport(m)
 
     override fun onGuildMessageReceived(event: GuildMessageReceivedEvent) {
         super.onGuildMessageReceived(event)
@@ -49,6 +51,10 @@ class MessageListener(val m: LorittaHelper) : ListenerAdapter() {
 
         m.launch {
             goToTheCorrectLanguageChannel.onMessageReceived(event)
+        }
+
+        m.launch {
+            generateBanStatusReport.onMessageReceived(event)
         }
 
         m.launch {
