@@ -35,6 +35,7 @@ class GenerateBanStatusReport(val m: LorittaHelper) {
         }
 
         val responseStuff = """
+⸻⸻⸻⸻⸻⸻⸻⸻⸻
 <:lori_ban_hammer:741058240455901254> **RESULTADO:**
 **ID da pergunta:** `$responseId`
 **Usuário:** `$userId`
