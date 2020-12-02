@@ -63,6 +63,12 @@ class MessageListener(val m: LorittaHelper) : ListenerAdapter() {
         }
 
         m.launch {
+            if (event.message.contentRaw.startsWith("h!broadcast_daily_now") && event.author.idLong == 123170274651668480L) {
+                m.dailyShopWinners?.broadcastDailyShopWinners()
+            }
+        }
+
+        m.launch {
             val channelResponses = when (event.message.channel.idLong) {
                 Constants.PORTUGUESE_SUPPORT_CHANNEL_ID, 547119872568459284L /* open bar */ -> {
                     PortugueseResponses.responses

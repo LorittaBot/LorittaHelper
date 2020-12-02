@@ -16,8 +16,8 @@ import net.perfectdreams.loritta.helper.listeners.BanListener
 import net.perfectdreams.loritta.helper.listeners.CheckLoriBannedUsersListener
 import net.perfectdreams.loritta.helper.listeners.MessageListener
 import net.perfectdreams.loritta.helper.network.Databases
-import net.perfectdreams.loritta.helper.utils.checkbannedusers.LorittaBannedRoleTask
 import net.perfectdreams.loritta.helper.utils.LorittaLandRoleSynchronizationTask
+import net.perfectdreams.loritta.helper.utils.checkbannedusers.LorittaBannedRoleTask
 import net.perfectdreams.loritta.helper.utils.config.LorittaHelperConfig
 import net.perfectdreams.loritta.helper.utils.dailyshopwinners.DailyShopWinners
 import net.perfectdreams.loritta.helper.utils.faqembed.FAQEmbedUpdaterEnglish
@@ -57,6 +57,8 @@ class LorittaHelper(val config: LorittaHelperConfig) {
     val timedTaskExecutor = Executors.newScheduledThreadPool(1)
     val databases = Databases(this)
 
+    var dailyShopWinners: DailyShopWinners? = null
+
     fun start() {
         // We only care about GUILD MESSAGES and we don't need to cache any users
         val jda = JDABuilder.createLight(
@@ -75,8 +77,10 @@ class LorittaHelper(val config: LorittaHelperConfig) {
                 }
                 .build()
 
-        if (config.lorittaDatabase != null)
-            DailyShopWinners(this, jda).start()
+        if (config.lorittaDatabase != null) {
+            dailyShopWinners = DailyShopWinners(this, jda)
+            dailyShopWinners?.start()
+        }
 
         val path = this::class.java.protectionDomain.codeSource.location.path
         val commitHash = try {
