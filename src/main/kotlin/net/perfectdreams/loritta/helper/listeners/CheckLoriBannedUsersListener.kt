@@ -6,7 +6,8 @@ import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent
 import net.dv8tion.jda.api.hooks.ListenerAdapter
 import net.perfectdreams.loritta.helper.LorittaHelper
 import net.perfectdreams.loritta.helper.utils.checkbannedusers.LorittaBannedRoleTask
-import net.perfectdreams.loritta.helper.utils.extensions.isLorittaBanned
+import net.perfectdreams.loritta.helper.utils.extensions.BannedUsers
+import net.perfectdreams.loritta.helper.utils.extensions.getBannedState
 
 class CheckLoriBannedUsersListener(val m: LorittaHelper): ListenerAdapter() {
     private val lorittaGuilds = LorittaBannedRoleTask.lorittaGuilds
@@ -25,14 +26,17 @@ class CheckLoriBannedUsersListener(val m: LorittaHelper): ListenerAdapter() {
 
             if (lorittaGuild != null) {
                 val bannedRole = event.guild.getRoleById(lorittaGuild.lorittaBannedRole)
+                val tempBannedRole = event.guild.getRoleById(lorittaGuild.lorittaTempBannedRole)
 
-                if (bannedRole != null)
-                    giveBannedRoleIfPossible(event.member, event.guild, bannedRole)
+                if (bannedRole != null && tempBannedRole != null)
+                    giveBannedRoleIfPossible(event.member, event.guild, bannedRole, tempBannedRole)
             }
         }
     }
 
     private fun handleMemberIfBanned(message: Message, guild: Guild, channel: GuildChannel, author: User) {
+        val member = message.member ?: return
+
         m.launch {
             // Check if the member is banned from using Loritta
             for (lorittaGuild in lorittaGuilds) {
@@ -43,13 +47,17 @@ class CheckLoriBannedUsersListener(val m: LorittaHelper): ListenerAdapter() {
                         return@launch
 
                     val bannedRole = guild.getRoleById(lorittaGuild.lorittaBannedRole)
+                    val tempBannedRole = guild.getRoleById(lorittaGuild.lorittaTempBannedRole)
 
-                    if (message.member != null && bannedRole != null) {
-                        if (giveBannedRoleIfPossible(message.member!!, guild, bannedRole)) {
+                    if (message.member != null && bannedRole != null && tempBannedRole != null) {
+                        if (giveBannedRoleIfPossible(member, guild, bannedRole, tempBannedRole)) {
                             message.delete().queue()
                         } else {
-                            if (message.member!!.roles.contains(bannedRole))
-                                guild.removeRoleFromMember(message.member!!, bannedRole).queue()
+                            if (member.roles.contains(bannedRole))
+                                guild.removeRoleFromMember(member, bannedRole).queue()
+
+                            if (member.roles.contains(tempBannedRole))
+                                guild.removeRoleFromMember(member, tempBannedRole).queue()
                         }
                     }
 
@@ -59,10 +67,23 @@ class CheckLoriBannedUsersListener(val m: LorittaHelper): ListenerAdapter() {
         }
     }
 
-    private fun giveBannedRoleIfPossible(member: Member, guild: Guild, bannedRole: Role): Boolean {
-        if (member.user.isLorittaBanned(m)) {
-            if (!member.roles.contains(bannedRole))
-                guild.addRoleToMember(member, bannedRole).queue()
+    private fun giveBannedRoleIfPossible(member: Member, guild: Guild, permBanBannedRole: Role, tempBanBannedRole: Role): Boolean {
+        val bannedState = member.user.getBannedState(m)
+
+        if (bannedState != null) {
+            if (bannedState[BannedUsers.expiresAt] != null) {
+                if (member.roles.contains(permBanBannedRole))
+                    guild.removeRoleFromMember(member, permBanBannedRole).queue()
+
+                if (!member.roles.contains(tempBanBannedRole))
+                    guild.addRoleToMember(member, tempBanBannedRole).queue()
+            } else {
+                if (member.roles.contains(tempBanBannedRole))
+                    guild.addRoleToMember(member, tempBanBannedRole).queue()
+
+                if (!member.roles.contains(permBanBannedRole))
+                    guild.addRoleToMember(member, permBanBannedRole).queue()
+            }
             return true
         }
         return false

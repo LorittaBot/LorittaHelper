@@ -11,12 +11,13 @@ import net.perfectdreams.loritta.helper.utils.extensions.isLorittaBanned
 class LorittaBannedRoleTask(val m: LorittaHelper, val jda: JDA) : Runnable {
     companion object {
         val lorittaGuilds = listOf(
-            // Support server
-            LorittaGuild(
-                420626099257475072L,
-                781591507849052200L,
-                listOf(781583967837093928, 781583967837093928)
-            )
+                // Support server
+                LorittaGuild(
+                        420626099257475072L,
+                        781591507849052200L,
+                        785226414474395670L,
+                        listOf(781583967837093928, 781583967837093928)
+                )
         )
 
         val logger = KotlinLogging.logger {}
@@ -69,11 +70,11 @@ class LorittaBannedRoleTask(val m: LorittaHelper, val jda: JDA) : Runnable {
 
             val overrides = channel.rolePermissionOverrides
             if (overrides.find { it.role!! == everyoneRole
-                        && it.denied.contains(Permission.VIEW_CHANNEL) } == null) {
+                            && it.denied.contains(Permission.VIEW_CHANNEL) } == null) {
                 channel.manager.putPermissionOverride(
-                    role,
-                    null,
-                    listOf(Permission.VIEW_CHANNEL)
+                        role,
+                        null,
+                        listOf(Permission.VIEW_CHANNEL)
                 ).queue()
             }
         }
@@ -81,7 +82,8 @@ class LorittaBannedRoleTask(val m: LorittaHelper, val jda: JDA) : Runnable {
 }
 
 class LorittaGuild(
-    val guildId: Long,
-    val lorittaBannedRole: Long,
-    val allowedChannels: List<Long>? = null
+        val guildId: Long,
+        val lorittaBannedRole: Long,
+        val lorittaTempBannedRole: Long,
+        val allowedChannels: List<Long>? = null
 )

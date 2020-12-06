@@ -3,9 +3,7 @@ package net.perfectdreams.loritta.helper.utils.extensions
 import net.dv8tion.jda.api.entities.User
 import net.perfectdreams.loritta.helper.LorittaHelper
 import org.jetbrains.exposed.dao.id.LongIdTable
-import org.jetbrains.exposed.sql.SortOrder
-import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
-import org.jetbrains.exposed.sql.select
+import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.transaction
 
 object BannedUsers : LongIdTable() {
@@ -17,17 +15,26 @@ object BannedUsers : LongIdTable() {
     val bannedBy = long("banned_by").nullable()
 }
 
+fun User.getBannedState(m: LorittaHelper): ResultRow? {
+    return transaction(m.databases.lorittaDatabase) {
+        BannedUsers.select {
+            BannedUsers.userId eq this@getBannedState.idLong and
+                    (BannedUsers.valid eq true) and
+                    (
+                            BannedUsers.expiresAt.isNull()
+                                    or
+                                    (
+                                            BannedUsers.expiresAt.isNotNull() and
+                                                    (BannedUsers.expiresAt greaterEq System.currentTimeMillis()))
+                            )
+
+        }
+                .orderBy(BannedUsers.bannedAt, SortOrder.DESC)
+                .firstOrNull()
+    }
+}
+
 fun User.isLorittaBanned(m: LorittaHelper): Boolean {
-    val bannedState = transaction(m.databases.lorittaDatabase) {
-        BannedUsers.select { BannedUsers.userId eq this@isLorittaBanned.idLong }
-            .orderBy(BannedUsers.bannedAt, SortOrder.DESC)
-            .firstOrNull()
-    } ?: return false
-
-    if (bannedState[BannedUsers.valid]
-        && bannedState[BannedUsers.expiresAt]
-        ?: Long.MAX_VALUE >= System.currentTimeMillis())
-        return true
-
+    getBannedState(m) ?: return true
     return false
 }
