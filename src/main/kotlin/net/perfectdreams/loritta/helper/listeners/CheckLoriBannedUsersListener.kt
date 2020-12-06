@@ -79,7 +79,7 @@ class CheckLoriBannedUsersListener(val m: LorittaHelper): ListenerAdapter() {
                     guild.addRoleToMember(member, tempBanBannedRole).queue()
             } else {
                 if (member.roles.contains(tempBanBannedRole))
-                    guild.addRoleToMember(member, tempBanBannedRole).queue()
+                    guild.removeRoleFromMember(member, tempBanBannedRole).queue()
 
                 if (!member.roles.contains(permBanBannedRole))
                     guild.addRoleToMember(member, permBanBannedRole).queue()
