@@ -1,17 +1,24 @@
 package net.perfectdreams.loritta.helper.listeners
 
+import com.github.benmanes.caffeine.cache.Caffeine
 import mu.KotlinLogging
 import net.dv8tion.jda.api.Permission
 import net.dv8tion.jda.api.events.guild.GuildBanEvent
+import net.dv8tion.jda.api.events.guild.GuildUnbanEvent
 import net.dv8tion.jda.api.exceptions.ErrorResponseException
 import net.dv8tion.jda.api.hooks.ListenerAdapter
 import net.perfectdreams.loritta.helper.LorittaHelper
 import net.perfectdreams.loritta.helper.utils.extensions.await
+import java.util.concurrent.TimeUnit
 
 class BanListener(val m: LorittaHelper) : ListenerAdapter() {
     companion object {
         private val logger = KotlinLogging.logger {}
     }
+
+    private val unbanCache = Caffeine.newBuilder()
+            .expireAfterWrite(15L, TimeUnit.SECONDS)
+            .build<Long, Long>()
 
     override fun onGuildBan(event: GuildBanEvent) {
         val jda = event.jda
@@ -57,6 +64,43 @@ class BanListener(val m: LorittaHelper) : ListenerAdapter() {
                                 event.user,
                                 0,
                                 banForReason
+                        ).queue()
+                    }
+                }
+            }
+        }
+    }
+
+    override fun onGuildUnban(event: GuildUnbanEvent) {
+        val jda = event.jda
+
+        m.launch {
+            logger.info { "User ${event.user} was unbanned in ${event.guild}, relaying unban!" }
+
+            if (unbanCache.getIfPresent(event.user.idLong) != null) {
+                logger.info { "User ${event.user} is on the unban cache! Not relaying unban because this would cause a infinite loop..." }
+                return@launch
+            }
+
+            unbanCache.put(event.user.idLong, System.currentTimeMillis())
+
+            jda.guilds.forEach {
+                logger.info { "Checking if ${event.user} is banned in $it..." }
+                if (!it.selfMember.hasPermission(Permission.BAN_MEMBERS))
+                    logger.warn { "I don't have permission to ban members in $it!" }
+                else {
+                    val banInfoOnGuild = try {
+                        it.retrieveBan(event.user).await()
+                    } catch (e: ErrorResponseException) {
+                        // Ban does not exist
+                        null
+                    }
+
+                    // If the banInfoOnGuild is null, then it means that the user is *not* banned on the server!
+                    if (banInfoOnGuild != null) {
+                        logger.info { "User ${event.user} is banned in $it! Unbanning..." }
+                        it.unban(
+                                event.user
                         ).queue()
                     }
                 }
