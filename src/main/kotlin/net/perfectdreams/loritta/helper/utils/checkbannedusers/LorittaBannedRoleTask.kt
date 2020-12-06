@@ -28,9 +28,10 @@ class LorittaBannedRoleTask(val m: LorittaHelper, val jda: JDA) : Runnable {
             for (lorittaGuild in lorittaGuilds) {
                 val guild = jda.getGuildById(lorittaGuild.guildId) ?: continue
                 val bannedRole = guild.getRoleById(lorittaGuild.lorittaBannedRole)
+                val tempBanRole = guild.getRoleById(lorittaGuild.lorittaTempBannedRole)
 
-                if (bannedRole != null) {
-                    checkBannedMembers(guild, bannedRole)
+                if (bannedRole != null && tempBanRole != null) {
+                    checkBannedMembers(guild, bannedRole, tempBanRole)
                     checkGuildChannels(guild, bannedRole, lorittaGuild.allowedChannels)
                 }
             }
@@ -40,10 +41,10 @@ class LorittaBannedRoleTask(val m: LorittaHelper, val jda: JDA) : Runnable {
     }
 
     // Checks banned members and remove the banned role if they not banned anymore
-    private fun checkBannedMembers(guild: Guild, role: Role) {
+    private fun checkBannedMembers(guild: Guild, permBanRole: Role, tempBanRole: Role) {
         logger.info { "Checking members with loritta-banned role in ${guild.id} guild" }
 
-        val members = guild.getMembersWithRoles(role)
+        val members = guild.getMembersWithRoles(permBanRole)
 
         for (member in members) {
             val isBanned = member.user.isLorittaBanned(m)
@@ -52,7 +53,11 @@ class LorittaBannedRoleTask(val m: LorittaHelper, val jda: JDA) : Runnable {
 
             if (!isBanned) {
                 logger.info { "Removing banned role from ${member.id} because they not banned anymore!" }
-                guild.removeRoleFromMember(member, role).queue()
+                if (member.roles.contains(permBanRole))
+                    guild.removeRoleFromMember(member, permBanRole).queue()
+
+                if (member.roles.contains(tempBanRole))
+                    guild.removeRoleFromMember(member, tempBanRole).queue()
             }
         }
     }

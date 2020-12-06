@@ -27,7 +27,6 @@ fun User.getBannedState(m: LorittaHelper): ResultRow? {
                                             BannedUsers.expiresAt.isNotNull() and
                                                     (BannedUsers.expiresAt greaterEq System.currentTimeMillis()))
                             )
-
         }
                 .orderBy(BannedUsers.bannedAt, SortOrder.DESC)
                 .firstOrNull()
@@ -35,6 +34,6 @@ fun User.getBannedState(m: LorittaHelper): ResultRow? {
 }
 
 fun User.isLorittaBanned(m: LorittaHelper): Boolean {
-    getBannedState(m) ?: return true
-    return false
+    getBannedState(m) ?: return false
+    return true
 }
