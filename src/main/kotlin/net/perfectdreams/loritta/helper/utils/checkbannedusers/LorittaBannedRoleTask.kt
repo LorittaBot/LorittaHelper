@@ -16,7 +16,7 @@ class LorittaBannedRoleTask(val m: LorittaHelper, val jda: JDA) : Runnable {
                         420626099257475072L,
                         781591507849052200L,
                         785226414474395670L,
-                        listOf(781583967837093928, 781583967837093928)
+                        listOf(781583967837093928, 785226629550702623)
                 )
         )
 
