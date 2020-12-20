@@ -1,4 +1,4 @@
-package net.perfectdreams.loritta.helper.utils.generatereport
+package net.perfectdreams.loritta.helper.utils.generatebanstatusreport
 
 import mu.KotlinLogging
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent
