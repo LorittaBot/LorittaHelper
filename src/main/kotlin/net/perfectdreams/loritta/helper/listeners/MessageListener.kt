@@ -40,6 +40,11 @@ class MessageListener(val m: LorittaHelper) : ListenerAdapter() {
                     }
                 }
             }
+
+            m.launch {
+                if (event.message.channel.idLong == 790292619769937940L && event.message.attachments.isNotEmpty())
+                    generateServerReport.onMessageReceived(event)
+            }
             return
         }
 
@@ -58,11 +63,6 @@ class MessageListener(val m: LorittaHelper) : ListenerAdapter() {
         m.launch {
             if (event.message.channel.idLong == 781878469427986452L)
                 generateBanStatusReport.onMessageReceived(event)
-        }
-
-        m.launch {
-            if (event.message.channel.idLong == 790292619769937940L && event.message.attachments.isNotEmpty())
-                generateServerReport.onMessageReceived(event)
         }
 
         m.launch {

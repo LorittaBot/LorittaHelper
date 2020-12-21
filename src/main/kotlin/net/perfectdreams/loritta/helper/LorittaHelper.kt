@@ -15,6 +15,7 @@ import net.dv8tion.jda.api.requests.GatewayIntent
 import net.perfectdreams.loritta.helper.listeners.BanListener
 import net.perfectdreams.loritta.helper.listeners.CheckLoriBannedUsersListener
 import net.perfectdreams.loritta.helper.listeners.MessageListener
+import net.perfectdreams.loritta.helper.listeners.PrivateMessageListener
 import net.perfectdreams.loritta.helper.network.Databases
 import net.perfectdreams.loritta.helper.utils.LorittaLandRoleSynchronizationTask
 import net.perfectdreams.loritta.helper.utils.checkbannedusers.LorittaBannedRoleTask
@@ -63,6 +64,7 @@ class LorittaHelper(val config: LorittaHelperConfig) {
         // We only care about GUILD MESSAGES and we don't need to cache any users
         val jda = JDABuilder.createLight(
                 config.token,
+                GatewayIntent.DIRECT_MESSAGES,
                 GatewayIntent.GUILD_MESSAGES,
                 GatewayIntent.GUILD_BANS,
                 GatewayIntent.GUILD_MEMBERS
@@ -70,7 +72,8 @@ class LorittaHelper(val config: LorittaHelperConfig) {
                 .addEventListeners(
                         MessageListener(this),
                         BanListener(this),
-                        CheckLoriBannedUsersListener(this)
+                        CheckLoriBannedUsersListener(this),
+                        PrivateMessageListener(this)
                 )
                 .setMemberCachePolicy {
                     it.roles.isNotEmpty() || it.user.isBot // role sync
