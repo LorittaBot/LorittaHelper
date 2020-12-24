@@ -54,6 +54,9 @@ class GoToCorrectLanguageChannel(val m: LorittaHelper) {
                     event.message.mentionedChannels.forEach {
                         newMessage = newMessage.replace(it.asMention, "")
                     }
+                    event.message.emotes.forEach {
+                        newMessage = newMessage.replace(it.asMention, "")
+                    }
                     newMessage
                 }
                 .let { stripLinks(it) }
