@@ -11,4 +11,5 @@ object Emotes {
     const val LORI_HEART = "<:lori_heart:640158506049077280>"
     const val LORI_THINKING = "<:lori_thinking:741055999430885437>"
     const val LORI_COFFEE = "<:lori_coffee:727631176432484473>"
+    const val LORI_BAN_HAMMER = "<:lori_ban_hammer:741058240455901254>"
 }
