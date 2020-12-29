@@ -3,7 +3,13 @@ package net.perfectdreams.loritta.helper
 import io.ktor.client.*
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.asCoroutineDispatcher
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.jsonArray
 import kotlinx.serialization.json.jsonObject
@@ -12,6 +18,7 @@ import mu.KotlinLogging
 import net.dv8tion.jda.api.JDABuilder
 import net.dv8tion.jda.api.entities.Activity
 import net.dv8tion.jda.api.requests.GatewayIntent
+import net.perfectdreams.loritta.helper.listeners.ApproveFanArtListener
 import net.perfectdreams.loritta.helper.listeners.BanListener
 import net.perfectdreams.loritta.helper.listeners.CheckLoriBannedUsersListener
 import net.perfectdreams.loritta.helper.listeners.MessageListener
@@ -19,6 +26,7 @@ import net.perfectdreams.loritta.helper.listeners.PrivateMessageListener
 import net.perfectdreams.loritta.helper.network.Databases
 import net.perfectdreams.loritta.helper.utils.LorittaLandRoleSynchronizationTask
 import net.perfectdreams.loritta.helper.utils.checkbannedusers.LorittaBannedRoleTask
+import net.perfectdreams.loritta.helper.utils.config.FanArtsConfig
 import net.perfectdreams.loritta.helper.utils.config.LorittaHelperConfig
 import net.perfectdreams.loritta.helper.utils.dailyshopwinners.DailyShopWinners
 import net.perfectdreams.loritta.helper.utils.faqembed.FAQEmbedUpdaterEnglish
@@ -39,7 +47,7 @@ import java.util.zip.ZipInputStream
  * An instance of Loritta Helper, that is initialized at [LorittaHelperLauncher]
  * With an custom [LorittaHelperConfig]
  */
-class LorittaHelper(val config: LorittaHelperConfig) {
+class LorittaHelper(val config: LorittaHelperConfig, val fanArtsConfig: FanArtsConfig?) {
     companion object {
         val http = HttpClient {
             expectSuccess = false
@@ -67,7 +75,8 @@ class LorittaHelper(val config: LorittaHelperConfig) {
                 GatewayIntent.DIRECT_MESSAGES,
                 GatewayIntent.GUILD_MESSAGES,
                 GatewayIntent.GUILD_BANS,
-                GatewayIntent.GUILD_MEMBERS
+                GatewayIntent.GUILD_MEMBERS,
+                GatewayIntent.GUILD_MESSAGE_REACTIONS
         )
                 .addEventListeners(
                         MessageListener(this),
@@ -75,6 +84,13 @@ class LorittaHelper(val config: LorittaHelperConfig) {
                         CheckLoriBannedUsersListener(this),
                         PrivateMessageListener(this)
                 )
+                .also {
+                    if (fanArtsConfig != null) {
+                        it.addEventListeners(ApproveFanArtListener(this, fanArtsConfig))
+                    } else {
+                        logger.info { "Fan Arts Config is not present, not registering listener..." }
+                    }
+                }
                 .setMemberCachePolicy {
                     it.roles.isNotEmpty() || it.user.isBot // role sync
                 }
