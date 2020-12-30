@@ -18,6 +18,7 @@ import mu.KotlinLogging
 import net.dv8tion.jda.api.JDABuilder
 import net.dv8tion.jda.api.entities.Activity
 import net.dv8tion.jda.api.requests.GatewayIntent
+import net.dv8tion.jda.api.utils.MemberCachePolicy
 import net.perfectdreams.loritta.helper.listeners.ApproveFanArtListener
 import net.perfectdreams.loritta.helper.listeners.BanListener
 import net.perfectdreams.loritta.helper.listeners.CheckLoriBannedUsersListener
@@ -91,6 +92,9 @@ class LorittaHelper(val config: LorittaHelperConfig, val fanArtsConfig: FanArtsC
                         logger.info { "Fan Arts Config is not present, not registering listener..." }
                     }
                 }
+                .setMemberCachePolicy(
+                        MemberCachePolicy.ALL
+                )
                 .build()
 
         if (config.lorittaDatabase != null) {
