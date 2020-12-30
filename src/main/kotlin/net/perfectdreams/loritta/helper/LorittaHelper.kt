@@ -91,9 +91,6 @@ class LorittaHelper(val config: LorittaHelperConfig, val fanArtsConfig: FanArtsC
                         logger.info { "Fan Arts Config is not present, not registering listener..." }
                     }
                 }
-                .setMemberCachePolicy {
-                    it.roles.isNotEmpty() || it.user.isBot // role sync
-                }
                 .build()
 
         if (config.lorittaDatabase != null) {
