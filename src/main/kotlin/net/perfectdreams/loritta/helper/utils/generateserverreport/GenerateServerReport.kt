@@ -3,7 +3,12 @@ package net.perfectdreams.loritta.helper.utils.generateserverreport
 import kotlinx.coroutines.future.await
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.builtins.ListSerializer
-import kotlinx.serialization.json.*
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.json.jsonArray
+import kotlinx.serialization.json.jsonObject
+import kotlinx.serialization.json.jsonPrimitive
+import kotlinx.serialization.json.long
 import mu.KotlinLogging
 import net.dv8tion.jda.api.EmbedBuilder
 import net.dv8tion.jda.api.JDA
@@ -235,6 +240,10 @@ class GenerateServerReport(val m: LorittaHelper) {
             false
         )
 
+        images.firstOrNull()?.let {
+            embed.setImage("https://drive.google.com/uc?export=view&id=$it")
+        }
+
         embed.addFinalConsiderations(items)
 
         communityGuild.getTextChannelById(790308357713559582L)?.sendMessage(
@@ -295,6 +304,10 @@ class GenerateServerReport(val m: LorittaHelper) {
             false
         )
 
+        images.firstOrNull()?.let {
+            embed.setImage("https://drive.google.com/uc?export=view&id=$it")
+        }
+
         embed.addFinalConsiderations(items)
 
         communityGuild.getTextChannelById(790308357713559582L)?.sendMessage(
@@ -354,6 +367,10 @@ class GenerateServerReport(val m: LorittaHelper) {
             images.joinToString("\n") { "https://drive.google.com/file/d/$it/view" },
             false
         )
+
+        images.firstOrNull()?.let {
+            embed.setImage("https://drive.google.com/uc?export=view&id=$it")
+        }
 
         embed.addFinalConsiderations(items)
 
