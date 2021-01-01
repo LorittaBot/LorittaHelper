@@ -19,16 +19,27 @@ class MuteResponse : RegExResponse() {
     override fun getResponse(event: GuildMessageReceivedEvent, message: String) =
         listOf(
             LorittaReply(
-                "Para silenciar um usuário, basta usar `+mute`",
+                "Para silenciar um usuário, basta usar `+mute <usuário> <motivo>`",
                 prefix = "<:lori_pac:503600573741006863>"
             ),
             LorittaReply(
-                "Para tirar o silenciamento de um usuário, basta usar `+unmute`",
+                "Logo em seguida eu irei perguntar o tempo do mute e basta você enviar no chat o tempo no qual você quer que o usuário fique mutado!",
+                prefix = Emotes.LORI_BAN_HAMMER,
                 mentionUser = false
             ),
             LorittaReply(
                 "Ao silenciar, eu irei dar um cargo de `Silenciado` para o usuário!",
                 prefix = Emotes.LORI_OWO,
+                mentionUser = false
+            ),
+            LorittaReply(
+                "Se você silenciou alguém sem querer ou se caso a pessoa se arrependa, para tirar o silenciamento de um usuário, basta usar `+unmute <usuário> <motivo>`",
+                prefix = Emotes.LORI_COFFEE,
+                mentionUser = false
+            ),
+            LorittaReply(
+                "Se caso a pessoa ainda esteja conseguindo falar no chat, talvez alguma permissão do seu servidor ou canal esteja incorreta! Veja essa mensagem, ela também pode te ajudar com problemas no mute: https://discord.com/channels/420626099257475072/761337893951635458/761572286775033886",
+                prefix = "<:lori_what:626942886361038868>",
                 mentionUser = false
             )
         )
