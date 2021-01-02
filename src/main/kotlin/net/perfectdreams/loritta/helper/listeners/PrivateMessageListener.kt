@@ -9,10 +9,25 @@ import net.perfectdreams.loritta.helper.LorittaHelper
 import net.perfectdreams.loritta.helper.utils.generateserverreport.EncryptionUtils
 
 class PrivateMessageListener(val m: LorittaHelper) : ListenerAdapter() {
+    companion object {
+        val VALID_REPORT_TEXTS = listOf(
+                "denuncia",
+                "denúncia",
+                "denunciar",
+                "denúnciar",
+                "report",
+                "reportar",
+                "reporto",
+                "formulário",
+                "formulario",
+                "form"
+        )
+    }
+
     override fun onPrivateMessageReceived(event: PrivateMessageReceivedEvent) {
         super.onPrivateMessageReceived(event)
 
-        if (event.message.contentRaw.equals("denuncia", true) || event.message.contentRaw.equals("denúncia", true)) {
+        if (VALID_REPORT_TEXTS.any { event.message.contentRaw.equals(it, true) }) {
             val json = buildJsonObject {
                 put("user", event.author.idLong)
                 put("time", System.currentTimeMillis())
