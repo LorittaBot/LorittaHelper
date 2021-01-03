@@ -12,32 +12,30 @@ import java.util.regex.Pattern
  */
 class AboutMeResponse : RegExResponse() {
     init {
-        patterns.add(WHERE_IT_IS_PT.toPattern(Pattern.CASE_INSENSITIVE))
-        patterns.add("sobre ?mim|biografia|(mensagem|descri(ç|c|ss?)[ãa]o).*(profile|perfil)".toPattern(Pattern.CASE_INSENSITIVE))
+        patterns.add("quero|onde|como".toPattern(Pattern.CASE_INSENSITIVE))
+        patterns.add("eu|".toPattern(Pattern.CASE_INSENSITIVE))
+        patterns.add("((alter|mud|faç|troc)(a|o|ar))( p(ra|ara) (alter|mud)(a|o|ar)|)".toPattern(Pattern.CASE_INSENSITIVE))
+        patterns.add("a|o|m(eu|inha)|".toPattern(Pattern.CASE_INSENSITIVE))
+        patterns.add("descri(c|ç(a|ã)o)|biografia|sobre.mim|mensagem".toPattern(Pattern.CASE_INSENSITIVE))
+        patterns.add("d(e|o|a)|".toPattern(Pattern.CASE_INSENSITIVE))
+        patterns.add("p(erfil|rofile)|lo(rri|ri|)(ta|tta)|".toPattern(Pattern.CASE_INSENSITIVE))
     }
 
     override fun getResponse(event: GuildMessageReceivedEvent, message: String) =
         listOf(
             LorittaReply(
-                "**Ativar as mensagens de punição é bem fácil!**",
+                "Você pode alterar a mensagem que fica no seu perfil usando o comando `+sobremim`, para usar ele é muitooo simples!",
                 prefix = Emotes.LORI_COFFEE
             ),
             LorittaReply(
-                "Vá no painel de administração clicando aqui <https://loritta.website/dashboard> e escolha o servidor que você deseja ativar as mensagens!",
-                mentionUser = false
+                "Basta digitar `+sobremim <texto>` e pronto! O seu texto estará mudado e pronto para agradar os seus olhos!",
+                mentionUser = false,
+                prefix = Emotes.LORI_PAT
             ),
             LorittaReply(
-                "Clique em \"Moderação\"",
-                mentionUser = false
-            ),
-            LorittaReply(
-                "Agora é só configurar do jeito que você queira! <:eu_te_moido:366047906689581085>",
-                mentionUser = false
-            ),
-            LorittaReply(
-                "(Dica: Você pode criar mensagens diferentes para cada tipo de punição na seção de \"Mensagens específicas para cada punição\"!)",
-                prefix = Emotes.LORI_OWO,
-                mentionUser = false
+                "Mas tome cuidado! Eu não gosto de usuários que ficam colocando bobagens como (NSFW e outras coisas) no Sobre mim, você pode ser punido se fizer isto!",
+                mentionUser = false,
+                prefix = Emotes.LORI_BAN_HAMMER
             )
         )
 }
