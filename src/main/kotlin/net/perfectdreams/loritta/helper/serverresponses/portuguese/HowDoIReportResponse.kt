@@ -10,8 +10,8 @@ class HowDoIReportResponse: RegExResponse() {
 
     init {
         patterns.add("onde|como".toPattern(Pattern.CASE_INSENSITIVE))
-        patterns.add("posso|".toPattern(Pattern.CASE_INSENSITIVE))
-        patterns.add("den(ú|u)nci(ar|o)".toPattern(Pattern.CASE_INSENSITIVE))
+        patterns.add("posso|fazer uma|fazer|".toPattern(Pattern.CASE_INSENSITIVE))
+        patterns.add("den(ú|u)nci(ar|o|a)".toPattern(Pattern.CASE_INSENSITIVE))
     }
 
     override fun getResponse(event: GuildMessageReceivedEvent, message: String): List<LorittaReply> = listOf(
