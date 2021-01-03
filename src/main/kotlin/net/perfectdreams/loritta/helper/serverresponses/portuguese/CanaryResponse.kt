@@ -30,7 +30,7 @@ class CanaryResponse : RegExResponse() {
             LorittaReply(
                 "Ela é privada e você não pode adicionar ela, sorry! Se você quer utilizar alguma função que só tem na Canary, espere ela ser colocada na Loritta! E porque você iria querer uma versão minha que pode sem querer explodir o seu servidor? Deixe o seu servidor seguro e nunca adicione bots que você não sabe o que fazem!",
                 mentionUser = false,
-                prefix = "<:canella_triste:505191542982705174>"
+                prefix = Emotes.LORI_SOB
             )
         )
 }
