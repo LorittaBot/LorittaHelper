@@ -18,7 +18,7 @@ class AboutMeResponse : RegExResponse() {
         patterns.add("a|o|m(eu|inha)|".toPattern(Pattern.CASE_INSENSITIVE))
         patterns.add("descri(c|ç(a|ã)o)|biografia|sobre?.mim".toPattern(Pattern.CASE_INSENSITIVE))
         patterns.add("d(e|o|a)|".toPattern(Pattern.CASE_INSENSITIVE))
-        patterns.add("m(eu|inha)|"
+        patterns.add("m(eu|inha)|".toPattern(Pattern.CASE_INSENSITIVE))
         patterns.add("p(erfil|rofile)|lo(rri|ri|)(ta|tta)|".toPattern(Pattern.CASE_INSENSITIVE))
     }
 
