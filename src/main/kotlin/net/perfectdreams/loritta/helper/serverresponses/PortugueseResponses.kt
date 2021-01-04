@@ -49,6 +49,7 @@ object PortugueseResponses {
         NoStaffSpotResponse(),
         HowToSeeLorittasSourceCodeResponse(),
         AboutMeResponse(),
-        HowDoIReportResponse()
+        HowDoIReportResponse(),
+        ReportBugsResponse()
     ).sortedByDescending { it.priority }
 }
