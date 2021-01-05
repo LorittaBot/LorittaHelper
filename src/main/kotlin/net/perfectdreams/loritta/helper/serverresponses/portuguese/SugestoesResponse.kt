@@ -12,7 +12,7 @@ import java.util.regex.Pattern
  */
 class SugestoesResponse : RegExResponse() {
     init {
-        patterns.add("mo|onde|qual|existe|tem( )?jeito|ajuda|quer(o|ia)|tem algum ?(jeito|(ch|x)at))".toPattern(Pattern.CASE_INSENSITIVE))
+        patterns.add("mo|onde|qual|existe|tem( )?jeito|ajuda|quer(o|ia)|tem algum ?(jeito|(ch|x)at)".toPattern(Pattern.CASE_INSENSITIVE))
         patterns.add("eu( )?posso|de|fa(ço|z|s(er|))|pra|".toPattern(Pattern.CASE_INSENSITIVE))
         patterns.add("fazer( uma)?|d(á|a)|".toPattern(Pattern.CASE_INSENSITIVE))
         patterns.add("suge(st(ã|a)o|re|rir)".toPattern(Pattern.CASE_INSENSITIVE))
