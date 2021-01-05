@@ -13,7 +13,7 @@ import java.util.regex.Pattern
 class AboutMeResponse : RegExResponse() {
     override fun handleResponse(message: String): Boolean = patterns.all {
         it.matcher(message).find()
-    } && !message.contains("falar")
+    } && !message.contains("falar", true)
 
     init {
         patterns.add("quero|onde|como".toPattern(Pattern.CASE_INSENSITIVE))
