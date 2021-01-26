@@ -5,6 +5,7 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter
 import net.perfectdreams.loritta.helper.LorittaHelper
 import net.perfectdreams.loritta.helper.tables.ExecutedCommandsLog
 import net.perfectdreams.loritta.helper.utils.dailycatcher.DailyCatcher
+import org.jetbrains.exposed.sql.SortOrder
 import org.jetbrains.exposed.sql.count
 import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.transactions.transaction
@@ -33,13 +34,13 @@ class CheckUsersCommandsListener(val m: LorittaHelper) : ListenerAdapter() {
                         ExecutedCommandsLog.userId eq userId
                     }
                     .groupBy(ExecutedCommandsLog.command)
-                    .orderBy(commandCountField)
+                    .orderBy(commandCountField, SortOrder.DESC)
                     .limit(15)
                     .toList()
             }
 
             var input = "**Stats de comandos de ${userId}**\n"
-            input += "**Quantidade de comandos executados:** ${commands.sumBy { it[commandCountField].toInt() } }}\n"
+            input += "**Quantidade de comandos executados:** ${commands.sumBy { it[commandCountField].toInt() } }\n"
             input += "**Comandos de economia executados:** ${commands.filter { it[ExecutedCommandsLog.command] in DailyCatcher.ECONOMY_COMMANDS }.sumBy { it[commandCountField].toInt() }}\n"
             input += "\n"
 
