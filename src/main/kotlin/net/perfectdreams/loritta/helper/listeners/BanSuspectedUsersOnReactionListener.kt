@@ -26,6 +26,7 @@ class BanSuspectedUsersOnReactionListener(val m: LorittaHelper): ListenerAdapter
             return
 
         m.launch {
+            val deleteReport = event.reactionEmote.idLong == 412585701054611458L
             val retrievedMessage = event.retrieveMessage()
                 .await()
 
@@ -33,7 +34,7 @@ class BanSuspectedUsersOnReactionListener(val m: LorittaHelper): ListenerAdapter
             val reactedUsers = event.reaction.retrieveUsers()
                 .await()
 
-            if (reactedUsers.size != 2) {
+            if (!deleteReport && reactedUsers.size != 2) {
                 logger.info { "Not processing punishment for message ${event.messageId} because there is already two messages" }
                 return@launch
             }

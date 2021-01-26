@@ -4,7 +4,6 @@ import net.dv8tion.jda.api.JDA
 import net.perfectdreams.loritta.helper.LorittaHelper
 import net.perfectdreams.loritta.helper.tables.*
 import net.perfectdreams.loritta.helper.utils.Constants
-import net.perfectdreams.loritta.helper.utils.SonhosPaymentReason
 import org.apache.commons.text.similarity.LevenshteinDistance
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.transaction
