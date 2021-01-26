@@ -22,7 +22,7 @@ class BanSuspectedUsersOnReactionListener(val m: LorittaHelper): ListenerAdapter
         if (event.channel.idLong != DailyCatcher.SCARLET_POLICE_CHANNEL_ID)
             return
 
-        if (event.reactionEmote.idLong != 750509326782824458L)
+        if (event.reactionEmote.idLong != 750509326782824458L || event.reactionEmote.idLong != 412585701054611458L)
             return
 
         m.launch {
@@ -32,6 +32,7 @@ class BanSuspectedUsersOnReactionListener(val m: LorittaHelper): ListenerAdapter
             // Only allow reactions if only two users reacted in the message (so, the bot itself and the user)
             val reactedUsers = event.reaction.retrieveUsers()
                 .await()
+
             if (reactedUsers.size != 2) {
                 logger.info { "Not processing punishment for message ${event.messageId} because there is already two messages" }
                 return@launch
@@ -51,27 +52,48 @@ class BanSuspectedUsersOnReactionListener(val m: LorittaHelper): ListenerAdapter
                 .split(";")
                 .map { it.toLong() }
 
-            for (id in ids) {
-                val altAccountIds = ids.filter { id != it }
+            val channel = event.jda.getTextChannelById(DailyCatcher.SCARLET_POLICE_RESULTS_CHANNEL_ID)
 
-                val reason = """Criar Alt Accounts (Contas Fakes/Contas Secundárias) para farmar sonhos no daily, será que os avisos no website não foram suficientes para você? ¯\_(ツ)_/¯ (Contas Alts: ${altAccountIds.joinToString(", ")})"""
+            if (event.reactionEmote.idLong == 412585701054611458L) {
+                retrievedMessage.delete().queue()
 
-                logger.info { "Banning $id for $reason" }
+                channel?.sendMessage("[Rejeitado] Denúncia Escarlate de ${ids.joinToString(", ")} foi rejeitada por ${event.user.asMention}...")
+                    ?.addFile(
+                        retrievedMessage.contentRaw.toByteArray(Charsets.UTF_8),
+                        "message.txt"
+                    )?.queue()
+            } else {
+                for (id in ids) {
+                    val altAccountIds = ids.filter { id != it }
 
-                transaction {
-                    BannedUsers.insert {
-                        it[BannedUsers.userId] = id
-                        it[bannedAt] = System.currentTimeMillis()
-                        it[bannedBy] = event.userIdLong
-                        it[valid] = true
-                        it[expiresAt] = null
-                        it[BannedUsers.reason] = reason
+                    val reason =
+                        """Criar Alt Accounts (Contas Fakes/Contas Secundárias) para farmar sonhos no daily, será que os avisos no website não foram suficientes para você? ¯\_(ツ)_/¯ (Contas Alts: ${
+                            altAccountIds.joinToString(", ")
+                        })"""
+
+                    logger.info { "Banning $id for $reason" }
+
+                    transaction {
+                        BannedUsers.insert {
+                            it[BannedUsers.userId] = id
+                            it[bannedAt] = System.currentTimeMillis()
+                            it[bannedBy] = event.userIdLong
+                            it[valid] = true
+                            it[expiresAt] = null
+                            it[BannedUsers.reason] = reason
+                        }
                     }
-                }
-            }
 
-            retrievedMessage.addReaction("catpolice:585608392110899200")
-                .queue()
+                    channel?.sendMessage("[Aprovado] Usuário $id foi banido por ${event.user.asMention} pela denúncia da polícia escarlate! <a:cat_groove:745273300850311228> ${retrievedMessage.jumpUrl}")
+                        ?.addFile(
+                            retrievedMessage.contentRaw.toByteArray(Charsets.UTF_8),
+                            "message.txt"
+                        )?.queue()
+                }
+
+                retrievedMessage.addReaction("catpolice:585608392110899200")
+                    .queue()
+            }
         }
     }
 }

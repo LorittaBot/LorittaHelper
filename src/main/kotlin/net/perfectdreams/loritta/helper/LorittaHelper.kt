@@ -54,7 +54,7 @@ class LorittaHelper(val config: LorittaHelperConfig, val fanArtsConfig: FanArtsC
     // As long we don't do any blocking tasks inside of the executor, Loritta Helper will work fiiiine
     // and will be very lightweight!
     val executor = Executors.newSingleThreadExecutor()
-            .asCoroutineDispatcher()
+        .asCoroutineDispatcher()
 
     val timedTaskExecutor = Executors.newScheduledThreadPool(1)
     val databases = Databases(this)
@@ -65,30 +65,31 @@ class LorittaHelper(val config: LorittaHelperConfig, val fanArtsConfig: FanArtsC
     fun start() {
         // We only care about GUILD MESSAGES and we don't need to cache any users
         val jda = JDABuilder.createLight(
-                config.token,
-                GatewayIntent.DIRECT_MESSAGES,
-                GatewayIntent.GUILD_MESSAGES,
-                GatewayIntent.GUILD_BANS,
-                GatewayIntent.GUILD_MEMBERS,
-                GatewayIntent.GUILD_MESSAGE_REACTIONS
+            config.token,
+            GatewayIntent.DIRECT_MESSAGES,
+            GatewayIntent.GUILD_MESSAGES,
+            GatewayIntent.GUILD_BANS,
+            GatewayIntent.GUILD_MEMBERS,
+            GatewayIntent.GUILD_MESSAGE_REACTIONS
         )
-                .addEventListeners(
-                        MessageListener(this),
-                        BanListener(this),
-                        CheckLoriBannedUsersListener(this),
-                        PrivateMessageListener(this)
-                )
-                .also {
-                    if (fanArtsConfig != null) {
-                        it.addEventListeners(ApproveFanArtListener(this, fanArtsConfig))
-                    } else {
-                        logger.info { "Fan Arts Config is not present, not registering listener..." }
-                    }
+            .addEventListeners(
+                MessageListener(this),
+                BanListener(this),
+                CheckLoriBannedUsersListener(this),
+                PrivateMessageListener(this),
+                CheckUsersCommandsListener(this)
+            )
+            .also {
+                if (fanArtsConfig != null) {
+                    it.addEventListeners(ApproveFanArtListener(this, fanArtsConfig))
+                } else {
+                    logger.info { "Fan Arts Config is not present, not registering listener..." }
                 }
-                .setMemberCachePolicy(
-                        MemberCachePolicy.ALL
-                )
-                .build()
+            }
+            .setMemberCachePolicy(
+                MemberCachePolicy.ALL
+            )
+            .build()
 
         if (config.lorittaDatabase != null) {
             val dailyCatcher = DailyCatcher(this, jda)
@@ -154,11 +155,11 @@ class LorittaHelper(val config: LorittaHelperConfig, val fanArtsConfig: FanArtsC
             logger.debug { response }
 
             val result = Json.parseToJsonElement(response)
-                    .jsonObject
+                .jsonObject
             val artifacts = result["artifacts"]!!.jsonArray
             val artifact =
-                    artifacts.first { it.jsonObject["name"]!!.jsonPrimitive.content == "Loritta Helper (Discord)" }
-                            .jsonObject
+                artifacts.first { it.jsonObject["name"]!!.jsonPrimitive.content == "Loritta Helper (Discord)" }
+                    .jsonObject
 
             val createdAt = artifact["created_at"]!!.jsonPrimitive.content
 
@@ -166,7 +167,7 @@ class LorittaHelper(val config: LorittaHelperConfig, val fanArtsConfig: FanArtsC
             val i = Instant.from(ta)
 
             val now = Instant.now()
-                    .minusMillis(120_000) // 2 minutes
+                .minusMillis(120_000) // 2 minutes
 
             archiveDownloadUrl = artifact["archive_download_url"]!!.jsonPrimitive.content
 

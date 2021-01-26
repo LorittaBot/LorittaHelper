@@ -22,6 +22,7 @@ class DailyCatcher(val m: LorittaHelper, val jda: JDA) {
         )
 
         val SCARLET_POLICE_CHANNEL_ID = 803691195589984276L
+        val SCARLET_POLICE_RESULTS_CHANNEL_ID = 803691195589984276L
         val ALREADY_NOTIFIED_IDS_FILE = File("already_notified_ids")
 
         fun todayAtMidnight() = Instant.now()
@@ -231,6 +232,8 @@ class DailyCatcher(val m: LorittaHelper, val jda: JDA) {
 
             if (usersToBeBanned.isNotEmpty()) {
                 message?.addReaction("sasuke_banido:750509326782824458")
+                    ?.complete()
+                message?.addReaction("error:412585701054611458")
                     ?.complete()
             }
 
