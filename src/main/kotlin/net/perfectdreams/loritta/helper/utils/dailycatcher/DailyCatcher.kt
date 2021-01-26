@@ -301,6 +301,8 @@ class DailyCatcher(val m: LorittaHelper, val jda: JDA) {
             if (usersToBeBanned.isNotEmpty()) {
                 message?.addReaction("sasuke_banido:750509326782824458")
                     ?.complete()
+                message?.addReaction("error:412585701054611458")
+                    ?.complete()
             }
 
             sentReportsSusLevel.add(susLevel)
