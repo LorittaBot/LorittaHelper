@@ -22,7 +22,7 @@ class BanSuspectedUsersOnReactionListener(val m: LorittaHelper): ListenerAdapter
         if (event.channel.idLong != DailyCatcher.SCARLET_POLICE_CHANNEL_ID)
             return
 
-        if (event.reactionEmote.idLong != 750509326782824458L || event.reactionEmote.idLong != 412585701054611458L)
+        if (event.reactionEmote.idLong != 750509326782824458L && event.reactionEmote.idLong != 412585701054611458L)
             return
 
         m.launch {
