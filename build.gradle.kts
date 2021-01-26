@@ -10,6 +10,7 @@ version = "1.0.0"
 
 repositories {
     mavenCentral()
+    maven("https://repo.perfectdreams.net/")
     maven("https://jcenter.bintray.com")
     maven("https://jitpack.io")
 }
@@ -26,6 +27,9 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.0.0-RC2")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-hocon:1.0.0-RC2")
 
+    // Sequins
+    implementation("net.perfectdreams.sequins.text:text-utils:1.0.0")
+
     // Database
     implementation("org.postgresql:postgresql:42.2.14")
     implementation("com.zaxxer:HikariCP:3.4.5")
@@ -33,11 +37,13 @@ dependencies {
     implementation("org.jetbrains.exposed:exposed-dao:0.27.1")
     implementation("org.jetbrains.exposed:exposed-jdbc:0.27.1")
 
-    implementation("com.github.pemistahl:lingua:v1.1.0-wip-SNAPSHOT")
+    implementation("com.github.pemistahl:lingua:6a6d284145")
     testImplementation("org.junit.jupiter:junit-jupiter:5.4.2")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.4.2")
 
     implementation("io.ktor:ktor-client-cio:1.4.0")
+
+    implementation("org.apache.commons:commons-text:1.9")
 }
 
 tasks {
