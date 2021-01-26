@@ -5,8 +5,8 @@ import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent
 import net.dv8tion.jda.api.hooks.ListenerAdapter
 import net.perfectdreams.loritta.helper.LorittaHelper
+import net.perfectdreams.loritta.helper.tables.BannedUsers
 import net.perfectdreams.loritta.helper.utils.checkbannedusers.LorittaBannedRoleTask
-import net.perfectdreams.loritta.helper.utils.extensions.BannedUsers
 import net.perfectdreams.loritta.helper.utils.extensions.getBannedState
 
 class CheckLoriBannedUsersListener(val m: LorittaHelper): ListenerAdapter() {

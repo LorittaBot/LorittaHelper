@@ -3,13 +3,7 @@ package net.perfectdreams.loritta.helper
 import io.ktor.client.*
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.asCoroutineDispatcher
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.jsonArray
 import kotlinx.serialization.json.jsonObject
@@ -19,16 +13,14 @@ import net.dv8tion.jda.api.JDABuilder
 import net.dv8tion.jda.api.entities.Activity
 import net.dv8tion.jda.api.requests.GatewayIntent
 import net.dv8tion.jda.api.utils.MemberCachePolicy
-import net.perfectdreams.loritta.helper.listeners.ApproveFanArtListener
-import net.perfectdreams.loritta.helper.listeners.BanListener
-import net.perfectdreams.loritta.helper.listeners.CheckLoriBannedUsersListener
-import net.perfectdreams.loritta.helper.listeners.MessageListener
-import net.perfectdreams.loritta.helper.listeners.PrivateMessageListener
+import net.perfectdreams.loritta.helper.listeners.*
 import net.perfectdreams.loritta.helper.network.Databases
 import net.perfectdreams.loritta.helper.utils.LorittaLandRoleSynchronizationTask
 import net.perfectdreams.loritta.helper.utils.checkbannedusers.LorittaBannedRoleTask
 import net.perfectdreams.loritta.helper.utils.config.FanArtsConfig
 import net.perfectdreams.loritta.helper.utils.config.LorittaHelperConfig
+import net.perfectdreams.loritta.helper.utils.dailycatcher.DailyCatcher
+import net.perfectdreams.loritta.helper.utils.dailycatcher.DailyCatcherTask
 import net.perfectdreams.loritta.helper.utils.dailyshopwinners.DailyShopWinners
 import net.perfectdreams.loritta.helper.utils.faqembed.FAQEmbedUpdaterEnglish
 import net.perfectdreams.loritta.helper.utils.faqembed.FAQEmbedUpdaterPortuguese
@@ -66,6 +58,7 @@ class LorittaHelper(val config: LorittaHelperConfig, val fanArtsConfig: FanArtsC
 
     val timedTaskExecutor = Executors.newScheduledThreadPool(1)
     val databases = Databases(this)
+    var dailyCatcher: DailyCatcher? = null
 
     var dailyShopWinners: DailyShopWinners? = null
 
@@ -96,6 +89,19 @@ class LorittaHelper(val config: LorittaHelperConfig, val fanArtsConfig: FanArtsC
                         MemberCachePolicy.ALL
                 )
                 .build()
+
+        if (config.lorittaDatabase != null) {
+            val dailyCatcher = DailyCatcher(this, jda)
+
+            if (DailyCatcher.ALREADY_NOTIFIED_IDS_FILE.exists()) {
+                dailyCatcher.alreadyNotifiedIds += DailyCatcher.ALREADY_NOTIFIED_IDS_FILE.readLines().map { it.toLong() }
+            }
+
+            jda.addEventListener(BanSuspectedUsersOnReactionListener(this))
+
+            this.dailyCatcher = dailyCatcher
+            timedTaskExecutor.scheduleWithFixedDelay(DailyCatcherTask(dailyCatcher), 0, 15, TimeUnit.MINUTES)
+        }
 
         if (config.lorittaDatabase != null) {
             dailyShopWinners = DailyShopWinners(this, jda)

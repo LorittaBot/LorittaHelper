@@ -3,7 +3,7 @@ package net.perfectdreams.loritta.helper.utils.generatebanstatusreport
 import mu.KotlinLogging
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent
 import net.perfectdreams.loritta.helper.LorittaHelper
-import net.perfectdreams.loritta.helper.utils.extensions.BannedUsers
+import net.perfectdreams.loritta.helper.tables.BannedUsers
 import net.perfectdreams.loritta.helper.utils.extensions.await
 import org.jetbrains.exposed.sql.SortOrder
 import org.jetbrains.exposed.sql.select
