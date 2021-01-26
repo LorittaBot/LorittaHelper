@@ -44,7 +44,7 @@ class CheckUsersCommandsListener(val m: LorittaHelper) : ListenerAdapter() {
             input += "\n"
 
             for (command in commands) {
-                input += "**`${command[ExecutedCommandsLog.command]}`:** ${command[commandCountField]}"
+                input += "**`${command[ExecutedCommandsLog.command]}`:** ${command[commandCountField]}\n"
             }
 
             event.channel.sendMessage(input)
