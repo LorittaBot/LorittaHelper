@@ -21,7 +21,7 @@ class DailyCatcher(val m: LorittaHelper, val jda: JDA) {
         )
 
         val SCARLET_POLICE_CHANNEL_ID = 803691195589984276L
-        val SCARLET_POLICE_RESULTS_CHANNEL_ID = 803691195589984276L
+        val SCARLET_POLICE_RESULTS_CHANNEL_ID = 803767073158463498L
         val ALREADY_NOTIFIED_IDS_FILE = File("already_notified_ids")
 
         fun todayAtMidnight() = Instant.now()
