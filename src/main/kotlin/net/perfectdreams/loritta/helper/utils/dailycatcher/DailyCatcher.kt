@@ -320,7 +320,7 @@ class DailyCatcher(val m: LorittaHelper, val jda: JDA) {
 
     fun formatDate(time: Long): String {
         val givenAtTime = Instant.ofEpochMilli(time)
-            .atZone(ZoneId.systemDefault())
+            .atZone(ZoneId.of("America/Sao_Paulo"))
 
         val day = givenAtTime.dayOfMonth.toString().padStart(2, '0')
         val month = givenAtTime.monthValue.toString().padStart(2, '0')
