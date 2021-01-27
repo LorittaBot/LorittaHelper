@@ -157,7 +157,6 @@ class DailyCatcher(val m: LorittaHelper, val jda: JDA) {
                 }
                 .groupBy(ExecutedCommandsLog.command)
                 .orderBy(commandCountField, SortOrder.DESC)
-                .limit(15)
                 .toList()
         }
 
