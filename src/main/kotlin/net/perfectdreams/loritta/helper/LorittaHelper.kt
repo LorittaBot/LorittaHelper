@@ -125,13 +125,14 @@ class LorittaHelper(val config: LorittaHelperConfig, val fanArtsConfig: FanArtsC
 
             this.dailyCatcherManager = dailyCatcher
 
-            logger.info { "Daily Catcher will be executed in ${TimeUnit.SECONDS.toMinutes(fiveInTheMorningTomorrowLocalDateTime.toEpochSecond()) - (System.currentTimeMillis() / 1000)} minutes!" }
+            val whenItShouldBeStarted = TimeUnit.SECONDS.toMinutes(fiveInTheMorningTomorrowLocalDateTime.toEpochSecond() - (System.currentTimeMillis() / 1000))
+            logger.info { "Daily Catcher will be executed in $whenItShouldBeStarted minutes!" }
 
             // Will execute the task every day at 05:00
             // 1440 = 24 hours in minutes
             timedTaskExecutor.scheduleAtFixedRate(
                     DailyCatcherTask(dailyCatcher),
-                    TimeUnit.SECONDS.toMinutes(fiveInTheMorningTomorrowLocalDateTime.toEpochSecond()) - (System.currentTimeMillis() / 1000),
+                    whenItShouldBeStarted,
                     1440,
                     TimeUnit.MINUTES
             )
