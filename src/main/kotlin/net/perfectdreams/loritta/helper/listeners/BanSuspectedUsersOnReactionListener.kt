@@ -76,12 +76,11 @@ class BanSuspectedUsersOnReactionListener(val m: LorittaHelper): ListenerAdapter
 
                     logger.info { "Banning $id for $reason" }
 
-                    transaction {
+                    val successfullyBanned = transaction {
                         if (BannedUsers.select {
                                 BannedUsers.userId eq id and (BannedUsers.valid eq true) and (BannedUsers.expiresAt.isNull())
-                        }.count() != 0L) {
-                            channel?.sendMessage("[Whoops] Usuário $id já está banido ${event.user.asMention}! <:notlike:585607981639663633>")
-                                ?.queue()
+                            }.count() != 0L) {
+                            false
                         } else {
                             BannedUsers.insert {
                                 it[BannedUsers.userId] = id
@@ -91,11 +90,17 @@ class BanSuspectedUsersOnReactionListener(val m: LorittaHelper): ListenerAdapter
                                 it[expiresAt] = null
                                 it[BannedUsers.reason] = reason
                             }
+
+                            true
                         }
                     }
 
-                    channel?.sendMessage("[Aprovado] Usuário $id foi banido por ${event.user.asMention} pela denúncia da polícia escarlate! <a:cat_groove:745273300850311228> ${retrievedMessage.jumpUrl}")
-                        ?.queue()
+                    if (successfullyBanned)
+                        channel?.sendMessage("[Aprovado] Usuário $id foi banido por ${event.user.asMention} pela denúncia da polícia escarlate! <a:cat_groove:745273300850311228> ${retrievedMessage.jumpUrl}")
+                            ?.queue()
+                    else
+                        channel?.sendMessage("[Whoops] Usuário $id já está banido ${event.user.asMention}! <:notlike:585607981639663633>")
+                            ?.queue()
                 }
 
                 retrievedMessage.addReaction("catpolice:585608392110899200")
