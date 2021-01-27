@@ -147,7 +147,25 @@ class DailyCatcher(val m: LorittaHelper, val jda: JDA) {
         val retrievedUser = try {
             jda.retrieveUserById(user.userId).complete()
         } catch (e: Exception) { null }
-        userInput += "**User:** `${user.userId}` (`${retrievedUser?.name}`) (${retrieveSonhos(user.userId)} sonhos)\n"
+
+        val commandCountField = ExecutedCommandsLog.command.count()
+
+        val commands = transaction(m.databases.lorittaDatabase) {
+            ExecutedCommandsLog.slice(ExecutedCommandsLog.command, commandCountField)
+                .select {
+                    ExecutedCommandsLog.userId eq user.userId
+                }
+                .groupBy(ExecutedCommandsLog.command)
+                .orderBy(commandCountField, SortOrder.DESC)
+                .limit(15)
+                .toList()
+        }
+
+        val cmdQuantity = commands.sumBy { it[commandCountField].toInt() }
+        val cmdEconomyQuantity = commands.filter { it[ExecutedCommandsLog.command] in DailyCatcher.ECONOMY_COMMANDS }
+            .sumBy { it[commandCountField].toInt() }
+
+        userInput += "**User:** `${user.userId}` (`${retrievedUser?.name}`) (${retrieveSonhos(user.userId)} sonhos) ($cmdEconomyQuantity/$cmdQuantity)\n"
         userInput += "` `**Email:** `${user.email}`\n"
         userInput += "` `**IP:** `${user.ip}`\n"
         userInput += "` `**Daily pego:** `${formatDate(user.lastDailyAt)}`\n"

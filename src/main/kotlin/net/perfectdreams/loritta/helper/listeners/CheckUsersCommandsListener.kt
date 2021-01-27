@@ -32,7 +32,7 @@ class CheckUsersCommandsListener(val m: LorittaHelper) : ListenerAdapter() {
             m.launch {
                 val commandCountField = ExecutedCommandsLog.command.count()
 
-                val commands = transaction {
+                val commands = transaction(m.databases.lorittaDatabase) {
                     ExecutedCommandsLog.slice(ExecutedCommandsLog.command, commandCountField)
                         .select {
                             ExecutedCommandsLog.userId eq userId
