@@ -86,10 +86,7 @@ class BanSuspectedUsersOnReactionListener(val m: LorittaHelper): ListenerAdapter
                     }
 
                     channel?.sendMessage("[Aprovado] Usuário $id foi banido por ${event.user.asMention} pela denúncia da polícia escarlate! <a:cat_groove:745273300850311228> ${retrievedMessage.jumpUrl}")
-                        ?.addFile(
-                            retrievedMessage.contentRaw.toByteArray(Charsets.UTF_8),
-                            "message.txt"
-                        )?.queue()
+                        ?.queue()
                 }
 
                 retrievedMessage.addReaction("catpolice:585608392110899200")
