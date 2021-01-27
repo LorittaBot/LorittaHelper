@@ -22,6 +22,7 @@ import org.jetbrains.exposed.sql.count
 import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.transactions.transaction
 import java.sql.Connection
+import java.time.Instant
 
 class DailyOnlyEcoCommandsCatcher(database: Database) : DailyCatcher<ReportOnlyEcoCatcher>(database) {
     companion object {
@@ -195,6 +196,7 @@ class DailyOnlyEcoCommandsCatcher(database: Database) : DailyCatcher<ReportOnlyE
                                 embed
                                         .appendTransactionsToEmbed(report.transactions, userDailyRewardCache)
                                         .appendDailyList(report.users)
+                                        .setTimestamp(Instant.now())
                                         .build()
                         )
                         .build(),
