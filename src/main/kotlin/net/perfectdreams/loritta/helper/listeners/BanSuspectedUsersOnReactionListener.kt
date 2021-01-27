@@ -5,7 +5,7 @@ import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEve
 import net.dv8tion.jda.api.hooks.ListenerAdapter
 import net.perfectdreams.loritta.helper.LorittaHelper
 import net.perfectdreams.loritta.helper.tables.BannedUsers
-import net.perfectdreams.loritta.helper.utils.dailycatcher.DailyCatcher
+import net.perfectdreams.loritta.helper.utils.dailycatcher.DailyCatcherManager
 import net.perfectdreams.loritta.helper.utils.extensions.await
 import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.insert
@@ -21,7 +21,7 @@ class BanSuspectedUsersOnReactionListener(val m: LorittaHelper): ListenerAdapter
         if (event.user.isBot)
             return
 
-        if (event.channel.idLong != DailyCatcher.SCARLET_POLICE_CHANNEL_ID)
+        if (event.channel.idLong != DailyCatcherManager.SCARLET_POLICE_CHANNEL_ID)
             return
 
         if (event.reactionEmote.idLong != 750509326782824458L && event.reactionEmote.idLong != 412585701054611458L)
@@ -55,7 +55,7 @@ class BanSuspectedUsersOnReactionListener(val m: LorittaHelper): ListenerAdapter
                 .split(";")
                 .map { it.toLong() }
 
-            val channel = event.jda.getTextChannelById(DailyCatcher.SCARLET_POLICE_RESULTS_CHANNEL_ID)
+            val channel = event.jda.getTextChannelById(DailyCatcherManager.SCARLET_POLICE_RESULTS_CHANNEL_ID)
 
             if (event.reactionEmote.idLong == 412585701054611458L) {
                 retrievedMessage.delete().queue()
@@ -69,10 +69,14 @@ class BanSuspectedUsersOnReactionListener(val m: LorittaHelper): ListenerAdapter
                 for (id in ids) {
                     val altAccountIds = ids.filter { id != it }
 
-                    val reason =
-                        """Criar Alt Accounts (Contas Fakes/Contas Secundárias) para farmar sonhos no daily, será que os avisos no website não foram suficientes para você? ¯\_(ツ)_/¯ (Contas Alts: ${
+                    var reason = "Criar Alt Accounts (Contas Fakes/Contas Secundárias) para farmar sonhos no daily, será que os avisos no website não foram suficientes para você? ¯\\_(ツ)_/¯"
+
+                    if (altAccountIds.isNotEmpty()) {
+                        // Only add the IDs if there are more than one account to be banned
+                        reason += " (Contas Alts: ${
                             altAccountIds.joinToString(", ")
-                        })"""
+                        })"
+                    }
 
                     logger.info { "Banning $id for $reason" }
 

@@ -5,7 +5,7 @@ import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent
 import net.dv8tion.jda.api.hooks.ListenerAdapter
 import net.perfectdreams.loritta.helper.LorittaHelper
 import net.perfectdreams.loritta.helper.tables.ExecutedCommandsLog
-import net.perfectdreams.loritta.helper.utils.dailycatcher.DailyCatcher
+import net.perfectdreams.loritta.helper.utils.dailycatcher.DailyCatcherManager
 import net.perfectdreams.loritta.helper.utils.dailycatcher.SuspiciousLevel
 import net.perfectdreams.loritta.helper.utils.extensions.await
 import net.perfectdreams.loritta.helper.utils.extensions.retrieveAllMessages
@@ -46,7 +46,7 @@ class CheckUsersCommandsListener(val m: LorittaHelper) : ListenerAdapter() {
                 var input = "**Stats de comandos de ${userId}**\n"
                 input += "**Quantidade de comandos executados:** ${commands.sumBy { it[commandCountField].toInt() }}\n"
                 input += "**Comandos de economia executados:** ${
-                    commands.filter { it[ExecutedCommandsLog.command] in DailyCatcher.ECONOMY_COMMANDS }
+                    commands.filter { it[ExecutedCommandsLog.command] in DailyCatcherManager.ECONOMY_COMMANDS }
                         .sumBy { it[commandCountField].toInt() }
                 }\n"
                 input += "\n"
@@ -59,7 +59,7 @@ class CheckUsersCommandsListener(val m: LorittaHelper) : ListenerAdapter() {
                     .queue()
             }
         } else if (event.message.contentRaw.startsWith("h!pending_scarlet")) {
-            val channel = event.jda.getTextChannelById(DailyCatcher.SCARLET_POLICE_CHANNEL_ID) ?: return
+            val channel = event.jda.getTextChannelById(DailyCatcherManager.SCARLET_POLICE_CHANNEL_ID) ?: return
 
             m.launch {
                 val allMessages = channel.history.retrieveAllMessages()
