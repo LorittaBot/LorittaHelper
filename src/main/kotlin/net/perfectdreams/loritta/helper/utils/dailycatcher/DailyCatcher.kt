@@ -144,7 +144,10 @@ class DailyCatcher(val m: LorittaHelper, val jda: JDA) {
         if (user.userId in bannedUsersIds)
             userInput += "~~"
 
-        userInput += "**User:** `${user.userId}` (${retrieveSonhos(user.userId)} sonhos)\n"
+        val retrievedUser = try {
+            jda.retrieveUserById(user.userId).complete()
+        } catch (e: Exception) { null }
+        userInput += "**User:** `${user.userId}` (`${retrievedUser?.name}`) (${retrieveSonhos(user.userId)} sonhos)\n"
         userInput += "` `**Email:** `${user.email}`\n"
         userInput += "` `**IP:** `${user.ip}`\n"
         userInput += "` `**Daily pego:** `${formatDate(user.lastDailyAt)}`\n"
