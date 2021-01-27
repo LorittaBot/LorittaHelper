@@ -73,6 +73,10 @@ class DailyCatcher(val m: LorittaHelper, val jda: JDA) {
             )
         )
 
+        ALREADY_NOTIFIED_IDS_FILE.writeText(
+            alreadyNotifiedIds.joinToString("\n")
+        )
+
         val sameIpSuspiciousReports = dailySameIpCatcher.catch()
 
         sentReportsSusLevel.addAll(
@@ -80,6 +84,10 @@ class DailyCatcher(val m: LorittaHelper, val jda: JDA) {
                 bannedUsersIds,
                 sameIpSuspiciousReports
             )
+        )
+
+        ALREADY_NOTIFIED_IDS_FILE.writeText(
+            alreadyNotifiedIds.joinToString("\n")
         )
 
         if (sentReportsSusLevel.isNotEmpty()) {
