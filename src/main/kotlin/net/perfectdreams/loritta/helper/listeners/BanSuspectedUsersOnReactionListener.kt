@@ -7,7 +7,9 @@ import net.perfectdreams.loritta.helper.LorittaHelper
 import net.perfectdreams.loritta.helper.tables.BannedUsers
 import net.perfectdreams.loritta.helper.utils.dailycatcher.DailyCatcher
 import net.perfectdreams.loritta.helper.utils.extensions.await
+import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.insert
+import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.transactions.transaction
 
 class BanSuspectedUsersOnReactionListener(val m: LorittaHelper): ListenerAdapter() {
@@ -75,13 +77,20 @@ class BanSuspectedUsersOnReactionListener(val m: LorittaHelper): ListenerAdapter
                     logger.info { "Banning $id for $reason" }
 
                     transaction {
-                        BannedUsers.insert {
-                            it[BannedUsers.userId] = id
-                            it[bannedAt] = System.currentTimeMillis()
-                            it[bannedBy] = event.userIdLong
-                            it[valid] = true
-                            it[expiresAt] = null
-                            it[BannedUsers.reason] = reason
+                        if (BannedUsers.select {
+                                BannedUsers.userId eq id and (BannedUsers.valid eq true) and (BannedUsers.expiresAt.isNull())
+                        }.count() != 0L) {
+                            channel?.sendMessage("[Whoops] Usuário $id já está banido ${event.user.asMention}! <:notlike:585607981639663633>")
+                                ?.queue()
+                        } else {
+                            BannedUsers.insert {
+                                it[BannedUsers.userId] = id
+                                it[bannedAt] = System.currentTimeMillis()
+                                it[bannedBy] = event.userIdLong
+                                it[valid] = true
+                                it[expiresAt] = null
+                                it[BannedUsers.reason] = reason
+                            }
                         }
                     }
 
