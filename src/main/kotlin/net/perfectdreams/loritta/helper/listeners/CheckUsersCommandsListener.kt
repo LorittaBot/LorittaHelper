@@ -14,6 +14,7 @@ import org.jetbrains.exposed.sql.SortOrder
 import org.jetbrains.exposed.sql.count
 import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.transactions.transaction
+import kotlin.concurrent.thread
 
 class CheckUsersCommandsListener(val m: LorittaHelper) : ListenerAdapter() {
     override fun onGuildMessageReceived(event: GuildMessageReceivedEvent) {
@@ -26,7 +27,11 @@ class CheckUsersCommandsListener(val m: LorittaHelper) : ListenerAdapter() {
 
         val args = event.message.contentRaw.split(" ")
 
-        if (event.message.contentRaw.startsWith("h!check_commands")) {
+        if (event.message.contentRaw.startsWith("h!daily_catcher_check")) {
+            thread {
+                m.dailyCatcherManager?.doReports()
+            }
+        } else if (event.message.contentRaw.startsWith("h!check_commands")) {
             val userId = args[1].toLong()
 
             m.launch {

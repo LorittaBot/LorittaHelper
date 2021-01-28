@@ -113,11 +113,11 @@ class LorittaHelper(val config: LorittaHelperConfig, val fanArtsConfig: FanArtsC
 
             val fiveInTheMorningTomorrowLocalDateTime = LocalDateTime.now()
                     .let {
-                        if (it.hour >= 10)
+                        if (it.hour >= 5)
                             it.plusDays(1)
                         else it
                     }
-                    .withHour(10)
+                    .withHour(5)
                     .withMinute(0)
                     .withSecond(0)
                     .withNano(0)
