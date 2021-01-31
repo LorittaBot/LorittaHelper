@@ -1,5 +1,6 @@
 package net.perfectdreams.loritta.helper.listeners
 
+import mu.KotlinLogging
 import net.dv8tion.jda.api.entities.Message
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent
 import net.dv8tion.jda.api.hooks.ListenerAdapter
@@ -16,6 +17,10 @@ import org.jetbrains.exposed.sql.transactions.transaction
 import kotlin.concurrent.thread
 
 class CheckUsersCommandsListener(val m: LorittaHelper) : ListenerAdapter() {
+    companion object {
+        private val logger = KotlinLogging.logger {}
+    }
+
     override fun onGuildMessageReceived(event: GuildMessageReceivedEvent) {
         super.onGuildMessageReceived(event)
 
@@ -38,20 +43,20 @@ class CheckUsersCommandsListener(val m: LorittaHelper) : ListenerAdapter() {
 
                 val commands = transaction(m.databases.lorittaDatabase) {
                     ExecutedCommandsLog.slice(ExecutedCommandsLog.command, commandCountField)
-                        .select {
-                            ExecutedCommandsLog.userId eq userId
-                        }
-                        .groupBy(ExecutedCommandsLog.command)
-                        .orderBy(commandCountField, SortOrder.DESC)
-                        .limit(15)
-                        .toList()
+                            .select {
+                                ExecutedCommandsLog.userId eq userId
+                            }
+                            .groupBy(ExecutedCommandsLog.command)
+                            .orderBy(commandCountField, SortOrder.DESC)
+                            .limit(15)
+                            .toList()
                 }
 
                 var input = "**Stats de comandos de ${userId}**\n"
                 input += "**Quantidade de comandos executados:** ${commands.sumBy { it[commandCountField].toInt() }}\n"
                 input += "**Comandos de economia executados:** ${
                     commands.filter { it[ExecutedCommandsLog.command] in DailyCatcherManager.ECONOMY_COMMANDS }
-                        .sumBy { it[commandCountField].toInt() }
+                            .sumBy { it[commandCountField].toInt() }
                 }\n"
                 input += "\n"
 
@@ -60,80 +65,92 @@ class CheckUsersCommandsListener(val m: LorittaHelper) : ListenerAdapter() {
                 }
 
                 event.channel.sendMessage(input)
-                    .queue()
+                        .queue()
             }
         } else if (event.message.contentRaw.startsWith("h!pending_scarlet")) {
             val channel = event.jda.getTextChannelById(DailyCatcherManager.SCARLET_POLICE_CHANNEL_ID) ?: return
 
             m.launch {
-                val messages = mutableListOf<Message>()
+                try {
+                    val history = channel.history
+                    var dayOfTheLastMessageInTheChannel: Int? = null
 
-                while (true) {
-                    val newMessages = channel.history.retrievePast(100).await()
-                    if (newMessages.isEmpty())
-                        break
+                    val messages = mutableListOf<Message>()
 
-                    val dayOfTheLastMessageInTheChannel = newMessages.first()
-                            .timeCreated
-                            .dayOfMonth
+                    while (true) {
+                        val newMessages = history.retrievePast(100).await()
+                        if (newMessages.isEmpty())
+                            break
 
-                    val onlyMessagesInTheSameDay = newMessages.filter {
-                        it.timeCreated.dayOfMonth == dayOfTheLastMessageInTheChannel
-                    }
+                        if (dayOfTheLastMessageInTheChannel == null)
+                            dayOfTheLastMessageInTheChannel = newMessages.first()
+                                    .timeCreated
+                                    .dayOfMonth
 
-                    if (onlyMessagesInTheSameDay.isEmpty())
-                        break
-
-                    messages += onlyMessagesInTheSameDay
-                }
-
-                // Do a filter of the ones that aren't approved yet
-                val notApprovedMessages = messages.filter {
-                    // Has the "ban" emote but does not have the "catpolice" emote
-                    it.getReactionById(750509326782824458L) != null && it.getReactionById(585608392110899200L) == null
-                }
-
-                // Now sort them by sus level
-                val susLevelMessages = mutableMapOf<SuspiciousLevel, MutableList<Message>>()
-
-                notApprovedMessages.forEach {
-                    val susLevelMessage = it.contentRaw.lines().firstOrNull { it.contains("**Nível de sus:** ") }
-
-                    if (susLevelMessage != null) {
-                        val emote = susLevelMessage.split(" ")
-                            .first()
-
-                        val suspiciousLevelByEmote = SuspiciousLevel.values().first { it.emote == emote }
-                        val list = susLevelMessages.getOrPut(suspiciousLevelByEmote) {
-                            mutableListOf()
+                        val onlyMessagesInTheSameDay = newMessages.filter {
+                            it.timeCreated.dayOfMonth == dayOfTheLastMessageInTheChannel
                         }
 
-                        list.add(it)
+                        logger.info { "There are ${onlyMessagesInTheSameDay.size} messages that were sent in $dayOfTheLastMessageInTheChannel!" }
 
-                        susLevelMessages[suspiciousLevelByEmote] = list
-                    }
-                }
+                        if (onlyMessagesInTheSameDay.isEmpty())
+                            break
 
-                val lines = mutableListOf(
-                        "**Lista dos reports pendentes de hoje:**\n"
-                )
-
-                // we are going to sort them by the sus level (higher -> lower)
-                susLevelMessages.entries.sortedByDescending { it.key.level }.forEach { (t, u) ->
-                    lines.add(t.emote + "\n")
-
-                    u.forEach {
-                        lines.add(it.jumpUrl + "\n")
+                        messages += onlyMessagesInTheSameDay
                     }
 
-                    lines.add("\n\n")
-                }
+                    logger.info { "There are ${messages.size} messages to be sent!" }
 
-                val chunkedLines = StringUtils.chunkedLines(lines, 1900, forceSplit = true)
+                    // Do a filter of the ones that aren't approved yet
+                    val notApprovedMessages = messages.filter {
+                        // Has the "ban" emote but does not have the "catpolice" emote
+                        it.getReactionById(750509326782824458L) != null && it.getReactionById(585608392110899200L) == null
+                    }
 
-                // And now send them!
-                for (line in chunkedLines) {
-                    event.channel.sendMessage(line).await()
+                    // Now sort them by sus level
+                    val susLevelMessages = mutableMapOf<SuspiciousLevel, MutableList<Message>>()
+
+                    notApprovedMessages.forEach {
+                        val susLevelMessage = it.contentRaw.lines().firstOrNull { it.contains("**Nível de sus:** ") }
+
+                        if (susLevelMessage != null) {
+                            val emote = susLevelMessage.split(" ")
+                                    .first()
+
+                            val suspiciousLevelByEmote = SuspiciousLevel.values().first { it.emote == emote }
+                            val list = susLevelMessages.getOrPut(suspiciousLevelByEmote) {
+                                mutableListOf()
+                            }
+
+                            list.add(it)
+
+                            susLevelMessages[suspiciousLevelByEmote] = list
+                        }
+                    }
+
+                    val lines = mutableListOf(
+                            "**Lista dos reports pendentes de hoje:**\n"
+                    )
+
+                    // we are going to sort them by the sus level (higher -> lower)
+                    susLevelMessages.entries.sortedByDescending { it.key.level }.forEach { (t, u) ->
+                        lines.add(t.emote + "\n")
+
+                        u.forEach {
+                            lines.add(it.jumpUrl + "\n")
+                        }
+
+                        lines.add("\n\n")
+                    }
+
+                    val chunkedLines = StringUtils.chunkedLines(lines, 1900, forceSplit = true)
+
+                    // And now send them!
+                    for (line in chunkedLines) {
+                        event.channel.sendMessage(line).await()
+                    }
+                } catch (e: Exception) {
+                    logger.warn(e) { "Something went wrong while trying to retrieve the reports!" }
                 }
             }
         }
