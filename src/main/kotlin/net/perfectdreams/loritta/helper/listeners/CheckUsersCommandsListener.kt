@@ -8,7 +8,6 @@ import net.perfectdreams.loritta.helper.tables.ExecutedCommandsLog
 import net.perfectdreams.loritta.helper.utils.dailycatcher.DailyCatcherManager
 import net.perfectdreams.loritta.helper.utils.dailycatcher.SuspiciousLevel
 import net.perfectdreams.loritta.helper.utils.extensions.await
-import net.perfectdreams.loritta.helper.utils.extensions.retrieveAllMessages
 import net.perfectdreams.sequins.text.StringUtils
 import org.jetbrains.exposed.sql.SortOrder
 import org.jetbrains.exposed.sql.count
@@ -67,10 +66,29 @@ class CheckUsersCommandsListener(val m: LorittaHelper) : ListenerAdapter() {
             val channel = event.jda.getTextChannelById(DailyCatcherManager.SCARLET_POLICE_CHANNEL_ID) ?: return
 
             m.launch {
-                val allMessages = channel.history.retrieveAllMessages()
+                val messages = mutableListOf<Message>()
+
+                while (true) {
+                    val newMessages = channel.history.retrievePast(100).await()
+                    if (newMessages.isEmpty())
+                        break
+
+                    val dayOfTheLastMessageInTheChannel = newMessages.first()
+                            .timeCreated
+                            .dayOfMonth
+
+                    val onlyMessagesInTheSameDay = newMessages.filter {
+                        it.timeCreated.dayOfMonth == dayOfTheLastMessageInTheChannel
+                    }
+
+                    if (onlyMessagesInTheSameDay.isEmpty())
+                        break
+
+                    messages += onlyMessagesInTheSameDay
+                }
 
                 // Do a filter of the ones that aren't approved yet
-                val notApprovedMessages = allMessages.filter {
+                val notApprovedMessages = messages.filter {
                     // Has the "ban" emote but does not have the "catpolice" emote
                     it.getReactionById(750509326782824458L) != null && it.getReactionById(585608392110899200L) == null
                 }
@@ -96,7 +114,9 @@ class CheckUsersCommandsListener(val m: LorittaHelper) : ListenerAdapter() {
                     }
                 }
 
-                val lines = mutableListOf<String>()
+                val lines = mutableListOf(
+                        "**Lista dos reports pendentes de hoje:**\n"
+                )
 
                 // we are going to sort them by the sus level (higher -> lower)
                 susLevelMessages.entries.sortedByDescending { it.key.level }.forEach { (t, u) ->
