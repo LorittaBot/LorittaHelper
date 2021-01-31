@@ -48,7 +48,9 @@ class DailyOnlyEcoCommandsCatcher(database: Database) : DailyCatcher<ReportOnlyE
             val commands = transaction(Connection.TRANSACTION_READ_UNCOMMITTED, 5, database) {
                 ExecutedCommandsLog.slice(ExecutedCommandsLog.command, ExecutedCommandsLog.userId, commandCountField)
                         .select {
-                            ExecutedCommandsLog.userId inList chunkedDaily.map { it[Dailies.receivedById] }
+                            ExecutedCommandsLog.sentAt greaterEq DailyCatcherManager.fourteenDaysAgo() and (
+                                    ExecutedCommandsLog.userId inList chunkedDaily.map { it[Dailies.receivedById] }
+                            )
                         }
                         .groupBy(ExecutedCommandsLog.command, ExecutedCommandsLog.userId)
                         .orderBy(commandCountField, SortOrder.DESC)
@@ -88,7 +90,7 @@ class DailyOnlyEcoCommandsCatcher(database: Database) : DailyCatcher<ReportOnlyE
                     }
 
                     if (sonhosTransactionsRelatedToTheUser.isEmpty())
-                        // If there isn't any transactions related, just skip for now
+                    // If there isn't any transactions related, just skip for now
                         continue
 
                     val groupedBySortedReceivedBy = sonhosTransactionsRelatedToTheUser.groupBy {
@@ -152,7 +154,7 @@ class DailyOnlyEcoCommandsCatcher(database: Database) : DailyCatcher<ReportOnlyE
 
         var reportMessage = appendHeader("Conta pegou daily e apenas usou comandos de economia na conta", susLevel)
 
-        reportMessage += "Conta `${report.users[0]}` apenas usa comandos de economia (${report.commandsStats.formatted()}) e enviou para `${report.users[1]}`\n\n"
+        reportMessage += "Conta `${report.users[0]}` apenas usou comandos de economia (${report.commandsStats.formatted()}) nos últimos 14 dias e enviou para `${report.users[1]}`\n\n"
 
         if (susLevel == SuspiciousLevel.NOT_REALLY_SUS) {
             reportMessage += "Como a conta só transferiu apenas uma vez até agora, eu acho melhor esperar para ver o que acontece no futuro, para depois punir..."
