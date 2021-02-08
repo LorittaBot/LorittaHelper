@@ -58,7 +58,9 @@ class PendingReportsListTask(val jda: JDA) : Runnable {
             logger.info { "There are ${messagesThatDoesNotHaveAnyReactions.size} pending reports to be seen!" }
 
             if (messagesThatDoesNotHaveAnyReactions.isNotEmpty())
-                staffChannel.sendMessage("<a:walter_contra_bonoro:729116259446161448> **ATENÇÃO <@&351473717194522647>**\nExistem ${messagesThatDoesNotHaveAnyReactions.size} denúncias que ainda precisam ser vistas! **Lembre-se:** ${ApproveReportsOnReactionListener.APPROVE_EMOTE} aceita a denúncia e ${ApproveReportsOnReactionListener.REJECT_EMOTE} rejeita a denúncia (Mas as punições ainda precisam ser dadas manualmente!). Qualquer outra reação pode ser utilizada para ignorar os avisos de denúncia pendente!")
+                staffChannel.sendMessage("<a:walter_contra_bonoro:729116259446161448> **ATENÇÃO <@&351473717194522647>**" +
+                        "<a:uniao:703352880320479272> Existem ${messagesThatDoesNotHaveAnyReactions.size} denúncias que ainda precisam ser vistas!" +
+                        "<a:wumpus_keyboard:682249824133054529> **Lembre-se:** ${ApproveReportsOnReactionListener.APPROVE_EMOTE} aceita a denúncia e ${ApproveReportsOnReactionListener.REJECT_EMOTE} rejeita a denúncia (Mas as punições ainda precisam ser dadas manualmente!). Qualquer outra reação pode ser utilizada para ignorar os avisos de denúncia pendente!")
                         .queue()
         } catch (e: Exception) {
             logger.warn(e) { "Something went wrong while trying to retrieve the reports!" }
