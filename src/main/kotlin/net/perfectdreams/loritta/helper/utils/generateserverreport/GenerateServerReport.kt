@@ -16,7 +16,9 @@ import net.dv8tion.jda.api.MessageBuilder
 import net.dv8tion.jda.api.entities.Guild
 import net.dv8tion.jda.api.entities.User
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent
+import net.dv8tion.jda.api.requests.restaction.MessageAction
 import net.perfectdreams.loritta.helper.LorittaHelper
+import net.perfectdreams.loritta.helper.listeners.ApproveReportsOnReactionListener
 import net.perfectdreams.loritta.helper.utils.extensions.await
 import java.time.Instant
 import java.time.ZoneId
@@ -270,7 +272,7 @@ class GenerateServerReport(val m: LorittaHelper) {
                 .setEmbed(embed.build())
                 .build()
         )
-            ?.queue()
+            ?.queueAndAddReactions()
     }
 
     private suspend fun handleLoriInviteDMRules(
@@ -334,7 +336,7 @@ class GenerateServerReport(val m: LorittaHelper) {
                 .setEmbed(embed.build())
                 .build()
         )
-            ?.queue()
+            ?.queueAndAddReactions()
     }
 
     private suspend fun handleLoriBrokeOtherServerRules(
@@ -398,7 +400,7 @@ class GenerateServerReport(val m: LorittaHelper) {
                 .setEmbed(embed.build())
                 .build()
         )
-            ?.queue()
+            ?.queueAndAddReactions()
     }
 
     private fun createBaseEmbed(userThatMadeTheReport: User, reportType: String) = EmbedBuilder()
@@ -481,7 +483,7 @@ class GenerateServerReport(val m: LorittaHelper) {
         if (savedMessages.isNotEmpty())
             query?.addFile(savedMessages.toString().toByteArray(Charsets.UTF_8), "messages.log")
 
-        query?.queue()
+        query?.queueAndAddReactions()
     }
 
     private fun EmbedBuilder.addFinalConsiderations(items: List<GoogleFormItem>) {
@@ -497,6 +499,14 @@ class GenerateServerReport(val m: LorittaHelper) {
                 }
             } else {
                 addField("Considerações Finais", finalConsiderations, false)
+            }
+        }
+    }
+
+    private fun MessageAction.queueAndAddReactions() {
+        this.queue { message ->
+            message.addReaction(ApproveReportsOnReactionListener.APPROVE_EMOTE).queue {
+                message.addReaction(ApproveReportsOnReactionListener.REJECT_EMOTE).queue()
             }
         }
     }

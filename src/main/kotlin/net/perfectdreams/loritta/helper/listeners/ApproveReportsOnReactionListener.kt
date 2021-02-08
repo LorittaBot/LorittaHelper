@@ -12,6 +12,7 @@ class ApproveReportsOnReactionListener(val m: LorittaHelper): ListenerAdapter() 
         private val logger = KotlinLogging.logger {}
         const val APPROVE_EMOTE = "✅"
         const val REJECT_EMOTE = "\uD83D\uDEAB"
+        const val THINKING_EMOTE = "\uD83E\uDD14"
     }
 
     override fun onGuildMessageReactionAdd(event: GuildMessageReactionAddEvent) {
