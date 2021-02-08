@@ -52,8 +52,18 @@ class PendingReportsListTask(val jda: JDA) : Runnable {
                 messages += onlyMessagesInTheSameDay
             }
 
-            val messagesThatDoesNotHaveAnyReactions = messages.filter { it.reactions.isEmpty() }
+            val messagesThatDoesNotHaveAnyReactions = messages
                     .filter { it.author.idLong == jda.selfUser.idLong }
+                    // Any that doesn't has only one reaction count
+                    .filterNot {
+                        // Filters only messages that do have a reaction that is not by helper
+                        it.reactions.any {
+                            // Gets if there is a reaction that is not by helper
+                            it.retrieveUsers().complete().any {
+                                !it.isBot
+                            }
+                        }
+                    }
 
             logger.info { "There are ${messagesThatDoesNotHaveAnyReactions.size} pending reports to be seen!" }
 
