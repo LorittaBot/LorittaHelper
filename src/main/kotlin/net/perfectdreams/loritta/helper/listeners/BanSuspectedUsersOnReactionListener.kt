@@ -37,7 +37,7 @@ class BanSuspectedUsersOnReactionListener(val m: LorittaHelper): ListenerAdapter
                 .await()
 
             if (!deleteReport && reactedUsers.size != 2) {
-                logger.info { "Not processing punishment for message ${event.messageId} because there is already two messages" }
+                logger.info { "Not processing punishment for message ${event.messageId} because there is already two reactions" }
                 return@launch
             }
 

@@ -3,7 +3,12 @@ package net.perfectdreams.loritta.helper.utils.generateserverreport
 import kotlinx.coroutines.future.await
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.builtins.ListSerializer
-import kotlinx.serialization.json.*
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.json.jsonArray
+import kotlinx.serialization.json.jsonObject
+import kotlinx.serialization.json.jsonPrimitive
+import kotlinx.serialization.json.long
 import mu.KotlinLogging
 import net.dv8tion.jda.api.EmbedBuilder
 import net.dv8tion.jda.api.JDA
@@ -19,6 +24,10 @@ import java.time.format.DateTimeFormatter
 import java.util.*
 
 class GenerateServerReport(val m: LorittaHelper) {
+    companion object {
+        const val SERVER_REPORTS_CHANNEL_ID = 790308357713559582L
+    }
+    
     private val logger = KotlinLogging.logger {}
 
     val PRETTY_DATE_FORMAT = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss")
@@ -91,6 +100,18 @@ class GenerateServerReport(val m: LorittaHelper) {
                 handleOtherRules(event.jda, communityGuild, userThatMadeTheReport, reportType.answer.string, items)
             }
         }
+
+        // Send a message to the reporter, this helps them to be happy to know that we did receive their report
+        userThatMadeTheReport.openPrivateChannel()
+                .queue {
+                    it.sendMessage("""Sua denúncia foi recebida com sucesso! <:lori_nice:726845783344939028>
+                        |
+                        |Quando a equipe decidir que a sua denúncia for válida e punir os meliantes de forma adequada, você irá receber uma mensagem falando que os meliantes foram punidos! <:lori_ok:731873534036541500>
+                        | 
+                        |Obrigada por denúnciar meliantes, suas denúncias ajudam bastante a equipe! <:smol_gessy:593907632784408644>
+                    """.trimMargin())
+                            .queue()
+                }
     }
 
     private suspend fun handleLoriSwearingRules(
@@ -241,7 +262,7 @@ class GenerateServerReport(val m: LorittaHelper) {
 
         embed.addFinalConsiderations(items)
 
-        communityGuild.getTextChannelById(790308357713559582L)?.sendMessage(
+        communityGuild.getTextChannelById(SERVER_REPORTS_CHANNEL_ID)?.sendMessage(
             MessageBuilder()
                 .setContent(
                     "<@&351473717194522647>"
@@ -305,7 +326,7 @@ class GenerateServerReport(val m: LorittaHelper) {
 
         embed.addFinalConsiderations(items)
 
-        communityGuild.getTextChannelById(790308357713559582L)?.sendMessage(
+        communityGuild.getTextChannelById(SERVER_REPORTS_CHANNEL_ID)?.sendMessage(
             MessageBuilder()
                 .setContent(
                     "<@&351473717194522647>"
@@ -369,7 +390,7 @@ class GenerateServerReport(val m: LorittaHelper) {
 
         embed.addFinalConsiderations(items)
 
-        communityGuild.getTextChannelById(790308357713559582L)?.sendMessage(
+        communityGuild.getTextChannelById(SERVER_REPORTS_CHANNEL_ID)?.sendMessage(
             MessageBuilder()
                 .setContent(
                     "<@&351473717194522647>"
@@ -448,7 +469,7 @@ class GenerateServerReport(val m: LorittaHelper) {
 
         embed.addFinalConsiderations(items)
 
-        val query = communityGuild.getTextChannelById(790308357713559582L)?.sendMessage(
+        val query = communityGuild.getTextChannelById(SERVER_REPORTS_CHANNEL_ID)?.sendMessage(
             MessageBuilder()
                 .setContent(
                     "<@&351473717194522647>"

@@ -20,6 +20,7 @@ import net.dv8tion.jda.api.entities.Activity
 import net.dv8tion.jda.api.requests.GatewayIntent
 import net.dv8tion.jda.api.utils.MemberCachePolicy
 import net.perfectdreams.loritta.helper.listeners.ApproveFanArtListener
+import net.perfectdreams.loritta.helper.listeners.ApproveReportsOnReactionListener
 import net.perfectdreams.loritta.helper.listeners.BanListener
 import net.perfectdreams.loritta.helper.listeners.BanSuspectedUsersOnReactionListener
 import net.perfectdreams.loritta.helper.listeners.CheckLoriBannedUsersListener
@@ -37,6 +38,7 @@ import net.perfectdreams.loritta.helper.utils.dailyshopwinners.DailyShopWinners
 import net.perfectdreams.loritta.helper.utils.faqembed.FAQEmbedUpdaterEnglish
 import net.perfectdreams.loritta.helper.utils.faqembed.FAQEmbedUpdaterPortuguese
 import net.perfectdreams.loritta.helper.utils.faqembed.FAQEmbedUpdaterSparklyPower
+import net.perfectdreams.loritta.helper.utils.generateserverreport.PendingReportsListTask
 import net.perfectdreams.loritta.helper.utils.supporttimer.EnglishSupportTimer
 import net.perfectdreams.loritta.helper.utils.supporttimer.PortugueseSupportTimer
 import java.io.File
@@ -92,7 +94,8 @@ class LorittaHelper(val config: LorittaHelperConfig, val fanArtsConfig: FanArtsC
                         BanListener(this),
                         CheckLoriBannedUsersListener(this),
                         PrivateMessageListener(this),
-                        CheckUsersCommandsListener(this)
+                        CheckUsersCommandsListener(this),
+                        ApproveReportsOnReactionListener(this)
                 )
                 .also {
                     if (fanArtsConfig != null) {
@@ -137,6 +140,14 @@ class LorittaHelper(val config: LorittaHelperConfig, val fanArtsConfig: FanArtsC
                     TimeUnit.MINUTES
             )
         }
+
+        // Get non matched reports
+        timedTaskExecutor.scheduleAtFixedRate(
+                PendingReportsListTask(jda),
+                0,
+                15,
+                TimeUnit.MINUTES
+        )
 
         if (config.lorittaDatabase != null) {
             dailyShopWinners = DailyShopWinners(this, jda)
