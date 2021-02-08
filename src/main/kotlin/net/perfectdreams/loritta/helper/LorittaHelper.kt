@@ -108,6 +108,7 @@ class LorittaHelper(val config: LorittaHelperConfig, val fanArtsConfig: FanArtsC
                         MemberCachePolicy.ALL
                 )
                 .build()
+                .awaitReady()
 
         if (config.lorittaDatabase != null) {
             val dailyCatcher = DailyCatcherManager(this, jda)
