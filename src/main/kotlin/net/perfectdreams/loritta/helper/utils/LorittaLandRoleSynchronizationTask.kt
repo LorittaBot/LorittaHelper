@@ -69,7 +69,7 @@ class LorittaLandRoleSynchronizationTask(val m: LorittaHelper, val jda: JDA) : R
             if (communityGuild != null) {
                 // Apply donators roles
                 logger.info { "Applying donator roles in the community server..." }
-                
+
                 val payments = transaction(m.databases.lorittaDatabase) {
                     Payment.find {
                         (Payments.reason eq PaymentReason.DONATION) and (Payments.paidAt.isNotNull())
