@@ -6,6 +6,11 @@ import net.dv8tion.jda.api.entities.Guild
 import net.dv8tion.jda.api.entities.Role
 import net.dv8tion.jda.api.managers.RoleManager
 import net.perfectdreams.loritta.helper.LorittaHelper
+import net.perfectdreams.loritta.helper.dao.Payment
+import net.perfectdreams.loritta.helper.tables.Payments
+import net.perfectdreams.loritta.utils.payments.PaymentReason
+import org.jetbrains.exposed.sql.and
+import org.jetbrains.exposed.sql.transactions.transaction
 
 class LorittaLandRoleSynchronizationTask(val m: LorittaHelper, val jda: JDA) : Runnable {
     companion object {
@@ -41,39 +46,150 @@ class LorittaLandRoleSynchronizationTask(val m: LorittaHelper, val jda: JDA) : R
 
     override fun run() {
         logger.info { "Synchronizing roles..." }
+
         try {
-            val communityGuild = jda.getGuildById(297732013006389252L) ?: return
-            val supportGuild = jda.getGuildById(420626099257475072L) ?: return
-            val sparklyGuild = jda.getGuildById(320248230917046282L) ?: return
+            val communityGuild = jda.getGuildById(297732013006389252L)
+            if (communityGuild != null)
+                logger.info { "Community Guild Members: ${communityGuild.members.size}" }
+            else
+                logger.warn { "Community Guild is missing..." }
 
-            logger.info { "Community Guild Members: ${communityGuild.members.size}" }
-            logger.info { "Support Guild Members: ${supportGuild.members.size}" }
-            logger.info { "Sparkly Guild Members: ${sparklyGuild.members.size}" }
+            val supportGuild = jda.getGuildById(420626099257475072L)
+            if (supportGuild != null)
+                logger.info { "Support Guild Members: ${supportGuild.members.size}" }
+            else
+                logger.warn { "Support Guild is missing..." }
 
-            for ((communityRoleId, supportRoleId) in roleRemap) {
-                val communityRole = communityGuild.getRoleById(communityRoleId) ?: continue
-                val supportRole = supportGuild.getRoleById(supportRoleId) ?: continue
+            val sparklyGuild = jda.getGuildById(320248230917046282L)
+            if (sparklyGuild != null)
+                logger.info { "Sparkly Guild Members: ${sparklyGuild.members.size}" }
+            else
+                logger.warn { "Sparkly Guild is missing..." }
 
-                val manager = supportRole.manager
+            if (communityGuild != null) {
+                // Apply donators roles
+                logger.info { "Applying donator roles in the community server..." }
+                
+                val payments = transaction(m.databases.lorittaDatabase) {
+                    Payment.find {
+                        (Payments.reason eq PaymentReason.DONATION) and (Payments.paidAt.isNotNull())
+                    }.toMutableList()
+                }
 
-                var changed = false
+                val donatorsPlusQuantity = mutableMapOf<Long, Double>()
+                val donatorsPlusFirstDate = mutableMapOf<Long, Long>()
+                val inactiveDonators = mutableSetOf<Long>()
 
-                for (comparator in roleFieldComparators) {
-                    val communityValue = comparator.getValue(communityRole)
-                    val supportValue = comparator.getValue(supportRole)
+                val donatorRole = communityGuild.getRoleById(364201981016801281L)
+                val superDonatorRole = communityGuild.getRoleById(463652112656629760L)
+                val megaDonatorRole = communityGuild.getRoleById(534659343656681474L)
+                val advertisementRole = communityGuild.getRoleById(619691791041429574L)
+                val inactiveRole = communityGuild.getRoleById(435856512787677214L)
 
-                    if (communityValue != supportValue) {
-                        comparator.setValue(manager, communityValue)
-                        changed = true
+                for (payment in payments) {
+                    if (payment.expiresAt ?: 0 >= System.currentTimeMillis()) {
+                        donatorsPlusQuantity[payment.userId] = payment.money.toDouble() + donatorsPlusQuantity.getOrDefault(payment.userId, 0.0)
+                        if (!donatorsPlusFirstDate.containsKey(payment.userId)) {
+                            donatorsPlusFirstDate[payment.userId] = payment.paidAt ?: 0L
+                        }
+                    } else {
+                        inactiveDonators.add(payment.userId)
                     }
                 }
 
-                if (changed) {
-                    logger.info { "Updating role $supportRole because the role information doesn't match $communityRole information!" }
-                    manager.queue()
-                }
+                for (member in communityGuild.members) {
+                    val roles = member.roles.toMutableSet()
 
-                synchronizeRoles(communityGuild, supportGuild, communityRoleId, supportRoleId)
+                    if (donatorsPlusQuantity.containsKey(member.user.idLong)) {
+                        val donated = donatorsPlusQuantity[member.user.idLong] ?: 0.0
+
+                        if (!roles.contains(donatorRole))
+                            roles.add(donatorRole)
+
+                        if (roles.contains(inactiveRole))
+                            roles.remove(inactiveRole)
+
+                        if (donated >= 99.99) {
+                            if (!roles.contains(megaDonatorRole))
+                                roles.add(megaDonatorRole)
+                        } else {
+                            if (roles.contains(megaDonatorRole))
+                                roles.remove(megaDonatorRole)
+                        }
+
+                        if (donated >= 59.99) {
+                            if (!roles.contains(superDonatorRole))
+                                roles.add(superDonatorRole)
+                        } else {
+                            if (roles.contains(superDonatorRole))
+                                roles.remove(superDonatorRole)
+                        }
+
+                        if (donated >= 39.99) {
+                            if (!roles.contains(advertisementRole))
+                                roles.add(advertisementRole)
+                        } else {
+                            if (roles.contains(advertisementRole))
+                                roles.remove(advertisementRole)
+                        }
+                    } else {
+                        val filter = roles.filter { it.name.startsWith("\uD83C\uDFA8") }
+                        roles.removeAll(filter)
+
+                        if (roles.contains(advertisementRole))
+                            roles.remove(advertisementRole)
+
+                        if (roles.contains(donatorRole))
+                            roles.remove(donatorRole)
+
+                        if (roles.contains(superDonatorRole))
+                            roles.remove(superDonatorRole)
+
+                        if (roles.contains(megaDonatorRole))
+                            roles.remove(megaDonatorRole)
+
+                        if (inactiveDonators.contains(member.user.idLong)) {
+                            if (!roles.contains(inactiveRole)) {
+                                roles.add(inactiveRole)
+                            }
+                        } else
+                            roles.remove(inactiveRole)
+                    }
+
+                    if (!(roles.containsAll(member.roles) && member.roles.containsAll(roles))) {// Novos cargos foram adicionados
+                        logger.info { "Changing roles of $member, current roles are ${member.roles}, new roles will be $roles" }
+                        member.guild.modifyMemberRoles(member, roles).queue()
+                    }
+                }
+            }
+
+            if (communityGuild != null && supportGuild != null) {
+                logger.info { "Synchronizing roles between Community Guild and Support Guild..." }
+                for ((communityRoleId, supportRoleId) in roleRemap) {
+                    val communityRole = communityGuild.getRoleById(communityRoleId) ?: continue
+                    val supportRole = supportGuild.getRoleById(supportRoleId) ?: continue
+
+                    val manager = supportRole.manager
+
+                    var changed = false
+
+                    for (comparator in roleFieldComparators) {
+                        val communityValue = comparator.getValue(communityRole)
+                        val supportValue = comparator.getValue(supportRole)
+
+                        if (communityValue != supportValue) {
+                            comparator.setValue(manager, communityValue)
+                            changed = true
+                        }
+                    }
+
+                    if (changed) {
+                        logger.info { "Updating role $supportRole because the role information doesn't match $communityRole information!" }
+                        manager.queue()
+                    }
+
+                    synchronizeRoles(communityGuild, supportGuild, communityRoleId, supportRoleId)
+                }
             }
         } catch (e: Exception) {
             logger.warn(e) { "Something went wrong while trying to synchronize roles!" }
