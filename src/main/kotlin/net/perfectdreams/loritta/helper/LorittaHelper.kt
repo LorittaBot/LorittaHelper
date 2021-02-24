@@ -19,6 +19,7 @@ import net.dv8tion.jda.api.JDABuilder
 import net.dv8tion.jda.api.entities.Activity
 import net.dv8tion.jda.api.requests.GatewayIntent
 import net.dv8tion.jda.api.utils.MemberCachePolicy
+import net.perfectdreams.loritta.helper.listeners.AddReactionsToMessagesListener
 import net.perfectdreams.loritta.helper.listeners.ApproveFanArtListener
 import net.perfectdreams.loritta.helper.listeners.ApproveReportsOnReactionListener
 import net.perfectdreams.loritta.helper.listeners.BanListener
@@ -95,7 +96,8 @@ class LorittaHelper(val config: LorittaHelperConfig, val fanArtsConfig: FanArtsC
                         CheckLoriBannedUsersListener(this),
                         PrivateMessageListener(this),
                         CheckUsersCommandsListener(this),
-                        ApproveReportsOnReactionListener(this)
+                        ApproveReportsOnReactionListener(this),
+                        AddReactionsToMessagesListener(this)
                 )
                 .also {
                     if (fanArtsConfig != null) {
