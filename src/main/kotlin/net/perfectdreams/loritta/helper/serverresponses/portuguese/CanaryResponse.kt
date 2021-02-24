@@ -20,7 +20,7 @@ class CanaryResponse : RegExResponse() {
     override fun getResponse(event: GuildMessageReceivedEvent, message: String) =
         listOf(
             LorittaReply(
-                "A Loritta Canary (<@395935916952256523>) é a versão experimental (beta) da <@297153970613387264> (sim, eu tenho duas contas, não me julge!)",
+                "A Loritta Canary (<@395935916952256523>) é a versão experimental (beta) da <@297153970613387264> (sim, eu tenho duas contas, não me julgue!)",
                 prefix = Emotes.LORI_PAC
             ),
             LorittaReply(
