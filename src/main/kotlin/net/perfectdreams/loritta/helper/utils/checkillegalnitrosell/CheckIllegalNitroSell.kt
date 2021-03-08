@@ -4,6 +4,7 @@ import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent
 import net.dv8tion.jda.api.utils.MarkdownSanitizer
 import net.perfectdreams.loritta.helper.LorittaHelper
 import net.perfectdreams.loritta.helper.toNaiveBayesClassifier
+import net.perfectdreams.loritta.helper.utils.splitWords
 
 /**
  * Checks if a message contains *bad* stuff about trading sonhos to Nitro
@@ -23,10 +24,6 @@ class CheckIllegalNitroSell {
             featuresSelector = { it.message.splitWords().toSet().also { println(it) } },
             categorySelector = { it.isSpam }
     )
-
-    fun String.splitWords() =  split(Regex("\\s")).asSequence()
-            .map { it.replace(Regex("[^A-Za-z]"),"").toLowerCase() }
-            .filter { it.isNotEmpty() }
 
     fun onMessageReceived(event: GuildMessageReceivedEvent) {
         if (event.author.isBot)

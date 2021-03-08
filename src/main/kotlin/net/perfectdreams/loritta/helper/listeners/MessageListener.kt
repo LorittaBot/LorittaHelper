@@ -9,6 +9,7 @@ import net.perfectdreams.loritta.helper.serverresponses.EnglishResponses
 import net.perfectdreams.loritta.helper.serverresponses.PortugueseResponses
 import net.perfectdreams.loritta.helper.utils.Constants
 import net.perfectdreams.loritta.helper.utils.checkillegalnitrosell.CheckIllegalNitroSell
+import net.perfectdreams.loritta.helper.utils.checksonhosmendigagem.CheckSonhosMendigagem
 import net.perfectdreams.loritta.helper.utils.dontmentionstaff.EnglishDontMentionStaff
 import net.perfectdreams.loritta.helper.utils.dontmentionstaff.PortugueseDontMentionStaff
 import net.perfectdreams.loritta.helper.utils.generatebanstatusreport.GenerateBanStatusReport
@@ -25,6 +26,7 @@ class MessageListener(val m: LorittaHelper) : ListenerAdapter() {
     val checkIllegalNitroSell = CheckIllegalNitroSell()
     val generateBanStatusReport = GenerateBanStatusReport(m)
     val generateServerReport = GenerateServerReport(m)
+    val checkSonhosBraggers = CheckSonhosMendigagem(m)
 
     override fun onGuildMessageReceived(event: GuildMessageReceivedEvent) {
         super.onGuildMessageReceived(event)
@@ -46,6 +48,10 @@ class MessageListener(val m: LorittaHelper) : ListenerAdapter() {
                     generateServerReport.onMessageReceived(event)
             }
             return
+        }
+
+        m.launch {
+            checkSonhosBraggers.onMessageReceived(event)
         }
 
         // We launch in a separate task because we want both responses (automatic responses + don't mention staff) to go off, if they
