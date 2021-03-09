@@ -10,6 +10,7 @@ import org.jetbrains.exposed.sql.transactions.TransactionManager
 import org.jetbrains.exposed.sql.transactions.transaction
 import java.time.Instant
 import java.time.LocalDateTime
+import java.time.YearMonth
 import java.time.ZoneOffset
 import java.time.format.TextStyle
 import java.util.*
@@ -54,10 +55,14 @@ class DailyShopWinners(val m: LorittaHelper, val jda: JDA) {
         ).atOffset(ZoneOffset.UTC)
             .toEpochSecond() * 1000
 
+        // We can't just to Month.length because of leap years
+        val yearMonthObject = YearMonth.of(lastMonthAtUtc.year, lastMonthAtUtc.monthValue)
+        val daysInMonth = yearMonthObject.lengthOfMonth()
+
         val endOfPreviousMonth = LocalDateTime.of(
             lastMonthAtUtc.year,
             lastMonthAtUtc.monthValue,
-            lastMonthAtUtc.month.maxLength(),
+            daysInMonth,
             23,
             59
         ).atOffset(ZoneOffset.UTC)
