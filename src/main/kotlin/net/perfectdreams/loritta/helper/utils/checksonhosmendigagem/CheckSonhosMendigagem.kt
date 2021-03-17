@@ -51,6 +51,11 @@ class CheckSonhosMendigagem(val m: LorittaHelper) {
                 "Ainda não está satisfeito? Então jogue no servidor de Minecraft SparklyPower! `mc.sparklypower.net`",
                 Emotes.PANTUFA_GASP,
                 mentionUser = false
+            ),
+            LorittaReply(
+                "**Se você continuar a mendigar você será punido!**",
+                Emotes.LORI_BAN_HAMMER,
+                mentionUser = false
             )
         )
     }
