@@ -20,7 +20,7 @@ class IPLocationCommand(helper: LorittaHelper) : HelperSlashCommand(helper, this
         override val options = Options
 
         object Options : SlashCommandDeclaration.Options() {
-            val ip = user("address", "Endereço a ser verificado")
+            val ip = string("address", "Endereço a ser verificado")
                 .required()
                 .register()
         }
