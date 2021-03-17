@@ -270,7 +270,12 @@ class LorittaHelper(val config: LorittaHelperConfig, val fanArtsConfig: FanArtsC
             header("Authorization", "token ${config.githubToken}")
         }
 
-        val location = response2.headers["Location"]!!
+        val location = response2.headers["Location"] ?: run {
+            logger.info { "Missing Location URL from headers! Restarting update process after 5s..." }
+            delay(5_000)
+            update()
+            return@run
+        }
 
         logger.info { "Build Location URL: $location" }
 
