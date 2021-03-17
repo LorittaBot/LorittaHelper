@@ -3,7 +3,6 @@ package net.perfectdreams.loritta.helper.listeners
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import mu.KotlinLogging
-import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent
 import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEvent
 import net.dv8tion.jda.api.hooks.ListenerAdapter
 import net.perfectdreams.loritta.helper.LorittaHelper
@@ -15,44 +14,8 @@ import java.net.URL
 class ApproveFanArtListener(val m: LorittaHelper, val config: FanArtsConfig) : ListenerAdapter() {
     companion object {
         private val logger = KotlinLogging.logger {}
-    }
 
-    var fanArtOverrideSettings: FanArtOverrideSettings? = null
-
-    override fun onGuildMessageReceived(event: GuildMessageReceivedEvent) {
-        super.onGuildMessageReceived(event)
-
-        if (!event.message.contentRaw.startsWith("h!fan_arts_override"))
-            return
-
-        val member = event.member ?: return
-
-        if (!member.roles.any { it.idLong == config.approveFanArtsRoleId })
-            return
-
-        val contentRaw = event.message.contentRaw
-                .split("\n")
-
-        val resetSettings = contentRaw.firstOrNull { it.startsWith("reset") }
-        if (resetSettings != null) {
-            fanArtOverrideSettings = null
-            event.channel.sendMessage("Override resetado!").queue()
-            return
-        }
-
-        val fileName = contentRaw.firstOrNull { it.startsWith("imageFileName:") }?.trim()?.removePrefix("imageFileName:")
-        val tags = contentRaw.firstOrNull { it.startsWith("tags:") }?.removePrefix("tags:")?.split(",")?.map { it.trim() }
-        val artistFileName = contentRaw.firstOrNull { it.startsWith("artistFileName:") }?.trim()?.removePrefix("artistFileName:")
-        val artistFileNameOnImage = contentRaw.firstOrNull { it.startsWith("artistFileNameOnImage:") }?.trim()?.removePrefix("artistFileNameOnImage:")
-
-        fanArtOverrideSettings = FanArtOverrideSettings(
-                fileName,
-                tags,
-                artistFileName,
-                artistFileNameOnImage
-        )
-
-        event.channel.sendMessage("Override criado! $fanArtOverrideSettings").queue()
+        var fanArtOverrideSettings: FanArtOverrideSettings? = null
     }
 
     override fun onGuildMessageReactionAdd(event: GuildMessageReactionAddEvent) {

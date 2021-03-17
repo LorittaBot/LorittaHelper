@@ -1,5 +1,6 @@
 package net.perfectdreams.loritta.helper
 
+import dev.kord.common.entity.Snowflake
 import io.ktor.client.*
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
@@ -19,13 +20,13 @@ import net.dv8tion.jda.api.JDABuilder
 import net.dv8tion.jda.api.entities.Activity
 import net.dv8tion.jda.api.requests.GatewayIntent
 import net.dv8tion.jda.api.utils.MemberCachePolicy
+import net.perfectdreams.discordinteraktions.InteractionsServer
 import net.perfectdreams.loritta.helper.listeners.AddReactionsToMessagesListener
 import net.perfectdreams.loritta.helper.listeners.ApproveFanArtListener
 import net.perfectdreams.loritta.helper.listeners.ApproveReportsOnReactionListener
 import net.perfectdreams.loritta.helper.listeners.BanListener
 import net.perfectdreams.loritta.helper.listeners.BanSuspectedUsersOnReactionListener
 import net.perfectdreams.loritta.helper.listeners.CheckLoriBannedUsersListener
-import net.perfectdreams.loritta.helper.listeners.CheckUsersCommandsListener
 import net.perfectdreams.loritta.helper.listeners.MessageListener
 import net.perfectdreams.loritta.helper.listeners.PrivateMessageListener
 import net.perfectdreams.loritta.helper.network.Databases
@@ -40,6 +41,13 @@ import net.perfectdreams.loritta.helper.utils.faqembed.FAQEmbedUpdaterEnglish
 import net.perfectdreams.loritta.helper.utils.faqembed.FAQEmbedUpdaterPortuguese
 import net.perfectdreams.loritta.helper.utils.faqembed.FAQEmbedUpdaterSparklyPower
 import net.perfectdreams.loritta.helper.utils.generateserverreport.PendingReportsListTask
+import net.perfectdreams.loritta.helper.utils.slash.BroadcastDailyShopWinnersCommand
+import net.perfectdreams.loritta.helper.utils.slash.CheckCommandsCommand
+import net.perfectdreams.loritta.helper.utils.slash.DailyCatcherCheckCommand
+import net.perfectdreams.loritta.helper.utils.slash.FanArtsOverrideGetCommand
+import net.perfectdreams.loritta.helper.utils.slash.FanArtsOverrideResetCommand
+import net.perfectdreams.loritta.helper.utils.slash.FanArtsOverrideSetCommand
+import net.perfectdreams.loritta.helper.utils.slash.PendingScarletCommand
 import net.perfectdreams.loritta.helper.utils.supporttimer.EnglishSupportTimer
 import net.perfectdreams.loritta.helper.utils.supporttimer.PortugueseSupportTimer
 import java.io.File
@@ -52,6 +60,7 @@ import java.util.concurrent.TimeUnit
 import java.util.jar.Attributes
 import java.util.jar.JarFile
 import java.util.zip.ZipInputStream
+import kotlin.concurrent.thread
 
 
 /**
@@ -79,6 +88,11 @@ class LorittaHelper(val config: LorittaHelperConfig, val fanArtsConfig: FanArtsC
     var dailyCatcherManager: DailyCatcherManager? = null
 
     var dailyShopWinners: DailyShopWinners? = null
+    val interactionsServer = InteractionsServer(
+        config.applicationId,
+        config.publicKey,
+        config.token
+    )
 
     fun start() {
         // We only care about GUILD MESSAGES and we don't need to cache any users
@@ -95,7 +109,6 @@ class LorittaHelper(val config: LorittaHelperConfig, val fanArtsConfig: FanArtsC
                         BanListener(this),
                         CheckLoriBannedUsersListener(this),
                         PrivateMessageListener(this),
-                        CheckUsersCommandsListener(this),
                         ApproveReportsOnReactionListener(this),
                         AddReactionsToMessagesListener(this)
                 )
@@ -178,6 +191,28 @@ class LorittaHelper(val config: LorittaHelperConfig, val fanArtsConfig: FanArtsC
 
         timedTaskExecutor.scheduleWithFixedDelay(LorittaLandRoleSynchronizationTask(this, jda), 0, 15, TimeUnit.SECONDS)
         timedTaskExecutor.scheduleWithFixedDelay(LorittaBannedRoleTask(this, jda), 0, 15, TimeUnit.SECONDS)
+
+        // Register Commands
+        interactionsServer.commandManager.registerAll(
+            BroadcastDailyShopWinnersCommand(this),
+            CheckCommandsCommand(this),
+            DailyCatcherCheckCommand(this),
+            FanArtsOverrideGetCommand(this),
+            FanArtsOverrideSetCommand(this),
+            FanArtsOverrideResetCommand(this),
+            PendingScarletCommand(this, jda)
+        )
+
+        launch {
+            interactionsServer.commandManager.updateAllCommandsInGuild(
+                Snowflake(297732013006389252L),
+                true
+            )
+
+            thread {
+                interactionsServer.start()
+            }
+        }
     }
 
     fun launch(block: suspend CoroutineScope.() -> Unit) = GlobalScope.launch(executor) {

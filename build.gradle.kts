@@ -10,6 +10,7 @@ version = "1.0.0"
 
 repositories {
     mavenCentral()
+    maven("https://oss.sonatype.org/content/repositories/snapshots") // Required by Kord
     maven("https://repo.perfectdreams.net/")
     maven("https://jcenter.bintray.com")
     maven("https://jitpack.io")
@@ -29,6 +30,9 @@ dependencies {
 
     // Sequins
     implementation("net.perfectdreams.sequins.text:text-utils:1.0.0")
+
+    // Discord InteraKTions
+    implementation("net.perfectdreams.discordinteraktions:core:0.0.2-SNAPSHOT")
 
     // Database
     implementation("org.postgresql:postgresql:42.2.14")
