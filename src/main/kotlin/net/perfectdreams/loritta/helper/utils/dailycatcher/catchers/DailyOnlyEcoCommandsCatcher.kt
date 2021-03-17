@@ -15,6 +15,7 @@ import net.perfectdreams.loritta.helper.utils.dailycatcher.SuspiciousLevel
 import net.perfectdreams.loritta.helper.utils.dailycatcher.UserDailyRewardCache
 import net.perfectdreams.loritta.helper.utils.dailycatcher.UserInfoCache
 import net.perfectdreams.loritta.helper.utils.dailycatcher.reports.ReportOnlyEcoCatcher
+import org.apache.commons.text.similarity.LevenshteinDistance
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SortOrder
 import org.jetbrains.exposed.sql.and
@@ -30,6 +31,12 @@ class DailyOnlyEcoCommandsCatcher(database: Database) : DailyCatcher<ReportOnlyE
         private const val LENIENT_ECONOMY_COMMANDS_THRESHOLD = 0.98
         private const val CHUNKED_EXECUTED_COMMAND_LOGS_COUNT = 500
         private val logger = KotlinLogging.logger {}
+
+        private val SUSPICIOUS_NAMES = setOf(
+            "FAKE",
+            "sonhos",
+            "farm"
+        )
     }
 
     override suspend fun catch(channel: Channel<ReportOnlyEcoCatcher>) {
@@ -47,14 +54,14 @@ class DailyOnlyEcoCommandsCatcher(database: Database) : DailyCatcher<ReportOnlyE
             val start = System.currentTimeMillis()
             val commands = transaction(Connection.TRANSACTION_READ_UNCOMMITTED, 5, database) {
                 ExecutedCommandsLog.slice(ExecutedCommandsLog.command, ExecutedCommandsLog.userId, commandCountField)
-                        .select {
-                            ExecutedCommandsLog.sentAt greaterEq DailyCatcherManager.fourteenDaysAgo() and (
-                                    ExecutedCommandsLog.userId inList chunkedDaily.map { it[Dailies.receivedById] }
-                            )
-                        }
-                        .groupBy(ExecutedCommandsLog.command, ExecutedCommandsLog.userId)
-                        .orderBy(commandCountField, SortOrder.DESC)
-                        .toList()
+                    .select {
+                        ExecutedCommandsLog.sentAt greaterEq DailyCatcherManager.fourteenDaysAgo() and (
+                                ExecutedCommandsLog.userId inList chunkedDaily.map { it[Dailies.receivedById] }
+                                )
+                    }
+                    .groupBy(ExecutedCommandsLog.command, ExecutedCommandsLog.userId)
+                    .orderBy(commandCountField, SortOrder.DESC)
+                    .toList()
             }.groupBy { it[ExecutedCommandsLog.userId] }
 
             println("Finish: ${System.currentTimeMillis() - start}ms")
@@ -66,9 +73,9 @@ class DailyOnlyEcoCommandsCatcher(database: Database) : DailyCatcher<ReportOnlyE
                 val userId = daily[Dailies.receivedById]
                 val cmdQuantity = commands[userId]?.sumBy { it[commandCountField].toInt() } ?: continue
                 val cmdEconomyQuantity = commands[userId]?.filter { it[ExecutedCommandsLog.command] in DailyCatcherManager.ECONOMY_COMMANDS }
-                        ?.sumBy { it[commandCountField].toInt() } ?: continue
+                    ?.sumBy { it[commandCountField].toInt() } ?: continue
                 val cmdEconomyLenientQuantity = commands[userId]?.filter { it[ExecutedCommandsLog.command] in DailyCatcherManager.LENIENT_ECONOMY_COMMANDS }
-                        ?.sumBy { it[commandCountField].toInt() } ?: continue
+                    ?.sumBy { it[commandCountField].toInt() } ?: continue
 
                 val percentage = cmdEconomyQuantity.toDouble() / cmdQuantity.toDouble()
                 val percentageLenient = cmdEconomyLenientQuantity.toDouble() / cmdQuantity.toDouble()
@@ -78,9 +85,9 @@ class DailyOnlyEcoCommandsCatcher(database: Database) : DailyCatcher<ReportOnlyE
 
                     // A threshold has been reached! Time to check all the transactions and figure out who the account is related to
                     val stats = ExecutedCommandsStats(
-                            cmdQuantity,
-                            cmdEconomyQuantity,
-                            cmdEconomyLenientQuantity
+                        cmdQuantity,
+                        cmdEconomyQuantity,
+                        cmdEconomyLenientQuantity
                     )
 
                     val sonhosTransactionsRelatedToTheUser = transaction(database) {
@@ -108,15 +115,15 @@ class DailyOnlyEcoCommandsCatcher(database: Database) : DailyCatcher<ReportOnlyE
                     // If the main account got daily today... then that's a big oof moment.
                     if (mainAccountGotDailyToday != 0L) {
                         val simpleCatcherReport = ReportOnlyEcoCatcher(
-                                percentage,
-                                stats,
-                                listOf(
-                                        userId,
-                                        likelyToBeTheMainAccount.key
-                                ),
-                                likelyToBeTheMainAccount.value.map {
-                                    convertToWrapper(it)
-                                }
+                            percentage,
+                            stats,
+                            listOf(
+                                userId,
+                                likelyToBeTheMainAccount.key
+                            ),
+                            likelyToBeTheMainAccount.value.map {
+                                convertToWrapper(it)
+                            }
                         )
 
                         println(simpleCatcherReport)
@@ -131,26 +138,76 @@ class DailyOnlyEcoCommandsCatcher(database: Database) : DailyCatcher<ReportOnlyE
     }
 
     override fun buildReportMessage(jda: JDA, bannedUsersIds: Set<Long>, report: ReportOnlyEcoCatcher): DailyCatcherMessage {
-        var susLevel = SuspiciousLevel.SUS
+        var susLevel = SuspiciousLevel.NOT_REALLY_SUS
         val userInfoCache = UserInfoCache()
 
         val embed = EmbedBuilder()
+
+        /**
+         * Only replace the suspicious level if the new suspicious level is higher than the previous level
+         */
+        fun replaceSusLevelIfHigher(newSuspiciousLevel: SuspiciousLevel) {
+            if (newSuspiciousLevel.level > susLevel.level)
+                susLevel = newSuspiciousLevel
+        }
 
         report.users.forEach {
             val user = userInfoCache.getOrRetrieveUserInfo(jda, it)
 
             if (user?.avatarId == null)
                 susLevel = susLevel.increase()
-            if (user?.name?.contains("FAKE", true) == true)
+
+            // If the user has suspicious names in its name... (and similar) then well, the sus level goes off the roof!
+            if (SUSPICIOUS_NAMES.any { user?.name?.contains("FAKE", true) == true })
+                replaceSusLevelIfHigher(SuspiciousLevel.MEGA_VERY_SUS)
+
+            if (user != null) {
+                report.users.filter { other -> other != it }.forEach {
+                    val otherUser = userInfoCache.getOrRetrieveUserInfo(jda, it) ?: return@forEach
+
+                    if (otherUser.name.contains(user.name, true)) {
+                        // If anyone else in the report has the same name, then oof, they ARE the same user because the chances of them not being the same user are very slim
+                        replaceSusLevelIfHigher(SuspiciousLevel.TOTALLY_THE_SAME_USER)
+                    }
+                }
+            }
+        }
+
+        // Avoid querying for similar emails if the sus level is already "totally the same user"!
+        if (susLevel != SuspiciousLevel.TOTALLY_THE_SAME_USER) {
+            val emails = report.users.mapNotNull { retrieveUserLastDailyReward(it) }.map { it[Dailies.email] }
+
+            for (email in emails) {
+                for (otherEmail in emails) {
+                    // Ignore if we are checking the same email (which *should* be impossible)
+                    if (email == otherEmail)
+                        continue
+
+                    // Check for email similarity, but ignore the host
+                    val firstHalfEmail = email.split("@").first()
+                    val firstHalfOtherEmail = otherEmail.split("@").first()
+
+                    val levenshtein = LevenshteinDistance(2)
+                    val result = levenshtein.apply(firstHalfEmail, firstHalfOtherEmail)
+
+                    // Same user bye
+                    if (result == 0)
+                        replaceSusLevelIfHigher(SuspiciousLevel.TOTALLY_THE_SAME_USER)
+                    else if (result > 0) // If the distance is positive, then it means that there was a match!
+                        replaceSusLevelIfHigher(SuspiciousLevel.MEGA_VERY_SUS)
+
+                    // If the result is negative then it means that the email is different, so not *sus*
+                }
+            }
+        }
+
+        repeat(report.transactions.size / 10) {
+            if (SuspiciousLevel.SUPER_VERY_SUS.level > susLevel.level)
                 susLevel = susLevel.increase()
         }
 
-        repeat(report.transactions.size / 5) {
-            susLevel = susLevel.increase()
-        }
-
         if (report.transactions.size == 1)
-            susLevel = SuspiciousLevel.NOT_REALLY_SUS
+            replaceSusLevelIfHigher(SuspiciousLevel.NOT_REALLY_SUS)
 
         var reportMessage = appendHeader("Conta pegou daily e apenas usou comandos de economia na conta", susLevel)
 
@@ -193,17 +250,17 @@ class DailyOnlyEcoCommandsCatcher(database: Database) : DailyCatcher<ReportOnlyE
         }
 
         return DailyCatcherMessage(
-                MessageBuilder(reportMessage)
-                        .setEmbed(
-                                embed
-                                        .appendTransactionsToEmbed(report.transactions, userDailyRewardCache)
-                                        .appendDailyList(report.users)
-                                        .setTimestamp(Instant.now())
-                                        .build()
-                        )
-                        .build(),
-                susLevel,
-                usersToBeBanned.isNotEmpty()
+            MessageBuilder(reportMessage)
+                .setEmbed(
+                    embed
+                        .appendTransactionsToEmbed(report.transactions, userDailyRewardCache)
+                        .appendDailyList(report.users)
+                        .setTimestamp(Instant.now())
+                        .build()
+                )
+                .build(),
+            susLevel,
+            usersToBeBanned.isNotEmpty()
         )
     }
 }
