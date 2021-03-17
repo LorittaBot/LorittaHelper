@@ -20,6 +20,10 @@ import java.time.Instant
 import java.time.ZoneId
 
 class TopSonhosRankingSender(val m: LorittaHelper, val jda: JDA) {
+    companion object {
+        const val ACCOUNTS_TO_BE_RETRIEVED = 100_000
+    }
+
     private val logger = KotlinLogging.logger {}
 
     fun start() = GlobalScope.launch {
@@ -28,7 +32,7 @@ class TopSonhosRankingSender(val m: LorittaHelper, val jda: JDA) {
                 Profiles.select {
                     Profiles.money neq 0
                 }.orderBy(Profiles.money, SortOrder.DESC)
-                    .limit(100_000)
+                    .limit(ACCOUNTS_TO_BE_RETRIEVED)
                     .toList()
             }
 
@@ -71,7 +75,7 @@ class TopSonhosRankingSender(val m: LorittaHelper, val jda: JDA) {
                 val indexDisplay = ((index + 1).toString() + ".")
 
                 // + 7 is due to the " sonhos" text
-                builder.append("$indexDisplay ${userId.toString().padEnd(biggestUserIdIndex, ' ')} ${"$sonhos sonhos".padEnd(biggestSonhosLength + 7, ' ')} $tag")
+                builder.append("${indexDisplay.padStart("$ACCOUNTS_TO_BE_RETRIEVED.".length, ' ')} ${userId.toString().padEnd(biggestUserIdIndex, ' ')} ${"$sonhos sonhos".padEnd(biggestSonhosLength + 7, ' ')} $tag")
                 builder.append("\n")
 
                 newStoredSonhos.add(
