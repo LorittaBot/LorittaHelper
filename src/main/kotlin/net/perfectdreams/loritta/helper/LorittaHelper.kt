@@ -51,6 +51,7 @@ import net.perfectdreams.loritta.helper.utils.slash.IPLocationCommand
 import net.perfectdreams.loritta.helper.utils.slash.PendingScarletCommand
 import net.perfectdreams.loritta.helper.utils.supporttimer.EnglishSupportTimer
 import net.perfectdreams.loritta.helper.utils.supporttimer.PortugueseSupportTimer
+import net.perfectdreams.loritta.helper.utils.topsonhos.TopSonhosRankingSender
 import java.io.File
 import java.time.Instant
 import java.time.LocalDateTime
@@ -186,6 +187,7 @@ class LorittaHelper(val config: LorittaHelperConfig, val fanArtsConfig: FanArtsC
         FAQEmbedUpdaterPortuguese(this, jda).start()
         FAQEmbedUpdaterEnglish(this, jda).start()
         FAQEmbedUpdaterSparklyPower(this, jda).start()
+        TopSonhosRankingSender(this, jda).start()
 
         PortugueseSupportTimer(this, jda).start()
         EnglishSupportTimer(this, jda).start()
