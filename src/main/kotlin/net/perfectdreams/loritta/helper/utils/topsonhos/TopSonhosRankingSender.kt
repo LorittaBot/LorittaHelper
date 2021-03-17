@@ -98,7 +98,7 @@ class TopSonhosRankingSender(val m: LorittaHelper, val jda: JDA) {
             val minute = givenAtTime.minute.toString().padStart(2, '0')
 
             topSonhosChannel?.sendMessage(
-                "**Top Sonhos @$day/$month/$year $hour:$minute**\n```\n$linesToBeSent\n```"
+                "**Top Sonhos @ $day/$month/$year $hour:$minute**\n```\n$linesToBeSent\n```"
             )?.addFile(
                 result.toByteArray(
                     Charsets.UTF_8
