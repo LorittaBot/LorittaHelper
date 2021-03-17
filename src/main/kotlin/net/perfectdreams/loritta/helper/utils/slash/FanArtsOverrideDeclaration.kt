@@ -32,10 +32,10 @@ object FanArtsOverrideDeclaration {
             val tags = string("tags", "Tags da Fan Art")
                 .register()
 
-            val artistFileName = string("tags", "Nome do Desenhista (Arquivo)")
+            val artistFileName = string("artist_file_name", "Nome do Desenhista (Arquivo)")
                 .register()
 
-            val artistImageFileName = string("tags", "Nome do Desenhista (Imagem)")
+            val artistImageFileName = string("artist_image_file_name", "Nome do Desenhista (Imagem)")
                 .register()
         }
     }
