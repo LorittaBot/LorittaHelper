@@ -27,6 +27,8 @@ class CheckCommandsCommand(helper: LorittaHelper) : HelperSlashCommand(helper, t
     }
 
     override suspend fun executesHelper(context: SlashCommandContext) {
+        context.defer()
+        
         val user = options.user.get(context)
 
         val commandCountField = ExecutedCommandsLog.command.count()
