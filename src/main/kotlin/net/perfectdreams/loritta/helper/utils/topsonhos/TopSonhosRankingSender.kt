@@ -70,7 +70,7 @@ class TopSonhosRankingSender(val m: LorittaHelper, val jda: JDA) {
                 val indexDisplay = ((index + 1).toString() + ".")
 
                 // + 7 is due to the " sonhos" text
-                builder.append("`$indexDisplay ${userId.toString().padEnd(biggestUserIdIndex, ' ')}` ${"$sonhos sonhos".padEnd(biggestSonhosLength + 7, ' ')} $tag")
+                builder.append("$indexDisplay ${userId.toString().padEnd(biggestUserIdIndex, ' ')} ${"$sonhos sonhos".padEnd(biggestSonhosLength + 7, ' ')} $tag")
                 builder.append("\n")
             }
 
@@ -90,7 +90,7 @@ class TopSonhosRankingSender(val m: LorittaHelper, val jda: JDA) {
             val minute = givenAtTime.minute.toString().padStart(2, '0')
 
             topSonhosChannel?.sendMessage(
-                "```\n$linesToBeSent\n```"
+                "**Top Sonhos @$day/$month/$year $hour:$minute**\n```\n$linesToBeSent\n```"
             )?.addFile(
                 result.toByteArray(
                     Charsets.UTF_8
