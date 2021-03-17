@@ -47,6 +47,7 @@ import net.perfectdreams.loritta.helper.utils.slash.DailyCatcherCheckCommand
 import net.perfectdreams.loritta.helper.utils.slash.FanArtsOverrideGetCommand
 import net.perfectdreams.loritta.helper.utils.slash.FanArtsOverrideResetCommand
 import net.perfectdreams.loritta.helper.utils.slash.FanArtsOverrideSetCommand
+import net.perfectdreams.loritta.helper.utils.slash.IPLocationCommand
 import net.perfectdreams.loritta.helper.utils.slash.PendingScarletCommand
 import net.perfectdreams.loritta.helper.utils.supporttimer.EnglishSupportTimer
 import net.perfectdreams.loritta.helper.utils.supporttimer.PortugueseSupportTimer
@@ -81,7 +82,7 @@ class LorittaHelper(val config: LorittaHelperConfig, val fanArtsConfig: FanArtsC
     // As long we don't do any blocking tasks inside of the executor, Loritta Helper will work fiiiine
     // and will be very lightweight!
     val executor = Executors.newFixedThreadPool(8)
-            .asCoroutineDispatcher()
+        .asCoroutineDispatcher()
 
     val timedTaskExecutor = Executors.newScheduledThreadPool(1)
     val databases = Databases(this)
@@ -97,33 +98,33 @@ class LorittaHelper(val config: LorittaHelperConfig, val fanArtsConfig: FanArtsC
     fun start() {
         // We only care about GUILD MESSAGES and we don't need to cache any users
         val jda = JDABuilder.createLight(
-                config.token,
-                GatewayIntent.DIRECT_MESSAGES,
-                GatewayIntent.GUILD_MESSAGES,
-                GatewayIntent.GUILD_BANS,
-                GatewayIntent.GUILD_MEMBERS,
-                GatewayIntent.GUILD_MESSAGE_REACTIONS
+            config.token,
+            GatewayIntent.DIRECT_MESSAGES,
+            GatewayIntent.GUILD_MESSAGES,
+            GatewayIntent.GUILD_BANS,
+            GatewayIntent.GUILD_MEMBERS,
+            GatewayIntent.GUILD_MESSAGE_REACTIONS
         )
-                .addEventListeners(
-                        MessageListener(this),
-                        BanListener(this),
-                        CheckLoriBannedUsersListener(this),
-                        PrivateMessageListener(this),
-                        ApproveReportsOnReactionListener(this),
-                        AddReactionsToMessagesListener(this)
-                )
-                .also {
-                    if (fanArtsConfig != null) {
-                        it.addEventListeners(ApproveFanArtListener(this, fanArtsConfig))
-                    } else {
-                        logger.info { "Fan Arts Config is not present, not registering listener..." }
-                    }
+            .addEventListeners(
+                MessageListener(this),
+                BanListener(this),
+                CheckLoriBannedUsersListener(this),
+                PrivateMessageListener(this),
+                ApproveReportsOnReactionListener(this),
+                AddReactionsToMessagesListener(this)
+            )
+            .also {
+                if (fanArtsConfig != null) {
+                    it.addEventListeners(ApproveFanArtListener(this, fanArtsConfig))
+                } else {
+                    logger.info { "Fan Arts Config is not present, not registering listener..." }
                 }
-                .setMemberCachePolicy(
-                        MemberCachePolicy.ALL
-                )
-                .build()
-                .awaitReady()
+            }
+            .setMemberCachePolicy(
+                MemberCachePolicy.ALL
+            )
+            .build()
+            .awaitReady()
 
         if (config.lorittaDatabase != null) {
             val dailyCatcher = DailyCatcherManager(this, jda)
@@ -131,16 +132,16 @@ class LorittaHelper(val config: LorittaHelperConfig, val fanArtsConfig: FanArtsC
             jda.addEventListener(BanSuspectedUsersOnReactionListener(this))
 
             val fiveInTheMorningTomorrowLocalDateTime = LocalDateTime.now()
-                    .let {
-                        if (it.hour >= 5)
-                            it.plusDays(1)
-                        else it
-                    }
-                    .withHour(5)
-                    .withMinute(0)
-                    .withSecond(0)
-                    .withNano(0)
-                    .atZone(ZoneId.of("America/Sao_Paulo"))
+                .let {
+                    if (it.hour >= 5)
+                        it.plusDays(1)
+                    else it
+                }
+                .withHour(5)
+                .withMinute(0)
+                .withSecond(0)
+                .withNano(0)
+                .atZone(ZoneId.of("America/Sao_Paulo"))
 
             this.dailyCatcherManager = dailyCatcher
 
@@ -150,19 +151,19 @@ class LorittaHelper(val config: LorittaHelperConfig, val fanArtsConfig: FanArtsC
             // Will execute the task every day at 05:00
             // 1440 = 24 hours in minutes
             timedTaskExecutor.scheduleAtFixedRate(
-                    DailyCatcherTask(dailyCatcher),
-                    whenItShouldBeStarted,
-                    1440,
-                    TimeUnit.MINUTES
+                DailyCatcherTask(dailyCatcher),
+                whenItShouldBeStarted,
+                1440,
+                TimeUnit.MINUTES
             )
         }
 
         // Get non matched reports
         timedTaskExecutor.scheduleAtFixedRate(
-                PendingReportsListTask(jda),
-                0,
-                15,
-                TimeUnit.MINUTES
+            PendingReportsListTask(jda),
+            0,
+            15,
+            TimeUnit.MINUTES
         )
 
         if (config.lorittaDatabase != null) {
@@ -200,7 +201,8 @@ class LorittaHelper(val config: LorittaHelperConfig, val fanArtsConfig: FanArtsC
             FanArtsOverrideGetCommand(this),
             FanArtsOverrideSetCommand(this),
             FanArtsOverrideResetCommand(this),
-            PendingScarletCommand(this, jda)
+            PendingScarletCommand(this, jda),
+            IPLocationCommand(this)
         )
 
         launch {
@@ -238,11 +240,11 @@ class LorittaHelper(val config: LorittaHelperConfig, val fanArtsConfig: FanArtsC
             logger.debug { response }
 
             val result = Json.parseToJsonElement(response)
-                    .jsonObject
+                .jsonObject
             val artifacts = result["artifacts"]!!.jsonArray
             val artifact =
-                    artifacts.first { it.jsonObject["name"]!!.jsonPrimitive.content == "Loritta Helper (Discord)" }
-                            .jsonObject
+                artifacts.first { it.jsonObject["name"]!!.jsonPrimitive.content == "Loritta Helper (Discord)" }
+                    .jsonObject
 
             val createdAt = artifact["created_at"]!!.jsonPrimitive.content
 
@@ -250,7 +252,7 @@ class LorittaHelper(val config: LorittaHelperConfig, val fanArtsConfig: FanArtsC
             val i = Instant.from(ta)
 
             val now = Instant.now()
-                    .minusMillis(120_000) // 2 minutes
+                .minusMillis(120_000) // 2 minutes
 
             archiveDownloadUrl = artifact["archive_download_url"]!!.jsonPrimitive.content
 
@@ -263,7 +265,7 @@ class LorittaHelper(val config: LorittaHelperConfig, val fanArtsConfig: FanArtsC
         }
 
         val response2 = http.get<HttpResponse>(archiveDownloadUrl
-                ?: throw RuntimeException("Missing Archive Download URL!")) {
+            ?: throw RuntimeException("Missing Archive Download URL!")) {
             header("Accept", "application/vnd.github.v3+json")
             header("Authorization", "token ${config.githubToken}")
         }
