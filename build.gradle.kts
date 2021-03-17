@@ -1,8 +1,8 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    kotlin("jvm") version "1.4.10"
-    kotlin("plugin.serialization") version "1.4.10"
+    kotlin("jvm") version "1.4.30"
+    kotlin("plugin.serialization") version "1.4.30"
 }
 
 group = "net.perfectdreams.loritta.helper"
@@ -25,8 +25,8 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.9")
     api("org.jetbrains.kotlinx:kotlinx-coroutines-jdk8:1.4.1")
     implementation("com.github.ben-manes.caffeine:caffeine:2.8.5")
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.0.0-RC2")
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-hocon:1.0.0-RC2")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.1.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-hocon:1.1.0")
 
     // Sequins
     implementation("net.perfectdreams.sequins.text:text-utils:1.0.0")
