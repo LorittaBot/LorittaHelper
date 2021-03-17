@@ -35,7 +35,8 @@ class TopSonhosRankingSender(val m: LorittaHelper, val jda: JDA) {
             val topSonhosChannel = jda.getTextChannelById(740395879567065129L)
 
             val dataFile = File("top_sonhos.json")
-            var storedSonhos = mutableListOf<StoredSonhos>()
+            var storedSonhos = listOf<StoredSonhos>()
+            val newStoredSonhos = mutableListOf<StoredSonhos>()
 
             if (dataFile.exists()) {
                 storedSonhos = Json.decodeFromString(dataFile.readText())
@@ -72,6 +73,13 @@ class TopSonhosRankingSender(val m: LorittaHelper, val jda: JDA) {
                 // + 7 is due to the " sonhos" text
                 builder.append("$indexDisplay ${userId.toString().padEnd(biggestUserIdIndex, ' ')} ${"$sonhos sonhos".padEnd(biggestSonhosLength + 7, ' ')} $tag")
                 builder.append("\n")
+
+                newStoredSonhos.add(
+                    StoredSonhos(
+                        userId,
+                        sonhos
+                    )
+                )
             }
 
             // Used in the message itself
@@ -103,7 +111,7 @@ class TopSonhosRankingSender(val m: LorittaHelper, val jda: JDA) {
                     ListSerializer(
                         StoredSonhos.serializer()
                     ),
-                    storedSonhos
+                    newStoredSonhos
                 )
             )
 
