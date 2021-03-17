@@ -274,7 +274,7 @@ class LorittaHelper(val config: LorittaHelperConfig, val fanArtsConfig: FanArtsC
             logger.info { "Missing Location URL from headers! Restarting update process after 5s..." }
             delay(5_000)
             update()
-            return@run
+            return
         }
 
         logger.info { "Build Location URL: $location" }
