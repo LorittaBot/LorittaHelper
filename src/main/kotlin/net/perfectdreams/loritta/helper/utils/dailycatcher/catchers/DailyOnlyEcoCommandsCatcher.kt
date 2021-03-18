@@ -184,8 +184,15 @@ class DailyOnlyEcoCommandsCatcher(database: Database) : DailyCatcher<ReportOnlyE
                         continue
 
                     // Check for email similarity, but ignore the host
-                    val firstHalfEmail = email.split("@").first()
-                    val firstHalfOtherEmail = otherEmail.split("@").first()
+                    // We also remove "+" and "." because they are common ways to allow emails to be redirected to your main inbox
+                    val firstHalfEmail = email.split("@")
+                        .first()
+                        .replace("+", "")
+                        .replace(".", "")
+                    val firstHalfOtherEmail = otherEmail.split("@")
+                        .first()
+                        .replace("+", "")
+                        .replace(".", "")
 
                     val levenshtein = LevenshteinDistance(2)
                     val result = levenshtein.apply(firstHalfEmail, firstHalfOtherEmail)
