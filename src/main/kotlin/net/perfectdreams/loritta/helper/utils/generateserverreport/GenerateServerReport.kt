@@ -218,7 +218,9 @@ class GenerateServerReport(val m: LorittaHelper) {
             .answer.string.toLongOrNull()
 
         val messageLinks = items.first { it.question == "Link da Mensagem" }
-            .answer.string.replace("\n", " ").split(" ")
+            .answer.string.replace("\n", " ")
+            .split(" ")
+            .filter { it.isNotBlank() }
 
         val guildInvite = items.first { it.question == "Convite do Servidor" }
             .answer
@@ -288,7 +290,9 @@ class GenerateServerReport(val m: LorittaHelper) {
             .answer.string.toLongOrNull()
 
         val messageLinks = items.first { it.question == "Link da Mensagem" }
-            .answer.string.replace("\n", " ").split(" ")
+            .answer.string.replace("\n", " ")
+            .split(" ")
+            .filter { it.isNotBlank() }
 
         val guilds = items.first { it.question == "A pessoa está em servidores da LorittaLand? Se sim, quais?" }
             .answer
@@ -352,7 +356,9 @@ class GenerateServerReport(val m: LorittaHelper) {
             .answer.string.toLongOrNull()
 
         val messageLinks = items.first { it.question == "Link da Mensagem" }
-            .answer.string.replace("\n", " ").split(" ")
+            .answer.string.replace("\n", " ")
+            .split(" ")
+            .filter { it.isNotBlank() }
 
         val guildInvite = items.first { it.question == "Convite do Servidor" }
             .answer
@@ -423,7 +429,10 @@ class GenerateServerReport(val m: LorittaHelper) {
         val embed = createBaseEmbed(userThatMadeTheReport, reportType)
 
         val messageLinks = items.first { it.question == "Link da Mensagem" }
-            .answer.string.replace("\n", " ").split(" ")
+            .answer.string.replace("\n", " ")
+            .split(" ")
+            .filter { it.isNotBlank() }
+            .filter { it.contains("discord") } // Avoids issues with users adding random dumb stuff to the message field
 
         val savedMessages = StringBuilder()
 
