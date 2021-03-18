@@ -208,6 +208,15 @@ class DailyOnlyEcoCommandsCatcher(database: Database) : DailyCatcher<ReportOnlyE
             }
         }
 
+        // If the sus level is mega very sus, we are going to check if the IPs are equal and, if they are, we are going to upgrade the check to totally the same user!
+        if (susLevel == SuspiciousLevel.MEGA_VERY_SUS) {
+            val ips = report.users.mapNotNull { retrieveUserLastDailyReward(it) }.map { it[Dailies.ip] }
+
+            // If we distinct the IPs and there's only one IP left, then it means that they have the same IP!
+            if (ips.distinct().size == 1)
+                susLevel = SuspiciousLevel.TOTALLY_THE_SAME_USER
+        }
+
         repeat(report.transactions.size / 10) {
             if (SuspiciousLevel.SUPER_VERY_SUS.level > susLevel.level)
                 susLevel = susLevel.increase()
