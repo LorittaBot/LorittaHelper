@@ -33,6 +33,7 @@ import net.perfectdreams.loritta.helper.network.Databases
 import net.perfectdreams.loritta.helper.utils.LorittaLandRoleSynchronizationTask
 import net.perfectdreams.loritta.helper.utils.checkbannedusers.LorittaBannedRoleTask
 import net.perfectdreams.loritta.helper.utils.config.FanArtsConfig
+import net.perfectdreams.loritta.helper.utils.config.LorittaConfig
 import net.perfectdreams.loritta.helper.utils.config.LorittaHelperConfig
 import net.perfectdreams.loritta.helper.utils.dailycatcher.DailyCatcherManager
 import net.perfectdreams.loritta.helper.utils.dailycatcher.DailyCatcherTask
@@ -49,6 +50,7 @@ import net.perfectdreams.loritta.helper.utils.slash.FanArtsOverrideResetCommand
 import net.perfectdreams.loritta.helper.utils.slash.FanArtsOverrideSetCommand
 import net.perfectdreams.loritta.helper.utils.slash.IPLocationCommand
 import net.perfectdreams.loritta.helper.utils.slash.PendingScarletCommand
+import net.perfectdreams.loritta.helper.utils.slash.RetrieveMessageCommand
 import net.perfectdreams.loritta.helper.utils.supporttimer.EnglishSupportTimer
 import net.perfectdreams.loritta.helper.utils.supporttimer.PortugueseSupportTimer
 import net.perfectdreams.loritta.helper.utils.topsonhos.TopSonhosRankingSender
@@ -69,7 +71,7 @@ import kotlin.concurrent.thread
  * An instance of Loritta Helper, that is initialized at [LorittaHelperLauncher]
  * With an custom [LorittaHelperConfig]
  */
-class LorittaHelper(val config: LorittaHelperConfig, val fanArtsConfig: FanArtsConfig?) {
+class LorittaHelper(val config: LorittaHelperConfig, val fanArtsConfig: FanArtsConfig?, val lorittaConfig: LorittaConfig?) {
     companion object {
         val http = HttpClient {
             expectSuccess = false
@@ -206,6 +208,9 @@ class LorittaHelper(val config: LorittaHelperConfig, val fanArtsConfig: FanArtsC
             PendingScarletCommand(this, jda),
             IPLocationCommand(this)
         )
+
+        if (lorittaConfig != null)
+            interactionsServer.commandManager.register(RetrieveMessageCommand(this, lorittaConfig))
 
         launch {
             interactionsServer.commandManager.updateAllCommandsInGuild(

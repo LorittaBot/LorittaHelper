@@ -4,6 +4,7 @@ import com.typesafe.config.ConfigFactory
 import kotlinx.serialization.hocon.Hocon
 import kotlinx.serialization.hocon.decodeFromConfig
 import net.perfectdreams.loritta.helper.utils.config.FanArtsConfig
+import net.perfectdreams.loritta.helper.utils.config.LorittaConfig
 import net.perfectdreams.loritta.helper.utils.config.LorittaHelperConfig
 import java.io.File
 
@@ -17,19 +18,21 @@ object LorittaHelperLauncher {
         val config = loadConfig<LorittaHelperConfig>("./helper.conf")
 
         val fanArtsConfig = loadConfigOrNull<FanArtsConfig>("./fan_arts.conf")
+        val lorittaConfig = loadConfigOrNull<LorittaConfig>("./loritta.conf")
 
         // Getting config of
         // Initializing Loritta Helper
         LorittaHelper(
-                config,
-                fanArtsConfig
+            config,
+            fanArtsConfig,
+            lorittaConfig
         ).start()
     }
 
     inline fun <reified T> loadConfig(path: String): T {
         // Getting Loritta Helper config file
         val lightbendConfig = ConfigFactory.parseFile(File(path))
-                .resolve()
+            .resolve()
 
         // Parsing HOCON config
         return Hocon.decodeFromConfig(lightbendConfig)
@@ -42,7 +45,7 @@ object LorittaHelperLauncher {
 
         // Getting Loritta Helper config file
         val lightbendConfig = ConfigFactory.parseFile(File(path))
-                .resolve()
+            .resolve()
 
         // Parsing HOCON config
         return Hocon.decodeFromConfig(lightbendConfig)
