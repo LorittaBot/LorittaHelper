@@ -45,12 +45,12 @@ class RetrieveMessageCommand(helper: LorittaHelper, lorittaConfig: LorittaConfig
 
             context.sendMessage {
                 content = """
-                    ${message.author.username}#${message.author.discriminator} (${message.author.id.value})
-                    
-                    ```
-                    ${message.content}
-                    ```
-                """.trimIndent()
+                    |**Author:** `${message.author.username}#${message.author.discriminator}` (`${message.author.id.value}`)
+                    |
+                    |```
+                    |${message.content}
+                    |```
+                """.trimMargin()
             }
         } catch (e: KtorRequestException) {
             if (e.error?.code == JsonErrorCode.UnknownChannel) {
