@@ -92,7 +92,7 @@ class DailyOnlyEcoCommandsCatcher(database: Database) : DailyCatcher<ReportOnlyE
 
                     val sonhosTransactionsRelatedToTheUser = transaction(database) {
                         SonhosTransaction.select {
-                            SonhosTransaction.givenBy eq userId and (SonhosTransaction.givenAt greaterEq DailyCatcherManager.yesterdayAtMidnight() and (SonhosTransaction.givenAt lessEq DailyCatcherManager.yesterdayBeforeDaySwitch()))
+                            SonhosTransaction.givenBy eq userId and (SonhosTransaction.givenAt greaterEq DailyCatcherManager.sevenDaysAgoAtMidnight() and (SonhosTransaction.givenAt lessEq DailyCatcherManager.yesterdayBeforeDaySwitch()))
                         }.toList()
                     }
 

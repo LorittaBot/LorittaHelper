@@ -47,6 +47,16 @@ class DailyCatcherManager(val m: LorittaHelper, val jda: JDA) {
                 .toInstant()
                 .toEpochMilli()
 
+        fun sevenDaysAgoAtMidnight() = Instant.now()
+            .atZone(ZoneId.of("America/Sao_Paulo"))
+            .toOffsetDateTime()
+            .minusDays(7)
+            .withHour(0)
+            .withMinute(0)
+            .withSecond(0)
+            .toInstant()
+            .toEpochMilli()
+
         fun yesterdayBeforeDaySwitch() = Instant.now()
                 .atZone(ZoneId.of("America/Sao_Paulo"))
                 .toOffsetDateTime()
