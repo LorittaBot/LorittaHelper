@@ -250,6 +250,7 @@ class DailyOnlyEcoCommandsCatcher(database: Database) : DailyCatcher<ReportOnlyE
             if (lastDailyReward != null) {
                 reportMessage += "` `**Email:** `${lastDailyReward[Dailies.email]}`\n"
                 reportMessage += "` `**IP:** `${lastDailyReward[Dailies.ip]}`\n"
+                reportMessage += "` `**User Agent:** `${lastDailyReward[Dailies.userAgent]}`\n"
                 reportMessage += "` `**Daily pego:** `${DailyCatcherManager.formatDate(lastDailyReward[Dailies.receivedAt])}`\n"
             } else {
                 // This should never happen... but sometimes it happens (oof)

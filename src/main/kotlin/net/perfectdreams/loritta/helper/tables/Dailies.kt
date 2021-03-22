@@ -7,4 +7,5 @@ object Dailies : LongIdTable() {
     val receivedAt = long("received_at").index()
     val ip = text("ip").index()
     val email = text("email").index()
+    val userAgent = text("user_agent")
 }
