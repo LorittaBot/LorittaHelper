@@ -9,9 +9,8 @@ import net.perfectdreams.discordinteraktions.context.SlashCommandContext
 import net.perfectdreams.discordinteraktions.declarations.slash.SlashCommandDeclaration
 import net.perfectdreams.discordinteraktions.declarations.slash.required
 import net.perfectdreams.loritta.helper.LorittaHelper
-import net.perfectdreams.loritta.helper.utils.config.LorittaConfig
 
-class RetrieveMessageCommand(helper: LorittaHelper, lorittaConfig: LorittaConfig) : HelperSlashCommand(helper, this) {
+class RetrieveMessageCommand(helper: LorittaHelper, val rest: RestClient) : HelperSlashCommand(helper, this) {
     companion object : SlashCommandDeclaration(
         name = "retrievemessage",
         description = "Pega o conteúdo de uma mensagem a partir de um link"
@@ -24,8 +23,6 @@ class RetrieveMessageCommand(helper: LorittaHelper, lorittaConfig: LorittaConfig
                 .register()
         }
     }
-
-    val rest = RestClient(lorittaConfig.token)
 
     override suspend fun executesHelper(context: SlashCommandContext) {
         val messageUrl = options.messageUrl.get(context)

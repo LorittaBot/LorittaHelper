@@ -1,6 +1,7 @@
 package net.perfectdreams.loritta.helper
 
 import dev.kord.common.entity.Snowflake
+import dev.kord.rest.service.RestClient
 import io.ktor.client.*
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
@@ -51,6 +52,7 @@ import net.perfectdreams.loritta.helper.utils.slash.FanArtsOverrideSetCommand
 import net.perfectdreams.loritta.helper.utils.slash.IPLocationCommand
 import net.perfectdreams.loritta.helper.utils.slash.PendingScarletCommand
 import net.perfectdreams.loritta.helper.utils.slash.RetrieveMessageCommand
+import net.perfectdreams.loritta.helper.utils.slash.ServerMembersCommand
 import net.perfectdreams.loritta.helper.utils.supporttimer.EnglishSupportTimer
 import net.perfectdreams.loritta.helper.utils.supporttimer.PortugueseSupportTimer
 import net.perfectdreams.loritta.helper.utils.topsonhos.TopSonhosRankingSender
@@ -97,6 +99,7 @@ class LorittaHelper(val config: LorittaHelperConfig, val fanArtsConfig: FanArtsC
         config.publicKey,
         config.token
     )
+    val lorittaRest = lorittaConfig?.token?.let { RestClient(it) }
 
     fun start() {
         // We only care about GUILD MESSAGES and we don't need to cache any users
@@ -209,8 +212,10 @@ class LorittaHelper(val config: LorittaHelperConfig, val fanArtsConfig: FanArtsC
             IPLocationCommand(this)
         )
 
-        if (lorittaConfig != null)
-            interactionsServer.commandManager.register(RetrieveMessageCommand(this, lorittaConfig))
+        if (lorittaRest != null) {
+            interactionsServer.commandManager.register(RetrieveMessageCommand(this, lorittaRest))
+            interactionsServer.commandManager.register(ServerMembersCommand(this, lorittaRest))
+        }
 
         launch {
             interactionsServer.commandManager.updateAllCommandsInGuild(
