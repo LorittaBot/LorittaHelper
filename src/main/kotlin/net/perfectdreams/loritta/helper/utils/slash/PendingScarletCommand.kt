@@ -3,8 +3,10 @@ package net.perfectdreams.loritta.helper.utils.slash
 import mu.KotlinLogging
 import net.dv8tion.jda.api.JDA
 import net.dv8tion.jda.api.entities.Message
+import net.perfectdreams.discordinteraktions.commands.get
 import net.perfectdreams.discordinteraktions.context.SlashCommandContext
 import net.perfectdreams.discordinteraktions.declarations.slash.SlashCommandDeclaration
+import net.perfectdreams.discordinteraktions.declarations.slash.choice
 import net.perfectdreams.loritta.helper.LorittaHelper
 import net.perfectdreams.loritta.helper.utils.dailycatcher.DailyCatcherManager
 import net.perfectdreams.loritta.helper.utils.dailycatcher.SuspiciousLevel
@@ -17,10 +19,28 @@ class PendingScarletCommand(helper: LorittaHelper, val jda: JDA) : HelperSlashCo
         description = "Scarlet Police, on Ghetto Patrol \uD83D\uDC83"
     ) {
         private val logger = KotlinLogging.logger {}
+
+        override val options = Options
+
+        object Options : SlashCommandDeclaration.Options() {
+            val type = string("type", "Filtrar por um tipo específico")
+                .let { option ->
+                    var temp = option
+
+                    for (level in SuspiciousLevel.values()) {
+                        temp = temp.choice(level.name, level.name)
+                    }
+
+                    temp
+                }
+                .register()
+
+        }
     }
 
     override suspend fun executesHelper(context: SlashCommandContext) {
         val channel = jda.getTextChannelById(DailyCatcherManager.SCARLET_POLICE_CHANNEL_ID) ?: return
+        val filterBy = options.type.get(context)?.let { SuspiciousLevel.valueOf(it) }
 
         try {
             val history = channel.history
@@ -69,6 +89,10 @@ class PendingScarletCommand(helper: LorittaHelper, val jda: JDA) : HelperSlashCo
                         .first()
 
                     val suspiciousLevelByEmote = SuspiciousLevel.values().first { it.emote == emote }
+
+                    if (filterBy != null && suspiciousLevelByEmote != filterBy)
+                        return@forEach
+
                     val list = susLevelMessages.getOrPut(suspiciousLevelByEmote) {
                         mutableListOf()
                     }
