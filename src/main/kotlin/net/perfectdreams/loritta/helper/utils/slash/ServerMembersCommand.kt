@@ -27,7 +27,7 @@ class ServerMembersCommand(helper: LorittaHelper, val rest: RestClient) : Helper
     override suspend fun executesHelper(context: SlashCommandContext) {
         val guildId = options.guildId.get(context)
 
-        val members = rest.guild.getGuildMembers(Snowflake(guildId))
+        val members = rest.guild.getGuildMembers(Snowflake(guildId), limit = 1000)
 
         val builder = StringBuilder()
 
