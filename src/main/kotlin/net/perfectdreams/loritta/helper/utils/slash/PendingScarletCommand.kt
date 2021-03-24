@@ -39,6 +39,8 @@ class PendingScarletCommand(helper: LorittaHelper, val jda: JDA) : HelperSlashCo
     }
 
     override suspend fun executesHelper(context: SlashCommandContext) {
+        context.defer()
+
         val channel = jda.getTextChannelById(DailyCatcherManager.SCARLET_POLICE_CHANNEL_ID) ?: return
         val filterBy = options.type.get(context)?.let { SuspiciousLevel.valueOf(it) }
 
