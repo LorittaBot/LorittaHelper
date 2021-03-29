@@ -40,10 +40,12 @@ class ServerMembersCommand(helper: LorittaHelper, val rest: RestClient) : Helper
             builder.append("\n")
         }
 
-        val split = StringUtils.chunkedLines(builder.toString(), 1900, true)
+        val split = StringUtils.chunkedLines(builder.toString(), 1980, true)
 
-        context.sendMessage {
-            content = "```\n" + split.first() + "\n```"
+        for (text in split) {
+            context.sendMessage {
+                content = "```\n$text\n```"
+            }
         }
     }
 }
