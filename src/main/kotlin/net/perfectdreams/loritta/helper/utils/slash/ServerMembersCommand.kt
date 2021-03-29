@@ -36,7 +36,7 @@ class ServerMembersCommand(helper: LorittaHelper, val rest: RestClient) : Helper
         for (member in members) {
             val user = member.user.value
 
-            builder.append("${user?.username}#${user?.discriminator} (${user?.id?.value})")
+            builder.append("${user?.username}#${user?.discriminator} (${user?.id?.value}) [${member.joinedAt}]")
             builder.append("\n")
         }
 
