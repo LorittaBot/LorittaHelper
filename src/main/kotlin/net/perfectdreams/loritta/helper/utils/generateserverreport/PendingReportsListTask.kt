@@ -70,7 +70,9 @@ class PendingReportsListTask(val jda: JDA) : Runnable {
             if (messagesThatDoesNotHaveAnyReactions.isNotEmpty())
                 staffChannel.sendMessage("""<a:walter_contra_bonoro:729116259446161448> **ATENÇÃO <@&351473717194522647>**
                     |<a:uniao:703352880320479272> Existem ${messagesThatDoesNotHaveAnyReactions.size} denúncias que ainda precisam ser vistas!
-                    |<a:wumpus_keyboard:682249824133054529> **Lembre-se:** ${ApproveReportsOnReactionListener.APPROVE_EMOTE} aceita a denúncia e ${ApproveReportsOnReactionListener.REJECT_EMOTE} rejeita a denúncia (Mas as punições ainda precisam ser dadas manualmente!). Qualquer outra reação pode ser utilizada para ignorar os avisos de denúncia pendente!"
+                    |<a:wumpus_keyboard:682249824133054529> **Lembre-se:** ${ApproveReportsOnReactionListener.APPROVE_EMOTE} aceita a denúncia e ${ApproveReportsOnReactionListener.REJECT_EMOTE} rejeita a denúncia (Mas as punições ainda precisam ser dadas manualmente!). Qualquer outra reação pode ser utilizada para ignorar os avisos de denúncia pendente!
+                    |
+                    |${messagesThatDoesNotHaveAnyReactions.joinToString("\n")}"
                 """.trimMargin()
                 ).queue()
         } catch (e: Exception) {
