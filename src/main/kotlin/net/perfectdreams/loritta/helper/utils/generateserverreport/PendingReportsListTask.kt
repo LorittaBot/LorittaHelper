@@ -3,6 +3,7 @@ package net.perfectdreams.loritta.helper.utils.generateserverreport
 import mu.KotlinLogging
 import net.dv8tion.jda.api.JDA
 import net.dv8tion.jda.api.entities.Message
+import net.dv8tion.jda.api.entities.MessageType
 import net.perfectdreams.loritta.helper.listeners.ApproveReportsOnReactionListener
 import net.perfectdreams.loritta.helper.utils.Constants
 import java.time.Instant
@@ -54,6 +55,7 @@ class PendingReportsListTask(val jda: JDA) : Runnable {
 
             val messagesThatDoesNotHaveAnyReactions = messages
                     .filter { it.author.idLong == jda.selfUser.idLong }
+                    .filter { it.type == MessageType.DEFAULT }
                     // Any that doesn't has only one reaction count
                     .filterNot {
                         // Filters only messages that do have a reaction that is not by helper

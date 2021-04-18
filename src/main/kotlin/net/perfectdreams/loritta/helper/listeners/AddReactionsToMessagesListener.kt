@@ -22,7 +22,7 @@ class AddReactionsToMessagesListener(val m: LorittaHelper): ListenerAdapter() {
     override fun onGuildMessageReceived(event: GuildMessageReceivedEvent) {
         val content = event.message.contentRaw
 
-        if (content.startsWith(">"))
+        if (event.isWebhookMessage || event.author.isBot || content.startsWith(">"))
             return
 
         if (event.channel.idLong in ADD_APPROVAL_REACT_CHANNEL_IDS) {

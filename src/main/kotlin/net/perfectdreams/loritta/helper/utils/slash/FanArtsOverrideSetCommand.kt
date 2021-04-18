@@ -6,6 +6,7 @@ import net.perfectdreams.discordinteraktions.commands.get
 import net.perfectdreams.discordinteraktions.context.SlashCommandContext
 import net.perfectdreams.loritta.helper.LorittaHelper
 import net.perfectdreams.loritta.helper.listeners.ApproveFanArtListener
+import net.perfectdreams.loritta.helper.utils.slash.declarations.FanArtsOverrideDeclaration
 
 class FanArtsOverrideSetCommand(helper: LorittaHelper) : HelperSlashCommand(helper, FanArtsOverrideDeclaration.Set, FanArtsOverrideDeclaration.Root) {
     override suspend fun executesHelper(context: SlashCommandContext) {

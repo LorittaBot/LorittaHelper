@@ -1,4 +1,4 @@
-package net.perfectdreams.loritta.helper.utils.slash
+package net.perfectdreams.loritta.helper.utils.slash.declarations
 
 import net.perfectdreams.discordinteraktions.declarations.slash.SlashCommandDeclaration
 
