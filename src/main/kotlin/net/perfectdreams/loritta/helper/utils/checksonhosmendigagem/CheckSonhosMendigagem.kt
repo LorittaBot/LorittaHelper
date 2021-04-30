@@ -32,10 +32,7 @@ class CheckSonhosMendigagem(val m: LorittaHelper) {
     companion object {
         val logger = KotlinLogging.logger {  }
 
-        private val channels = listOf(
-            297732013006389252L, Constants.PORTUGUESE_SUPPORT_CHANNEL_ID,
-            Constants.ENGLISH_SUPPORT_CHANNEL_ID
-        )
+        private val channels = listOf(297732013006389252L)
         private val reply = listOf(
             LorittaReply(
                 "Que feio... Pare de mendigar! Pegue seus sonhos diários usando `+daily`!",
