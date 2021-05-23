@@ -11,6 +11,7 @@ import net.perfectdreams.loritta.helper.tables.Payments
 import net.perfectdreams.loritta.utils.payments.PaymentReason
 import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.transactions.transaction
+import kotlin.math.ceil
 
 class LorittaLandRoleSynchronizationTask(val m: LorittaHelper, val jda: JDA) : Runnable {
     companion object {
@@ -72,8 +73,13 @@ class LorittaLandRoleSynchronizationTask(val m: LorittaHelper, val jda: JDA) : R
 
                 val payments = transaction(m.databases.lorittaDatabase) {
                     Payment.find {
-                        (Payments.reason eq PaymentReason.DONATION) and (Payments.paidAt.isNotNull())
-                    }.toMutableList()
+                        (Payments.expiresAt greaterEq System.currentTimeMillis()) and
+                                (Payments.reason eq PaymentReason.DONATION) and
+                                (Payments.userId eq userId)
+                    }.sumByDouble {
+                        // This is a weird workaround that fixes users complaining that 19.99 + 19.99 != 40 (it equals to 39.38()
+                        ceil(it.money.toDouble())
+                    }
                 }
 
                 val donatorsPlusQuantity = mutableMapOf<Long, Double>()
