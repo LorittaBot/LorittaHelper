@@ -73,13 +73,8 @@ class LorittaLandRoleSynchronizationTask(val m: LorittaHelper, val jda: JDA) : R
 
                 val payments = transaction(m.databases.lorittaDatabase) {
                     Payment.find {
-                        (Payments.expiresAt greaterEq System.currentTimeMillis()) and
-                                (Payments.reason eq PaymentReason.DONATION) and
-                                (Payments.userId eq userId)
-                    }.sumByDouble {
-                        // This is a weird workaround that fixes users complaining that 19.99 + 19.99 != 40 (it equals to 39.38()
-                        ceil(it.money.toDouble())
-                    }
+                        (Payments.reason eq PaymentReason.DONATION) and (Payments.paidAt.isNotNull())
+                    }.toMutableList()
                 }
 
                 val donatorsPlusQuantity = mutableMapOf<Long, Double>()
@@ -107,7 +102,8 @@ class LorittaLandRoleSynchronizationTask(val m: LorittaHelper, val jda: JDA) : R
                     val roles = member.roles.toMutableSet()
 
                     if (donatorsPlusQuantity.containsKey(member.user.idLong)) {
-                        val donated = donatorsPlusQuantity[member.user.idLong] ?: 0.0
+                        // Loritta also ceil the result
+                        val donated = ceil(donatorsPlusQuantity[member.user.idLong] ?: 0.0)
 
                         if (!roles.contains(donatorRole))
                             roles.add(donatorRole)
