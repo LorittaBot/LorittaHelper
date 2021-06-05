@@ -10,6 +10,8 @@ import java.util.regex.Pattern
  * and how we count XP in messages
  */
 class LoriXpResponse : RegExResponse() {
+    override val priority = -1
+
     init {
         patterns.add("ganh(a|o)|sobe|subi|pega|pego|dá|vejo|ver|saber|calcul|quanto|mostr".toPattern(Pattern.CASE_INSENSITIVE))
         patterns.add("(experi(ê|e)ncia|xp|n(í|i)vel)".toPattern(Pattern.CASE_INSENSITIVE))

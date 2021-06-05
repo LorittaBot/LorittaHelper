@@ -72,6 +72,7 @@ class GenerateServerReport(val m: LorittaHelper) {
         val communityGuild = event.jda.getGuildById(297732013006389252L) ?: return
 
         try {
+            // We don't check this yet
             val time = payload["time"]!!.jsonPrimitive.long
 
             // Get the Report Type
