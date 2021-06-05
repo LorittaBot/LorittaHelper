@@ -41,6 +41,7 @@ import net.perfectdreams.loritta.helper.serverresponses.portuguese.StarboardResp
 import net.perfectdreams.loritta.helper.serverresponses.portuguese.SugestoesResponse
 import net.perfectdreams.loritta.helper.serverresponses.portuguese.ThirdPartyBotsResponse
 import net.perfectdreams.loritta.helper.serverresponses.portuguese.TransferGarticosResponse
+import net.perfectdreams.loritta.helper.serverresponses.portuguese.TwoFactorAuthenticationRequirementResponse
 import net.perfectdreams.loritta.helper.serverresponses.portuguese.UserNotShowingUpRankResponse
 import net.perfectdreams.loritta.helper.serverresponses.portuguese.ValorShipResponse
 import net.perfectdreams.loritta.helper.serverresponses.portuguese.VotarResponse
@@ -95,6 +96,7 @@ object PortugueseResponses {
         AboutMeResponse(),
         HowDoIReportResponse(),
         ReportBugsResponse(),
-        UserNotShowingUpRankResponse()
+        UserNotShowingUpRankResponse(),
+        TwoFactorAuthenticationRequirementResponse()
     ).sortedByDescending { it.priority }
 }
