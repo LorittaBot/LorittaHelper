@@ -10,7 +10,7 @@ import java.util.regex.Pattern
  */
 class TwoFactorAuthenticationRequirementResponse : RegExResponse() {
     init {
-        patterns.add("pede|precisa|problema".toPattern(Pattern.CASE_INSENSITIVE))
+        patterns.add("pede|precisa|problema|consigo".toPattern(Pattern.CASE_INSENSITIVE))
         patterns.add("2fa|autenticação|celular|authy|google authenticator".toPattern(Pattern.CASE_INSENSITIVE))
         patterns.add("daily|sonhos|prêmio".toPattern(Pattern.CASE_INSENSITIVE))
     }

@@ -6,5 +6,6 @@ class TwoFactorAuthenticationRequirementResponse : PortugueseResponseTestBase(
         "eu tento pegar o daily e a lori pede para eu usar o authy",
         "o daily tá dando problema de 2fa",
         "o daily não deixa eu pegar pois precisa de autenticação em duas etapas",
+        "não consigo pegar o daily porque pede para eu usar o authy"
     )
 )
