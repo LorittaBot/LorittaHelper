@@ -5,6 +5,7 @@ import net.perfectdreams.loritta.helper.serverresponses.portuguese.AddEmotesOnMe
 import net.perfectdreams.loritta.helper.serverresponses.portuguese.AddLoriResponse
 import net.perfectdreams.loritta.helper.serverresponses.portuguese.AnnouncementsResponse
 import net.perfectdreams.loritta.helper.serverresponses.portuguese.BadgeResponse
+import net.perfectdreams.loritta.helper.serverresponses.portuguese.BomDiaECiaResponse
 import net.perfectdreams.loritta.helper.serverresponses.portuguese.CanaryResponse
 import net.perfectdreams.loritta.helper.serverresponses.portuguese.ChangePrefixResponse
 import net.perfectdreams.loritta.helper.serverresponses.portuguese.CommandsResponse
@@ -97,6 +98,7 @@ object PortugueseResponses {
         HowDoIReportResponse(),
         ReportBugsResponse(),
         UserNotShowingUpRankResponse(),
-        TwoFactorAuthenticationRequirementResponse()
+        TwoFactorAuthenticationRequirementResponse(),
+        BomDiaECiaResponse()
     ).sortedByDescending { it.priority }
 }
