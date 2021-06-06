@@ -13,7 +13,7 @@ import java.util.regex.Pattern
 class SparklyPowerInfoResponse: RegExResponse() {
 
     init {
-        patterns.add("sparkly".toPattern(Pattern.CASE_INSENSITIVE))
+        patterns.add("sparkly|(server|servidor) de|do mine".toPattern(Pattern.CASE_INSENSITIVE))
     }
 
     override fun getResponse(event: GuildMessageReceivedEvent, message: String): List<LorittaReply> = listOf(
