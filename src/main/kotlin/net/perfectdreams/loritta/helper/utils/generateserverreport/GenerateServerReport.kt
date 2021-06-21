@@ -13,13 +13,15 @@ import mu.KotlinLogging
 import net.dv8tion.jda.api.EmbedBuilder
 import net.dv8tion.jda.api.JDA
 import net.dv8tion.jda.api.MessageBuilder
-import net.dv8tion.jda.api.entities.Guild
 import net.dv8tion.jda.api.entities.User
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent
 import net.dv8tion.jda.api.requests.restaction.MessageAction
 import net.perfectdreams.loritta.helper.LorittaHelper
 import net.perfectdreams.loritta.helper.listeners.ApproveReportsOnReactionListener
 import net.perfectdreams.loritta.helper.utils.extensions.await
+import java.lang.IllegalStateException
+import java.net.HttpURLConnection
+import java.net.URL
 import java.time.Instant
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
@@ -29,7 +31,7 @@ class GenerateServerReport(val m: LorittaHelper) {
     companion object {
         const val SERVER_REPORTS_CHANNEL_ID = 790308357713559582L
     }
-    
+
     private val logger = KotlinLogging.logger {}
 
     val PRETTY_DATE_FORMAT = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss")
@@ -69,7 +71,7 @@ class GenerateServerReport(val m: LorittaHelper) {
 
         val userId = payload["user"]!!.jsonPrimitive.long
         val userThatMadeTheReport = event.jda.retrieveUserById(userId).await()
-        val communityGuild = event.jda.getGuildById(297732013006389252L) ?: return
+        val communityGuild = event.jda.getGuildById(501445050207830016L) ?: return
 
         try {
             // We don't check this yet
@@ -79,53 +81,95 @@ class GenerateServerReport(val m: LorittaHelper) {
             val reportType = items.first { it.question == "Qual é o motivo da denúncia?" }
 
             logger.info { "Report Type: ${reportType.answer.string}" }
-            when (reportType.answer.string) {
-                "Enviar convites não solicitados no privado/mensagem direta" -> {
-                    handleLoriInviteDMRules(
-                        event.jda,
-                        communityGuild,
-                        userThatMadeTheReport,
-                        reportType.answer.string,
-                        items
-                    )
-                }
 
+            val reportMessage = when (reportType.answer.string) {
                 "Divulgação não autorizada em servidores da Loritta/LorittaLand",
                 "Ficar causando desordem no chat: Enviando a mesma mensagem várias vezes, enviando mensagens gigantes, etc",
                 "Desrespeito a outros usuários (xingamentos, ofensas, toxicidade, etc) em servidores da Loritta/LorittaLand",
-                "Enviar conteúdo NSFW em servidores da Loritta/LorittaLand" -> {
+                "Enviar conteúdo NSFW em servidores da Loritta/LorittaLand" ->
                     handleBreakingLorittaLandRules(
                         event.jda,
-                        communityGuild,
                         userThatMadeTheReport,
                         reportType.answer.string,
                         items
                     )
-                }
+                "Enviar convites não solicitados no privado/mensagem direta" ->
+                    handleLoriInviteDMRules(
+                        userThatMadeTheReport,
+                        reportType.answer.string,
+                        items
+                    )
 
-                "Ofensas (Xingamentos) a Loritta" -> {
+                "Ofensas (Xingamentos) a Loritta" ->
                     handleLoriSwearingRules(
                         event.jda,
-                        communityGuild,
                         userThatMadeTheReport,
-                        reportType.answer.string,
                         items
                     )
-                }
 
-                "Comércio de Produtos com Valores Monetários por Sonhos (venda de Nitro por sonhos, vender sonhos por \$, etc)" -> {
+                "Comércio de Produtos com Valores Monetários por Sonhos (venda de Nitro por sonhos, vender sonhos por \$, etc)" ->
                     handleSonhosTradingRules(
                         event.jda,
-                        communityGuild,
                         userThatMadeTheReport,
-                        reportType.answer.string,
                         items
+                    )
+
+                "Outros" ->
+                    handleOtherRules(userThatMadeTheReport, reportType.answer.string, items)
+                else -> null
+            }
+
+            if (reportMessage != null) {
+                logger.info { "Sending report message..." }
+
+                val images = reportMessage.images
+                val embed = reportMessage.embed
+
+                if (images != null) {
+                    embed.addField(
+                        "Imagens", images
+                            .joinToString("\n") { "https://drive.google.com/file/d/$it/view" }, false
                     )
                 }
 
-                "Outros" -> {
-                    handleOtherRules(event.jda, communityGuild, userThatMadeTheReport, reportType.answer.string, items)
+                val imageUrl = run {
+                    val firstImage = images?.firstOrNull() ?: return@run null
+                    return@run runCatching {
+                        val urlString = "https://drive.google.com/uc?export=view&id=$firstImage"
+                        val connection = URL(urlString)
+                            .openConnection() as HttpURLConnection
+                        connection.instanceFollowRedirects = false
+                        connection.connect()
+                        return@runCatching if (connection.responseCode == 302)
+                             connection.getHeaderField("Location")
+                        else
+                            null
+                    }.getOrNull()
                 }
+
+                if (imageUrl != null)
+                    embed.setImage("attachment://image.png")
+
+                val action = communityGuild.getTextChannelById(SERVER_REPORTS_CHANNEL_ID)?.sendMessage(
+                    MessageBuilder()
+                        .setContent("<@&351473717194522647>")
+                        .setEmbed(embed.build())
+                        .build()
+                )
+
+                runCatching {
+                    if (imageUrl != null)
+                        action?.addFile(URL(imageUrl).openStream(), "image.png")
+                }.onFailure {
+                    logger.debug(it) { "Failed to attach image in message" }
+                }
+
+                if (reportMessage.messageFile != null)
+                    action?.addFile(reportMessage.messageFile, "messages.log")
+
+                action?.queueAndAddReactions()
+            } else {
+                throw IllegalStateException("reportMessage is null, not supposed to be null")
             }
 
             // Send a message to the reporter, this helps them to be happy to know that we did receive their report
@@ -146,7 +190,7 @@ class GenerateServerReport(val m: LorittaHelper) {
             communityGuild.getTextChannelById(SERVER_REPORTS_CHANNEL_ID)?.sendMessage(
                 MessageBuilder()
                     .setContent(
-                        "<@&351473717194522647> Alguma coisa deu errada ao processar a denúncia da mensagem ${event.message.jumpUrl} feita por ${event.message.author.asMention}... Tente verificar ela manualmente já que eu não fui boa o suficiente... <:lori_sob:556524143281963008>\n\n```\n${e.stackTraceToString()}\n```"
+                        "<@&351473717194522647> Alguma coisa deu errada ao processar a denúncia da mensagem ${event.message.jumpUrl} feita por ${userThatMadeTheReport.asMention}... Tente verificar ela manualmente já que eu não fui boa o suficiente... <:lori_sob:556524143281963008>\n\n```\n${e.stackTraceToString()}\n```"
                     )
                     .build()
             )?.queue()
@@ -165,19 +209,16 @@ class GenerateServerReport(val m: LorittaHelper) {
 
     private suspend fun handleLoriSwearingRules(
         jda: JDA,
-        communityGuild: Guild,
         userThatMadeTheReport: User,
-        reportType: String,
         items: List<GoogleFormItem>
-    ) {
+    ): ReportMessage? {
         val handleType = items.first { it.question == "Qual foi a gravidade da situação?" }
             .answer
 
-        when (handleType.string) {
+        return when (handleType.string) {
             "Ofendeu a Loritta em servidores da LorittaLand (servidor de suporte da Loritta, servidor de comunidade da Loritta, SparklyPower, etc)" -> {
                 handleBreakingLorittaLandRules(
                     jda,
-                    communityGuild,
                     userThatMadeTheReport,
                     "Ofensas a Loritta > Ofendeu a Loritta em servidores da LorittaLand",
                     items
@@ -186,31 +227,27 @@ class GenerateServerReport(val m: LorittaHelper) {
 
             "Ofendeu a Loritta de coisas pesadas (racismo, homofobia, etc) em outros servidores" -> {
                 handleLoriBrokeOtherServerRules(
-                    jda,
-                    communityGuild,
                     userThatMadeTheReport,
                     "Ofensas a Loritta > Ofendeu a Loritta de coisas pesadas (racismo, homofobia, etc) em outros servidores",
                     items
                 )
             }
+            else -> null
         }
     }
 
     private suspend fun handleSonhosTradingRules(
         jda: JDA,
-        communityGuild: Guild,
         userThatMadeTheReport: User,
-        reportType: String,
         items: List<GoogleFormItem>
-    ) {
+    ): ReportMessage? {
         val handleType = items.first { it.question == "Aonde é que o meliante fez isso?" }
             .answer
 
-        when (handleType.string) {
+        return when (handleType.string) {
             "Divulgou em servidores da LorittaLand (servidor de suporte da Loritta, servidor de comunidade da Loritta, SparklyPower, etc)" -> {
                 handleBreakingLorittaLandRules(
                     jda,
-                    communityGuild,
                     userThatMadeTheReport,
                     "Comércio de Sonhos > Divulgou em servidores da LorittaLand",
                     items
@@ -219,8 +256,6 @@ class GenerateServerReport(val m: LorittaHelper) {
 
             "Divulgou no meu privado/mensagem direta" -> {
                 handleLoriInviteDMRules(
-                    jda,
-                    communityGuild,
                     userThatMadeTheReport,
                     "Comércio de Sonhos > Divulgou no meu privado/mensagem direta",
                     items
@@ -229,8 +264,6 @@ class GenerateServerReport(val m: LorittaHelper) {
 
             "Divulgou em outro servidor" -> {
                 handleLoriBrokeOtherServerRules(
-                    jda,
-                    communityGuild,
                     userThatMadeTheReport,
                     "Comércio de Sonhos > Divulgou em outro servidor",
                     items
@@ -239,23 +272,20 @@ class GenerateServerReport(val m: LorittaHelper) {
 
             "Divulgou em outro servidor, e esse servidor é apenas para vendas de produtos por sonhos" -> {
                 handleLoriBrokeOtherServerRules(
-                    jda,
-                    communityGuild,
                     userThatMadeTheReport,
                     "Comércio de Sonhos > Divulgou em outro servidor, e esse servidor é apenas para vendas de produtos por sonhos",
                     items
                 )
             }
+            else -> null
         }
     }
 
-    private suspend fun handleOtherRules(
-        jda: JDA,
-        communityGuild: Guild,
+    private fun handleOtherRules(
         userThatMadeTheReport: User,
         reportType: String,
         items: List<GoogleFormItem>
-    ) {
+    ): ReportMessage {
         val embed = createBaseEmbed(userThatMadeTheReport, reportType)
 
         val ruleBroken = items.first { it.question == "Qual regra ele quebrou?" }
@@ -301,36 +331,16 @@ class GenerateServerReport(val m: LorittaHelper) {
             false
         )
 
-        embed.addField(
-            "Imagens",
-            images.joinToString("\n") { "https://drive.google.com/file/d/$it/view" },
-            false
-        )
-
-        images.firstOrNull()?.let {
-            embed.setImage("https://drive.google.com/uc?export=view&id=$it")
-        }
-
         embed.addFinalConsiderations(items)
 
-        communityGuild.getTextChannelById(SERVER_REPORTS_CHANNEL_ID)?.sendMessage(
-            MessageBuilder()
-                .setContent(
-                    "<@&351473717194522647>"
-                )
-                .setEmbed(embed.build())
-                .build()
-        )
-            ?.queueAndAddReactions()
+        return ReportMessage(embed, images = images)
     }
 
-    private suspend fun handleLoriInviteDMRules(
-        jda: JDA,
-        communityGuild: Guild,
+    private fun handleLoriInviteDMRules(
         userThatMadeTheReport: User,
         reportType: String,
         items: List<GoogleFormItem>
-    ) {
+    ): ReportMessage {
         val embed = createBaseEmbed(userThatMadeTheReport, reportType)
 
         val userId = items.first { it.question == "ID do Usuário" }
@@ -367,36 +377,16 @@ class GenerateServerReport(val m: LorittaHelper) {
             false
         )
 
-        embed.addField(
-            "Imagens",
-            images.joinToString("\n") { "https://drive.google.com/file/d/$it/view" },
-            false
-        )
-
-        images.firstOrNull()?.let {
-            embed.setImage("https://drive.google.com/uc?export=view&id=$it")
-        }
-
         embed.addFinalConsiderations(items)
 
-        communityGuild.getTextChannelById(SERVER_REPORTS_CHANNEL_ID)?.sendMessage(
-            MessageBuilder()
-                .setContent(
-                    "<@&351473717194522647>"
-                )
-                .setEmbed(embed.build())
-                .build()
-        )
-            ?.queueAndAddReactions()
+        return ReportMessage(embed, images = images)
     }
 
-    private suspend fun handleLoriBrokeOtherServerRules(
-        jda: JDA,
-        communityGuild: Guild,
+    private fun handleLoriBrokeOtherServerRules(
         userThatMadeTheReport: User,
         reportType: String,
         items: List<GoogleFormItem>
-    ) {
+    ): ReportMessage {
         val embed = createBaseEmbed(userThatMadeTheReport, reportType)
 
         val userId = items.first { it.question == "ID do Usuário" }
@@ -415,45 +405,29 @@ class GenerateServerReport(val m: LorittaHelper) {
             .answer
             .stringArray
 
-        embed.addField(
-            "ID do Usuário",
-            userId?.toString(),
-            false
-        )
+        embed.apply {
+            addField(
+                "ID do Usuário",
+                userId?.toString(),
+                false
+            )
 
-        embed.addField(
-            "Link da Mensagem",
-            messageLinks.joinToString("\n"),
-            false
-        )
+            addField(
+                "Link da Mensagem",
+                messageLinks.joinToString("\n"),
+                false
+            )
 
-        embed.addField(
-            "Convite do Servidor",
-            guildInvite,
-            false
-        )
+            addField(
+                "Convite do Servidor",
+                guildInvite,
+                false
+            )
 
-        embed.addField(
-            "Imagens",
-            images.joinToString("\n") { "https://drive.google.com/file/d/$it/view" },
-            false
-        )
-
-        images.firstOrNull()?.let {
-            embed.setImage("https://drive.google.com/uc?export=view&id=$it")
+            addFinalConsiderations(items)
         }
 
-        embed.addFinalConsiderations(items)
-
-        communityGuild.getTextChannelById(SERVER_REPORTS_CHANNEL_ID)?.sendMessage(
-            MessageBuilder()
-                .setContent(
-                    "<@&351473717194522647>"
-                )
-                .setEmbed(embed.build())
-                .build()
-        )
-            ?.queueAndAddReactions()
+        return ReportMessage(embed, images = images)
     }
 
     private fun createBaseEmbed(userThatMadeTheReport: User, reportType: String) = EmbedBuilder()
@@ -468,58 +442,74 @@ class GenerateServerReport(val m: LorittaHelper) {
 
     private suspend fun handleBreakingLorittaLandRules(
         jda: JDA,
-        communityGuild: Guild,
         userThatMadeTheReport: User,
         reportType: String,
         items: List<GoogleFormItem>
-    ) {
+    ): ReportMessage {
         val embed = createBaseEmbed(userThatMadeTheReport, reportType)
 
-        val messageLinks = items.first { it.question == "Link da Mensagem" }
+        val rawMessageLinks = items.first { it.question == "Link da Mensagem" }
+
+        val messageLinks = rawMessageLinks
             .answer.string.replace("\n", " ")
             .split(" ")
             .filter { it.isNotBlank() }
             .filter { it.contains("discord") } // Avoids issues with users adding random dumb stuff to the message field
 
         val savedMessages = StringBuilder()
+        try {
+            for ((index, link) in messageLinks.take(20).withIndex()) {
+                val trueMessageIndex = index + 1
+                val split = link.split("/")
+                val messageId = split[split.size - 1].toLong()
+                val channelId = split[split.size - 2].toLong()
+                val guildId = split[split.size - 3].toLong()
 
-        for ((index, link) in messageLinks.take(20).withIndex()) {
-            val trueMessageIndex = index + 1
-            val split = link.split("/")
-            val messageId = split[split.size - 1].toLong()
-            val channelId = split[split.size - 2].toLong()
-            val guildId = split[split.size - 3].toLong()
+                val guild = jda.getGuildById(guildId)
+                val channel = jda.getTextChannelById(channelId)
+                val message = try {
+                    channel?.retrieveMessageById(messageId)?.await()
+                } catch (e: Exception) {
+                    null
+                }
 
-            val guild = jda.getGuildById(guildId)
-            val channel = jda.getTextChannelById(channelId)
-            val message = try { channel?.retrieveMessageById(messageId)?.await() } catch (e: Exception) { null }
-
-            if (channel != null && message != null) {
-                embed.addField(
-                    "\uD83E\uDDFE Mensagem #$trueMessageIndex",
-                    """**Autor:** ${message.author.asMention}
+                if (channel != null && message != null) {
+                    embed.addField(
+                        "\uD83E\uDDFE Mensagem #$trueMessageIndex",
+                        """**Autor:** ${message.author.asMention}
                                     |**Servidor:** `${guild?.name}`
                                     |**Canal:** ${channel.asMention}
                                     |[Clique para ir na Mensagem](${message.jumpUrl})
                                 """.trimMargin(),
-                    false
-                )
+                        false
+                    )
 
-                val creationTime = message.timeCreated
+                    val creationTime = message.timeCreated
 
-                savedMessages.append("[${creationTime.format(PRETTY_DATE_FORMAT)}] (${message.author.idLong}) <Mensagem #$trueMessageIndex> ${message.author.name}#${message.author.discriminator}: ${message.contentRaw}")
-                savedMessages.append("\n")
-            } else {
-                embed.addField(
-                    "\uD83E\uDDFE Mensagem #$trueMessageIndex",
-                    """A mensagem foi deletada, então eu não consigo descobrir quem enviou... <:lori_sob:556524143281963008>
+                    savedMessages.append("[${creationTime.format(PRETTY_DATE_FORMAT)}] (${message.author.idLong}) <Mensagem #$trueMessageIndex> ${message.author.name}#${message.author.discriminator}: ${message.contentRaw}")
+                    savedMessages.append("\n")
+                } else {
+                    embed.addField(
+                        "\uD83E\uDDFE Mensagem #$trueMessageIndex",
+                        """A mensagem foi deletada, então eu não consigo descobrir quem enviou... <:lori_sob:556524143281963008>
                                     |**Servidor:** `${guild?.name}`
                                     |**Canal:** ${channel?.asMention}
                                     |[Link da Mensagem](${link})
                                 """.trimMargin(),
-                    false
-                )
+                        false
+                    )
+                }
             }
+        } catch (e: Exception) {
+            logger.debug(e) { "Something gone wrong when trying to retrieve messages, maybe some dumb person sent a DM message link?" }
+
+            embed.setDescription(
+                """
+                *(Eu não consegui verificar as mensagens, verifique você mesmo manualmente...)*
+                
+                ${rawMessageLinks.answer.string}
+                """.trimIndent()
+            )
         }
 
         if (savedMessages.isNotEmpty())
@@ -527,19 +517,10 @@ class GenerateServerReport(val m: LorittaHelper) {
 
         embed.addFinalConsiderations(items)
 
-        val query = communityGuild.getTextChannelById(SERVER_REPORTS_CHANNEL_ID)?.sendMessage(
-            MessageBuilder()
-                .setContent(
-                    "<@&351473717194522647>"
-                )
-                .setEmbed(embed.build())
-                .build()
-        )
-
-        if (savedMessages.isNotEmpty())
-            query?.addFile(savedMessages.toString().toByteArray(Charsets.UTF_8), "messages.log")
-
-        query?.queueAndAddReactions()
+        return if (savedMessages.isNotEmpty())
+            ReportMessage(embed, savedMessages.toString().toByteArray(Charsets.UTF_8))
+        else
+            ReportMessage(embed)
     }
 
     private fun EmbedBuilder.addFinalConsiderations(items: List<GoogleFormItem>) {
@@ -576,5 +557,11 @@ class GenerateServerReport(val m: LorittaHelper) {
     data class GoogleFormItem(
         val question: String,
         val answer: JsonElement
+    )
+
+    class ReportMessage(
+        val embed: EmbedBuilder,
+        val messageFile: ByteArray? = null,
+        val images: List<String>? = null
     )
 }
