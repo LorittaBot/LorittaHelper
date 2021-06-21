@@ -71,7 +71,7 @@ class GenerateServerReport(val m: LorittaHelper) {
 
         val userId = payload["user"]!!.jsonPrimitive.long
         val userThatMadeTheReport = event.jda.retrieveUserById(userId).await()
-        val communityGuild = event.jda.getGuildById(501445050207830016L) ?: return
+        val communityGuild = event.jda.getGuildById(297732013006389252L) ?: return
 
         try {
             // We don't check this yet
