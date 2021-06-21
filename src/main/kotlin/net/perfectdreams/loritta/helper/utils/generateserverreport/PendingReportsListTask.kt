@@ -16,7 +16,7 @@ class PendingReportsListTask(val jda: JDA) : Runnable {
 
     override fun run() {
         val now = Instant.now()
-                .atZone(ZoneId.of("America/Sao_Paulo"))
+            .atZone(ZoneId.of("America/Sao_Paulo"))
 
         try {
             // good night :3
@@ -38,8 +38,8 @@ class PendingReportsListTask(val jda: JDA) : Runnable {
 
                 if (dayOfTheLastMessageInTheChannel == null)
                     dayOfTheLastMessageInTheChannel = newMessages.first()
-                            .timeCreated
-                            .dayOfMonth
+                        .timeCreated
+                        .dayOfMonth
 
                 val onlyMessagesInTheSameDay = newMessages.filter {
                     it.timeCreated.dayOfMonth == dayOfTheLastMessageInTheChannel
@@ -54,23 +54,25 @@ class PendingReportsListTask(val jda: JDA) : Runnable {
             }
 
             val messagesThatDoesNotHaveAnyReactions = messages
-                    .filter { it.author.idLong == jda.selfUser.idLong }
-                    .filter { it.type == MessageType.DEFAULT }
-                    // Any that doesn't has only one reaction count
-                    .filterNot {
-                        // Filters only messages that do have a reaction that is not by helper
-                        it.reactions.any {
-                            // Gets if there is a reaction that is not by helper
-                            it.retrieveUsers().complete().any {
-                                !it.isBot
-                            }
+                .filter { it.author.idLong == jda.selfUser.idLong }
+                .filter { it.type == MessageType.DEFAULT }
+                .filterNot { it.isWebhookMessage }
+                // Any that doesn't has only one reaction count
+                .filterNot {
+                    // Filters only messages that do have a reaction that is not by helper
+                    it.reactions.any { reaction ->
+                        // Gets if there is a reaction that is not by helper
+                        reaction.retrieveUsers().complete().any { user ->
+                            !user.isBot
                         }
                     }
+                }
 
             logger.info { "There are ${messagesThatDoesNotHaveAnyReactions.size} pending reports to be seen!" }
 
             if (messagesThatDoesNotHaveAnyReactions.isNotEmpty())
-                staffChannel.sendMessage("""<a:walter_contra_bonoro:729116259446161448> **ATENÇÃO <@&351473717194522647>**
+                staffChannel.sendMessage(
+                    """<a:walter_contra_bonoro:729116259446161448> **ATENÇÃO <@&351473717194522647>**
                     |<a:uniao:703352880320479272> Existem ${messagesThatDoesNotHaveAnyReactions.size} denúncias que ainda precisam ser vistas!
                     |<a:wumpus_keyboard:682249824133054529> **Lembre-se:** ${ApproveReportsOnReactionListener.APPROVE_EMOTE} aceita a denúncia e ${ApproveReportsOnReactionListener.REJECT_EMOTE} rejeita a denúncia (Mas as punições ainda precisam ser dadas manualmente!). Qualquer outra reação pode ser utilizada para ignorar os avisos de denúncia pendente!
                     |
