@@ -8,8 +8,8 @@ import java.util.regex.Pattern
 
 class HowToSeeLorittasSourceCodeResponse : RegExResponse()  {
     init {
-        patterns.add("como|onde|cad(ê|e)".toPattern(Pattern.CASE_INSENSITIVE))
-        patterns.add("v(ê|e|er)|est(a|á)".toPattern(Pattern.CASE_INSENSITIVE))
+        patterns.add("como|onde|cad(ê|e)|(qual )?(é|o)".toPattern(Pattern.CASE_INSENSITIVE))
+        patterns.add("v(ê|e|er)|est(a|á)|o|".toPattern(Pattern.CASE_INSENSITIVE))
         patterns.add("c(o|ó)digo(-| )fonte".toPattern(Pattern.CASE_INSENSITIVE))
         patterns.add("lori|lorri|loritta|lorrita".toPattern(Pattern.CASE_INSENSITIVE))
     }
