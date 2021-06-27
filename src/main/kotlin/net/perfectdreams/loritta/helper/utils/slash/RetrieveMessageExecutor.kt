@@ -4,35 +4,30 @@ import dev.kord.common.entity.Snowflake
 import dev.kord.rest.json.JsonErrorCode
 import dev.kord.rest.request.KtorRequestException
 import dev.kord.rest.service.RestClient
-import net.perfectdreams.discordinteraktions.commands.get
-import net.perfectdreams.discordinteraktions.context.SlashCommandContext
-import net.perfectdreams.discordinteraktions.declarations.slash.SlashCommandDeclaration
-import net.perfectdreams.discordinteraktions.declarations.slash.required
+import net.perfectdreams.discordinteraktions.common.context.commands.SlashCommandArguments
+import net.perfectdreams.discordinteraktions.common.context.commands.SlashCommandContext
+import net.perfectdreams.discordinteraktions.declarations.slash.SlashCommandExecutorDeclaration
+import net.perfectdreams.discordinteraktions.declarations.slash.options.CommandOptions
 import net.perfectdreams.loritta.helper.LorittaHelper
 
-class RetrieveMessageCommand(helper: LorittaHelper, val rest: RestClient) : HelperSlashCommand(helper, this) {
-    companion object : SlashCommandDeclaration(
-        name = "retrievemessage",
-        description = "Pega o conteúdo de uma mensagem a partir de um link"
-    ) {
+class RetrieveMessageExecutor(helper: LorittaHelper, val rest: RestClient) : HelperSlashExecutor(helper) {
+    companion object : SlashCommandExecutorDeclaration(RetrieveMessageExecutor::class) {
         override val options = Options
 
-        object Options : SlashCommandDeclaration.Options() {
+        object Options : CommandOptions() {
             val messageUrl = string("message_url", "Link da Mensagem")
-                .required()
                 .register()
         }
     }
 
-    override suspend fun executesHelper(context: SlashCommandContext) {
-        val messageUrl = options.messageUrl.get(context)
+    override suspend fun executeHelper(context: SlashCommandContext, args: SlashCommandArguments) {
+        val messageUrl = args[options.messageUrl]
 
         val split = messageUrl.split("/")
         val length = split.size
 
         val messageId = split[length - 1]
         val channelId = split[length - 2]
-        val guildId = split[length - 3]
 
         try {
             val message = rest.channel.getMessage(

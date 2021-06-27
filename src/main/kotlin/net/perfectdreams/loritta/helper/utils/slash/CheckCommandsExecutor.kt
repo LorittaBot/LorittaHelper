@@ -1,9 +1,9 @@
 package net.perfectdreams.loritta.helper.utils.slash
 
-import net.perfectdreams.discordinteraktions.commands.get
-import net.perfectdreams.discordinteraktions.context.SlashCommandContext
-import net.perfectdreams.discordinteraktions.declarations.slash.SlashCommandDeclaration
-import net.perfectdreams.discordinteraktions.declarations.slash.required
+import net.perfectdreams.discordinteraktions.common.context.commands.SlashCommandArguments
+import net.perfectdreams.discordinteraktions.common.context.commands.SlashCommandContext
+import net.perfectdreams.discordinteraktions.declarations.slash.SlashCommandExecutorDeclaration
+import net.perfectdreams.discordinteraktions.declarations.slash.options.CommandOptions
 import net.perfectdreams.loritta.helper.LorittaHelper
 import net.perfectdreams.loritta.helper.tables.ExecutedCommandsLog
 import net.perfectdreams.loritta.helper.utils.dailycatcher.DailyCatcherManager
@@ -12,24 +12,19 @@ import org.jetbrains.exposed.sql.count
 import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.transactions.transaction
 
-class CheckCommandsCommand(helper: LorittaHelper) : HelperSlashCommand(helper, this) {
-    companion object : SlashCommandDeclaration(
-        name = "checkcommands",
-        description = "Verifica quais comandos um usuário mais usa"
-    ) {
+class CheckCommandsExecutor(helper: LorittaHelper) : HelperSlashExecutor(helper) {
+    companion object : SlashCommandExecutorDeclaration(CheckCommandsExecutor::class) {
         override val options = Options
 
-        object Options : SlashCommandDeclaration.Options() {
+        object Options : CommandOptions() {
             val user = user("user", "Usuário a ser verificado")
-                .required()
                 .register()
         }
     }
 
-    override suspend fun executesHelper(context: SlashCommandContext) {
-        context.defer()
-
-        val user = options.user.get(context)
+    override suspend fun executeHelper(context: SlashCommandContext, args: SlashCommandArguments) {
+        context.defer(false)
+        val user = args[options.user]
 
         val commandCountField = ExecutedCommandsLog.command.count()
 

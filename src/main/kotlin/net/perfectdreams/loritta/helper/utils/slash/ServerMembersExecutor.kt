@@ -2,32 +2,26 @@ package net.perfectdreams.loritta.helper.utils.slash
 
 import dev.kord.common.entity.Snowflake
 import dev.kord.rest.service.RestClient
-import net.perfectdreams.discordinteraktions.commands.get
-import net.perfectdreams.discordinteraktions.context.SlashCommandContext
-import net.perfectdreams.discordinteraktions.declarations.slash.SlashCommandDeclaration
-import net.perfectdreams.discordinteraktions.declarations.slash.required
+import net.perfectdreams.discordinteraktions.common.context.commands.SlashCommandArguments
+import net.perfectdreams.discordinteraktions.common.context.commands.SlashCommandContext
+import net.perfectdreams.discordinteraktions.declarations.slash.SlashCommandExecutorDeclaration
+import net.perfectdreams.discordinteraktions.declarations.slash.options.CommandOptions
 import net.perfectdreams.loritta.helper.LorittaHelper
 import net.perfectdreams.sequins.text.StringUtils
 
-class ServerMembersCommand(helper: LorittaHelper, val rest: RestClient) : HelperSlashCommand(helper, this) {
-    companion object : SlashCommandDeclaration(
-        name = "servermembers",
-        description = "Mostra os membros de um servidor"
-    ) {
+class ServerMembersExecutor(helper: LorittaHelper, val rest: RestClient) : HelperSlashExecutor(helper) {
+    companion object : SlashCommandExecutorDeclaration(ServerMembersExecutor::class) {
         override val options = Options
 
-        object Options : SlashCommandDeclaration.Options() {
+        object Options : CommandOptions() {
             val guildId = string("guild_id", "ID do Servidor")
-                .required()
                 .register()
-
         }
     }
 
-    override suspend fun executesHelper(context: SlashCommandContext) {
+    override suspend fun executeHelper(context: SlashCommandContext, args: SlashCommandArguments) {
         context.defer()
-
-        val guildId = options.guildId.get(context)
+        val guildId = args[options.guildId]
 
         val members = rest.guild.getGuildMembers(Snowflake(guildId), limit = 1000)
 

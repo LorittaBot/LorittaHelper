@@ -3,26 +3,23 @@ package net.perfectdreams.loritta.helper.utils.slash
 import mu.KotlinLogging
 import net.dv8tion.jda.api.JDA
 import net.dv8tion.jda.api.entities.Message
-import net.perfectdreams.discordinteraktions.commands.get
-import net.perfectdreams.discordinteraktions.context.SlashCommandContext
-import net.perfectdreams.discordinteraktions.declarations.slash.SlashCommandDeclaration
-import net.perfectdreams.discordinteraktions.declarations.slash.choice
+import net.perfectdreams.discordinteraktions.common.context.commands.SlashCommandArguments
+import net.perfectdreams.discordinteraktions.common.context.commands.SlashCommandContext
+import net.perfectdreams.discordinteraktions.declarations.slash.SlashCommandExecutorDeclaration
+import net.perfectdreams.discordinteraktions.declarations.slash.options.CommandOptions
 import net.perfectdreams.loritta.helper.LorittaHelper
 import net.perfectdreams.loritta.helper.utils.dailycatcher.DailyCatcherManager
 import net.perfectdreams.loritta.helper.utils.dailycatcher.SuspiciousLevel
 import net.perfectdreams.loritta.helper.utils.extensions.await
 import net.perfectdreams.sequins.text.StringUtils
 
-class PendingScarletCommand(helper: LorittaHelper, val jda: JDA) : HelperSlashCommand(helper, this) {
-    companion object : SlashCommandDeclaration(
-        name = "pendingscarlet",
-        description = "Scarlet Police, on Ghetto Patrol \uD83D\uDC83"
-    ) {
-        private val logger = KotlinLogging.logger {}
+class PendingScarletExecutor(helper: LorittaHelper, val jda: JDA) : HelperSlashExecutor(helper) {
+    private val logger = KotlinLogging.logger {}
 
+    companion object : SlashCommandExecutorDeclaration(PendingScarletExecutor::class) {
         override val options = Options
 
-        object Options : SlashCommandDeclaration.Options() {
+        object Options : CommandOptions() {
             val type = string("type", "Filtrar por um tipo específico")
                 .let { option ->
                     var temp = option
@@ -34,15 +31,14 @@ class PendingScarletCommand(helper: LorittaHelper, val jda: JDA) : HelperSlashCo
                     temp
                 }
                 .register()
-
         }
     }
 
-    override suspend fun executesHelper(context: SlashCommandContext) {
+    override suspend fun executeHelper(context: SlashCommandContext, args: SlashCommandArguments) {
         context.defer()
 
         val channel = jda.getTextChannelById(DailyCatcherManager.SCARLET_POLICE_CHANNEL_ID) ?: return
-        val filterBy = options.type.get(context)?.let { SuspiciousLevel.valueOf(it) }
+        val filterBy = args[options.type].let { SuspiciousLevel.valueOf(it) }
 
         try {
             val history = channel.history
@@ -92,7 +88,7 @@ class PendingScarletCommand(helper: LorittaHelper, val jda: JDA) : HelperSlashCo
 
                     val suspiciousLevelByEmote = SuspiciousLevel.values().first { it.emote == emote }
 
-                    if (filterBy != null && suspiciousLevelByEmote != filterBy)
+                    if (suspiciousLevelByEmote != filterBy)
                         return@forEach
 
                     val list = susLevelMessages.getOrPut(suspiciousLevelByEmote) {
