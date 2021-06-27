@@ -15,8 +15,11 @@ import net.dv8tion.jda.api.entities.Activity
 import net.dv8tion.jda.api.requests.GatewayIntent
 import net.dv8tion.jda.api.utils.MemberCachePolicy
 import net.perfectdreams.discordinteraktions.api.entities.Snowflake
+import net.perfectdreams.discordinteraktions.common.buttons.ButtonStateManager
+import net.perfectdreams.discordinteraktions.common.buttons.MemoryButtonStateManager
 import net.perfectdreams.discordinteraktions.common.commands.CommandManager
 import net.perfectdreams.discordinteraktions.platform.jda.commands.JDACommandRegistry
+import net.perfectdreams.discordinteraktions.platform.jda.listeners.SlashCommandListener
 import net.perfectdreams.loritta.helper.listeners.AddReactionsToMessagesListener
 import net.perfectdreams.loritta.helper.listeners.ApproveFanArtListener
 import net.perfectdreams.loritta.helper.listeners.ApproveReportsOnReactionListener
@@ -110,7 +113,8 @@ class LorittaHelper(val config: LorittaHelperConfig, val fanArtsConfig: FanArtsC
                 CheckLoriBannedUsersListener(this),
                 PrivateMessageListener(this),
                 ApproveReportsOnReactionListener(this),
-                AddReactionsToMessagesListener(this)
+                AddReactionsToMessagesListener(this),
+                SlashCommandListener(commandManager, MemoryButtonStateManager()) // TODO: Remove this after I update Discord InteraKTions
             )
             .also {
                 if (fanArtsConfig != null) {
