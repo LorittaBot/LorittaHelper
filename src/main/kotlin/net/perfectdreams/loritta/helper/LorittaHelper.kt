@@ -1,17 +1,10 @@
 package net.perfectdreams.loritta.helper
 
-import dev.kord.common.entity.Snowflake
 import dev.kord.rest.service.RestClient
 import io.ktor.client.*
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.asCoroutineDispatcher
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.jsonArray
 import kotlinx.serialization.json.jsonObject
@@ -21,7 +14,9 @@ import net.dv8tion.jda.api.JDABuilder
 import net.dv8tion.jda.api.entities.Activity
 import net.dv8tion.jda.api.requests.GatewayIntent
 import net.dv8tion.jda.api.utils.MemberCachePolicy
-import net.perfectdreams.discordinteraktions.InteractionsServer
+import net.perfectdreams.discordinteraktions.api.entities.Snowflake
+import net.perfectdreams.discordinteraktions.common.commands.CommandManager
+import net.perfectdreams.discordinteraktions.platform.jda.commands.JDACommandRegistry
 import net.perfectdreams.loritta.helper.listeners.AddReactionsToMessagesListener
 import net.perfectdreams.loritta.helper.listeners.ApproveFanArtListener
 import net.perfectdreams.loritta.helper.listeners.ApproveReportsOnReactionListener
@@ -43,16 +38,17 @@ import net.perfectdreams.loritta.helper.utils.faqembed.FAQEmbedUpdaterEnglish
 import net.perfectdreams.loritta.helper.utils.faqembed.FAQEmbedUpdaterPortuguese
 import net.perfectdreams.loritta.helper.utils.faqembed.FAQEmbedUpdaterSparklyPower
 import net.perfectdreams.loritta.helper.utils.generateserverreport.PendingReportsListTask
-import net.perfectdreams.loritta.helper.utils.slash.BroadcastDailyShopWinnersCommand
-import net.perfectdreams.loritta.helper.utils.slash.CheckCommandsCommand
-import net.perfectdreams.loritta.helper.utils.slash.DailyCatcherCheckCommand
-import net.perfectdreams.loritta.helper.utils.slash.FanArtsOverrideGetCommand
-import net.perfectdreams.loritta.helper.utils.slash.FanArtsOverrideResetCommand
-import net.perfectdreams.loritta.helper.utils.slash.FanArtsOverrideSetCommand
-import net.perfectdreams.loritta.helper.utils.slash.IPLocationCommand
-import net.perfectdreams.loritta.helper.utils.slash.PendingScarletCommand
-import net.perfectdreams.loritta.helper.utils.slash.RetrieveMessageCommand
-import net.perfectdreams.loritta.helper.utils.slash.ServerMembersCommand
+import net.perfectdreams.loritta.helper.utils.slash.BroadcastDailyShopWinnersExecutor
+import net.perfectdreams.loritta.helper.utils.slash.CheckCommandsExecutor
+import net.perfectdreams.loritta.helper.utils.slash.DailyCatcherCheckExecutor
+import net.perfectdreams.loritta.helper.utils.slash.FanArtsOverrideGetExecutor
+import net.perfectdreams.loritta.helper.utils.slash.FanArtsOverrideResetExecutor
+import net.perfectdreams.loritta.helper.utils.slash.FanArtsOverrideSetExecutor
+import net.perfectdreams.loritta.helper.utils.slash.IPLocationExecutor
+import net.perfectdreams.loritta.helper.utils.slash.PendingScarletExecutor
+import net.perfectdreams.loritta.helper.utils.slash.RetrieveMessageExecutor
+import net.perfectdreams.loritta.helper.utils.slash.ServerMembersExecutor
+import net.perfectdreams.loritta.helper.utils.slash.declarations.*
 import net.perfectdreams.loritta.helper.utils.supporttimer.EnglishSupportTimer
 import net.perfectdreams.loritta.helper.utils.supporttimer.PortugueseSupportTimer
 import net.perfectdreams.loritta.helper.utils.topsonhos.TopSonhosRankingSender
@@ -94,11 +90,8 @@ class LorittaHelper(val config: LorittaHelperConfig, val fanArtsConfig: FanArtsC
     var dailyCatcherManager: DailyCatcherManager? = null
 
     var dailyShopWinners: DailyShopWinners? = null
-    val interactionsServer = InteractionsServer(
-        config.applicationId,
-        config.publicKey,
-        config.token
-    )
+    val commandManager = CommandManager()
+
     val lorittaRest = lorittaConfig?.token?.let { RestClient(it) }
 
     fun start() {
@@ -201,31 +194,52 @@ class LorittaHelper(val config: LorittaHelperConfig, val fanArtsConfig: FanArtsC
         timedTaskExecutor.scheduleWithFixedDelay(LorittaBannedRoleTask(this, jda), 0, 15, TimeUnit.SECONDS)
 
         // Register Commands
-        interactionsServer.commandManager.registerAll(
-            BroadcastDailyShopWinnersCommand(this),
-            CheckCommandsCommand(this),
-            DailyCatcherCheckCommand(this),
-            FanArtsOverrideGetCommand(this),
-            FanArtsOverrideSetCommand(this),
-            FanArtsOverrideResetCommand(this),
-            PendingScarletCommand(this, jda),
-            IPLocationCommand(this)
-        )
-
-        if (lorittaRest != null) {
-            interactionsServer.commandManager.register(RetrieveMessageCommand(this, lorittaRest))
-            interactionsServer.commandManager.register(ServerMembersCommand(this, lorittaRest))
+        commandManager.apply {
+            register(
+                BroadcastDailyShopWinnersCommand,
+                BroadcastDailyShopWinnersExecutor(this@LorittaHelper)
+            )
+            register(
+                CheckCommandsCommand,
+                CheckCommandsExecutor(this@LorittaHelper)
+            )
+            register(
+                DailyCatcherCheckCommand,
+                DailyCatcherCheckExecutor(this@LorittaHelper)
+            )
+            register(
+                FanArtsOverrideCommand,
+                FanArtsOverrideGetExecutor(this@LorittaHelper),
+                FanArtsOverrideSetExecutor(this@LorittaHelper),
+                FanArtsOverrideResetExecutor(this@LorittaHelper)
+            )
+            register(
+                PendingScarletCommand,
+                PendingScarletExecutor(this@LorittaHelper, jda)
+            )
+            register(
+                IPLocationCommand,
+                IPLocationExecutor(this@LorittaHelper)
+            )
         }
 
-        launch {
-            interactionsServer.commandManager.updateAllCommandsInGuild(
+        if (lorittaRest != null) {
+            commandManager.register(
+                RetrieveMessageCommand,
+                RetrieveMessageExecutor(this, lorittaRest)
+            )
+            commandManager.register(
+                ServerMembersCommand,
+                ServerMembersExecutor(this, lorittaRest)
+            )
+        }
+
+        runBlocking {
+            val registry = JDACommandRegistry(jda, commandManager)
+            registry.updateAllCommandsInGuild(
                 Snowflake(297732013006389252L),
                 true
             )
-
-            thread {
-                interactionsServer.start()
-            }
         }
     }
 

@@ -1,35 +1,28 @@
 package net.perfectdreams.loritta.helper.utils.slash
 
-import dev.kord.common.entity.MessageFlag
-import dev.kord.common.entity.MessageFlags
 import io.ktor.client.request.*
 import io.ktor.http.*
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.jsonObject
-import net.perfectdreams.discordinteraktions.commands.get
-import net.perfectdreams.discordinteraktions.context.SlashCommandContext
-import net.perfectdreams.discordinteraktions.declarations.slash.SlashCommandDeclaration
-import net.perfectdreams.discordinteraktions.declarations.slash.required
+import net.perfectdreams.discordinteraktions.common.context.commands.SlashCommandArguments
+import net.perfectdreams.discordinteraktions.common.context.commands.SlashCommandContext
+import net.perfectdreams.discordinteraktions.declarations.slash.SlashCommandExecutorDeclaration
+import net.perfectdreams.discordinteraktions.declarations.slash.options.CommandOptions
 import net.perfectdreams.loritta.helper.LorittaHelper
 
-class IPLocationCommand(helper: LorittaHelper) : HelperSlashCommand(helper, this) {
-    companion object : SlashCommandDeclaration(
-        name = "findthemeliante",
-        description = "Em busca de meliantes pelo address"
-    ) {
+class IPLocationExecutor(helper: LorittaHelper) : HelperSlashExecutor(helper) {
+    companion object : SlashCommandExecutorDeclaration(IPLocationExecutor::class) {
         override val options = Options
 
-        object Options : SlashCommandDeclaration.Options() {
+        object Options : CommandOptions() {
             val ip = string("address", "Endereço a ser verificado")
-                .required()
                 .register()
         }
     }
 
-    override suspend fun executesHelper(context: SlashCommandContext) {
+    override suspend fun executeHelper(context: SlashCommandContext, args: SlashCommandArguments) {
         context.defer()
-
-        val userIp = options.ip.get(context)
+        val userIp = args[options.ip]
 
         // pls don't ban us :pray:
         val response = LorittaHelper.http.post<String>("https://iplocation.com/") {
@@ -49,7 +42,7 @@ class IPLocationCommand(helper: LorittaHelper) : HelperSlashCommand(helper, this
                 }
             }
 
-            flags = MessageFlags(MessageFlag.Ephemeral)
+            isEphemeral = true
         }
     }
 }
