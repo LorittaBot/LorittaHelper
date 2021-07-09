@@ -11,7 +11,9 @@ import net.perfectdreams.loritta.helper.tables.BannedUsers
 import net.perfectdreams.loritta.helper.utils.Constants
 import net.perfectdreams.loritta.helper.utils.dailycatcher.catchers.DailyOnlyEcoCommandsCatcher
 import net.perfectdreams.loritta.helper.utils.dailycatcher.reports.ReportOnlyEcoCatcher
-import org.jetbrains.exposed.sql.selectAll
+import org.jetbrains.exposed.sql.and
+import org.jetbrains.exposed.sql.or
+import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.transactions.transaction
 import java.time.Instant
 import java.time.ZoneId
@@ -104,7 +106,12 @@ class DailyCatcherManager(val m: LorittaHelper, val jda: JDA) {
 
     fun doReports() {
         val bannedUsersIds = transaction(m.databases.lorittaDatabase) {
-            BannedUsers.slice(BannedUsers.userId).selectAll().map { it[BannedUsers.userId] }
+            BannedUsers.slice(BannedUsers.userId)
+                .select {
+                    (BannedUsers.valid eq true) and
+                            (BannedUsers.expiresAt.isNull() or (BannedUsers.expiresAt.isNotNull() and BannedUsers.expiresAt.greaterEq(System.currentTimeMillis())))
+                }
+                .map { it[BannedUsers.userId] }
                     .toSet()
         }
 
