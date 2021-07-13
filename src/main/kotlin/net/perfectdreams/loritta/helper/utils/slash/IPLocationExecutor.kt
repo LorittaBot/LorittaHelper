@@ -21,7 +21,7 @@ class IPLocationExecutor(helper: LorittaHelper) : HelperSlashExecutor(helper) {
     }
 
     override suspend fun executeHelper(context: SlashCommandContext, args: SlashCommandArguments) {
-        context.defer()
+        context.deferReply()
         val userIp = args[options.ip]
 
         // pls don't ban us :pray:

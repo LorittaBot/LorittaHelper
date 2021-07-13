@@ -20,7 +20,7 @@ class ServerMembersExecutor(helper: LorittaHelper, val rest: RestClient) : Helpe
     }
 
     override suspend fun executeHelper(context: SlashCommandContext, args: SlashCommandArguments) {
-        context.defer()
+        context.deferReply()
         val guildId = args[options.guildId]
 
         val members = rest.guild.getGuildMembers(Snowflake(guildId), limit = 1000)

@@ -126,7 +126,7 @@ class LorittaHelper(val config: LorittaHelperConfig, val fanArtsConfig: FanArtsC
                 PrivateMessageListener(this),
                 ApproveReportsOnReactionListener(this),
                 AddReactionsToMessagesListener(this),
-                SlashCommandListener(commandManager, MemoryButtonStateManager()) // TODO: Remove this after I update Discord InteraKTions
+                SlashCommandListener(commandManager)
             )
             .also {
                 if (fanArtsConfig != null) {
