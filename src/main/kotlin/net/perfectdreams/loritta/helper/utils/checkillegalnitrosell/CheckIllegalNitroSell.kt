@@ -25,8 +25,15 @@ class CheckIllegalNitroSell {
             categorySelector = { it.isSpam }
     )
 
+    private val channels = listOf(
+            358774895850815488L, 547119872568459284L, 643624690874712094L, 619680554820042752L
+        )
+    
     fun onMessageReceived(event: GuildMessageReceivedEvent) {
         if (event.author.isBot)
+            return
+        
+        if (event.channel.idLong in channels)
             return
 
         val rawContent = event.message.contentRaw
