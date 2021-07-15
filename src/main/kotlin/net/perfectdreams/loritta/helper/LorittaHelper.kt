@@ -57,6 +57,7 @@ import net.perfectdreams.loritta.helper.utils.slash.IPLocationExecutor
 import net.perfectdreams.loritta.helper.utils.slash.PendingScarletExecutor
 import net.perfectdreams.loritta.helper.utils.slash.RetrieveMessageExecutor
 import net.perfectdreams.loritta.helper.utils.slash.ServerMembersExecutor
+import net.perfectdreams.loritta.helper.utils.slash.AttachDenyReasonExecutor
 import net.perfectdreams.loritta.helper.utils.slash.declarations.BroadcastDailyShopWinnersCommand
 import net.perfectdreams.loritta.helper.utils.slash.declarations.CheckCommandsCommand
 import net.perfectdreams.loritta.helper.utils.slash.declarations.DailyCatcherCheckCommand
@@ -65,6 +66,7 @@ import net.perfectdreams.loritta.helper.utils.slash.declarations.IPLocationComma
 import net.perfectdreams.loritta.helper.utils.slash.declarations.PendingScarletCommand
 import net.perfectdreams.loritta.helper.utils.slash.declarations.RetrieveMessageCommand
 import net.perfectdreams.loritta.helper.utils.slash.declarations.ServerMembersCommand
+import net.perfectdreams.loritta.helper.utils.slash.declarations.AttachDenyReasonCommand
 import net.perfectdreams.loritta.helper.utils.supporttimer.EnglishSupportTimer
 import net.perfectdreams.loritta.helper.utils.supporttimer.PortugueseSupportTimer
 import net.perfectdreams.loritta.helper.utils.topsonhos.TopSonhosRankingSender
@@ -236,6 +238,10 @@ class LorittaHelper(val config: LorittaHelperConfig, val fanArtsConfig: FanArtsC
             register(
                 IPLocationCommand,
                 IPLocationExecutor(this@LorittaHelper)
+            )
+            register(
+                AttachDenyReasonCommand,
+                AttachDenyReasonExecutor(this@LorittaHelper, jda)
             )
         }
 

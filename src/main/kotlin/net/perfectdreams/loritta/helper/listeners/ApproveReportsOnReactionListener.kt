@@ -6,6 +6,7 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter
 import net.perfectdreams.loritta.helper.LorittaHelper
 import net.perfectdreams.loritta.helper.utils.extensions.await
 import net.perfectdreams.loritta.helper.utils.generateserverreport.GenerateServerReport
+import net.perfectdreams.loritta.helper.utils.Emotes
 
 class ApproveReportsOnReactionListener(val m: LorittaHelper): ListenerAdapter() {
     companion object {
@@ -60,10 +61,15 @@ class ApproveReportsOnReactionListener(val m: LorittaHelper): ListenerAdapter() 
                                 """.trimMargin())
                                             .queue()
                                 } else if (event.reactionEmote.name == REJECT_EMOTE) {
-                                    // Rejected
+                                    // Rejeted
+                                    var rejectReason = "Se você quiser saber o motivo da sua denúncia ter sido rejeitada, é melhor perguntar para a equipe! Eu sou apenas um bot, não sei o motivo... <:lori_flushed:732706868224327702>"
+                                    if (firstEmbed.fields.any { it.name == "Resposta da Staff" }) {
+                                        val reasonField = firstEmbed.fields.find { it.name == "Resposta da Staff" }
+                                        rejectReason = "A equipe anexou o seguinte motivo pela qual a denúncia foi negada: `${reasonField?.value}` ${Emotes.LORI_COFFEE}"
+                                    }
                                     it.sendMessage("""A sua denúncia foi rejeitada pela equipe... provavelmente porque a denúncia que você enviou não é algo contra as regras, ou está faltando provas, ou a pessoa já tinha sido punida... tem vários motivos porque a gente pode ter rejeitado a sua denúncia!
                                         |
-                                        |Se você quiser saber o motivo da sua denúncia ter sido rejeitada, é melhor perguntar para a equipe! Eu sou apenas um bot, não sei o motivo... <:lori_flushed:732706868224327702>
+                                        |${rejectReason}
                                 """.trimMargin())
                                             .queue()
                                 }
