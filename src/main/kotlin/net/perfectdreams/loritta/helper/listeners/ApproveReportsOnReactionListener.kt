@@ -63,8 +63,8 @@ class ApproveReportsOnReactionListener(val m: LorittaHelper): ListenerAdapter() 
                                 } else if (event.reactionEmote.name == REJECT_EMOTE) {
                                     // Rejeted
                                     var rejectReason = "Se você quiser saber o motivo da sua denúncia ter sido rejeitada, é melhor perguntar para a equipe! Eu sou apenas um bot, não sei o motivo... <:lori_flushed:732706868224327702>"
-                                    if (firstEmbed.fields.any { it.name == "Resposta da Equipe" }) {
-                                        val reasonField = firstEmbed.fields.find { it.name == "Resposta da Equipe" }
+                                    if (firstEmbed.fields.any { it.name == "Resposta da Staff" }) {
+                                        val reasonField = firstEmbed.fields.find { it.name == "Resposta da Staff" }
                                         rejectReason = "A equipe anexou o seguinte motivo pela qual a denúncia foi negada: `${reasonField?.value}` ${Emotes.LORI_COFFEE}"
                                     }
                                     it.sendMessage("""A sua denúncia foi rejeitada pela equipe... provavelmente porque a denúncia que você enviou não é algo contra as regras, ou está faltando provas, ou a pessoa já tinha sido punida... tem vários motivos porque a gente pode ter rejeitado a sua denúncia!
