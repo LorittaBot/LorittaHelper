@@ -46,7 +46,7 @@ class AttachDenyReasonExecutor(helper: LorittaHelper, val jda: JDA) : HelperSlas
                 return
             }
 
-            var message = try {
+            val message = try {
                 jda.getTextChannelById(channelId)!!
                     .retrieveMessageById(messageId)
                     .await()
@@ -56,7 +56,7 @@ class AttachDenyReasonExecutor(helper: LorittaHelper, val jda: JDA) : HelperSlas
 
             if (message == null) {
                 context.sendMessage {
-                    content = "${Emotes.LORI_SOB} **|** Talvez isto não seja uma mensagem minha..."
+                    content = "${Emotes.LORI_SOB} **|** Talvez isto não seja uma mensagem válida..."
                 }
                 return
             }
@@ -76,15 +76,33 @@ class AttachDenyReasonExecutor(helper: LorittaHelper, val jda: JDA) : HelperSlas
                 }
                 return 
             }
-            
-            if (firstEmbed.fields == null) {
+
+            val builder = EmbedBuilder(firstEmbed)
+
+            if (firstEmbed.fields.any { it.name == "Resposta da Staff" }) {
+                val oldReason = firstEmbed.fields.find { it.name == "Resposta da Staff" }?.value
+                val fields = firstEmbed.fields
+                //Clear embed fields to re-add older fields again
+                builder.clearFields()
+
+                for (field in fields) {
+                    if (field.name == "Resposta da Staff") {
+                        builder.addField(field.name, reason, field.isInline)
+                    } else {
+                        builder.addField(field.name, field.value, field.isInline)
+                    }
+                }
+
+                message.editMessage(builder.build()).queue()
                 context.sendMessage {
-                    content = "${Emotes.LORI_THINKING} **|** Esse embed não tem fields! Creio que não seja um embed de denúncias..."
+                    content = """${Emotes.LORI_PAT} **|** Motivo atualizado com sucesso!
+                        |${Emotes.LORI_OWO} **|** Motivo anterior: `${oldReason}`
+                        """.trimMargin()
                 }
                 return
             }
-            
-            val builder = EmbedBuilder(firstEmbed!!)
+
+
             builder.addField("Resposta da Staff", reason, false)
             
             message.editMessage(builder.build()).queue()
