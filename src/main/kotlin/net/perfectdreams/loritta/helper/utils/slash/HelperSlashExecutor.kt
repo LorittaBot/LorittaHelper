@@ -11,7 +11,7 @@ abstract class HelperSlashExecutor(
     val helper: LorittaHelper
 ) : SlashCommandExecutor() {
     override suspend fun execute(context: SlashCommandContext, args: SlashCommandArguments) {
-        if (context !is GuildSlashCommandContext || !context.member.roles.contains(Snowflake(351473717194522647L))) {
+        if (context !is GuildSlashCommandContext || !context.member.roles.contains(Snowflake(399301696892829706L))) {
             context.sendMessage {
                 content = "Você não pode usar comandos da Helper!"
 
