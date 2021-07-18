@@ -44,8 +44,13 @@ class MessageListener(val m: LorittaHelper) : ListenerAdapter() {
             }
 
             m.launch {
-                if (event.message.channel.idLong == 790292619769937940L && event.message.attachments.isNotEmpty())
-                    generateServerReport.onMessageReceived(event)
+                if (event.message.channel.idLong == 790292619769937940L && event.message.attachments.isNotEmpty()) {
+                    if (event.message.contentRaw == "report") {
+                        generateServerReport.onMessageReceived(event)
+                    } else if (event.message.contentRaw == "appeal") {
+                        // Don't do anything... yet
+                    }
+                }
             }
             return
         }
