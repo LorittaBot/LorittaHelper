@@ -13,6 +13,7 @@ import net.perfectdreams.loritta.helper.utils.checksonhosmendigagem.CheckSonhosM
 import net.perfectdreams.loritta.helper.utils.dontmentionstaff.EnglishDontMentionStaff
 import net.perfectdreams.loritta.helper.utils.dontmentionstaff.PortugueseDontMentionStaff
 import net.perfectdreams.loritta.helper.utils.generatebanstatusreport.GenerateBanStatusReport
+import net.perfectdreams.loritta.helper.utils.generateserverreport.GenerateAppealsReport
 import net.perfectdreams.loritta.helper.utils.generateserverreport.GenerateServerReport
 import net.perfectdreams.loritta.helper.utils.gotolangchannel.GoToCorrectLanguageChannel
 
@@ -26,6 +27,7 @@ class MessageListener(val m: LorittaHelper) : ListenerAdapter() {
     val checkIllegalNitroSell = CheckIllegalNitroSell()
     val generateBanStatusReport = GenerateBanStatusReport(m)
     val generateServerReport = GenerateServerReport(m)
+    val generateAppealsReport = GenerateAppealsReport(m)
     val checkSonhosBraggers = CheckSonhosMendigagem(m)
 
     override fun onGuildMessageReceived(event: GuildMessageReceivedEvent) {
@@ -48,7 +50,7 @@ class MessageListener(val m: LorittaHelper) : ListenerAdapter() {
                     if (event.message.contentRaw == "report") {
                         generateServerReport.onMessageReceived(event)
                     } else if (event.message.contentRaw == "appeal") {
-                        // Don't do anything... yet
+                        generateAppealsReport.onMessageReceived(event)
                     }
                 }
             }

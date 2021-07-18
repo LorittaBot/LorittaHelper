@@ -27,6 +27,7 @@ import net.perfectdreams.discordinteraktions.common.commands.CommandManager
 import net.perfectdreams.discordinteraktions.platform.jda.commands.JDACommandRegistry
 import net.perfectdreams.discordinteraktions.platform.jda.listeners.SlashCommandListener
 import net.perfectdreams.loritta.helper.listeners.AddReactionsToMessagesListener
+import net.perfectdreams.loritta.helper.listeners.ApproveAppealsOnReactionListener
 import net.perfectdreams.loritta.helper.listeners.ApproveFanArtListener
 import net.perfectdreams.loritta.helper.listeners.ApproveReportsOnReactionListener
 import net.perfectdreams.loritta.helper.listeners.BanListener
@@ -128,6 +129,7 @@ class LorittaHelper(val config: LorittaHelperConfig, val fanArtsConfig: FanArtsC
                 PrivateMessageListener(this),
                 ApproveReportsOnReactionListener(this),
                 AddReactionsToMessagesListener(this),
+                ApproveAppealsOnReactionListener(this),
                 SlashCommandListener(commandManager)
             )
             .also {

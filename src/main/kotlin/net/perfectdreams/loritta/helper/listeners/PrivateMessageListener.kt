@@ -24,7 +24,8 @@ class PrivateMessageListener(val m: LorittaHelper) : ListenerAdapter() {
         )
 
         val VALID_APPEAL_TEXTS = listOf(
-            "apelo"
+            "apelo",
+            "appeal"
         )
     }
 
