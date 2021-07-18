@@ -22,7 +22,6 @@ import net.dv8tion.jda.api.entities.Activity
 import net.dv8tion.jda.api.requests.GatewayIntent
 import net.dv8tion.jda.api.utils.MemberCachePolicy
 import net.perfectdreams.discordinteraktions.api.entities.Snowflake
-import net.perfectdreams.discordinteraktions.common.buttons.MemoryButtonStateManager
 import net.perfectdreams.discordinteraktions.common.commands.CommandManager
 import net.perfectdreams.discordinteraktions.platform.jda.commands.JDACommandRegistry
 import net.perfectdreams.discordinteraktions.platform.jda.listeners.SlashCommandListener
@@ -48,6 +47,7 @@ import net.perfectdreams.loritta.helper.utils.faqembed.FAQEmbedUpdaterEnglish
 import net.perfectdreams.loritta.helper.utils.faqembed.FAQEmbedUpdaterPortuguese
 import net.perfectdreams.loritta.helper.utils.faqembed.FAQEmbedUpdaterSparklyPower
 import net.perfectdreams.loritta.helper.utils.generateserverreport.PendingReportsListTask
+import net.perfectdreams.loritta.helper.utils.slash.AttachDenyReasonExecutor
 import net.perfectdreams.loritta.helper.utils.slash.BroadcastDailyShopWinnersExecutor
 import net.perfectdreams.loritta.helper.utils.slash.CheckCommandsExecutor
 import net.perfectdreams.loritta.helper.utils.slash.DailyCatcherCheckExecutor
@@ -58,7 +58,7 @@ import net.perfectdreams.loritta.helper.utils.slash.IPLocationExecutor
 import net.perfectdreams.loritta.helper.utils.slash.PendingScarletExecutor
 import net.perfectdreams.loritta.helper.utils.slash.RetrieveMessageExecutor
 import net.perfectdreams.loritta.helper.utils.slash.ServerMembersExecutor
-import net.perfectdreams.loritta.helper.utils.slash.AttachDenyReasonExecutor
+import net.perfectdreams.loritta.helper.utils.slash.declarations.AttachDenyReasonCommand
 import net.perfectdreams.loritta.helper.utils.slash.declarations.BroadcastDailyShopWinnersCommand
 import net.perfectdreams.loritta.helper.utils.slash.declarations.CheckCommandsCommand
 import net.perfectdreams.loritta.helper.utils.slash.declarations.DailyCatcherCheckCommand
@@ -67,7 +67,6 @@ import net.perfectdreams.loritta.helper.utils.slash.declarations.IPLocationComma
 import net.perfectdreams.loritta.helper.utils.slash.declarations.PendingScarletCommand
 import net.perfectdreams.loritta.helper.utils.slash.declarations.RetrieveMessageCommand
 import net.perfectdreams.loritta.helper.utils.slash.declarations.ServerMembersCommand
-import net.perfectdreams.loritta.helper.utils.slash.declarations.AttachDenyReasonCommand
 import net.perfectdreams.loritta.helper.utils.supporttimer.EnglishSupportTimer
 import net.perfectdreams.loritta.helper.utils.supporttimer.PortugueseSupportTimer
 import net.perfectdreams.loritta.helper.utils.topsonhos.TopSonhosRankingSender

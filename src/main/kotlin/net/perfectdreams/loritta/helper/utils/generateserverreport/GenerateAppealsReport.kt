@@ -69,11 +69,6 @@ class GenerateAppealsReport(val m: LorittaHelper) {
             // We don't check this yet
             val time = payload["time"]!!.jsonPrimitive.long
 
-            // Get the Report Type
-            val reportType = items.first { it.question == "Qual é o motivo da denúncia?" }
-
-            logger.info { "Report Type: ${reportType.answer.string}" }
-
             val embed = createBaseEmbed(userThatMadeTheReport)
 
             val banReason = items.first { it.question == "Qual foi o motivo do seu banimento?" }
@@ -199,7 +194,7 @@ class GenerateAppealsReport(val m: LorittaHelper) {
             communityGuild.getTextChannelById(APPEALS_CHANNEL_ID)?.sendMessage(
                 MessageBuilder()
                     .setContent(
-                        "<@&351473717194522647> Alguma coisa deu errada ao processar a denúncia da mensagem ${event.message.jumpUrl} feita por ${userThatMadeTheReport.asMention}... Tente verificar ela manualmente já que eu não fui boa o suficiente... <:lori_sob:556524143281963008>\n\n```\n${e.stackTraceToString()}\n```"
+                        "<@&351473717194522647> Alguma coisa deu errada ao processar o apelo da mensagem ${event.message.jumpUrl} feita por ${userThatMadeTheReport.asMention}... Tente verificar ela manualmente já que eu não fui boa o suficiente... <:lori_sob:556524143281963008>\n\n```\n${e.stackTraceToString()}\n```"
                     )
                     .build()
             )?.queue()
@@ -208,7 +203,7 @@ class GenerateAppealsReport(val m: LorittaHelper) {
             userThatMadeTheReport.openPrivateChannel()
                 .queue {
                     it.sendMessage(
-                        """Alguma coisa deu errada ao processar a sua denúncia, por favor, mande a denúncia manualmente para a equipe e diga que a Helper não foi boa o suficiente para processar a sua denúncia... <a:sad_cat22:735468288762708038>
+                        """Alguma coisa deu errada ao processar o seu apelo, por favor, mande o apelo manualmente para a equipe e diga que a Helper não foi boa o suficiente para processar o seu apelo... <a:sad_cat22:735468288762708038>
                     """.trimMargin()
                     )
                         .queue()
