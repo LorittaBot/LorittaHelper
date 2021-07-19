@@ -1,24 +1,29 @@
 package net.perfectdreams.loritta.helper.utils.slash
 
+import net.dv8tion.jda.api.EmbedBuilder
+import net.dv8tion.jda.api.JDA
 import net.perfectdreams.discordinteraktions.common.context.commands.SlashCommandArguments
 import net.perfectdreams.discordinteraktions.common.context.commands.SlashCommandContext
 import net.perfectdreams.discordinteraktions.declarations.slash.SlashCommandExecutorDeclaration
 import net.perfectdreams.discordinteraktions.declarations.slash.options.CommandOptions
-import net.perfectdreams.loritta.helper.utils.extensions.await
-import net.perfectdreams.loritta.helper.utils.Emotes
 import net.perfectdreams.loritta.helper.LorittaHelper
-import net.dv8tion.jda.api.EmbedBuilder
-import net.dv8tion.jda.api.JDA
+import net.perfectdreams.loritta.helper.utils.Emotes
+import net.perfectdreams.loritta.helper.utils.extensions.await
+import net.perfectdreams.loritta.helper.utils.generateserverreport.GenerateAppealsReport
+import net.perfectdreams.loritta.helper.utils.generateserverreport.GenerateServerReport
 
 class AttachDenyReasonExecutor(helper: LorittaHelper, val jda: JDA) : HelperSlashExecutor(helper) {
     companion object : SlashCommandExecutorDeclaration(AttachDenyReasonExecutor::class) {
         override val options = Options
-        const val SERVER_REPORTS_CHANNEL_ID = "790308357713559582"
+        val VALID_CHANNEL_IDS = listOf(
+            GenerateAppealsReport.SERVER_APPEALS_CHANNEL_ID,
+            GenerateServerReport.SERVER_REPORTS_CHANNEL_ID
+        )
 
         object Options : CommandOptions() {
             val messageUrl = string("message_url", "Link da Mensagem")
                 .register()
-            
+
             val reason = string("reason", "O motivo por qual a denúncia está sendo negada")
                 .register()
         }
@@ -29,17 +34,13 @@ class AttachDenyReasonExecutor(helper: LorittaHelper, val jda: JDA) : HelperSlas
         val reason = args[options.reason]
 
         val split = messageUrl.split("/")
-        var channelId = SERVER_REPORTS_CHANNEL_ID
-        var messageId = messageUrl
 
-        if (split.size >= 2) {
-            val length = split.size
-            messageId = split[length - 1]
-            channelId = split[length - 2]
-        }
+        val length = split.size
+        val messageId = split[length - 1]
+        val channelId = split[length - 2]
 
         try {
-            if (channelId != SERVER_REPORTS_CHANNEL_ID) {
+            if (channelId.toLong() !in VALID_CHANNEL_IDS) {
                 context.sendMessage {
                     content= "${Emotes.LORI_THINKING} **|** O canal deste link não corresponde ao <#790308357713559582>, suspeito isso aí."
                 }
@@ -62,19 +63,19 @@ class AttachDenyReasonExecutor(helper: LorittaHelper, val jda: JDA) : HelperSlas
             }
 
             if (message.author.idLong != jda.selfUser.idLong) {
-              context.sendMessage {
-                content = "${Emotes.LORI_THINKING} **|** Essa mensagem não é uma mensagem enviada por mim!"
-              }
-              return
+                context.sendMessage {
+                    content = "${Emotes.LORI_THINKING} **|** Essa mensagem não é uma mensagem enviada por mim!"
+                }
+                return
             }
-              
+
             val firstEmbed = message.embeds.firstOrNull()
-            
-            if (firstEmbed == null) { 
-                context.sendMessage { 
+
+            if (firstEmbed == null) {
+                context.sendMessage {
                     content = "${Emotes.LORI_THINKING} **|** Essa mensagem não tem embed"
                 }
-                return 
+                return
             }
 
             val builder = EmbedBuilder(firstEmbed)
@@ -93,7 +94,7 @@ class AttachDenyReasonExecutor(helper: LorittaHelper, val jda: JDA) : HelperSlas
                     }
                 }
 
-                message.editMessage(builder.build()).queue()
+                message.editMessageEmbeds(builder.build()).queue()
                 context.sendMessage {
                     content = """${Emotes.LORI_PAT} **|** Motivo atualizado com sucesso!
                         |${Emotes.LORI_OWO} **|** Motivo anterior: `${oldReason}`
@@ -104,11 +105,11 @@ class AttachDenyReasonExecutor(helper: LorittaHelper, val jda: JDA) : HelperSlas
 
 
             builder.addField("Resposta da Staff", reason, false)
-            
-            message.editMessage(builder.build()).queue()
-            
+
+            message.editMessageEmbeds(builder.build()).queue()
+
             context.sendMessage {
-              content = "${Emotes.LORI_COFFEE} **|** Motivo atualizado com sucesso!"
+                content = "${Emotes.LORI_COFFEE} **|** Motivo atualizado com sucesso!"
             }
         } catch (e: Exception) {
             context.sendMessage {

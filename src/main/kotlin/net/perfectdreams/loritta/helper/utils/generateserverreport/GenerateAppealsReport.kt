@@ -25,7 +25,7 @@ import java.time.Instant
 
 class GenerateAppealsReport(val m: LorittaHelper) {
     companion object {
-        const val APPEALS_CHANNEL_ID = 781872670781866054L
+        const val SERVER_APPEALS_CHANNEL_ID = 781872670781866054L
     }
 
     private val logger = KotlinLogging.logger {}
@@ -160,7 +160,7 @@ class GenerateAppealsReport(val m: LorittaHelper) {
             if (imageUrl != null)
                 embed.setImage("attachment://image.png")
 
-            val action = communityGuild.getTextChannelById(APPEALS_CHANNEL_ID)?.sendMessage(
+            val action = communityGuild.getTextChannelById(SERVER_APPEALS_CHANNEL_ID)?.sendMessage(
                 MessageBuilder()
                     .setContent("<@&351473717194522647>")
                     .setEmbeds(embed.build())
@@ -191,7 +191,7 @@ class GenerateAppealsReport(val m: LorittaHelper) {
                 }
         } catch (e: Throwable) {
             logger.warn(e) { "Something went wrong while processing the report ${event.message.jumpUrl}!" }
-            communityGuild.getTextChannelById(APPEALS_CHANNEL_ID)?.sendMessage(
+            communityGuild.getTextChannelById(SERVER_APPEALS_CHANNEL_ID)?.sendMessage(
                 MessageBuilder()
                     .setContent(
                         "<@&351473717194522647> Alguma coisa deu errada ao processar o apelo da mensagem ${event.message.jumpUrl} feita por ${userThatMadeTheReport.asMention}... Tente verificar ela manualmente já que eu não fui boa o suficiente... <:lori_sob:556524143281963008>\n\n```\n${e.stackTraceToString()}\n```"

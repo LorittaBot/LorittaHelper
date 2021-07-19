@@ -4,6 +4,7 @@ import mu.KotlinLogging
 import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEvent
 import net.dv8tion.jda.api.hooks.ListenerAdapter
 import net.perfectdreams.loritta.helper.LorittaHelper
+import net.perfectdreams.loritta.helper.utils.Emotes
 import net.perfectdreams.loritta.helper.utils.extensions.await
 import net.perfectdreams.loritta.helper.utils.generateserverreport.GenerateAppealsReport
 
@@ -18,7 +19,7 @@ class ApproveAppealsOnReactionListener(val m: LorittaHelper): ListenerAdapter() 
         if (event.user.isBot)
             return
 
-        if (event.channel.idLong != GenerateAppealsReport.APPEALS_CHANNEL_ID)
+        if (event.channel.idLong != GenerateAppealsReport.SERVER_APPEALS_CHANNEL_ID)
             return
 
         if (event.reactionEmote.name == APPROVE_EMOTE || event.reactionEmote.name == REJECT_EMOTE) {
@@ -60,7 +61,18 @@ class ApproveAppealsOnReactionListener(val m: LorittaHelper): ListenerAdapter() 
                                             .queue()
                                 } else if (event.reactionEmote.name == REJECT_EMOTE) {
                                     // Rejected
-                                    it.sendMessage("""O seu apelo para ser desbanido na Loritta foi rejeitado pela equipe""")
+                                    it.sendMessage(
+                                        buildString {
+                                            append("O seu apelo para ser desbanido na Loritta foi rejeitado pela equipe. Como foi rejeitado, você perdeu a sua chance de ser desbanido da Loritta...")
+
+                                            if (firstEmbed.fields.any { it.name == "Resposta da Staff" }) {
+                                                val reasonField = firstEmbed.fields.find { it.name == "Resposta da Staff" }
+                                                append("\n")
+                                                append("\n")
+                                                append("**Motivo:** `${reasonField?.value}` ${Emotes.LORI_COFFEE}")
+                                            }
+                                        }
+                                    )
                                             .queue()
                                 }
                             }
