@@ -18,14 +18,11 @@ import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent
 import net.dv8tion.jda.api.requests.restaction.MessageAction
 import net.perfectdreams.loritta.helper.LorittaHelper
 import net.perfectdreams.loritta.helper.listeners.ApproveReportsOnReactionListener
+import net.perfectdreams.loritta.helper.utils.Constants
 import net.perfectdreams.loritta.helper.utils.extensions.await
-import java.lang.IllegalStateException
 import java.net.HttpURLConnection
 import java.net.URL
 import java.time.Instant
-import java.time.ZoneId
-import java.time.format.DateTimeFormatter
-import java.util.*
 
 class GenerateServerReport(val m: LorittaHelper) {
     companion object {
@@ -33,10 +30,6 @@ class GenerateServerReport(val m: LorittaHelper) {
     }
 
     private val logger = KotlinLogging.logger {}
-
-    val PRETTY_DATE_FORMAT = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss")
-        .withLocale(Locale.US)
-        .withZone(ZoneId.of("America/Sao_Paulo"))
 
     suspend fun onMessageReceived(event: GuildMessageReceivedEvent) {
         logger.info { "Received a report message!" }
@@ -486,7 +479,7 @@ class GenerateServerReport(val m: LorittaHelper) {
 
                     val creationTime = message.timeCreated
 
-                    savedMessages.append("[${creationTime.format(PRETTY_DATE_FORMAT)}] (${message.author.idLong}) <Mensagem #$trueMessageIndex> ${message.author.name}#${message.author.discriminator}: ${message.contentRaw}")
+                    savedMessages.append("[${creationTime.format(Constants.PRETTY_DATE_FORMAT)}] (${message.author.idLong}) <Mensagem #$trueMessageIndex> ${message.author.name}#${message.author.discriminator}: ${message.contentRaw}")
                     savedMessages.append("\n")
                 } else {
                     embed.addField(

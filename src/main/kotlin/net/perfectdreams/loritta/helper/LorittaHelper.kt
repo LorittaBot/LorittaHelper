@@ -47,6 +47,7 @@ import net.perfectdreams.loritta.helper.utils.faqembed.FAQEmbedUpdaterEnglish
 import net.perfectdreams.loritta.helper.utils.faqembed.FAQEmbedUpdaterPortuguese
 import net.perfectdreams.loritta.helper.utils.faqembed.FAQEmbedUpdaterSparklyPower
 import net.perfectdreams.loritta.helper.utils.generateserverreport.PendingReportsListTask
+import net.perfectdreams.loritta.helper.utils.slash.AllTransactionsExecutor
 import net.perfectdreams.loritta.helper.utils.slash.AttachDenyReasonExecutor
 import net.perfectdreams.loritta.helper.utils.slash.BroadcastDailyShopWinnersExecutor
 import net.perfectdreams.loritta.helper.utils.slash.CheckCommandsExecutor
@@ -58,6 +59,7 @@ import net.perfectdreams.loritta.helper.utils.slash.IPLocationExecutor
 import net.perfectdreams.loritta.helper.utils.slash.PendingScarletExecutor
 import net.perfectdreams.loritta.helper.utils.slash.RetrieveMessageExecutor
 import net.perfectdreams.loritta.helper.utils.slash.ServerMembersExecutor
+import net.perfectdreams.loritta.helper.utils.slash.declarations.AllTransactionsCommand
 import net.perfectdreams.loritta.helper.utils.slash.declarations.AttachDenyReasonCommand
 import net.perfectdreams.loritta.helper.utils.slash.declarations.BroadcastDailyShopWinnersCommand
 import net.perfectdreams.loritta.helper.utils.slash.declarations.CheckCommandsCommand
@@ -243,6 +245,10 @@ class LorittaHelper(val config: LorittaHelperConfig, val fanArtsConfig: FanArtsC
             register(
                 AttachDenyReasonCommand,
                 AttachDenyReasonExecutor(this@LorittaHelper, jda)
+            )
+            register(
+                AllTransactionsCommand,
+                AllTransactionsExecutor(this@LorittaHelper)
             )
         }
 
