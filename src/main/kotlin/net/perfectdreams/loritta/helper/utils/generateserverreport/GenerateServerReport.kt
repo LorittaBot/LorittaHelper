@@ -134,7 +134,7 @@ class GenerateServerReport(val m: LorittaHelper) {
                         connection.instanceFollowRedirects = false
                         connection.connect()
                         return@runCatching if (connection.responseCode == 302)
-                             connection.getHeaderField("Location")
+                            connection.getHeaderField("Location")
                         else
                             null
                     }.getOrNull()
@@ -282,19 +282,26 @@ class GenerateServerReport(val m: LorittaHelper) {
         val embed = createBaseEmbed(userThatMadeTheReport, reportType)
 
         val ruleBroken = items.first { it.question == "Qual regra ele quebrou?" }
-            .answer.string
+            .answer
+            .string
+            .trim()
 
         val userId = items.first { it.question == "ID do Usuário" }
-            .answer.string.toLongOrNull()
+            .answer
+            .string
+            .trim()
+            .toLongOrNull()
 
         val messageLinks = items.first { it.question == "Link da Mensagem" }
             .answer.string.replace("\n", " ")
             .split(" ")
             .filter { it.isNotBlank() }
+            .map { it.trim() }
 
         val guildInvite = items.first { it.question == "Convite do Servidor" }
             .answer
             .string
+            .trim()
 
         val images = items.first { it.question == "Imagem da Mensagem mostrando o que ela disse" }
             .answer
@@ -337,20 +344,30 @@ class GenerateServerReport(val m: LorittaHelper) {
         val embed = createBaseEmbed(userThatMadeTheReport, reportType)
 
         val userId = items.first { it.question == "ID do Usuário" }
-            .answer.string.toLongOrNull()
+            .answer
+            .string
+            .trim()
+            .toLongOrNull()
 
         val messageLinks = items.first { it.question == "Link da Mensagem" }
             .answer.string.replace("\n", " ")
             .split(" ")
             .filter { it.isNotBlank() }
+            .map { it.trim() }
 
         val guilds = items.first { it.question == "A pessoa está em servidores da LorittaLand? Se sim, quais?" }
             .answer
             .stringArray
+            .map {
+                it.trim()
+            }
 
         val images = items.first { it.question == "Imagem da Mensagem que te enviaram no privado" }
             .answer
             .stringArray
+            .map {
+                it.trim()
+            }
 
         embed.addField(
             "ID do Usuário",
@@ -383,20 +400,26 @@ class GenerateServerReport(val m: LorittaHelper) {
         val embed = createBaseEmbed(userThatMadeTheReport, reportType)
 
         val userId = items.first { it.question == "ID do Usuário" }
-            .answer.string.toLongOrNull()
+            .answer
+            .string
+            .trim()
+            .toLongOrNull()
 
         val messageLinks = items.first { it.question == "Link da Mensagem" }
             .answer.string.replace("\n", " ")
             .split(" ")
             .filter { it.isNotBlank() }
+            .map { it.trim() }
 
         val guildInvite = items.first { it.question == "Convite do Servidor" }
             .answer
             .string
+            .trim()
 
         val images = items.first { it.question == "Imagem da Mensagem mostrando o que ela disse" }
             .answer
             .stringArray
+            .map { it.trim() }
 
         embed.apply {
             addField(
@@ -448,6 +471,7 @@ class GenerateServerReport(val m: LorittaHelper) {
             .split(" ")
             .filter { it.isNotBlank() }
             .filter { it.contains("discord") } // Avoids issues with users adding random dumb stuff to the message field
+            .map { it.trim() }
 
         val savedMessages = StringBuilder()
         try {
