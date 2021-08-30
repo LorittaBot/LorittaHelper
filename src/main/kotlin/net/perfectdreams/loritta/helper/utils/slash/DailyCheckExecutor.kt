@@ -42,7 +42,7 @@ class DailyCheckExecutor(helper: LorittaHelper) : HelperSlashExecutor(helper) {
         val dailies = transaction(helper.databases.lorittaDatabase) {
             Dailies.select {
                 Dailies.receivedById inList users.map { it.id.value }
-            }.orderBy(SonhosTransaction.id, SortOrder.DESC)
+            }.orderBy(Dailies.id, SortOrder.DESC)
                 .toList()
         }
 
