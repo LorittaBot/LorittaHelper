@@ -21,7 +21,7 @@ class DailyCheckExecutor(helper: LorittaHelper) : HelperSlashExecutor(helper) {
             init {
                 // Register 25 different users
                 repeat(25) {
-                    optionalUser("user$it", "Usuário para ver as transações")
+                    optionalUser("user${it + 1}", "Usuário para ver as transações")
                         .register()
                 }
             }
