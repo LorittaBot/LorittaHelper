@@ -45,8 +45,6 @@ class InteractionListener(
     private val kordCommandChecker = KordCommandChecker(commandManager)
 
     override fun onRawGateway(event: RawGatewayEvent) {
-        logger.info { "Received event ${event.type}" }
-
         // Workaround for Discord InteraKTions!
         if (event.type != "INTERACTION_CREATE")
             return
