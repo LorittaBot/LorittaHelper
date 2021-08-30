@@ -8,6 +8,7 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
+import mu.KotlinLogging
 import net.dv8tion.jda.api.events.RawGatewayEvent
 import net.dv8tion.jda.api.hooks.ListenerAdapter
 import net.perfectdreams.discordinteraktions.api.entities.Snowflake
@@ -33,16 +34,19 @@ class InteractionListener(
     val commandManager: CommandManager
 ) : ListenerAdapter() {
     companion object {
-        val json = Json {
+        private val json = Json {
             // If there're any unknown keys, we'll ignore them instead of throwing an exception.
             this.ignoreUnknownKeys = true
         }
+
+        private val logger = KotlinLogging.logger {}
     }
 
     private val kordCommandChecker = KordCommandChecker(commandManager)
 
-
     override fun onRawGateway(event: RawGatewayEvent) {
+        logger.info { "Received event ${event.type}" }
+
         // Workaround for Discord InteraKTions!
         if (event.type != "INTERACTION_CREATE")
             return
