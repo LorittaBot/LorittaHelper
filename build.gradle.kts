@@ -12,7 +12,6 @@ repositories {
     mavenCentral()
     maven("https://oss.sonatype.org/content/repositories/snapshots") // Required by Kord
     maven("https://repo.perfectdreams.net/")
-    maven("https://jcenter.bintray.com")
     maven("https://jitpack.io")
     maven("https://m2.dv8tion.net/releases")
 }
@@ -22,7 +21,7 @@ dependencies {
     implementation("ch.qos.logback:logback-classic:1.3.0-alpha5")
     implementation("io.github.microutils:kotlin-logging:1.8.3")
 
-    implementation("net.dv8tion:JDA:4.3.0_283")
+    implementation("net.dv8tion:JDA:4.3.0_313")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.9")
     api("org.jetbrains.kotlinx:kotlinx-coroutines-jdk8:1.4.1")
     implementation("com.github.ben-manes.caffeine:caffeine:2.8.5")
@@ -30,20 +29,21 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-hocon:1.1.0")
 
     // Kord
-    implementation("dev.kord:kord-core:0.7.2")
+    implementation("dev.kord:kord-rest:0.8.x-SNAPSHOT")
 
     // Sequins
     implementation("net.perfectdreams.sequins.text:text-utils:1.0.0")
 
     // Discord InteraKTions
-    implementation("net.perfectdreams.discordinteraktions:gateway-jda:0.0.5-SNAPSHOT")
+    // We use the Gateway Kord impl because Gateway JDA is disabled for now, so we will convert the raw gateway events to Kord events
+    implementation("net.perfectdreams.discordinteraktions:gateway-kord:0.0.7-SNAPSHOT")
 
     // Database
     implementation("org.postgresql:postgresql:42.2.14")
     implementation("com.zaxxer:HikariCP:3.4.5")
-    implementation("org.jetbrains.exposed:exposed-core:0.27.1")
-    implementation("org.jetbrains.exposed:exposed-dao:0.27.1")
-    implementation("org.jetbrains.exposed:exposed-jdbc:0.27.1")
+    implementation("org.jetbrains.exposed:exposed-core:0.33.1")
+    implementation("org.jetbrains.exposed:exposed-dao:0.33.1")
+    implementation("org.jetbrains.exposed:exposed-jdbc:0.33.1")
 
     implementation("com.github.pemistahl:lingua:6a6d284145")
     testImplementation("org.junit.jupiter:junit-jupiter:5.4.2")

@@ -1,9 +1,9 @@
 package net.perfectdreams.loritta.helper.utils.slash
 
-import net.perfectdreams.discordinteraktions.common.context.commands.SlashCommandArguments
-import net.perfectdreams.discordinteraktions.common.context.commands.SlashCommandContext
-import net.perfectdreams.discordinteraktions.declarations.slash.SlashCommandExecutorDeclaration
-import net.perfectdreams.discordinteraktions.declarations.slash.options.CommandOptions
+import net.perfectdreams.discordinteraktions.common.context.commands.ApplicationCommandContext
+import net.perfectdreams.discordinteraktions.common.context.commands.slash.SlashCommandArguments
+import net.perfectdreams.discordinteraktions.declarations.commands.slash.SlashCommandExecutorDeclaration
+import net.perfectdreams.discordinteraktions.declarations.commands.slash.options.CommandOptions
 import net.perfectdreams.loritta.helper.LorittaHelper
 import net.perfectdreams.loritta.helper.tables.SonhosTransaction
 import net.perfectdreams.loritta.helper.utils.Constants
@@ -23,8 +23,9 @@ class AllTransactionsExecutor(helper: LorittaHelper) : HelperSlashExecutor(helpe
         }
     }
 
-    override suspend fun executeHelper(context: SlashCommandContext, args: SlashCommandArguments) {
-        context.deferReply(false)
+    override suspend fun executeHelper(context: ApplicationCommandContext, args: SlashCommandArguments) {
+        context.deferChannelMessage()
+
         val user = args[options.user]
 
         val transactions = transaction(helper.databases.lorittaDatabase) {
@@ -45,7 +46,7 @@ class AllTransactionsExecutor(helper: LorittaHelper) : HelperSlashExecutor(helpe
         }
 
         context.sendMessage {
-            addFile("transactions.txt", builder.toString().toByteArray(Charsets.UTF_8).inputStream())
+            file("transactions.txt", builder.toString().toByteArray(Charsets.UTF_8).inputStream())
         }
     }
 }

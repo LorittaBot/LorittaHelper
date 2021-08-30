@@ -4,6 +4,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 class LorittaHelperConfig(
+    val applicationId: Long,
     val token: String,
     val githubToken: String,
     val secretKey: String,

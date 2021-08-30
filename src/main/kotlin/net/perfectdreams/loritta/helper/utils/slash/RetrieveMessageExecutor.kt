@@ -4,10 +4,10 @@ import dev.kord.common.entity.Snowflake
 import dev.kord.rest.json.JsonErrorCode
 import dev.kord.rest.request.KtorRequestException
 import dev.kord.rest.service.RestClient
-import net.perfectdreams.discordinteraktions.common.context.commands.SlashCommandArguments
-import net.perfectdreams.discordinteraktions.common.context.commands.SlashCommandContext
-import net.perfectdreams.discordinteraktions.declarations.slash.SlashCommandExecutorDeclaration
-import net.perfectdreams.discordinteraktions.declarations.slash.options.CommandOptions
+import net.perfectdreams.discordinteraktions.common.context.commands.ApplicationCommandContext
+import net.perfectdreams.discordinteraktions.common.context.commands.slash.SlashCommandArguments
+import net.perfectdreams.discordinteraktions.declarations.commands.slash.SlashCommandExecutorDeclaration
+import net.perfectdreams.discordinteraktions.declarations.commands.slash.options.CommandOptions
 import net.perfectdreams.loritta.helper.LorittaHelper
 
 class RetrieveMessageExecutor(helper: LorittaHelper, val rest: RestClient) : HelperSlashExecutor(helper) {
@@ -20,7 +20,7 @@ class RetrieveMessageExecutor(helper: LorittaHelper, val rest: RestClient) : Hel
         }
     }
 
-    override suspend fun executeHelper(context: SlashCommandContext, args: SlashCommandArguments) {
+    override suspend fun executeHelper(context: ApplicationCommandContext, args: SlashCommandArguments) {
         val messageUrl = args[options.messageUrl]
 
         val split = messageUrl.split("/")

@@ -4,10 +4,10 @@ import io.ktor.client.request.*
 import io.ktor.http.*
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.jsonObject
-import net.perfectdreams.discordinteraktions.common.context.commands.SlashCommandArguments
-import net.perfectdreams.discordinteraktions.common.context.commands.SlashCommandContext
-import net.perfectdreams.discordinteraktions.declarations.slash.SlashCommandExecutorDeclaration
-import net.perfectdreams.discordinteraktions.declarations.slash.options.CommandOptions
+import net.perfectdreams.discordinteraktions.common.context.commands.ApplicationCommandContext
+import net.perfectdreams.discordinteraktions.common.context.commands.slash.SlashCommandArguments
+import net.perfectdreams.discordinteraktions.declarations.commands.slash.SlashCommandExecutorDeclaration
+import net.perfectdreams.discordinteraktions.declarations.commands.slash.options.CommandOptions
 import net.perfectdreams.loritta.helper.LorittaHelper
 
 class IPLocationExecutor(helper: LorittaHelper) : HelperSlashExecutor(helper) {
@@ -20,8 +20,8 @@ class IPLocationExecutor(helper: LorittaHelper) : HelperSlashExecutor(helper) {
         }
     }
 
-    override suspend fun executeHelper(context: SlashCommandContext, args: SlashCommandArguments) {
-        context.deferReply()
+    override suspend fun executeHelper(context: ApplicationCommandContext, args: SlashCommandArguments) {
+        context.deferChannelMessage()
         val userIp = args[options.ip]
 
         // pls don't ban us :pray:
@@ -34,15 +34,13 @@ class IPLocationExecutor(helper: LorittaHelper) : HelperSlashExecutor(helper) {
             .jsonObject
 
 
-        context.sendMessage {
+        context.sendEphemeralMessage {
             content = buildString {
                 for ((key, value) in data.entries) {
                     append("**$key:** `$value`")
                     append("\n")
                 }
             }
-
-            isEphemeral = true
         }
     }
 }

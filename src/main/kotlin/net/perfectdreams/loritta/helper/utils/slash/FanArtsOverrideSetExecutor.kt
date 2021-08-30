@@ -1,9 +1,9 @@
 package net.perfectdreams.loritta.helper.utils.slash
 
-import net.perfectdreams.discordinteraktions.common.context.commands.SlashCommandArguments
-import net.perfectdreams.discordinteraktions.common.context.commands.SlashCommandContext
-import net.perfectdreams.discordinteraktions.declarations.slash.SlashCommandExecutorDeclaration
-import net.perfectdreams.discordinteraktions.declarations.slash.options.CommandOptions
+import net.perfectdreams.discordinteraktions.common.context.commands.ApplicationCommandContext
+import net.perfectdreams.discordinteraktions.common.context.commands.slash.SlashCommandArguments
+import net.perfectdreams.discordinteraktions.declarations.commands.slash.SlashCommandExecutorDeclaration
+import net.perfectdreams.discordinteraktions.declarations.commands.slash.options.CommandOptions
 import net.perfectdreams.loritta.helper.LorittaHelper
 import net.perfectdreams.loritta.helper.listeners.ApproveFanArtListener
 
@@ -25,7 +25,7 @@ class FanArtsOverrideSetExecutor(helper: LorittaHelper) : HelperSlashExecutor(he
                 .register()
         }
     }
-    override suspend fun executeHelper(context: SlashCommandContext, args: SlashCommandArguments) {
+    override suspend fun executeHelper(context: ApplicationCommandContext, args: SlashCommandArguments) {
         with(options) {
             val fileName = args[imageFileName]
             val tags = args[tags].split(",").map { it.trim() }
@@ -39,10 +39,8 @@ class FanArtsOverrideSetExecutor(helper: LorittaHelper) : HelperSlashExecutor(he
                 artistFileNameOnImage
             )
 
-            context.sendMessage {
+            context.sendEphemeralMessage {
                 content = "Override criado! ${ApproveFanArtListener.fanArtOverrideSettings}"
-
-                isEphemeral = true
             }
         }
     }

@@ -1,21 +1,19 @@
 package net.perfectdreams.loritta.helper.utils.slash
 
 import net.perfectdreams.discordinteraktions.api.entities.Snowflake
-import net.perfectdreams.discordinteraktions.common.commands.SlashCommandExecutor
-import net.perfectdreams.discordinteraktions.common.context.commands.GuildSlashCommandContext
-import net.perfectdreams.discordinteraktions.common.context.commands.SlashCommandArguments
-import net.perfectdreams.discordinteraktions.common.context.commands.SlashCommandContext
+import net.perfectdreams.discordinteraktions.common.commands.slash.SlashCommandExecutor
+import net.perfectdreams.discordinteraktions.common.context.commands.ApplicationCommandContext
+import net.perfectdreams.discordinteraktions.common.context.commands.GuildApplicationCommandContext
+import net.perfectdreams.discordinteraktions.common.context.commands.slash.SlashCommandArguments
 import net.perfectdreams.loritta.helper.LorittaHelper
 
 abstract class HelperSlashExecutor(
     val helper: LorittaHelper
 ) : SlashCommandExecutor() {
-    override suspend fun execute(context: SlashCommandContext, args: SlashCommandArguments) {
-        if (context !is GuildSlashCommandContext || !context.member.roles.contains(Snowflake(399301696892829706L))) {
-            context.sendMessage {
+    override suspend fun execute(context: ApplicationCommandContext, args: SlashCommandArguments) {
+        if (context !is GuildApplicationCommandContext || !context.member.roles.contains(Snowflake(399301696892829706L))) {
+            context.sendEphemeralMessage {
                 content = "Você não pode usar comandos da Helper!"
-
-                isEphemeral = true
             }
             return
         }
@@ -23,5 +21,5 @@ abstract class HelperSlashExecutor(
         executeHelper(context, args)
     }
 
-    abstract suspend fun executeHelper(context: SlashCommandContext, args: SlashCommandArguments)
+    abstract suspend fun executeHelper(context: ApplicationCommandContext, args: SlashCommandArguments)
 }

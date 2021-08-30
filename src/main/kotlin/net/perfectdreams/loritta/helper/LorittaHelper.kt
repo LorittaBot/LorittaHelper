@@ -23,8 +23,7 @@ import net.dv8tion.jda.api.requests.GatewayIntent
 import net.dv8tion.jda.api.utils.MemberCachePolicy
 import net.perfectdreams.discordinteraktions.api.entities.Snowflake
 import net.perfectdreams.discordinteraktions.common.commands.CommandManager
-import net.perfectdreams.discordinteraktions.platform.jda.commands.JDACommandRegistry
-import net.perfectdreams.discordinteraktions.platform.jda.listeners.SlashCommandListener
+import net.perfectdreams.discordinteraktions.platforms.kord.commands.KordCommandRegistry
 import net.perfectdreams.loritta.helper.listeners.AddReactionsToMessagesListener
 import net.perfectdreams.loritta.helper.listeners.ApproveAppealsOnReactionListener
 import net.perfectdreams.loritta.helper.listeners.ApproveFanArtListener
@@ -32,6 +31,7 @@ import net.perfectdreams.loritta.helper.listeners.ApproveReportsOnReactionListen
 import net.perfectdreams.loritta.helper.listeners.BanListener
 import net.perfectdreams.loritta.helper.listeners.BanSuspectedUsersOnReactionListener
 import net.perfectdreams.loritta.helper.listeners.CheckLoriBannedUsersListener
+import net.perfectdreams.loritta.helper.listeners.InteractionListener
 import net.perfectdreams.loritta.helper.listeners.MessageListener
 import net.perfectdreams.loritta.helper.listeners.PrivateMessageListener
 import net.perfectdreams.loritta.helper.network.Databases
@@ -111,6 +111,7 @@ class LorittaHelper(val config: LorittaHelperConfig, val fanArtsConfig: FanArtsC
     var dailyShopWinners: DailyShopWinners? = null
     val commandManager = CommandManager()
 
+    val helperRest = RestClient(config.token)
     val lorittaRest = lorittaConfig?.token?.let { RestClient(it) }
 
     fun start() {
@@ -131,7 +132,7 @@ class LorittaHelper(val config: LorittaHelperConfig, val fanArtsConfig: FanArtsC
                 ApproveReportsOnReactionListener(this),
                 AddReactionsToMessagesListener(this),
                 ApproveAppealsOnReactionListener(this),
-                SlashCommandListener(commandManager)
+                InteractionListener(helperRest, Snowflake(config.applicationId), commandManager)
             )
             .also {
                 if (fanArtsConfig != null) {
@@ -264,7 +265,12 @@ class LorittaHelper(val config: LorittaHelperConfig, val fanArtsConfig: FanArtsC
         }
 
         runBlocking {
-            val registry = JDACommandRegistry(jda, commandManager)
+            val registry = KordCommandRegistry(
+                Snowflake(config.applicationId),
+                helperRest,
+                commandManager
+            )
+
             registry.updateAllCommandsInGuild(
                 Snowflake(297732013006389252L),
                 true

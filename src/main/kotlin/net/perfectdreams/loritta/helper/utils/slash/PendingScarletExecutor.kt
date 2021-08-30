@@ -3,10 +3,10 @@ package net.perfectdreams.loritta.helper.utils.slash
 import mu.KotlinLogging
 import net.dv8tion.jda.api.JDA
 import net.dv8tion.jda.api.entities.Message
-import net.perfectdreams.discordinteraktions.common.context.commands.SlashCommandArguments
-import net.perfectdreams.discordinteraktions.common.context.commands.SlashCommandContext
-import net.perfectdreams.discordinteraktions.declarations.slash.SlashCommandExecutorDeclaration
-import net.perfectdreams.discordinteraktions.declarations.slash.options.CommandOptions
+import net.perfectdreams.discordinteraktions.common.context.commands.ApplicationCommandContext
+import net.perfectdreams.discordinteraktions.common.context.commands.slash.SlashCommandArguments
+import net.perfectdreams.discordinteraktions.declarations.commands.slash.SlashCommandExecutorDeclaration
+import net.perfectdreams.discordinteraktions.declarations.commands.slash.options.CommandOptions
 import net.perfectdreams.loritta.helper.LorittaHelper
 import net.perfectdreams.loritta.helper.utils.dailycatcher.DailyCatcherManager
 import net.perfectdreams.loritta.helper.utils.dailycatcher.SuspiciousLevel
@@ -34,8 +34,8 @@ class PendingScarletExecutor(helper: LorittaHelper, val jda: JDA) : HelperSlashE
         }
     }
 
-    override suspend fun executeHelper(context: SlashCommandContext, args: SlashCommandArguments) {
-        context.deferReply()
+    override suspend fun executeHelper(context: ApplicationCommandContext, args: SlashCommandArguments) {
+        context.deferChannelMessage()
 
         val channel = jda.getTextChannelById(DailyCatcherManager.SCARLET_POLICE_CHANNEL_ID) ?: return
         val filterBy = args[options.type].let { SuspiciousLevel.valueOf(it) }

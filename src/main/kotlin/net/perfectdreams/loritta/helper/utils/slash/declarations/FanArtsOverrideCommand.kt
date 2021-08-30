@@ -1,12 +1,12 @@
 package net.perfectdreams.loritta.helper.utils.slash.declarations
 
-import net.perfectdreams.discordinteraktions.declarations.slash.SlashCommandDeclaration
-import net.perfectdreams.discordinteraktions.declarations.slash.slashCommand
+import net.perfectdreams.discordinteraktions.declarations.commands.slash.slashCommand
+import net.perfectdreams.discordinteraktions.declarations.commands.wrappers.SlashCommandDeclarationWrapper
 import net.perfectdreams.loritta.helper.utils.slash.FanArtsOverrideGetExecutor
 import net.perfectdreams.loritta.helper.utils.slash.FanArtsOverrideResetExecutor
 import net.perfectdreams.loritta.helper.utils.slash.FanArtsOverrideSetExecutor
 
-object FanArtsOverrideCommand: SlashCommandDeclaration {
+object FanArtsOverrideCommand: SlashCommandDeclarationWrapper {
     override fun declaration() = slashCommand(
         "fanartsoverride",
         "Cria ou reseta data overrides para fan arts a serem adicionadas"
