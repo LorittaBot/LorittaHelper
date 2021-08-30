@@ -144,6 +144,7 @@ class LorittaHelper(val config: LorittaHelperConfig, val fanArtsConfig: FanArtsC
             .setMemberCachePolicy(
                 MemberCachePolicy.ALL
             )
+            .setRawEventsEnabled(true)
             .build()
             .awaitReady()
 
