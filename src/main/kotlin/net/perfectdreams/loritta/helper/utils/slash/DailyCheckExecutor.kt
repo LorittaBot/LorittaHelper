@@ -52,7 +52,7 @@ class DailyCheckExecutor(helper: LorittaHelper) : HelperSlashExecutor(helper) {
             val whenTheTransactionHappened = Instant.ofEpochMilli(daily[Dailies.receivedAt])
                 .atZone(Constants.TIME_ZONE_ID)
 
-            builder.append("[${whenTheTransactionHappened.format(Constants.PRETTY_DATE_FORMAT)}] ${daily[Dailies.receivedById]}: ${daily[SonhosTransaction.quantity]} sonhos")
+            builder.append("[${whenTheTransactionHappened.format(Constants.PRETTY_DATE_FORMAT)}] ${daily[Dailies.receivedById]}: ${daily[Dailies.quantity]} sonhos")
             builder.append("- Email: ${daily[Dailies.email]}")
             builder.append("\n")
             builder.append("- IP: ${daily[Dailies.ip]}")
