@@ -52,6 +52,7 @@ class DailyCheckExecutor(helper: LorittaHelper) : HelperSlashExecutor(helper) {
                 .atZone(Constants.TIME_ZONE_ID)
 
             builder.append("[${whenTheTransactionHappened.format(Constants.PRETTY_DATE_FORMAT)}] ${daily[Dailies.receivedById]}")
+            builder.append("\n")
             builder.append("- Email: ${daily[Dailies.email]}")
             builder.append("\n")
             builder.append("- IP: ${daily[Dailies.ip]}")
@@ -61,7 +62,7 @@ class DailyCheckExecutor(helper: LorittaHelper) : HelperSlashExecutor(helper) {
         }
 
         context.sendMessage {
-            file("transactions.txt", builder.toString().toByteArray(Charsets.UTF_8).inputStream())
+            file("dailies.txt", builder.toString().toByteArray(Charsets.UTF_8).inputStream())
         }
     }
 }
