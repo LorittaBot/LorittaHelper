@@ -52,6 +52,7 @@ import net.perfectdreams.loritta.helper.utils.slash.AttachDenyReasonExecutor
 import net.perfectdreams.loritta.helper.utils.slash.BroadcastDailyShopWinnersExecutor
 import net.perfectdreams.loritta.helper.utils.slash.CheckCommandsExecutor
 import net.perfectdreams.loritta.helper.utils.slash.DailyCatcherCheckExecutor
+import net.perfectdreams.loritta.helper.utils.slash.DailyCheckExecutor
 import net.perfectdreams.loritta.helper.utils.slash.FanArtsOverrideGetExecutor
 import net.perfectdreams.loritta.helper.utils.slash.FanArtsOverrideResetExecutor
 import net.perfectdreams.loritta.helper.utils.slash.FanArtsOverrideSetExecutor
@@ -64,6 +65,7 @@ import net.perfectdreams.loritta.helper.utils.slash.declarations.AttachDenyReaso
 import net.perfectdreams.loritta.helper.utils.slash.declarations.BroadcastDailyShopWinnersCommand
 import net.perfectdreams.loritta.helper.utils.slash.declarations.CheckCommandsCommand
 import net.perfectdreams.loritta.helper.utils.slash.declarations.DailyCatcherCheckCommand
+import net.perfectdreams.loritta.helper.utils.slash.declarations.DailyCheckCommand
 import net.perfectdreams.loritta.helper.utils.slash.declarations.FanArtsOverrideCommand
 import net.perfectdreams.loritta.helper.utils.slash.declarations.IPLocationCommand
 import net.perfectdreams.loritta.helper.utils.slash.declarations.PendingScarletCommand
@@ -251,6 +253,10 @@ class LorittaHelper(val config: LorittaHelperConfig, val fanArtsConfig: FanArtsC
             register(
                 AllTransactionsCommand,
                 AllTransactionsExecutor(this@LorittaHelper)
+            )
+            register(
+                DailyCheckCommand,
+                DailyCheckExecutor(this@LorittaHelper)
             )
         }
 
