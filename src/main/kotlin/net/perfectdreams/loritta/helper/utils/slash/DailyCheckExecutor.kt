@@ -6,7 +6,6 @@ import net.perfectdreams.discordinteraktions.declarations.commands.slash.SlashCo
 import net.perfectdreams.discordinteraktions.declarations.commands.slash.options.CommandOptions
 import net.perfectdreams.loritta.helper.LorittaHelper
 import net.perfectdreams.loritta.helper.tables.Dailies
-import net.perfectdreams.loritta.helper.tables.SonhosTransaction
 import net.perfectdreams.loritta.helper.utils.Constants
 import org.jetbrains.exposed.sql.SortOrder
 import org.jetbrains.exposed.sql.select
@@ -52,7 +51,7 @@ class DailyCheckExecutor(helper: LorittaHelper) : HelperSlashExecutor(helper) {
             val whenTheTransactionHappened = Instant.ofEpochMilli(daily[Dailies.receivedAt])
                 .atZone(Constants.TIME_ZONE_ID)
 
-            builder.append("[${whenTheTransactionHappened.format(Constants.PRETTY_DATE_FORMAT)}] ${daily[Dailies.receivedById]}: ${daily[Dailies.quantity]} sonhos")
+            builder.append("[${whenTheTransactionHappened.format(Constants.PRETTY_DATE_FORMAT)}] ${daily[Dailies.receivedById]}")
             builder.append("- Email: ${daily[Dailies.email]}")
             builder.append("\n")
             builder.append("- IP: ${daily[Dailies.ip]}")
