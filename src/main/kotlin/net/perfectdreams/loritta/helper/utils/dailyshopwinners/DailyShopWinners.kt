@@ -122,8 +122,6 @@ as a group by "user" order by sum(money) desc LIMIT 5;"""
 
 Aproveite o novo mês para conseguir Nitro Classic! Vai se você acaba virando a pessoa que mais gastou sonhos no mês de $thisMonthName na loja diária? <:lori_smug:729723959284727808> <https://loritta.website/br/user/@me/dashboard/daily-shop>
 
-E, se você tiver ideia para novos backgrounds que devem ser adicionados na loja (a loja muda todo o dia às 21:00, horário de Brasília) envie a sua sugestão em <#688478065826857037>! (Para poder enviar mensagens lá, use `+notificar` em <#673531793546149899>)
-
 *Psiu, precisando de sonhos? Então jogue no SparklyPower! O servidor de Minecraft (Survival) oficial da Loritta Morenitta, você pode transferir os sonhos da Loritta para lá e os sonhos do SparklyPower para a Loritta! `mc.sparklypower.net` <https://discord.gg/JYN6g2s>*"""
             ).queue()
         }
