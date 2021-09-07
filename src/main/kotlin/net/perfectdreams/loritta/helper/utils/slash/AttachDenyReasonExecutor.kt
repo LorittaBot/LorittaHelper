@@ -1,25 +1,25 @@
 package net.perfectdreams.loritta.helper.utils.slash
 
-
-import net.perfectdreams.discordinteraktions.common.context.commands.SlashCommandArguments
-import net.perfectdreams.discordinteraktions.common.context.commands.SlashCommandContext
-import net.perfectdreams.discordinteraktions.declarations.slash.SlashCommandExecutorDeclaration
-import net.perfectdreams.discordinteraktions.declarations.slash.options.CommandOptions
-import net.perfectdreams.loritta.helper.utils.extensions.await
-import net.perfectdreams.loritta.helper.utils.Emotes
-import net.perfectdreams.loritta.helper.LorittaHelper
 import net.dv8tion.jda.api.EmbedBuilder
 import net.dv8tion.jda.api.JDA
+import net.perfectdreams.discordinteraktions.common.context.commands.ApplicationCommandContext
+import net.perfectdreams.discordinteraktions.common.context.commands.slash.SlashCommandArguments
+import net.perfectdreams.discordinteraktions.declarations.commands.slash.SlashCommandExecutorDeclaration
+import net.perfectdreams.discordinteraktions.declarations.commands.slash.options.CommandOptions
+import net.perfectdreams.loritta.helper.LorittaHelper
+import net.perfectdreams.loritta.helper.utils.Emotes
+import net.perfectdreams.loritta.helper.utils.extensions.await
+import net.perfectdreams.loritta.helper.utils.generateserverreport.GenerateAppealsReport
+import net.perfectdreams.loritta.helper.utils.generateserverreport.GenerateServerReport
 
 class AttachDenyReasonExecutor(helper: LorittaHelper, val jda: JDA) : HelperSlashExecutor(helper) {
     companion object : SlashCommandExecutorDeclaration(AttachDenyReasonExecutor::class) {
         override val options = Options
-
         val VALID_CHANNEL_IDS = listOf(
             GenerateAppealsReport.SERVER_APPEALS_CHANNEL_ID,
             GenerateServerReport.SERVER_REPORTS_CHANNEL_ID
         )
-        
+
         object Options : CommandOptions() {
             val messageUrl = string("message_url", "Link da Mensagem")
                 .register()
@@ -95,7 +95,6 @@ class AttachDenyReasonExecutor(helper: LorittaHelper, val jda: JDA) : HelperSlas
                 }
 
                 message.editMessageEmbeds(builder.build()).queue()
-
                 context.sendMessage {
                     content = """${Emotes.LORI_PAT} **|** Motivo atualizado com sucesso!
                         |${Emotes.LORI_OWO} **|** Motivo anterior: `${oldReason}`
