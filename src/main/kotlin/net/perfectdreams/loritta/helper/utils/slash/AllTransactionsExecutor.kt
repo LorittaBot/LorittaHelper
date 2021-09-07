@@ -30,7 +30,7 @@ class AllTransactionsExecutor(helper: LorittaHelper) : HelperSlashExecutor(helpe
 
         val transactions = transaction(helper.databases.lorittaDatabase) {
             SonhosTransaction.select {
-                (SonhosTransaction.receivedBy eq user.id.value) or (SonhosTransaction.givenBy eq user.id.value)
+                (SonhosTransaction.receivedBy eq user.id.value.toLong()) or (SonhosTransaction.givenBy eq user.id.value.toLong())
             }.orderBy(SonhosTransaction.id, SortOrder.DESC)
                 .toList()
         }

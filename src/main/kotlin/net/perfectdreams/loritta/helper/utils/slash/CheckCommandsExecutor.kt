@@ -31,7 +31,7 @@ class CheckCommandsExecutor(helper: LorittaHelper) : HelperSlashExecutor(helper)
         val commands = transaction(helper.databases.lorittaDatabase) {
             ExecutedCommandsLog.slice(ExecutedCommandsLog.command, commandCountField)
                 .select {
-                    ExecutedCommandsLog.userId eq user.id.value
+                    ExecutedCommandsLog.userId eq user.id.value.toLong()
                 }
                 .groupBy(ExecutedCommandsLog.command)
                 .orderBy(commandCountField, SortOrder.DESC)
