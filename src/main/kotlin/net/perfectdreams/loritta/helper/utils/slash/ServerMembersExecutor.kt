@@ -7,7 +7,6 @@ import net.perfectdreams.discordinteraktions.common.context.commands.slash.Slash
 import net.perfectdreams.discordinteraktions.declarations.commands.slash.SlashCommandExecutorDeclaration
 import net.perfectdreams.discordinteraktions.declarations.commands.slash.options.CommandOptions
 import net.perfectdreams.loritta.helper.LorittaHelper
-import net.perfectdreams.sequins.text.StringUtils
 
 class ServerMembersExecutor(helper: LorittaHelper, val rest: RestClient) : HelperSlashExecutor(helper) {
     companion object : SlashCommandExecutorDeclaration(ServerMembersExecutor::class) {
@@ -35,12 +34,8 @@ class ServerMembersExecutor(helper: LorittaHelper, val rest: RestClient) : Helpe
             builder.append("\n")
         }
 
-        val split = StringUtils.chunkedLines(builder.toString(), 1980, true)
-
-        for (text in split) {
-            context.sendMessage {
-                content = "```\n$text\n```"
-            }
+        context.sendMessage {
+            file("servers.txt", builder.toString().toByteArray(Charsets.UTF_8).inputStream())
         }
     }
 }
