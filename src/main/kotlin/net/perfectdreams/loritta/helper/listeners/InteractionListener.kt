@@ -5,26 +5,18 @@ import dev.kord.common.entity.DiscordInteraction
 import dev.kord.common.entity.InteractionType
 import dev.kord.common.entity.Snowflake
 import dev.kord.rest.service.RestClient
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 import mu.KotlinLogging
 import net.dv8tion.jda.api.events.RawGatewayEvent
 import net.dv8tion.jda.api.hooks.ListenerAdapter
 import net.perfectdreams.discordinteraktions.common.commands.CommandManager
-import net.perfectdreams.discordinteraktions.common.components.buttons.ButtonClickWithDataExecutor
-import net.perfectdreams.discordinteraktions.common.components.buttons.ButtonClickWithNoDataExecutor
 import net.perfectdreams.discordinteraktions.common.context.InteractionRequestState
 import net.perfectdreams.discordinteraktions.common.context.RequestBridge
-import net.perfectdreams.discordinteraktions.common.context.components.ComponentContext
-import net.perfectdreams.discordinteraktions.common.interactions.InteractionData
 import net.perfectdreams.discordinteraktions.common.utils.Observable
 import net.perfectdreams.discordinteraktions.platforms.kord.context.manager.InitialHttpRequestManager
-import net.perfectdreams.discordinteraktions.platforms.kord.entities.KordUser
-import net.perfectdreams.discordinteraktions.platforms.kord.entities.messages.KordPublicMessage
 import net.perfectdreams.discordinteraktions.platforms.kord.utils.KordCommandChecker
-import net.perfectdreams.discordinteraktions.platforms.kord.utils.toDiscordInteraKTionsResolvedObjects
+import net.perfectdreams.discordinteraktions.platforms.kord.utils.KordComponentChecker
 
 @OptIn(KordPreview::class)
 class InteractionListener(
@@ -42,6 +34,7 @@ class InteractionListener(
     }
 
     private val kordCommandChecker = KordCommandChecker(commandManager)
+    private val kordComponentChecker = KordComponentChecker(commandManager)
 
     override fun onRawGateway(event: RawGatewayEvent) {
         // Workaround for Discord InteraKTions!
@@ -73,49 +66,10 @@ class InteractionListener(
                 requestManager
             )
         else if (request.type == InteractionType.Component) {
-            // If the button doesn't have a custom ID, we won't process it
-            val buttonCustomId = request.data.customId.value ?: return
-
-            val executorId = buttonCustomId.substringBefore(":")
-            val data = buttonCustomId.substringAfter(":")
-
-            val buttonExecutorDeclaration = commandManager.buttonDeclarations
-                .asSequence()
-                .filter {
-                    it.id == executorId
-                }
-                .first()
-
-            val executor = commandManager.buttonExecutors.first {
-                it.signature() == buttonExecutorDeclaration.parent
-            }
-
-            val kordUser = KordUser(request.member.value?.user?.value ?: request.user.value ?: error("oh no"))
-            val guildId =
-                request.guildId.value?.let { Snowflake(it.value) }
-
-            val interactionData = InteractionData(request.data.resolved.value?.toDiscordInteraKTionsResolvedObjects())
-
-            val buttonClickContext = ComponentContext(
-                bridge,
-                kordUser,
-                KordPublicMessage(request.message.value!!), // This should NEVER be null if it is a component message
-                interactionData
+            kordComponentChecker.checkAndExecute(
+                request,
+                requestManager
             )
-
-            GlobalScope.launch {
-                if (executor is ButtonClickWithNoDataExecutor)
-                    executor.onClick(
-                        kordUser,
-                        buttonClickContext
-                    )
-                else if (executor is ButtonClickWithDataExecutor)
-                    executor.onClick(
-                        kordUser,
-                        buttonClickContext,
-                        data
-                    )
-            }
         }
     }
 }

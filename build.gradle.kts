@@ -3,6 +3,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 plugins {
     kotlin("jvm") version "1.5.21"
     kotlin("plugin.serialization") version "1.5.21"
+    id("com.google.cloud.tools.jib") version "3.1.4"
 }
 
 group = "net.perfectdreams.loritta.helper"
@@ -57,6 +58,21 @@ dependencies {
     implementation("io.ktor:ktor-client-cio:1.6.3")
 
     implementation("org.apache.commons:commons-text:1.9")
+}
+
+jib {
+    to {
+        image = "ghcr.io/lorittabot/loritta-helper"
+
+        auth {
+            username = System.getProperty("DOCKER_USERNAME") ?: System.getenv("DOCKER_USERNAME")
+            password = System.getProperty("DOCKER_PASSWORD") ?: System.getenv("DOCKER_PASSWORD")
+        }
+    }
+
+    from {
+        image = "openjdk:17-slim-bullseye"
+    }
 }
 
 tasks {

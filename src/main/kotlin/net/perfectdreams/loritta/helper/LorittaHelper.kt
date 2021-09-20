@@ -36,6 +36,8 @@ import net.perfectdreams.loritta.helper.listeners.MessageListener
 import net.perfectdreams.loritta.helper.listeners.PrivateMessageListener
 import net.perfectdreams.loritta.helper.network.Databases
 import net.perfectdreams.loritta.helper.utils.LorittaLandRoleSynchronizationTask
+import net.perfectdreams.loritta.helper.utils.buttonroles.RoleButtonExecutor
+import net.perfectdreams.loritta.helper.utils.buttonroles.UpdateButtonRoles
 import net.perfectdreams.loritta.helper.utils.checkbannedusers.LorittaBannedRoleTask
 import net.perfectdreams.loritta.helper.utils.config.FanArtsConfig
 import net.perfectdreams.loritta.helper.utils.config.LorittaConfig
@@ -85,7 +87,6 @@ import java.util.jar.Attributes
 import java.util.jar.JarFile
 import java.util.zip.ZipInputStream
 
-
 /**
  * An instance of Loritta Helper, that is initialized at [LorittaHelperLauncher]
  * With an custom [LorittaHelperConfig]
@@ -117,7 +118,7 @@ class LorittaHelper(val config: LorittaHelperConfig, val fanArtsConfig: FanArtsC
     val lorittaRest = lorittaConfig?.token?.let { RestClient(it) }
 
     fun start() {
-        // We only care about GUILD MESSAGES and we don't need to cache any users
+        // We only care about specific intents, and we don't need to cache any users
         val jda = JDABuilder.createLight(
             config.token,
             GatewayIntent.DIRECT_MESSAGES,
@@ -182,11 +183,19 @@ class LorittaHelper(val config: LorittaHelperConfig, val fanArtsConfig: FanArtsC
             )
         }
 
-        // Get non matched reports
+        // Get pending reports
         timedTaskExecutor.scheduleAtFixedRate(
             PendingReportsListTask(jda),
             0,
             15,
+            TimeUnit.MINUTES
+        )
+
+        // Update button roles
+        timedTaskExecutor.scheduleAtFixedRate(
+            UpdateButtonRoles(this),
+            0,
+            1,
             TimeUnit.MINUTES
         )
 
@@ -257,6 +266,10 @@ class LorittaHelper(val config: LorittaHelperConfig, val fanArtsConfig: FanArtsC
             register(
                 DailyCheckCommand,
                 DailyCheckExecutor(this@LorittaHelper)
+            )
+            register(
+                RoleButtonExecutor,
+                RoleButtonExecutor(this@LorittaHelper)
             )
         }
 
