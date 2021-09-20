@@ -28,6 +28,8 @@ class UpdateButtonRoles(val m: LorittaHelper) : Runnable {
                 }
 
                 m.helperRest.channel.createMessage(channel) {
+                    content = "Escolha um cargo!"
+                    
                     actionRow {
                         interactiveButton(
                             ButtonStyle.Secondary,
