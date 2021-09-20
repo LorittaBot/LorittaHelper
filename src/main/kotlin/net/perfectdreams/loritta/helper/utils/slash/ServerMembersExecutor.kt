@@ -35,7 +35,7 @@ class ServerMembersExecutor(helper: LorittaHelper, val rest: RestClient) : Helpe
         }
 
         context.sendMessage {
-            file("servers.txt", builder.toString().toByteArray(Charsets.UTF_8).inputStream())
+            addFile("servers.txt", builder.toString().toByteArray(Charsets.UTF_8).inputStream())
         }
     }
 }

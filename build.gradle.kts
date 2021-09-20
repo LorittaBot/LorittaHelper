@@ -36,7 +36,7 @@ dependencies {
 
     // Discord InteraKTions
     // We use the Gateway Kord impl because Gateway JDA is disabled for now, so we will convert the raw gateway events to Kord events
-    implementation("net.perfectdreams.discordinteraktions:gateway-kord:0.0.7-SNAPSHOT")
+    implementation("net.perfectdreams.discordinteraktions:gateway-kord:0.0.9-SNAPSHOT")
 
     // Database
     implementation("org.postgresql:postgresql:42.2.14")

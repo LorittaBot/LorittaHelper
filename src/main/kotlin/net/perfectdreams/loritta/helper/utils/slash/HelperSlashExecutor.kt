@@ -1,6 +1,6 @@
 package net.perfectdreams.loritta.helper.utils.slash
 
-import net.perfectdreams.discordinteraktions.api.entities.Snowflake
+import dev.kord.common.entity.Snowflake
 import net.perfectdreams.discordinteraktions.common.commands.slash.SlashCommandExecutor
 import net.perfectdreams.discordinteraktions.common.context.commands.ApplicationCommandContext
 import net.perfectdreams.discordinteraktions.common.context.commands.GuildApplicationCommandContext

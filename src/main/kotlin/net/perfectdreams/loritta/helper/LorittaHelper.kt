@@ -1,5 +1,6 @@
 package net.perfectdreams.loritta.helper
 
+import dev.kord.common.entity.Snowflake
 import dev.kord.rest.service.RestClient
 import io.ktor.client.*
 import io.ktor.client.request.*
@@ -21,7 +22,6 @@ import net.dv8tion.jda.api.JDABuilder
 import net.dv8tion.jda.api.entities.Activity
 import net.dv8tion.jda.api.requests.GatewayIntent
 import net.dv8tion.jda.api.utils.MemberCachePolicy
-import net.perfectdreams.discordinteraktions.api.entities.Snowflake
 import net.perfectdreams.discordinteraktions.common.commands.CommandManager
 import net.perfectdreams.discordinteraktions.platforms.kord.commands.KordCommandRegistry
 import net.perfectdreams.loritta.helper.listeners.AddReactionsToMessagesListener

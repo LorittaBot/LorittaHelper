@@ -46,7 +46,7 @@ class AllTransactionsExecutor(helper: LorittaHelper) : HelperSlashExecutor(helpe
         }
 
         context.sendMessage {
-            file("transactions.txt", builder.toString().toByteArray(Charsets.UTF_8).inputStream())
+            addFile("transactions.txt", builder.toString().toByteArray(Charsets.UTF_8).inputStream())
         }
     }
 }

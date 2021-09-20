@@ -62,7 +62,7 @@ class DailyCheckExecutor(helper: LorittaHelper) : HelperSlashExecutor(helper) {
         }
 
         context.sendMessage {
-            file("dailies.txt", builder.toString().toByteArray(Charsets.UTF_8).inputStream())
+            addFile("dailies.txt", builder.toString().toByteArray(Charsets.UTF_8).inputStream())
         }
     }
 }
