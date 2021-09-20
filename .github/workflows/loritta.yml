@@ -7,6 +7,10 @@ name: Build Loritta Helper
 on:
   push:
     branches: [ main ]
+    
+env:
+  DOCKER_USERNAME: "${{ github.actor }}"
+  DOCKER_PASSWORD: "${{ secrets.GITHUB_TOKEN }}"
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
