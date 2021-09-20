@@ -53,3 +53,6 @@ jobs:
 
     - name: Send Webhook
       run: "curl -X POST -H \"Content-Type: application/json\" -d '{\"content\": \"Atualização OwO! ${{ github.sha }}\"}' ${{ secrets.DiscordWebhookUrl }}"
+      
+    - name: Publish to Docker
+      run: "./gradlew jib -Dgithub.build.id=$GITHUB_RUN_ID -Dbuild.number=$GITHUB_RUN_NUMBER -Dgit.branch=$GITHUB_REF -Dcommit.hash=$GITHUB_SHA -Dcompiled.at=${{ steps.current-time.outputs.time }}"
