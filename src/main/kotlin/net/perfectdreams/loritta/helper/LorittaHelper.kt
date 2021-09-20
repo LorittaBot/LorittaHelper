@@ -37,7 +37,6 @@ import net.perfectdreams.loritta.helper.listeners.PrivateMessageListener
 import net.perfectdreams.loritta.helper.network.Databases
 import net.perfectdreams.loritta.helper.utils.LorittaLandRoleSynchronizationTask
 import net.perfectdreams.loritta.helper.utils.buttonroles.RoleButtonExecutor
-import net.perfectdreams.loritta.helper.utils.buttonroles.UpdateButtonRoles
 import net.perfectdreams.loritta.helper.utils.checkbannedusers.LorittaBannedRoleTask
 import net.perfectdreams.loritta.helper.utils.config.FanArtsConfig
 import net.perfectdreams.loritta.helper.utils.config.LorittaConfig
@@ -52,6 +51,7 @@ import net.perfectdreams.loritta.helper.utils.generateserverreport.PendingReport
 import net.perfectdreams.loritta.helper.utils.slash.AllTransactionsExecutor
 import net.perfectdreams.loritta.helper.utils.slash.AttachDenyReasonExecutor
 import net.perfectdreams.loritta.helper.utils.slash.BroadcastDailyShopWinnersExecutor
+import net.perfectdreams.loritta.helper.utils.slash.ButtonRoleSenderExecutor
 import net.perfectdreams.loritta.helper.utils.slash.CheckCommandsExecutor
 import net.perfectdreams.loritta.helper.utils.slash.DailyCatcherCheckExecutor
 import net.perfectdreams.loritta.helper.utils.slash.DailyCheckExecutor
@@ -65,6 +65,7 @@ import net.perfectdreams.loritta.helper.utils.slash.ServerMembersExecutor
 import net.perfectdreams.loritta.helper.utils.slash.declarations.AllTransactionsCommand
 import net.perfectdreams.loritta.helper.utils.slash.declarations.AttachDenyReasonCommand
 import net.perfectdreams.loritta.helper.utils.slash.declarations.BroadcastDailyShopWinnersCommand
+import net.perfectdreams.loritta.helper.utils.slash.declarations.ButtonRoleSenderCommand
 import net.perfectdreams.loritta.helper.utils.slash.declarations.CheckCommandsCommand
 import net.perfectdreams.loritta.helper.utils.slash.declarations.DailyCatcherCheckCommand
 import net.perfectdreams.loritta.helper.utils.slash.declarations.DailyCheckCommand
@@ -191,14 +192,6 @@ class LorittaHelper(val config: LorittaHelperConfig, val fanArtsConfig: FanArtsC
             TimeUnit.MINUTES
         )
 
-        // Update button roles
-        timedTaskExecutor.scheduleAtFixedRate(
-            UpdateButtonRoles(this),
-            0,
-            1,
-            TimeUnit.MINUTES
-        )
-
         if (config.lorittaDatabase != null) {
             dailyShopWinners = DailyShopWinners(this, jda)
             dailyShopWinners?.start()
@@ -266,6 +259,10 @@ class LorittaHelper(val config: LorittaHelperConfig, val fanArtsConfig: FanArtsC
             register(
                 DailyCheckCommand,
                 DailyCheckExecutor(this@LorittaHelper)
+            )
+            register(
+                ButtonRoleSenderCommand,
+                ButtonRoleSenderExecutor(this@LorittaHelper)
             )
             register(
                 RoleButtonExecutor,
