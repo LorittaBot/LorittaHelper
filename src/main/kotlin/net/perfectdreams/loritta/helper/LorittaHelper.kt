@@ -36,7 +36,9 @@ import net.perfectdreams.loritta.helper.listeners.MessageListener
 import net.perfectdreams.loritta.helper.listeners.PrivateMessageListener
 import net.perfectdreams.loritta.helper.network.Databases
 import net.perfectdreams.loritta.helper.utils.LorittaLandRoleSynchronizationTask
-import net.perfectdreams.loritta.helper.utils.buttonroles.RoleButtonExecutor
+import net.perfectdreams.loritta.helper.utils.buttonroles.RoleColorButtonExecutor
+import net.perfectdreams.loritta.helper.utils.buttonroles.RoleCoolBadgeButtonExecutor
+import net.perfectdreams.loritta.helper.utils.buttonroles.RoleToggleButtonExecutor
 import net.perfectdreams.loritta.helper.utils.checkbannedusers.LorittaBannedRoleTask
 import net.perfectdreams.loritta.helper.utils.config.FanArtsConfig
 import net.perfectdreams.loritta.helper.utils.config.LorittaConfig
@@ -265,8 +267,16 @@ class LorittaHelper(val config: LorittaHelperConfig, val fanArtsConfig: FanArtsC
                 ButtonRoleSenderExecutor(this@LorittaHelper)
             )
             register(
-                RoleButtonExecutor,
-                RoleButtonExecutor(this@LorittaHelper)
+                RoleToggleButtonExecutor,
+                RoleToggleButtonExecutor(this@LorittaHelper)
+            )
+            register(
+                RoleCoolBadgeButtonExecutor,
+                RoleCoolBadgeButtonExecutor(this@LorittaHelper)
+            )
+            register(
+                RoleColorButtonExecutor,
+                RoleColorButtonExecutor(this@LorittaHelper)
             )
         }
 

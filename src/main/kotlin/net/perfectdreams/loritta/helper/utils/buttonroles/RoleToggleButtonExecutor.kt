@@ -9,13 +9,15 @@ import net.perfectdreams.discordinteraktions.common.context.components.GuildComp
 import net.perfectdreams.loritta.helper.LorittaHelper
 import net.perfectdreams.loritta.helper.utils.ComponentDataUtils
 
-class RoleButtonExecutor(val m: LorittaHelper) : ButtonClickWithDataExecutor {
-    companion object : ButtonClickExecutorDeclaration(RoleButtonExecutor::class, "role_button")
+class RoleToggleButtonExecutor(val m: LorittaHelper) : ButtonClickWithDataExecutor {
+    companion object : ButtonClickExecutorDeclaration(RoleToggleButtonExecutor::class, "role_toggle")
 
     override suspend fun onClick(user: User, context: ComponentContext, data: String) {
         // This can only happen in a guild... right? I hope so.
         if (context is GuildComponentContext) {
             val roleButtonData = ComponentDataUtils.decode<RoleButtonData>(data)
+
+            val roleInformation = RoleButtons.notifications.first { it.roleId == roleButtonData.roleId }
 
             if (roleButtonData.roleId in context.member.roles) {
                 // Remove role
@@ -23,11 +25,14 @@ class RoleButtonExecutor(val m: LorittaHelper) : ButtonClickWithDataExecutor {
                     Snowflake(297732013006389252L),
                     user.id,
                     roleButtonData.roleId,
-                    "Loritta Helper's Button Role Manager, yay!"
+                    RoleButtons.AUDIT_LOG_REASON
                 )
 
                 context.sendEphemeralMessage {
-                    content = "Cargo removido com sucesso... sad"
+                    roleInformation.messageRemove.invoke(
+                        this,
+                        roleInformation
+                    )
                 }
             } else {
                 // Add role
@@ -35,11 +40,14 @@ class RoleButtonExecutor(val m: LorittaHelper) : ButtonClickWithDataExecutor {
                     Snowflake(297732013006389252L),
                     user.id,
                     roleButtonData.roleId,
-                    "Loritta Helper's Button Role Manager, yay!"
+                    RoleButtons.AUDIT_LOG_REASON
                 )
 
                 context.sendEphemeralMessage {
-                    content = "Cargo recebido com sucesso!"
+                    roleInformation.messageReceive.invoke(
+                        this,
+                        roleInformation
+                    )
                 }
             }
         }

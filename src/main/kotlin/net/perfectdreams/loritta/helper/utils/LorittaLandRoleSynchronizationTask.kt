@@ -8,6 +8,7 @@ import net.dv8tion.jda.api.managers.RoleManager
 import net.perfectdreams.loritta.helper.LorittaHelper
 import net.perfectdreams.loritta.helper.dao.Payment
 import net.perfectdreams.loritta.helper.tables.Payments
+import net.perfectdreams.loritta.helper.utils.buttonroles.RoleButtons
 import net.perfectdreams.loritta.utils.payments.PaymentReason
 import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.transactions.transaction
@@ -16,30 +17,30 @@ import kotlin.math.ceil
 class LorittaLandRoleSynchronizationTask(val m: LorittaHelper, val jda: JDA) : Runnable {
     companion object {
         private val roleRemap = mutableMapOf(
-                316363779518627842L to 420630427837923328L, // Deusas Supremas
-                505144985591480333L to 762374506173431809L, // beep & boops
-                351473717194522647L to 421325022951637015L, // Moderators
-                399301696892829706L to 421325387889377291L, // Suporte -> Portuguese
-                399301696892829706L to 761586798971322370L, // Suporte -> English
-                653207389729849374L to 762377821884121148L, // Blue colors
-                653207676075114496L to 762377837264240640L,
-                653207713119076362L to 762377848807227432L,
-                653207737798230037L to 762377857149829163L,
-                653207795084165121L to 762377866368254053L,
-                653207830261923840L to 762377874891603979L,
-                653207858707562497L to 762377883339325460L,
-                341343754336337921L to 467750037812936704L, // Desenhistas
-                385579854336360449L to 467750852610752561L, // Tradutores
-                364201981016801281L to 420640526711390208L, // Doador
-                463652112656629760L to 568506127977938977L, // Super Doador
-                534659343656681474L to 568505810825642029L, // Magnata
+            316363779518627842L to 420630427837923328L, // Deusas Supremas
+            505144985591480333L to 762374506173431809L, // beep & boops
+            351473717194522647L to 421325022951637015L, // Moderators
+            399301696892829706L to 421325387889377291L, // Suporte -> Portuguese
+            399301696892829706L to 761586798971322370L, // Suporte -> English
+            653207389729849374L to 762377821884121148L, // Blue colors
+            653207676075114496L to 762377837264240640L,
+            653207713119076362L to 762377848807227432L,
+            653207737798230037L to 762377857149829163L,
+            653207795084165121L to 762377866368254053L,
+            653207830261923840L to 762377874891603979L,
+            653207858707562497L to 762377883339325460L,
+            341343754336337921L to 467750037812936704L, // Desenhistas
+            385579854336360449L to 467750852610752561L, // Tradutores
+            364201981016801281L to 420640526711390208L, // Doador
+            463652112656629760L to 568506127977938977L, // Super Doador
+            534659343656681474L to 568505810825642029L, // Magnata
         )
 
         private val roleFieldComparators = listOf(
-                RoleColorComparator(),
-                RolePermissionsComparator(),
-                RoleHoistedComparator(),
-                RoleIsMentionaableComparator()
+            RoleColorComparator(),
+            RolePermissionsComparator(),
+            RoleHoistedComparator(),
+            RoleIsMentionaableComparator()
         )
 
         private val logger = KotlinLogging.logger {}
@@ -135,8 +136,14 @@ class LorittaLandRoleSynchronizationTask(val m: LorittaHelper, val jda: JDA) : R
                                 roles.remove(advertisementRole)
                         }
                     } else {
-                        val filter = roles.filter { it.name.startsWith("\uD83C\uDFA8") }
+                        // Remove custom colors
+                        val filter = roles.filter { userRole -> RoleButtons.colors.any { it.roleId.value.toLong() == userRole.idLong } }
                         roles.removeAll(filter)
+
+                        // Remove custom badges if the user is not Level 10
+                        val coolBadgesFilter = roles.filter { userRole -> RoleButtons.coolBadges.any { it.roleId.value.toLong() == userRole.idLong } }
+                        if (!member.roles.any { it.idLong == 655132411566358548L })
+                            roles.removeAll(coolBadgesFilter)
 
                         if (roles.contains(advertisementRole))
                             roles.remove(advertisementRole)
