@@ -79,6 +79,7 @@ import net.perfectdreams.loritta.helper.utils.slash.declarations.ServerMembersCo
 import net.perfectdreams.loritta.helper.utils.supporttimer.EnglishSupportTimer
 import net.perfectdreams.loritta.helper.utils.supporttimer.PortugueseSupportTimer
 import net.perfectdreams.loritta.helper.utils.topsonhos.TopSonhosRankingSender
+import net.perfectdreams.loritta.helper.utils.whydothisifyouaregoingtogetbannedanyway.WhyDoThisIfYouAreGoingToGetBannedAnywayListener
 import java.io.File
 import java.time.Instant
 import java.time.LocalDateTime
@@ -138,7 +139,8 @@ class LorittaHelper(val config: LorittaHelperConfig, val fanArtsConfig: FanArtsC
                 ApproveReportsOnReactionListener(this),
                 AddReactionsToMessagesListener(this),
                 ApproveAppealsOnReactionListener(this),
-                InteractionListener(helperRest, Snowflake(config.applicationId), commandManager)
+                InteractionListener(helperRest, Snowflake(config.applicationId), commandManager),
+                WhyDoThisIfYouAreGoingToGetBannedAnywayListener()
             )
             .also {
                 if (fanArtsConfig != null) {
