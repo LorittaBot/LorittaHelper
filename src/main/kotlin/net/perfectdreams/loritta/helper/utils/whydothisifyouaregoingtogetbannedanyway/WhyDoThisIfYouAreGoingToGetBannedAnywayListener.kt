@@ -81,10 +81,32 @@ class WhyDoThisIfYouAreGoingToGetBannedAnywayListener : ListenerAdapter() {
             return
         }
 
+        // Special Case: Automatically ban someone that sent "avatar" right after joining the server
+        val message = event.message.contentRaw
+
+        // Account recently created!
+        val now = Instant.now().atZone(Constants.TIME_ZONE_ID)
+        if (event.author.timeCreated >= now.minusDays(7L).toOffsetDateTime()) {
+            val timeJoined = event.member?.timeJoined
+
+            if (timeJoined != null && timeJoined >= now.minusHours(1L).toOffsetDateTime()) {
+                if (now.hour in 0..5) {
+                    if (message.contains("avatar") && 5 >= message.indexOf("avatar")) { // Only will be true if the "avatar" text is right at the beginning
+                        // Super bye!
+                        event.guild.ban(
+                            event.author,
+                            7,
+                            "[WDTIYAGTGBA™] Banned due to saying \"avatar\" in a message",
+                        ).queue()
+                        return
+                    }
+                }
+            }
+        }
+
         // And now check the message's content
         // Because people may talk about it, we will only punish if the account was recently created
         if (event.author.timeCreated >= Instant.now().atZone(Constants.TIME_ZONE_ID).minusDays(3L).toOffsetDateTime()) {
-            val message = event.message.contentRaw
 
             // Now check the message!
             val firstMessageRegexMatch = BLOCKED_NAMES.firstOrNull {
