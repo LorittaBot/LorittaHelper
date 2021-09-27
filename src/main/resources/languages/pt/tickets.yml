@@ -20,7 +20,7 @@ tickets:
     ready: "Prontinho! Eu criei um ticket para você, faça sua pergunta e aguarde até que um membro da equipe venha tirar sua dúvida."
     questionTips: "Faça sua pergunta de uma forma simples e objetiva, se você precisar, anexe imagens. Para que os {role} possam te ajudar com mais eficiência."
     pleaseRead: "E EU ESPERO que você tenha lido o {faqChannel} e {extras} que a gente fez com tanto amor e carinho, vai que sua pergunta já foi respondida lá."
-
+    afterAnswer: "Após a sua pergunta ser respondida, você pode usar `/closeticket` para fechar o ticket! E depois todos podem viver felizes para sempre~"
   menu:
     howToAddLorittaToMyServer: "Como adicionar a Loritta no meu servidor?"
     whyLorittaIsOffline: "Porque a Loritta está offline?"

@@ -19,7 +19,7 @@ tickets:
     ready: "Done! I created a ticket for you, ask your question and wait until someone of our support staff comes here to answer your question."
     questionTips: "Ask your question in a simple and objective way and, if you need to, attach pictures. By doing this, you help {role} to understand your question better and to have the answer that you need."
     pleaseRead: "AND I HOPE that you already read {faqChannel} and {extras} that we done with a lot of love and care, because maybe your question was already answered there."
-
+    afterAnswer: "After your question is answered, you can use `/closeticket` to close the ticket! And then everyone can live happily ever after~"
   menu:
     howToAddLorittaToMyServer: "How to add Loritta to my server?"
     whyLorittaIsOffline: "Why Loritta is offline?"
