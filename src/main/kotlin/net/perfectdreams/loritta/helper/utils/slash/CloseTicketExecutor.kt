@@ -52,7 +52,7 @@ class CloseTicketExecutor(val helper: LorittaHelperKord) : SlashCommandExecutor(
             ChannelModifyPatchRequest(
                 archived = true.optional()
             ),
-            "Archival request via command by ${user.name}#${user.discriminator} (${user.id.value})"
+            "Archival request via command by ${context.sender.name}#${context.sender.discriminator} (${context.sender.id.value})"
         )
     }
 }
