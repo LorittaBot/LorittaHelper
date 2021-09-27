@@ -140,7 +140,7 @@ class CreateTicketButtonExecutor(val m: LorittaHelperKord) : ButtonClickWithData
                     ChannelModifyPatchRequestMakeshift(
                         name = threadName.optional(),
                         archived = false.optional(),
-                        locked = true.optional(), // True just to see what happens -- // For now let's keep it as not locked to avoid a bug in Discord Mobile related to "You don't have permission!"
+                        locked = false.optional(), // For now let's keep it as not locked to avoid a bug in Discord Mobile related to "You don't have permission!"
                         invitable = false.optional()
                     )
                 )
