@@ -182,7 +182,8 @@ class CreateTicketButtonExecutor(val m: LorittaHelperKord) : ButtonClickWithData
             context.sendEphemeralMessage {
                 content = language.get(
                     I18nKeysData.Tickets.TicketWasCreated("<#${ticketThread.id.value}>")
-                )            }
+                )
+            }
         }
     }
 
