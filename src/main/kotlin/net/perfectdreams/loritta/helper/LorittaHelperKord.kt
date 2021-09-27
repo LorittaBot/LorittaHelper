@@ -24,6 +24,7 @@ import net.perfectdreams.loritta.helper.utils.slash.AttachDenyReasonExecutor
 import net.perfectdreams.loritta.helper.utils.slash.BroadcastDailyShopWinnersExecutor
 import net.perfectdreams.loritta.helper.utils.slash.ButtonRoleSenderExecutor
 import net.perfectdreams.loritta.helper.utils.slash.CheckCommandsExecutor
+import net.perfectdreams.loritta.helper.utils.slash.CloseTicketExecutor
 import net.perfectdreams.loritta.helper.utils.slash.DailyCatcherCheckExecutor
 import net.perfectdreams.loritta.helper.utils.slash.DailyCheckExecutor
 import net.perfectdreams.loritta.helper.utils.slash.FanArtsOverrideGetExecutor
@@ -39,6 +40,7 @@ import net.perfectdreams.loritta.helper.utils.slash.declarations.AttachDenyReaso
 import net.perfectdreams.loritta.helper.utils.slash.declarations.BroadcastDailyShopWinnersCommand
 import net.perfectdreams.loritta.helper.utils.slash.declarations.ButtonRoleSenderCommand
 import net.perfectdreams.loritta.helper.utils.slash.declarations.CheckCommandsCommand
+import net.perfectdreams.loritta.helper.utils.slash.declarations.CloseTicketCommand
 import net.perfectdreams.loritta.helper.utils.slash.declarations.DailyCatcherCheckCommand
 import net.perfectdreams.loritta.helper.utils.slash.declarations.DailyCheckCommand
 import net.perfectdreams.loritta.helper.utils.slash.declarations.FanArtsOverrideCommand
@@ -148,6 +150,10 @@ class LorittaHelperKord(
                 register(
                     TicketSenderCommand,
                     TicketSenderExecutor(this@LorittaHelperKord)
+                )
+                register(
+                    CloseTicketCommand,
+                    CloseTicketExecutor(this@LorittaHelperKord)
                 )
                 register(
                     CreateTicketButtonExecutor,
