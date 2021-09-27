@@ -1,5 +1,6 @@
 package net.perfectdreams.loritta.api.messages
 
+import dev.kord.common.entity.DiscordUser
 import net.dv8tion.jda.api.entities.User
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent
 
@@ -13,6 +14,10 @@ class LorittaReply(
     fun build(event: GuildMessageReceivedEvent): String {
         return build(event.author.asMention, event.author.asMention + " ")
     }
+
+    fun build(user: net.perfectdreams.discordinteraktions.api.entities.User) = build("<@${user.id.value}>", "<@${user.id.value}> ")
+
+    fun build(user: DiscordUser) = build("<@${user.id.value}>", "<@${user.id.value}> ")
 
     fun build(user: User) = build(user.asMention, null)
 

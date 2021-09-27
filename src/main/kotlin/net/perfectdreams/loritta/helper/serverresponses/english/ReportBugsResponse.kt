@@ -1,6 +1,5 @@
 package net.perfectdreams.loritta.helper.serverresponses.english
 
-import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent
 import net.perfectdreams.loritta.api.messages.LorittaReply
 import net.perfectdreams.loritta.helper.serverresponses.RegExResponse
 import java.util.regex.Pattern
@@ -16,7 +15,7 @@ class ReportBugsResponse : RegExResponse() {
         patterns.add("bug|problema".toPattern(Pattern.CASE_INSENSITIVE))
     }
 
-    override fun getResponse(event: GuildMessageReceivedEvent, message: String) =
+    override fun getResponse(message: String) =
         listOf(
             LorittaReply(
                 "You can report bugs on the official Loritta Community server! <#761625835043291146>",

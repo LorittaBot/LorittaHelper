@@ -1,6 +1,5 @@
 package net.perfectdreams.loritta.helper.serverresponses.portuguese
 
-import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent
 import net.perfectdreams.loritta.api.messages.LorittaReply
 import net.perfectdreams.loritta.helper.serverresponses.RegExResponse
 import net.perfectdreams.loritta.helper.utils.Emotes
@@ -19,7 +18,7 @@ class ReceiveSonhosResponse : RegExResponse() {
         patterns.add("sonhos".toPattern(Pattern.CASE_INSENSITIVE))
     }
 
-    override fun getResponse(event: GuildMessageReceivedEvent, message: String) =
+    override fun getResponse(message: String) =
             listOf(
                     LorittaReply(
                             "Opa! Parece que você tem uma dúvida sobre sonhos certo? **Mas você sabe o que são sonhos?** Sonhos é a moeda oficial do meu sistema de economia.",

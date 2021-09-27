@@ -8,9 +8,9 @@ import net.perfectdreams.discordinteraktions.common.context.commands.Application
 import net.perfectdreams.discordinteraktions.common.context.commands.slash.SlashCommandArguments
 import net.perfectdreams.discordinteraktions.declarations.commands.slash.SlashCommandExecutorDeclaration
 import net.perfectdreams.discordinteraktions.declarations.commands.slash.options.CommandOptions
-import net.perfectdreams.loritta.helper.LorittaHelper
+import net.perfectdreams.loritta.helper.LorittaHelperKord
 
-class IPLocationExecutor(helper: LorittaHelper) : HelperSlashExecutor(helper) {
+class IPLocationExecutor(helper: LorittaHelperKord) : HelperSlashExecutor(helper) {
     companion object : SlashCommandExecutorDeclaration(IPLocationExecutor::class) {
         override val options = Options
 
@@ -25,7 +25,7 @@ class IPLocationExecutor(helper: LorittaHelper) : HelperSlashExecutor(helper) {
         val userIp = args[options.ip]
 
         // pls don't ban us :pray:
-        val response = LorittaHelper.http.post<String>("https://iplocation.com/") {
+        val response = LorittaHelperKord.http.post<String>("https://iplocation.com/") {
             userAgent("User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:88.0) Gecko/20100101 Firefox/88.0")
             parameter("ip", userIp)
         }

@@ -6,9 +6,9 @@ import net.perfectdreams.discordinteraktions.common.context.commands.Application
 import net.perfectdreams.discordinteraktions.common.context.commands.slash.SlashCommandArguments
 import net.perfectdreams.discordinteraktions.declarations.commands.slash.SlashCommandExecutorDeclaration
 import net.perfectdreams.discordinteraktions.declarations.commands.slash.options.CommandOptions
-import net.perfectdreams.loritta.helper.LorittaHelper
+import net.perfectdreams.loritta.helper.LorittaHelperKord
 
-class ServerMembersExecutor(helper: LorittaHelper, val rest: RestClient) : HelperSlashExecutor(helper) {
+class ServerMembersExecutor(helper: LorittaHelperKord, val rest: RestClient) : HelperSlashExecutor(helper) {
     companion object : SlashCommandExecutorDeclaration(ServerMembersExecutor::class) {
         override val options = Options
 

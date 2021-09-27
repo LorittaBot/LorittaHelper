@@ -1,6 +1,5 @@
 package net.perfectdreams.loritta.helper.serverresponses.english
 
-import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent
 import net.perfectdreams.loritta.api.messages.LorittaReply
 import net.perfectdreams.loritta.helper.serverresponses.RegExResponse
 import net.perfectdreams.loritta.helper.utils.Emotes
@@ -17,7 +16,7 @@ class CommandsResponse : RegExResponse() {
         patterns.add("com(m)?ands".toPattern(Pattern.CASE_INSENSITIVE))
     }
 
-    override fun getResponse(event: GuildMessageReceivedEvent, message: String) =
+    override fun getResponse(message: String) =
         listOf(
             LorittaReply(
                 "You can see all my commands on my website! <https://loritta.website/commands>",

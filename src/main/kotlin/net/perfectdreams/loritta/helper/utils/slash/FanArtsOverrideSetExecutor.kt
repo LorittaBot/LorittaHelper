@@ -4,10 +4,10 @@ import net.perfectdreams.discordinteraktions.common.context.commands.Application
 import net.perfectdreams.discordinteraktions.common.context.commands.slash.SlashCommandArguments
 import net.perfectdreams.discordinteraktions.declarations.commands.slash.SlashCommandExecutorDeclaration
 import net.perfectdreams.discordinteraktions.declarations.commands.slash.options.CommandOptions
-import net.perfectdreams.loritta.helper.LorittaHelper
+import net.perfectdreams.loritta.helper.LorittaHelperKord
 import net.perfectdreams.loritta.helper.listeners.ApproveFanArtListener
 
-class FanArtsOverrideSetExecutor(helper: LorittaHelper) : HelperSlashExecutor(helper) {
+class FanArtsOverrideSetExecutor(helper: LorittaHelperKord) : HelperSlashExecutor(helper) {
     companion object : SlashCommandExecutorDeclaration(FanArtsOverrideSetExecutor::class) {
         override val options = Options
 

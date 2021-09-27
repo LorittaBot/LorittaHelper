@@ -1,6 +1,5 @@
 package net.perfectdreams.loritta.helper.serverresponses.portuguese
 
-import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent
 import net.perfectdreams.loritta.api.messages.LorittaReply
 import net.perfectdreams.loritta.helper.serverresponses.RegExResponse
 import net.perfectdreams.loritta.helper.utils.Emotes
@@ -17,7 +16,7 @@ class CanaryResponse : RegExResponse() {
         patterns.add("canary|beta|395935916952256523".toPattern(Pattern.CASE_INSENSITIVE))
     }
 
-    override fun getResponse(event: GuildMessageReceivedEvent, message: String) =
+    override fun getResponse(message: String) =
         listOf(
             LorittaReply(
                 "A Loritta Canary (<@395935916952256523>) é a versão experimental (beta) da <@297153970613387264> (sim, eu tenho duas contas, não me julgue!)",

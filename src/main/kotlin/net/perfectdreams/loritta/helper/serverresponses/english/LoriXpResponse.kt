@@ -1,6 +1,5 @@
 package net.perfectdreams.loritta.helper.serverresponses.english
 
-import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent
 import net.perfectdreams.loritta.api.messages.LorittaReply
 import net.perfectdreams.loritta.helper.serverresponses.RegExResponse
 import java.util.regex.Pattern
@@ -15,7 +14,7 @@ class LoriXpResponse : RegExResponse() {
         patterns.add("(experience|xp|level)".toPattern(Pattern.CASE_INSENSITIVE))
     }
 
-    override fun getResponse(event: GuildMessageReceivedEvent, message: String) =
+    override fun getResponse(message: String) =
             listOf(
                 LorittaReply(
                     "You can see how Loritta calculates XP on this message: https://discord.com/channels/420626099257475072/761337709720633392/762048853108981810",

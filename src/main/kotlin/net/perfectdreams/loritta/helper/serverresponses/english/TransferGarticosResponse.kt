@@ -1,6 +1,5 @@
 package net.perfectdreams.loritta.helper.serverresponses.english
 
-import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent
 import net.perfectdreams.loritta.api.messages.LorittaReply
 import net.perfectdreams.loritta.helper.serverresponses.RegExResponse
 import net.perfectdreams.loritta.helper.utils.Emotes
@@ -16,7 +15,7 @@ class TransferGarticosResponse : RegExResponse() {
         patterns.add("garticos|gartic".toPattern(Pattern.CASE_INSENSITIVE))
     }
 
-    override fun getResponse(event: GuildMessageReceivedEvent, message: String) =
+    override fun getResponse(message: String) =
         listOf(
             LorittaReply(
                 "You can exchange Garticos for Sonhos using `gb.garticos Sonhos Quantia` in any guild that has GarticBot!",

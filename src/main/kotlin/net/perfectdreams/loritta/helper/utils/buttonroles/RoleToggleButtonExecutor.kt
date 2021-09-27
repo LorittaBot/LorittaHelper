@@ -7,9 +7,10 @@ import net.perfectdreams.discordinteraktions.common.components.buttons.ButtonCli
 import net.perfectdreams.discordinteraktions.common.context.components.ComponentContext
 import net.perfectdreams.discordinteraktions.common.context.components.GuildComponentContext
 import net.perfectdreams.loritta.helper.LorittaHelper
+import net.perfectdreams.loritta.helper.LorittaHelperKord
 import net.perfectdreams.loritta.helper.utils.ComponentDataUtils
 
-class RoleToggleButtonExecutor(val m: LorittaHelper) : ButtonClickWithDataExecutor {
+class RoleToggleButtonExecutor(val m: LorittaHelperKord) : ButtonClickWithDataExecutor {
     companion object : ButtonClickExecutorDeclaration(RoleToggleButtonExecutor::class, "role_toggle")
 
     override suspend fun onClick(user: User, context: ComponentContext, data: String) {

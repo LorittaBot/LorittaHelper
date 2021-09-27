@@ -1,6 +1,5 @@
 package net.perfectdreams.loritta.helper.serverresponses.english
 
-import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent
 import net.perfectdreams.loritta.api.messages.LorittaReply
 import net.perfectdreams.loritta.helper.serverresponses.RegExResponse
 import net.perfectdreams.loritta.helper.utils.Emotes
@@ -17,7 +16,7 @@ class DJLorittaResponse : RegExResponse() {
         patterns.add("music|song|dj".toPattern(Pattern.CASE_INSENSITIVE))
     }
 
-    override fun getResponse(event: GuildMessageReceivedEvent, message: String) =
+    override fun getResponse(message: String) =
         listOf(
             LorittaReply(
                 "Unfortunately, YouTube and Google made some changes and the music commands were removed... You can read more about it here <https://loritta.website/blog/youtube-google-block> (article in portuguese)",

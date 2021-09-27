@@ -319,7 +319,7 @@ object RoleButtons {
 
     // ===[ CUSTOM COLORS ]===
     val black = customColor(
-        Snowflake(889922793112752138L),
+        Snowflake(751256879534964796L),
         DiscordPartialEmoji(Snowflake(889922793112752138L), "lori_rich_black")
     )
 

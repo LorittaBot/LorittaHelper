@@ -1,6 +1,5 @@
 package net.perfectdreams.loritta.helper.serverresponses.english
 
-import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent
 import net.perfectdreams.loritta.api.messages.LorittaReply
 import net.perfectdreams.loritta.helper.serverresponses.RegExResponse
 import net.perfectdreams.loritta.helper.utils.Constants.OTHER_BOTS_CHANNEL_ID
@@ -18,7 +17,7 @@ class ThirdPartyBotsResponse: RegExResponse() {
         patterns.add("ayana|carl|carl-bot|dank( |-)memer|dyno|fredboat|garticbot|groovy|mee6|mantaro|droplet|rythm|tatsu|unbelievaboat|zero( |-)two|hydra".toPattern(Pattern.CASE_INSENSITIVE))
     }
 
-    override fun getResponse(event: GuildMessageReceivedEvent, message: String): List<LorittaReply> = listOf(
+    override fun getResponse(message: String): List<LorittaReply> = listOf(
         LorittaReply(
             message = "It looks like you want help with other bots, hm... We don't offer support for other bots here, if you need help, check if that bot's support server is listed in <#${OTHER_BOTS_CHANNEL_ID}> and ask for help there!",
             prefix = Emotes.LORI_COFFEE

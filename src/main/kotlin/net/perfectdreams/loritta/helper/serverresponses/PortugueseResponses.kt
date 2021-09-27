@@ -6,12 +6,14 @@ import net.perfectdreams.loritta.helper.serverresponses.portuguese.AddLoriRespon
 import net.perfectdreams.loritta.helper.serverresponses.portuguese.AnnouncementsResponse
 import net.perfectdreams.loritta.helper.serverresponses.portuguese.BadgeResponse
 import net.perfectdreams.loritta.helper.serverresponses.portuguese.BomDiaECiaResponse
+import net.perfectdreams.loritta.helper.serverresponses.portuguese.CanIExchangeSonhosForSomethingElseResponse
 import net.perfectdreams.loritta.helper.serverresponses.portuguese.CanaryResponse
 import net.perfectdreams.loritta.helper.serverresponses.portuguese.ChangePrefixResponse
 import net.perfectdreams.loritta.helper.serverresponses.portuguese.CommandsResponse
 import net.perfectdreams.loritta.helper.serverresponses.portuguese.ConfigureLoriResponse
 import net.perfectdreams.loritta.helper.serverresponses.portuguese.ConfigurePunishmentsResponse
 import net.perfectdreams.loritta.helper.serverresponses.portuguese.DJLorittaResponse
+import net.perfectdreams.loritta.helper.serverresponses.portuguese.DailyCaptchaDoesNotWorkResponse
 import net.perfectdreams.loritta.helper.serverresponses.portuguese.EmbedsArbitraryResponse
 import net.perfectdreams.loritta.helper.serverresponses.portuguese.EmbedsResponse
 import net.perfectdreams.loritta.helper.serverresponses.portuguese.HelpMeResponse
@@ -25,6 +27,7 @@ import net.perfectdreams.loritta.helper.serverresponses.portuguese.LoriMandarCmd
 import net.perfectdreams.loritta.helper.serverresponses.portuguese.LoriNameResponse
 import net.perfectdreams.loritta.helper.serverresponses.portuguese.LoriOfflineResponse
 import net.perfectdreams.loritta.helper.serverresponses.portuguese.LoriXpResponse
+import net.perfectdreams.loritta.helper.serverresponses.portuguese.LorittaPremiumResponse
 import net.perfectdreams.loritta.helper.serverresponses.portuguese.LostAccountResponse
 import net.perfectdreams.loritta.helper.serverresponses.portuguese.MemberCounterResponse
 import net.perfectdreams.loritta.helper.serverresponses.portuguese.MentionChannelResponse
@@ -34,6 +37,7 @@ import net.perfectdreams.loritta.helper.serverresponses.portuguese.PantufaRespon
 import net.perfectdreams.loritta.helper.serverresponses.portuguese.ProfileBackgroundResponse
 import net.perfectdreams.loritta.helper.serverresponses.portuguese.ReceiveSonhosResponse
 import net.perfectdreams.loritta.helper.serverresponses.portuguese.ReportBugsResponse
+import net.perfectdreams.loritta.helper.serverresponses.portuguese.ReputationsResponse
 import net.perfectdreams.loritta.helper.serverresponses.portuguese.SayResponse
 import net.perfectdreams.loritta.helper.serverresponses.portuguese.SendSonhosResponse
 import net.perfectdreams.loritta.helper.serverresponses.portuguese.SlowModeResponse
@@ -99,6 +103,10 @@ object PortugueseResponses {
         ReportBugsResponse(),
         UserNotShowingUpRankResponse(),
         TwoFactorAuthenticationRequirementResponse(),
-        BomDiaECiaResponse()
+        BomDiaECiaResponse(),
+        DailyCaptchaDoesNotWorkResponse(),
+        LorittaPremiumResponse(),
+        CanIExchangeSonhosForSomethingElseResponse(),
+        ReputationsResponse()
     ).sortedByDescending { it.priority }
 }

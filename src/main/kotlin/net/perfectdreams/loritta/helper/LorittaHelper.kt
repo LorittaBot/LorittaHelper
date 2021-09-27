@@ -1,6 +1,5 @@
 package net.perfectdreams.loritta.helper
 
-import dev.kord.common.entity.Snowflake
 import dev.kord.rest.service.RestClient
 import io.ktor.client.*
 import io.ktor.client.request.*
@@ -11,7 +10,6 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.asCoroutineDispatcher
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.jsonArray
@@ -22,8 +20,6 @@ import net.dv8tion.jda.api.JDABuilder
 import net.dv8tion.jda.api.entities.Activity
 import net.dv8tion.jda.api.requests.GatewayIntent
 import net.dv8tion.jda.api.utils.MemberCachePolicy
-import net.perfectdreams.discordinteraktions.common.commands.CommandManager
-import net.perfectdreams.discordinteraktions.platforms.kord.commands.KordCommandRegistry
 import net.perfectdreams.loritta.helper.listeners.AddReactionsToMessagesListener
 import net.perfectdreams.loritta.helper.listeners.ApproveAppealsOnReactionListener
 import net.perfectdreams.loritta.helper.listeners.ApproveFanArtListener
@@ -31,14 +27,10 @@ import net.perfectdreams.loritta.helper.listeners.ApproveReportsOnReactionListen
 import net.perfectdreams.loritta.helper.listeners.BanListener
 import net.perfectdreams.loritta.helper.listeners.BanSuspectedUsersOnReactionListener
 import net.perfectdreams.loritta.helper.listeners.CheckLoriBannedUsersListener
-import net.perfectdreams.loritta.helper.listeners.InteractionListener
 import net.perfectdreams.loritta.helper.listeners.MessageListener
 import net.perfectdreams.loritta.helper.listeners.PrivateMessageListener
 import net.perfectdreams.loritta.helper.network.Databases
 import net.perfectdreams.loritta.helper.utils.LorittaLandRoleSynchronizationTask
-import net.perfectdreams.loritta.helper.utils.buttonroles.RoleColorButtonExecutor
-import net.perfectdreams.loritta.helper.utils.buttonroles.RoleCoolBadgeButtonExecutor
-import net.perfectdreams.loritta.helper.utils.buttonroles.RoleToggleButtonExecutor
 import net.perfectdreams.loritta.helper.utils.checkbannedusers.LorittaBannedRoleTask
 import net.perfectdreams.loritta.helper.utils.config.FanArtsConfig
 import net.perfectdreams.loritta.helper.utils.config.LorittaConfig
@@ -50,34 +42,6 @@ import net.perfectdreams.loritta.helper.utils.faqembed.FAQEmbedUpdaterEnglish
 import net.perfectdreams.loritta.helper.utils.faqembed.FAQEmbedUpdaterPortuguese
 import net.perfectdreams.loritta.helper.utils.faqembed.FAQEmbedUpdaterSparklyPower
 import net.perfectdreams.loritta.helper.utils.generateserverreport.PendingReportsListTask
-import net.perfectdreams.loritta.helper.utils.slash.AllTransactionsExecutor
-import net.perfectdreams.loritta.helper.utils.slash.AttachDenyReasonExecutor
-import net.perfectdreams.loritta.helper.utils.slash.BroadcastDailyShopWinnersExecutor
-import net.perfectdreams.loritta.helper.utils.slash.ButtonRoleSenderExecutor
-import net.perfectdreams.loritta.helper.utils.slash.CheckCommandsExecutor
-import net.perfectdreams.loritta.helper.utils.slash.DailyCatcherCheckExecutor
-import net.perfectdreams.loritta.helper.utils.slash.DailyCheckExecutor
-import net.perfectdreams.loritta.helper.utils.slash.FanArtsOverrideGetExecutor
-import net.perfectdreams.loritta.helper.utils.slash.FanArtsOverrideResetExecutor
-import net.perfectdreams.loritta.helper.utils.slash.FanArtsOverrideSetExecutor
-import net.perfectdreams.loritta.helper.utils.slash.IPLocationExecutor
-import net.perfectdreams.loritta.helper.utils.slash.PendingScarletExecutor
-import net.perfectdreams.loritta.helper.utils.slash.RetrieveMessageExecutor
-import net.perfectdreams.loritta.helper.utils.slash.ServerMembersExecutor
-import net.perfectdreams.loritta.helper.utils.slash.declarations.AllTransactionsCommand
-import net.perfectdreams.loritta.helper.utils.slash.declarations.AttachDenyReasonCommand
-import net.perfectdreams.loritta.helper.utils.slash.declarations.BroadcastDailyShopWinnersCommand
-import net.perfectdreams.loritta.helper.utils.slash.declarations.ButtonRoleSenderCommand
-import net.perfectdreams.loritta.helper.utils.slash.declarations.CheckCommandsCommand
-import net.perfectdreams.loritta.helper.utils.slash.declarations.DailyCatcherCheckCommand
-import net.perfectdreams.loritta.helper.utils.slash.declarations.DailyCheckCommand
-import net.perfectdreams.loritta.helper.utils.slash.declarations.FanArtsOverrideCommand
-import net.perfectdreams.loritta.helper.utils.slash.declarations.IPLocationCommand
-import net.perfectdreams.loritta.helper.utils.slash.declarations.PendingScarletCommand
-import net.perfectdreams.loritta.helper.utils.slash.declarations.RetrieveMessageCommand
-import net.perfectdreams.loritta.helper.utils.slash.declarations.ServerMembersCommand
-import net.perfectdreams.loritta.helper.utils.supporttimer.EnglishSupportTimer
-import net.perfectdreams.loritta.helper.utils.supporttimer.PortugueseSupportTimer
 import net.perfectdreams.loritta.helper.utils.topsonhos.TopSonhosRankingSender
 import net.perfectdreams.loritta.helper.utils.whydothisifyouaregoingtogetbannedanyway.WhyDoThisIfYouAreGoingToGetBannedAnywayListener
 import java.io.File
@@ -116,13 +80,12 @@ class LorittaHelper(val config: LorittaHelperConfig, val fanArtsConfig: FanArtsC
     var dailyCatcherManager: DailyCatcherManager? = null
 
     var dailyShopWinners: DailyShopWinners? = null
-    val commandManager = CommandManager()
 
     val helperRest = RestClient(config.token)
     val lorittaRest = lorittaConfig?.token?.let { RestClient(it) }
 
     fun start() {
-        // We only care about specific intents, and we don't need to cache any users
+        // We only care about specific intents
         val jda = JDABuilder.createLight(
             config.token,
             GatewayIntent.DIRECT_MESSAGES,
@@ -139,7 +102,6 @@ class LorittaHelper(val config: LorittaHelperConfig, val fanArtsConfig: FanArtsC
                 ApproveReportsOnReactionListener(this),
                 AddReactionsToMessagesListener(this),
                 ApproveAppealsOnReactionListener(this),
-                InteractionListener(helperRest, Snowflake(config.applicationId), commandManager),
                 WhyDoThisIfYouAreGoingToGetBannedAnywayListener()
             )
             .also {
@@ -218,93 +180,17 @@ class LorittaHelper(val config: LorittaHelperConfig, val fanArtsConfig: FanArtsC
         FAQEmbedUpdaterSparklyPower(this, jda).start()
         TopSonhosRankingSender(this, jda).start()
 
-        PortugueseSupportTimer(this, jda).start()
-        EnglishSupportTimer(this, jda).start()
-
         timedTaskExecutor.scheduleWithFixedDelay(LorittaLandRoleSynchronizationTask(this, jda), 0, 15, TimeUnit.SECONDS)
         timedTaskExecutor.scheduleWithFixedDelay(LorittaBannedRoleTask(this, jda), 0, 15, TimeUnit.SECONDS)
 
-        // Register Commands
-        commandManager.apply {
-            register(
-                BroadcastDailyShopWinnersCommand,
-                BroadcastDailyShopWinnersExecutor(this@LorittaHelper)
-            )
-            register(
-                CheckCommandsCommand,
-                CheckCommandsExecutor(this@LorittaHelper)
-            )
-            register(
-                DailyCatcherCheckCommand,
-                DailyCatcherCheckExecutor(this@LorittaHelper)
-            )
-            register(
-                FanArtsOverrideCommand,
-                FanArtsOverrideGetExecutor(this@LorittaHelper),
-                FanArtsOverrideSetExecutor(this@LorittaHelper),
-                FanArtsOverrideResetExecutor(this@LorittaHelper)
-            )
-            register(
-                PendingScarletCommand,
-                PendingScarletExecutor(this@LorittaHelper, jda)
-            )
-            register(
-                IPLocationCommand,
-                IPLocationExecutor(this@LorittaHelper)
-            )
-            register(
-                AttachDenyReasonCommand,
-                AttachDenyReasonExecutor(this@LorittaHelper, jda)
-            )
-            register(
-                AllTransactionsCommand,
-                AllTransactionsExecutor(this@LorittaHelper)
-            )
-            register(
-                DailyCheckCommand,
-                DailyCheckExecutor(this@LorittaHelper)
-            )
-            register(
-                ButtonRoleSenderCommand,
-                ButtonRoleSenderExecutor(this@LorittaHelper)
-            )
-            register(
-                RoleToggleButtonExecutor,
-                RoleToggleButtonExecutor(this@LorittaHelper)
-            )
-            register(
-                RoleCoolBadgeButtonExecutor,
-                RoleCoolBadgeButtonExecutor(this@LorittaHelper)
-            )
-            register(
-                RoleColorButtonExecutor,
-                RoleColorButtonExecutor(this@LorittaHelper)
-            )
-        }
-
-        if (lorittaRest != null) {
-            commandManager.register(
-                RetrieveMessageCommand,
-                RetrieveMessageExecutor(this, lorittaRest)
-            )
-            commandManager.register(
-                ServerMembersCommand,
-                ServerMembersExecutor(this, lorittaRest)
-            )
-        }
-
-        runBlocking {
-            val registry = KordCommandRegistry(
-                Snowflake(config.applicationId),
-                helperRest,
-                commandManager
-            )
-
-            registry.updateAllCommandsInGuild(
-                Snowflake(297732013006389252L),
-                true
-            )
-        }
+        // This is a hack!!
+        LorittaHelperKord(
+            config,
+            fanArtsConfig,
+            lorittaConfig,
+            this,
+            jda
+        ).start()
     }
 
     fun launch(block: suspend CoroutineScope.() -> Unit) = GlobalScope.launch(executor) {

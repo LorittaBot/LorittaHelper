@@ -4,6 +4,12 @@ plugins {
     kotlin("jvm") version "1.5.21"
     kotlin("plugin.serialization") version "1.5.21"
     id("com.google.cloud.tools.jib") version "3.1.4"
+    id("net.perfectdreams.i18nhelper.plugin") version "0.0.2-SNAPSHOT"
+}
+
+i18nHelper {
+    generatedPackage.set("net.perfectdreams.loritta.helper.i18n")
+    languageSourceFolder.set("src/main/resources/languages/en/")
 }
 
 group = "net.perfectdreams.loritta.helper"
@@ -31,6 +37,7 @@ dependencies {
 
     // Kord
     implementation("dev.kord:kord-rest:0.8.x-SNAPSHOT")
+    implementation("dev.kord:kord-gateway:0.8.x-SNAPSHOT")
 
     // Sequins
     implementation("net.perfectdreams.sequins.text:text-utils:1.0.0")
@@ -43,6 +50,16 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-protobuf:1.2.2")
     // Used to serialize state on components
     implementation("io.github.netvl.ecoji:ecoji:1.0.0")
+
+    // i18nHelper
+    api("net.perfectdreams.i18nhelper.formatters:icu-messageformat-jvm:0.0.2-SNAPSHOT")
+
+    // Used for the LocaleManager
+    implementation("org.yaml:snakeyaml:1.28")
+    implementation("com.charleskorn.kaml:kaml:0.35.0")
+
+    // ICU
+    implementation("com.ibm.icu:icu4j:69.1")
 
     // Database
     implementation("org.postgresql:postgresql:42.2.23")
@@ -73,6 +90,10 @@ jib {
     from {
         image = "openjdk:17-slim-bullseye"
     }
+}
+
+sourceSets.main {
+    java.srcDir("build/generated/languages")
 }
 
 tasks {

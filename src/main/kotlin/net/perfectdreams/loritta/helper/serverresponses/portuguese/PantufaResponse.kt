@@ -1,6 +1,5 @@
 package net.perfectdreams.loritta.helper.serverresponses.portuguese
 
-import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent
 import net.perfectdreams.loritta.api.messages.LorittaReply
 import net.perfectdreams.loritta.helper.serverresponses.RegExResponse
 import net.perfectdreams.loritta.helper.utils.Emotes
@@ -17,7 +16,7 @@ class PantufaResponse : RegExResponse() {
         patterns.add("pantufa|390927821997998081".toPattern(Pattern.CASE_INSENSITIVE))
     }
 
-    override fun getResponse(event: GuildMessageReceivedEvent, message: String) =
+    override fun getResponse(message: String) =
         listOf(
             LorittaReply(
                 "A Pantufinha (<@390927821997998081>) é a minha melhor amiga e é a ajudante #1 do SparklyPower!",

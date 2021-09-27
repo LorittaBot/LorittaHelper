@@ -1,6 +1,5 @@
 package net.perfectdreams.loritta.helper.serverresponses.english
 
-import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent
 import net.perfectdreams.loritta.api.messages.LorittaReply
 import net.perfectdreams.loritta.helper.serverresponses.RegExResponse
 import net.perfectdreams.loritta.helper.utils.Emotes
@@ -16,7 +15,7 @@ class ValorShipResponse : RegExResponse() {
         patterns.add("(ship)".toPattern(Pattern.CASE_INSENSITIVE))
     }
 
-    override fun getResponse(event: GuildMessageReceivedEvent, message: String) = listOf(
+    override fun getResponse(message: String) = listOf(
         LorittaReply(
             "The `+ship` result value is based on the name of the two people you shipped. By changing your Discord name, the ship value will also change! The generated value is random, and persists until you change your name again.",
             prefix = "❤️"

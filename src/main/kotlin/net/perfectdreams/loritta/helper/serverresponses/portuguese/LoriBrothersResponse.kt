@@ -1,6 +1,5 @@
 package net.perfectdreams.loritta.helper.serverresponses.portuguese
 
-import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent
 import net.perfectdreams.loritta.api.messages.LorittaReply
 import net.perfectdreams.loritta.helper.serverresponses.RegExResponse
 import net.perfectdreams.loritta.helper.utils.Emotes
@@ -20,7 +19,7 @@ class LoriBrothersResponse : RegExResponse() {
         patterns.add("\\?".toPattern(Pattern.CASE_INSENSITIVE))
     }
 
-    override fun getResponse(event: GuildMessageReceivedEvent, message: String) =
+    override fun getResponse(message: String) =
             listOf(
                     LorittaReply(
                         "Não, eu não tenho nenhum irmão ou irmã, sou filha única e sou feliz assim! Não preciso ficar divindo minhas coisas com outras pessoas.",

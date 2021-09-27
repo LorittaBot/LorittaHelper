@@ -6,10 +6,10 @@ import net.perfectdreams.discordinteraktions.common.components.buttons.ButtonCli
 import net.perfectdreams.discordinteraktions.common.components.buttons.ButtonClickWithDataExecutor
 import net.perfectdreams.discordinteraktions.common.context.components.ComponentContext
 import net.perfectdreams.discordinteraktions.common.context.components.GuildComponentContext
-import net.perfectdreams.loritta.helper.LorittaHelper
+import net.perfectdreams.loritta.helper.LorittaHelperKord
 import net.perfectdreams.loritta.helper.utils.ComponentDataUtils
 
-class RoleColorButtonExecutor(val m: LorittaHelper) : ButtonClickWithDataExecutor {
+class RoleColorButtonExecutor(val m: LorittaHelperKord) : ButtonClickWithDataExecutor {
     companion object : ButtonClickExecutorDeclaration(RoleColorButtonExecutor::class, "role_color")
 
     override suspend fun onClick(user: User, context: ComponentContext, data: String) {

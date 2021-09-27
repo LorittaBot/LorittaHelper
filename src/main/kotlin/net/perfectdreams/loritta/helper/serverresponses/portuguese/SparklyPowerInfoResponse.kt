@@ -1,6 +1,5 @@
 package net.perfectdreams.loritta.helper.serverresponses.portuguese
 
-import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent
 import net.perfectdreams.loritta.api.messages.LorittaReply
 import net.perfectdreams.loritta.helper.serverresponses.RegExResponse
 import net.perfectdreams.loritta.helper.utils.Constants
@@ -16,7 +15,7 @@ class SparklyPowerInfoResponse: RegExResponse() {
         patterns.add("sparkly|(server|servidor) de|do mine".toPattern(Pattern.CASE_INSENSITIVE))
     }
 
-    override fun getResponse(event: GuildMessageReceivedEvent, message: String): List<LorittaReply> = listOf(
+    override fun getResponse(message: String): List<LorittaReply> = listOf(
             LorittaReply(
                     message = "SparklyPower é o servidor de Minecraft Survival da Loritta & Pantufa! **IP:** `mc.sparklypower.net`",
                     prefix = Emotes.LORI_PAT

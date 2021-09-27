@@ -10,7 +10,7 @@ import net.perfectdreams.discordinteraktions.common.context.commands.slash.Slash
 import net.perfectdreams.discordinteraktions.common.utils.thumbnailUrl
 import net.perfectdreams.discordinteraktions.declarations.commands.slash.SlashCommandExecutorDeclaration
 import net.perfectdreams.discordinteraktions.declarations.commands.slash.options.CommandOptions
-import net.perfectdreams.loritta.helper.LorittaHelper
+import net.perfectdreams.loritta.helper.LorittaHelperKord
 import net.perfectdreams.loritta.helper.utils.ComponentDataUtils
 import net.perfectdreams.loritta.helper.utils.buttonroles.RoleButtonData
 import net.perfectdreams.loritta.helper.utils.buttonroles.RoleButtons
@@ -19,7 +19,7 @@ import net.perfectdreams.loritta.helper.utils.buttonroles.RoleColorButtonExecuto
 import net.perfectdreams.loritta.helper.utils.buttonroles.RoleCoolBadgeButtonExecutor
 import net.perfectdreams.loritta.helper.utils.buttonroles.RoleToggleButtonExecutor
 
-class ButtonRoleSenderExecutor(helper: LorittaHelper) : HelperSlashExecutor(helper) {
+class ButtonRoleSenderExecutor(helper: LorittaHelperKord) : HelperSlashExecutor(helper) {
     companion object : SlashCommandExecutorDeclaration(ButtonRoleSenderExecutor::class) {
         object Options : CommandOptions() {
             val channel = channel("channel", "Canal aonde a mensagem será enviada")

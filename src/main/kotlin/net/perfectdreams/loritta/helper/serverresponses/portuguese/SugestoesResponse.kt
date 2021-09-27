@@ -1,6 +1,5 @@
 package net.perfectdreams.loritta.helper.serverresponses.portuguese
 
-import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent
 import net.perfectdreams.loritta.api.messages.LorittaReply
 import net.perfectdreams.loritta.helper.serverresponses.RegExResponse
 import net.perfectdreams.loritta.helper.utils.Emotes
@@ -18,7 +17,7 @@ class SugestoesResponse : RegExResponse() {
         patterns.add("suge(st(ã|a)o|re|rir)".toPattern(Pattern.CASE_INSENSITIVE))
     }
 
-    override fun getResponse(event: GuildMessageReceivedEvent, message: String) = listOf(
+    override fun getResponse(message: String) = listOf(
         LorittaReply(
             "Você pode sugerir novas coisas no nosso servidor de comunidade da Loritta! <#761625835043291146>, no canal <#359139508681310212>!",
             mentionUser = false,

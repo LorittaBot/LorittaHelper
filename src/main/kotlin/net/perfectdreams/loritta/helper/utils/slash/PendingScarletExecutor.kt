@@ -7,13 +7,13 @@ import net.perfectdreams.discordinteraktions.common.context.commands.Application
 import net.perfectdreams.discordinteraktions.common.context.commands.slash.SlashCommandArguments
 import net.perfectdreams.discordinteraktions.declarations.commands.slash.SlashCommandExecutorDeclaration
 import net.perfectdreams.discordinteraktions.declarations.commands.slash.options.CommandOptions
-import net.perfectdreams.loritta.helper.LorittaHelper
+import net.perfectdreams.loritta.helper.LorittaHelperKord
 import net.perfectdreams.loritta.helper.utils.dailycatcher.DailyCatcherManager
 import net.perfectdreams.loritta.helper.utils.dailycatcher.SuspiciousLevel
 import net.perfectdreams.loritta.helper.utils.extensions.await
 import net.perfectdreams.sequins.text.StringUtils
 
-class PendingScarletExecutor(helper: LorittaHelper, val jda: JDA) : HelperSlashExecutor(helper) {
+class PendingScarletExecutor(helper: LorittaHelperKord, val jda: JDA) : HelperSlashExecutor(helper) {
     private val logger = KotlinLogging.logger {}
 
     companion object : SlashCommandExecutorDeclaration(PendingScarletExecutor::class) {

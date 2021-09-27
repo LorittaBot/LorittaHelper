@@ -4,7 +4,7 @@ import net.perfectdreams.discordinteraktions.common.context.commands.Application
 import net.perfectdreams.discordinteraktions.common.context.commands.slash.SlashCommandArguments
 import net.perfectdreams.discordinteraktions.declarations.commands.slash.SlashCommandExecutorDeclaration
 import net.perfectdreams.discordinteraktions.declarations.commands.slash.options.CommandOptions
-import net.perfectdreams.loritta.helper.LorittaHelper
+import net.perfectdreams.loritta.helper.LorittaHelperKord
 import net.perfectdreams.loritta.helper.tables.ExecutedCommandsLog
 import net.perfectdreams.loritta.helper.utils.dailycatcher.DailyCatcherManager
 import org.jetbrains.exposed.sql.SortOrder
@@ -12,7 +12,7 @@ import org.jetbrains.exposed.sql.count
 import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.transactions.transaction
 
-class CheckCommandsExecutor(helper: LorittaHelper) : HelperSlashExecutor(helper) {
+class CheckCommandsExecutor(helper: LorittaHelperKord) : HelperSlashExecutor(helper) {
     companion object : SlashCommandExecutorDeclaration(CheckCommandsExecutor::class) {
         override val options = Options
 

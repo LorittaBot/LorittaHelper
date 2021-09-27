@@ -1,6 +1,5 @@
 package net.perfectdreams.loritta.helper.serverresponses.portuguese
 
-import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent
 import net.perfectdreams.loritta.api.messages.LorittaReply
 import net.perfectdreams.loritta.helper.serverresponses.RegExResponse
 import net.perfectdreams.loritta.helper.utils.Emotes
@@ -18,7 +17,7 @@ class ReportBugsResponse : RegExResponse() {
         patterns.add("bu(gs|g)|problem(a|s)".toPattern(Pattern.CASE_INSENSITIVE))
     }
 
-    override fun getResponse(event: GuildMessageReceivedEvent, message: String): List<LorittaReply> = listOf(
+    override fun getResponse(message: String): List<LorittaReply> = listOf(
         LorittaReply(
             message = "Querendo reportar bugs? Você pode fazer isto no nosso servidor comunidade (<#761625835043291146>), no canal <#664431430159302674>!",
             prefix = "<:blobcatbughunter:795355653522325534>"

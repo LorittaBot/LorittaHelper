@@ -1,0 +1,3 @@
+name: "Português"
+inheritsFrom: "en"
+formattingLanguageId: "pt" # Used for message formatting

@@ -1,6 +1,5 @@
 package net.perfectdreams.loritta.helper.serverresponses.portuguese
 
-import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent
 import net.perfectdreams.loritta.api.messages.LorittaReply
 import net.perfectdreams.loritta.helper.serverresponses.RegExResponse
 import java.util.regex.Pattern
@@ -17,10 +16,10 @@ class LoriXpResponse : RegExResponse() {
         patterns.add("(experi(ê|e)ncia|xp|n(í|i)vel)".toPattern(Pattern.CASE_INSENSITIVE))
     }
 
-    override fun getResponse(event: GuildMessageReceivedEvent, message: String) =
+    override fun getResponse(message: String) =
             listOf(
                 LorittaReply(
-                    "Você pode ver como a Loritta calcula a sua experiência nesta mensagem: https://discord.com/channels/420626099257475072/761337893951635458/761575827343147019",
+                    "Você pode ver como a Loritta calcula a sua experiência no meu website! https://loritta.website/br/extras/faq-loritta/experience",
                     prefix = "<a:lori_yay_wobbly:638040459721310238>"
                 ),
                 LorittaReply(

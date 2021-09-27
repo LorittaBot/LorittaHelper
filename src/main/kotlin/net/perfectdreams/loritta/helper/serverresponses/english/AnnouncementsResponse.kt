@@ -1,6 +1,5 @@
 package net.perfectdreams.loritta.helper.serverresponses.english
 
-import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent
 import net.perfectdreams.loritta.api.messages.LorittaReply
 import net.perfectdreams.loritta.helper.serverresponses.RegExResponse
 import net.perfectdreams.loritta.helper.utils.Emotes
@@ -17,7 +16,7 @@ class AnnouncementsResponse: RegExResponse() {
         patterns.add("announc".toPattern(CASE_INSENSITIVE))
     }
 
-    override fun getResponse(event: GuildMessageReceivedEvent, message: String): List<LorittaReply> = listOf(
+    override fun getResponse(message: String): List<LorittaReply> = listOf(
         LorittaReply(
             message = "If you want to make an announcement using Loritta, you can use `+say` to do it!",
             prefix = Emotes.WUMPUS_KEYBOARD

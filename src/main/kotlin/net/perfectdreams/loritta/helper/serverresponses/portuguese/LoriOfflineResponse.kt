@@ -1,6 +1,5 @@
 package net.perfectdreams.loritta.helper.serverresponses.portuguese
 
-import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent
 import net.perfectdreams.loritta.api.messages.LorittaReply
 import net.perfectdreams.loritta.helper.serverresponses.RegExResponse
 import net.perfectdreams.loritta.helper.utils.Emotes
@@ -19,7 +18,7 @@ class LoriOfflineResponse : RegExResponse() {
         patterns.add("(off|caiu|manuten(c|ç|ss)(a|ã)o)".toPattern(Pattern.CASE_INSENSITIVE))
     }
 
-    override fun getResponse(event: GuildMessageReceivedEvent, message: String) =
+    override fun getResponse(message: String) =
             listOf(
                     LorittaReply(
                             "Se a Lori está offline, verifique o canal de <#752294116708319324> para ver se alguma coisa deu errada com ela! As vezes ela reiniciou e já irá voltar, só seja paciente que, daqui a pouco, já deve estar de volta!",

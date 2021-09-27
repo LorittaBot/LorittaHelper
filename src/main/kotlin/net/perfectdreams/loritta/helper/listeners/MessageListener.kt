@@ -30,6 +30,7 @@ class MessageListener(val m: LorittaHelper) : ListenerAdapter() {
     val generateAppealsReport = GenerateAppealsReport(m)
     val checkSonhosBraggers = CheckSonhosMendigagem(m)
 
+
     override fun onGuildMessageReceived(event: GuildMessageReceivedEvent) {
         super.onGuildMessageReceived(event)
 
@@ -100,7 +101,7 @@ class MessageListener(val m: LorittaHelper) : ListenerAdapter() {
                         .joinToString("\n")
 
                 val responses = channelResponses
-                        .firstOrNull { it.handleResponse(cleanMessage) }?.getResponse(event, cleanMessage) ?: return@launch
+                        .firstOrNull { it.handleResponse(cleanMessage) }?.getResponse(cleanMessage) ?: return@launch
 
                 if (responses.isNotEmpty())
                     event.channel.sendMessage(

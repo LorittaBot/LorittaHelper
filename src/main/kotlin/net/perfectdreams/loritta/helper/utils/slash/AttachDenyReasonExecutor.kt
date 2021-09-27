@@ -6,13 +6,13 @@ import net.perfectdreams.discordinteraktions.common.context.commands.Application
 import net.perfectdreams.discordinteraktions.common.context.commands.slash.SlashCommandArguments
 import net.perfectdreams.discordinteraktions.declarations.commands.slash.SlashCommandExecutorDeclaration
 import net.perfectdreams.discordinteraktions.declarations.commands.slash.options.CommandOptions
-import net.perfectdreams.loritta.helper.LorittaHelper
+import net.perfectdreams.loritta.helper.LorittaHelperKord
 import net.perfectdreams.loritta.helper.utils.Emotes
 import net.perfectdreams.loritta.helper.utils.extensions.await
 import net.perfectdreams.loritta.helper.utils.generateserverreport.GenerateAppealsReport
 import net.perfectdreams.loritta.helper.utils.generateserverreport.GenerateServerReport
 
-class AttachDenyReasonExecutor(helper: LorittaHelper, val jda: JDA) : HelperSlashExecutor(helper) {
+class AttachDenyReasonExecutor(helper: LorittaHelperKord, val jda: JDA) : HelperSlashExecutor(helper) {
     companion object : SlashCommandExecutorDeclaration(AttachDenyReasonExecutor::class) {
         override val options = Options
         val VALID_CHANNEL_IDS = listOf(

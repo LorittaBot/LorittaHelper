@@ -1,6 +1,5 @@
 package net.perfectdreams.loritta.helper.serverresponses
 
-import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent
 import net.perfectdreams.loritta.api.messages.LorittaReply
 
 interface LorittaResponse {
@@ -19,14 +18,6 @@ interface LorittaResponse {
      * @see handleResponse
      * @return if the response matches the question
      */
-    fun handleResponse(event: GuildMessageReceivedEvent, message: String) = handleResponse(event.message.contentRaw)
-
-    /**
-     * Checks if this response matches the [message]
-     *
-     * @see handleResponse
-     * @return if the response matches the question
-     */
     fun handleResponse(message: String): Boolean
 
     /**
@@ -34,5 +25,5 @@ interface LorittaResponse {
      *
      * @return a list (can be empty) of [LorittaReply] of this response
      */
-    fun getResponse(event: GuildMessageReceivedEvent, message: String): List<LorittaReply>
+    fun getResponse(message: String): List<LorittaReply>
 }

@@ -1,6 +1,5 @@
 package net.perfectdreams.loritta.helper.serverresponses.portuguese
 
-import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent
 import net.perfectdreams.loritta.api.messages.LorittaReply
 import net.perfectdreams.loritta.helper.serverresponses.RegExResponse
 import net.perfectdreams.loritta.helper.utils.Emotes
@@ -14,7 +13,7 @@ class HowToSeeLorittasSourceCodeResponse : RegExResponse()  {
         patterns.add("lori|lorri|loritta|lorrita".toPattern(Pattern.CASE_INSENSITIVE))
     }
 
-    override fun getResponse(event: GuildMessageReceivedEvent, message: String): List<LorittaReply> =
+    override fun getResponse(message: String): List<LorittaReply> =
         listOf(
                 LorittaReply(
                         "Você pode ver meu código fonte aqui: https://bit.ly/lorittagit",

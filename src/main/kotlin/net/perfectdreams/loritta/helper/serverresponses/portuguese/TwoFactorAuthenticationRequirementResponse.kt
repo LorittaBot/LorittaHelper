@@ -1,6 +1,5 @@
 package net.perfectdreams.loritta.helper.serverresponses.portuguese
 
-import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent
 import net.perfectdreams.loritta.api.messages.LorittaReply
 import net.perfectdreams.loritta.helper.serverresponses.RegExResponse
 import java.util.regex.Pattern
@@ -15,7 +14,7 @@ class TwoFactorAuthenticationRequirementResponse : RegExResponse() {
         patterns.add("daily|sonhos|prêmio".toPattern(Pattern.CASE_INSENSITIVE))
     }
 
-    override fun getResponse(event: GuildMessageReceivedEvent, message: String) =
+    override fun getResponse(message: String) =
         listOf(
             LorittaReply(
                 "Se a Loritta achar que a sua conta está suspeita, ela pode pedir para você ativar autenticação em duas etapas para poder pegar o daily, para poder diferenciar as pessoas que estão abusando das pessoas corretas e certas (como você!)"
