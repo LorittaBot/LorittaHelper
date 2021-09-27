@@ -125,12 +125,6 @@ class CreateTicketButtonExecutor(val m: LorittaHelperKord) : ButtonClickWithData
                 )
             }
 
-            // Hacky workaround, because it looks like Discord Mobile gets kinda confused and doesn't allow the user to send a message, weird...
-            m.helperRest.channel.addUserToThread(
-                ticketThread.id,
-                user.id
-            )
-
             // Update thread metadata and name juuuust to be sure
             // Makeshift hack while Kord does not support updating thread metadata
             m.helperRest.unsafe(Route.ChannelPatch) {
@@ -145,6 +139,13 @@ class CreateTicketButtonExecutor(val m: LorittaHelperKord) : ButtonClickWithData
                     )
                 )
             }
+
+            // Hacky workaround, because it looks like Discord Mobile gets kinda confused and doesn't allow the user to send a message, weird...
+            // We need to add the user to the thread after it is unarchived!
+            m.helperRest.channel.addUserToThread(
+                ticketThread.id,
+                user.id
+            )
 
             // Only resend the message if the thread was archived or if it is a new thread
             if (!wasAnAlreadyActiveThread)
