@@ -23,6 +23,10 @@ class CloseTicketButtonExecutor(val m: LorittaHelperKord) : ButtonClickWithDataE
                 content = language.get(I18nKeysData.Tickets.ClosingYourTicket)
             }
 
+            context.sendMessage {
+                content = language.get(I18nKeysData.Tickets.TicketClosed("<@${user.id.value}>"))
+            }
+
             m.helperRest.channel.patchThread(
                 context.channelId,
                 ChannelModifyPatchRequest(

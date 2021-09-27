@@ -47,6 +47,10 @@ class CloseTicketExecutor(val helper: LorittaHelperKord) : SlashCommandExecutor(
             content = i18nContext.get(I18nKeysData.Tickets.ClosingYourTicket)
         }
 
+        context.sendMessage {
+            content = i18nContext.get(I18nKeysData.Tickets.TicketClosed("<@${context.sender.id.value}>"))
+        }
+
         helper.helperRest.channel.patchThread(
             context.channelId,
             ChannelModifyPatchRequest(
