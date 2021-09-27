@@ -27,7 +27,8 @@ class CloseTicketButtonExecutor(val m: LorittaHelperKord) : ButtonClickWithDataE
                 context.channelId,
                 ChannelModifyPatchRequest(
                     archived = true.optional()
-                )
+                ),
+                "Archival request via button by ${user.name}#${user.discriminator} (${user.id.value})"
             )
         }
     }

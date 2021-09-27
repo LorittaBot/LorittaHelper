@@ -12,6 +12,7 @@ import dev.kord.common.entity.optional.OptionalSnowflake
 import dev.kord.common.entity.optional.optional
 import dev.kord.rest.json.request.ListThreadsByTimestampRequest
 import dev.kord.rest.json.request.StartThreadRequest
+import dev.kord.rest.request.auditLogReason
 import dev.kord.rest.route.Route
 import kotlinx.datetime.Instant
 import kotlinx.serialization.SerialName
@@ -138,9 +139,9 @@ class CreateTicketButtonExecutor(val m: LorittaHelperKord) : ButtonClickWithData
                         invitable = false.optional()
                     )
                 )
+                auditLogReason("Unarchival request via button by ${user.name}#${user.discriminator} (${user.id.value})")
             }
 
-            // Hacky workaround, because it looks like Discord Mobile gets kinda confused and doesn't allow the user to send a message, weird...
             // We need to add the user to the thread after it is unarchived!
             m.helperRest.channel.addUserToThread(
                 ticketThread.id,
