@@ -161,6 +161,11 @@ class CreateTicketButtonExecutor(val m: LorittaHelperKord) : ButtonClickWithData
                                     "**${language.get(I18nKeysData.Tickets.ThreadCreated.PleaseRead("<#${ticketLanguageData.language.faqChannelId.value}>", "<https://loritta.website/extras>"))}**",
                                     "<:lori_analise:853052040425766922>",
                                     mentionUser = false
+                                ),
+                                LorittaReply(
+                                    language.get(I18nKeysData.Tickets.ThreadCreated.AfterAnswer),
+                                    "<a:lori_pat:706263175892566097>",
+                                    mentionUser = false
                                 )
                             )
                             )
@@ -171,8 +176,7 @@ class CreateTicketButtonExecutor(val m: LorittaHelperKord) : ButtonClickWithData
             context.sendEphemeralMessage {
                 content = language.get(
                     I18nKeysData.Tickets.TicketWasCreated("<#${ticketThread.id.value}>")
-                )
-            }
+                )            }
         }
     }
 
