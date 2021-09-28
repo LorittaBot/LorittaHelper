@@ -201,6 +201,11 @@ class LorittaHelperKord(
                 true
             )
 
+            registry.updateAllCommandsInGuild(
+                Snowflake(320248230917046282L),
+                true
+            )
+
             gateway.installDiscordInteraKTions(
                 Snowflake(config.applicationId),
                 helperRest,
