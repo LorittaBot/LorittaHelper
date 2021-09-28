@@ -24,7 +24,7 @@ class RoleColorButtonExecutor(val m: LorittaHelperKord) : ButtonClickWithDataExe
                 return
             }
 
-            val roleInformation = RoleButtons.colors.first { it.roleId == roleButtonData.roleId }
+            val roleInformation = LorittaCommunityRoleButtons.colors.first { it.roleId == roleButtonData.roleId }
 
             if (roleButtonData.roleId in context.member.roles) {
                 // Remove role
@@ -32,7 +32,7 @@ class RoleColorButtonExecutor(val m: LorittaHelperKord) : ButtonClickWithDataExe
                     Snowflake(297732013006389252L),
                     user.id,
                     roleButtonData.roleId,
-                    RoleButtons.AUDIT_LOG_REASON
+                    LorittaCommunityRoleButtons.AUDIT_LOG_REASON
                 )
 
                 context.sendEphemeralMessage {
@@ -49,11 +49,11 @@ class RoleColorButtonExecutor(val m: LorittaHelperKord) : ButtonClickWithDataExe
                     user.id,
                 ) {
                     this.roles = context.member.roles.toMutableSet().apply {
-                        this.removeAll(RoleButtons.colors.map { it.roleId })
+                        this.removeAll(LorittaCommunityRoleButtons.colors.map { it.roleId })
                         this.add(roleInformation.roleId)
                     }
 
-                    this.reason = RoleButtons.AUDIT_LOG_REASON
+                    this.reason = LorittaCommunityRoleButtons.AUDIT_LOG_REASON
                 }
 
                 context.sendEphemeralMessage {

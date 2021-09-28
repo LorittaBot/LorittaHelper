@@ -4,7 +4,7 @@ import dev.kord.common.entity.DiscordPartialEmoji
 import dev.kord.common.entity.Snowflake
 import net.perfectdreams.discordinteraktions.common.builder.message.MessageBuilder
 
-object RoleButtons {
+object LorittaCommunityRoleButtons {
     fun partialEmojiAsMention(emoji: DiscordPartialEmoji): String {
         val builder = StringBuilder()
         builder.append('<')

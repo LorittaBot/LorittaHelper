@@ -8,7 +8,7 @@ import net.dv8tion.jda.api.managers.RoleManager
 import net.perfectdreams.loritta.helper.LorittaHelper
 import net.perfectdreams.loritta.helper.dao.Payment
 import net.perfectdreams.loritta.helper.tables.Payments
-import net.perfectdreams.loritta.helper.utils.buttonroles.RoleButtons
+import net.perfectdreams.loritta.helper.utils.buttonroles.LorittaCommunityRoleButtons
 import net.perfectdreams.loritta.utils.payments.PaymentReason
 import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.transactions.transaction
@@ -137,11 +137,11 @@ class LorittaLandRoleSynchronizationTask(val m: LorittaHelper, val jda: JDA) : R
                         }
                     } else {
                         // Remove custom colors
-                        val filter = roles.filter { userRole -> RoleButtons.colors.any { it.roleId.value.toLong() == userRole.idLong } }
+                        val filter = roles.filter { userRole -> LorittaCommunityRoleButtons.colors.any { it.roleId.value.toLong() == userRole.idLong } }
                         roles.removeAll(filter)
 
                         // Remove custom badges if the user is not Level 10
-                        val coolBadgesFilter = roles.filter { userRole -> RoleButtons.coolBadges.any { it.roleId.value.toLong() == userRole.idLong } }
+                        val coolBadgesFilter = roles.filter { userRole -> LorittaCommunityRoleButtons.coolBadges.any { it.roleId.value.toLong() == userRole.idLong } }
                         if (!member.roles.any { it.idLong == 655132411566358548L })
                             roles.removeAll(coolBadgesFilter)
 

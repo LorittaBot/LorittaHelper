@@ -6,12 +6,11 @@ import net.perfectdreams.discordinteraktions.common.components.buttons.ButtonCli
 import net.perfectdreams.discordinteraktions.common.components.buttons.ButtonClickWithDataExecutor
 import net.perfectdreams.discordinteraktions.common.context.components.ComponentContext
 import net.perfectdreams.discordinteraktions.common.context.components.GuildComponentContext
-import net.perfectdreams.loritta.helper.LorittaHelper
 import net.perfectdreams.loritta.helper.LorittaHelperKord
 import net.perfectdreams.loritta.helper.utils.ComponentDataUtils
 
-class RoleCoolBadgeButtonExecutor(val m: LorittaHelperKord) : ButtonClickWithDataExecutor {
-    companion object : ButtonClickExecutorDeclaration(RoleCoolBadgeButtonExecutor::class, "role_badge")
+class LorittaCommunityRoleCoolBadgeButtonExecutor(val m: LorittaHelperKord) : ButtonClickWithDataExecutor {
+    companion object : ButtonClickExecutorDeclaration(LorittaCommunityRoleCoolBadgeButtonExecutor::class, "role_badge")
 
     override suspend fun onClick(user: User, context: ComponentContext, data: String) {
         // This can only happen in a guild... right? I hope so.
@@ -25,7 +24,7 @@ class RoleCoolBadgeButtonExecutor(val m: LorittaHelperKord) : ButtonClickWithDat
                 return
             }
 
-            val roleInformation = RoleButtons.coolBadges.first { it.roleId == roleButtonData.roleId }
+            val roleInformation = LorittaCommunityRoleButtons.coolBadges.first { it.roleId == roleButtonData.roleId }
 
             if (roleButtonData.roleId in context.member.roles) {
                 // Remove role
@@ -33,7 +32,7 @@ class RoleCoolBadgeButtonExecutor(val m: LorittaHelperKord) : ButtonClickWithDat
                     Snowflake(297732013006389252L),
                     user.id,
                     roleButtonData.roleId,
-                    RoleButtons.AUDIT_LOG_REASON
+                    LorittaCommunityRoleButtons.AUDIT_LOG_REASON
                 )
 
                 context.sendEphemeralMessage {
@@ -50,11 +49,11 @@ class RoleCoolBadgeButtonExecutor(val m: LorittaHelperKord) : ButtonClickWithDat
                     user.id,
                 ) {
                     this.roles = context.member.roles.toMutableSet().apply {
-                        this.removeAll(RoleButtons.coolBadges.map { it.roleId })
+                        this.removeAll(LorittaCommunityRoleButtons.coolBadges.map { it.roleId })
                         this.add(roleInformation.roleId)
                     }
 
-                    this.reason = RoleButtons.AUDIT_LOG_REASON
+                    this.reason = LorittaCommunityRoleButtons.AUDIT_LOG_REASON
                 }
 
                 context.sendEphemeralMessage {

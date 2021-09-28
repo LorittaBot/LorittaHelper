@@ -9,23 +9,30 @@ import net.perfectdreams.discordinteraktions.common.context.components.GuildComp
 import net.perfectdreams.loritta.helper.LorittaHelperKord
 import net.perfectdreams.loritta.helper.utils.ComponentDataUtils
 
-class RoleToggleButtonExecutor(val m: LorittaHelperKord) : ButtonClickWithDataExecutor {
-    companion object : ButtonClickExecutorDeclaration(RoleToggleButtonExecutor::class, "role_toggle")
+class SparklyPowerRoleCoolBadgeButtonExecutor(val m: LorittaHelperKord) : ButtonClickWithDataExecutor {
+    companion object : ButtonClickExecutorDeclaration(SparklyPowerRoleCoolBadgeButtonExecutor::class, "spk_role_badge")
 
     override suspend fun onClick(user: User, context: ComponentContext, data: String) {
         // This can only happen in a guild... right? I hope so.
         if (context is GuildComponentContext) {
             val roleButtonData = ComponentDataUtils.decode<RoleButtonData>(data)
 
-            val roleInformation = LorittaCommunityRoleButtons.notifications.first { it.roleId == roleButtonData.roleId }
+            if (!context.member.roles.contains(Snowflake(332652664544428044L)) && !context.member.roles.contains(Snowflake(834625069321551892L))) {
+                context.sendEphemeralMessage {
+                    content = "Para você pegar um ícone personalizado, você precisa ser <@&332652664544428044> ou <@&834625069321551892>!"
+                }
+                return
+            }
+
+            val roleInformation = SparklyPowerRoleButtons.coolBadges.first { it.roleId == roleButtonData.roleId }
 
             if (roleButtonData.roleId in context.member.roles) {
                 // Remove role
                 m.helperRest.guild.deleteRoleFromGuildMember(
-                    Snowflake(297732013006389252L),
+                    Snowflake(320248230917046282L),
                     user.id,
                     roleButtonData.roleId,
-                    LorittaCommunityRoleButtons.AUDIT_LOG_REASON
+                    SparklyPowerRoleButtons.AUDIT_LOG_REASON
                 )
 
                 context.sendEphemeralMessage {
@@ -36,12 +43,18 @@ class RoleToggleButtonExecutor(val m: LorittaHelperKord) : ButtonClickWithDataEx
                 }
             } else {
                 // Add role
-                m.helperRest.guild.addRoleToGuildMember(
-                    Snowflake(297732013006389252L),
+                // We use modifyGuildMember because we want to remove other badges that the user may have
+                m.helperRest.guild.modifyGuildMember(
+                    Snowflake(320248230917046282L),
                     user.id,
-                    roleButtonData.roleId,
-                    LorittaCommunityRoleButtons.AUDIT_LOG_REASON
-                )
+                ) {
+                    this.roles = context.member.roles.toMutableSet().apply {
+                        this.removeAll(SparklyPowerRoleButtons.coolBadges.map { it.roleId })
+                        this.add(roleInformation.roleId)
+                    }
+
+                    this.reason = LorittaCommunityRoleButtons.AUDIT_LOG_REASON
+                }
 
                 context.sendEphemeralMessage {
                     roleInformation.messageReceive.invoke(

@@ -12,9 +12,10 @@ import net.perfectdreams.discordinteraktions.common.commands.CommandManager
 import net.perfectdreams.discordinteraktions.platforms.kord.commands.KordCommandRegistry
 import net.perfectdreams.discordinteraktions.platforms.kord.installDiscordInteraKTions
 import net.perfectdreams.loritta.helper.utils.LanguageManager
+import net.perfectdreams.loritta.helper.utils.buttonroles.LorittaCommunityRoleCoolBadgeButtonExecutor
 import net.perfectdreams.loritta.helper.utils.buttonroles.RoleColorButtonExecutor
-import net.perfectdreams.loritta.helper.utils.buttonroles.RoleCoolBadgeButtonExecutor
 import net.perfectdreams.loritta.helper.utils.buttonroles.RoleToggleButtonExecutor
+import net.perfectdreams.loritta.helper.utils.buttonroles.SparklyPowerRoleCoolBadgeButtonExecutor
 import net.perfectdreams.loritta.helper.utils.cache.ChannelsCache
 import net.perfectdreams.loritta.helper.utils.config.FanArtsConfig
 import net.perfectdreams.loritta.helper.utils.config.LorittaConfig
@@ -138,12 +139,16 @@ class LorittaHelperKord(
                     RoleToggleButtonExecutor(this@LorittaHelperKord)
                 )
                 register(
-                    RoleCoolBadgeButtonExecutor,
-                    RoleCoolBadgeButtonExecutor(this@LorittaHelperKord)
+                    LorittaCommunityRoleCoolBadgeButtonExecutor,
+                    LorittaCommunityRoleCoolBadgeButtonExecutor(this@LorittaHelperKord)
                 )
                 register(
                     RoleColorButtonExecutor,
                     RoleColorButtonExecutor(this@LorittaHelperKord)
+                )
+                register(
+                    SparklyPowerRoleCoolBadgeButtonExecutor,
+                    SparklyPowerRoleCoolBadgeButtonExecutor(this@LorittaHelperKord)
                 )
 
                 // ===[ TICKETS ]===
