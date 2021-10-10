@@ -44,7 +44,7 @@ dependencies {
 
     // Discord InteraKTions
     // We use the Gateway Kord impl because Gateway JDA is disabled for now, so we will convert the raw gateway events to Kord events
-    implementation("net.perfectdreams.discordinteraktions:gateway-kord:0.0.9-SNAPSHOT")
+    implementation("net.perfectdreams.discordinteraktions:gateway-kord:0.0.10-SNAPSHOT")
 
     // Used to serialize state on components
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-protobuf:1.2.2")
