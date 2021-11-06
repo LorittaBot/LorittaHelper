@@ -1,8 +1,10 @@
 package net.perfectdreams.loritta.helper.utils.slash
 
+import dev.kord.common.entity.DiscordGuildMember
 import dev.kord.common.entity.Snowflake
 import dev.kord.rest.route.Position
 import dev.kord.rest.service.RestClient
+import kotlinx.datetime.Instant
 import net.perfectdreams.discordinteraktions.common.context.commands.ApplicationCommandContext
 import net.perfectdreams.discordinteraktions.common.context.commands.slash.SlashCommandArguments
 import net.perfectdreams.discordinteraktions.declarations.commands.slash.SlashCommandExecutorDeclaration
@@ -16,31 +18,43 @@ class ServerMembersExecutor(helper: LorittaHelperKord, val rest: RestClient) : H
         object Options : CommandOptions() {
             val guildId = string("guild_id", "ID do Servidor")
                 .register()
+
+            val sortType = string("sort", "Organizar lista por...")
+                .choice("created_at", "Quando a conta foi criada")
+                .choice("joined_at", "Quando a conta entrou no servidor")
+                .register()
         }
     }
 
     override suspend fun executeHelper(context: ApplicationCommandContext, args: SlashCommandArguments) {
         context.deferChannelMessage()
 
+        val sortType = args[options.sortType]
         val guildId = args[options.guildId]
 
         val builder = StringBuilder()
 
+        val allMembers = mutableListOf<DiscordGuildMember>()
+
         var positionToBeChecked: Position? = Position.After(Snowflake(0))
         while (positionToBeChecked != null) {
             val members = rest.guild.getGuildMembers(Snowflake(guildId), limit = 1000, position = positionToBeChecked)
-
-            // This *should* be in join order, I guess
-            for (member in members) {
-                val user = member.user.value
-
-                builder.append("${user?.username}#${user?.discriminator} (${user?.id?.value}) [${member.joinedAt}]")
-                builder.append("\n")
-            }
-
+            allMembers.addAll(members)
             val maxIdInTheAllMembersList = members.maxByOrNull { it.user.value!!.id }
-
             positionToBeChecked = if (maxIdInTheAllMembersList != null) Position.After(maxIdInTheAllMembersList.user.value!!.id) else null
+        }
+
+        // This *should* be in join order, I guess
+        for (member in allMembers.sortedBy {
+            if (sortType == "created_at")
+                it.user.value!!.id.timestamp
+            else
+                Instant.parse(it.joinedAt)
+        }) {
+            val user = member.user.value!!
+
+            builder.append("${user.username}#${user.discriminator} (${user.id.value}) <${user.id.timestamp}> [${Instant.parse(member.joinedAt)}]")
+            builder.append("\n")
         }
 
         context.sendMessage {
