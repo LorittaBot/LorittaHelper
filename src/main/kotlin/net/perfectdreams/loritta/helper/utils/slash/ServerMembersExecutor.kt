@@ -1,6 +1,7 @@
 package net.perfectdreams.loritta.helper.utils.slash
 
 import dev.kord.common.entity.Snowflake
+import dev.kord.rest.route.Position
 import dev.kord.rest.service.RestClient
 import net.perfectdreams.discordinteraktions.common.context.commands.ApplicationCommandContext
 import net.perfectdreams.discordinteraktions.common.context.commands.slash.SlashCommandArguments
@@ -23,15 +24,23 @@ class ServerMembersExecutor(helper: LorittaHelperKord, val rest: RestClient) : H
 
         val guildId = args[options.guildId]
 
-        val members = rest.guild.getGuildMembers(Snowflake(guildId), limit = 1000)
-
         val builder = StringBuilder()
 
-        for (member in members.sortedBy { it.joinedAt }) {
-            val user = member.user.value
+        var positionToBeChecked: Position? = Position.After(Snowflake(0))
+        while (positionToBeChecked != null) {
+            val members = rest.guild.getGuildMembers(Snowflake(guildId), limit = 1000, position = positionToBeChecked)
 
-            builder.append("${user?.username}#${user?.discriminator} (${user?.id?.value}) [${member.joinedAt}]")
-            builder.append("\n")
+            // This *should* be in join order, I guess
+            for (member in members) {
+                val user = member.user.value
+
+                builder.append("${user?.username}#${user?.discriminator} (${user?.id?.value}) [${member.joinedAt}]")
+                builder.append("\n")
+            }
+
+            val maxIdInTheAllMembersList = members.maxByOrNull { it.user.value!!.id }
+
+            positionToBeChecked = if (maxIdInTheAllMembersList != null) Position.After(maxIdInTheAllMembersList.user.value!!.id) else null
         }
 
         context.sendMessage {
