@@ -32,7 +32,7 @@ import java.net.HttpURLConnection
 import java.net.URL
 import java.time.Instant
 
-class GenerateServerReport(val m: LorittaHelper, val jda: JDA) {
+class GenerateServerReport(val m: LorittaHelper) {
     companion object {
         const val SERVER_REPORTS_CHANNEL_ID = 790308357713559582L
     }
@@ -96,6 +96,7 @@ class GenerateServerReport(val m: LorittaHelper, val jda: JDA) {
                     )
                 "Enviar convites não solicitados no privado/mensagem direta" ->
                     handleLoriInviteDMRules(
+                        event.jda,
                         userThatMadeTheReport,
                         reportType.answer.string,
                         items
@@ -116,7 +117,7 @@ class GenerateServerReport(val m: LorittaHelper, val jda: JDA) {
                     )
 
                 "Outros" ->
-                    handleOtherRules(userThatMadeTheReport, reportType.answer.string, items)
+                    handleOtherRules(event.jda, userThatMadeTheReport, reportType.answer.string, items)
                 else -> null
             }
 
@@ -252,6 +253,7 @@ class GenerateServerReport(val m: LorittaHelper, val jda: JDA) {
 
             "Ofendeu a Loritta de coisas pesadas (racismo, homofobia, etc) em outros servidores" -> {
                 handleLoriBrokeOtherServerRules(
+                    jda,
                     userThatMadeTheReport,
                     "Ofensas a Loritta > Ofendeu a Loritta de coisas pesadas (racismo, homofobia, etc) em outros servidores",
                     items
@@ -281,6 +283,7 @@ class GenerateServerReport(val m: LorittaHelper, val jda: JDA) {
 
             "Divulgou no meu privado/mensagem direta" -> {
                 handleLoriInviteDMRules(
+                    jda,
                     userThatMadeTheReport,
                     "Comércio de Sonhos > Divulgou no meu privado/mensagem direta",
                     items
@@ -289,6 +292,7 @@ class GenerateServerReport(val m: LorittaHelper, val jda: JDA) {
 
             "Divulgou em outro servidor" -> {
                 handleLoriBrokeOtherServerRules(
+                    jda,
                     userThatMadeTheReport,
                     "Comércio de Sonhos > Divulgou em outro servidor",
                     items
@@ -297,6 +301,7 @@ class GenerateServerReport(val m: LorittaHelper, val jda: JDA) {
 
             "Divulgou em outro servidor, e esse servidor é apenas para vendas de produtos por sonhos" -> {
                 handleLoriBrokeOtherServerRules(
+                    jda,
                     userThatMadeTheReport,
                     "Comércio de Sonhos > Divulgou em outro servidor, e esse servidor é apenas para vendas de produtos por sonhos",
                     items
@@ -307,6 +312,7 @@ class GenerateServerReport(val m: LorittaHelper, val jda: JDA) {
     }
 
     private suspend fun handleOtherRules(
+        jda: JDA,
         userThatMadeTheReport: User,
         reportType: String,
         items: List<GoogleFormItem>
@@ -374,6 +380,7 @@ class GenerateServerReport(val m: LorittaHelper, val jda: JDA) {
     }
 
     private suspend fun handleLoriInviteDMRules(
+        jda: JDA,
         userThatMadeTheReport: User,
         reportType: String,
         items: List<GoogleFormItem>
@@ -435,6 +442,7 @@ class GenerateServerReport(val m: LorittaHelper, val jda: JDA) {
     }
 
     private suspend fun handleLoriBrokeOtherServerRules(
+        jda: JDA,
         userThatMadeTheReport: User,
         reportType: String,
         items: List<GoogleFormItem>
