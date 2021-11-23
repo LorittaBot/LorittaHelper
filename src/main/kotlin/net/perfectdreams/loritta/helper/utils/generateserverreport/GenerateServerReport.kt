@@ -13,18 +13,26 @@ import mu.KotlinLogging
 import net.dv8tion.jda.api.EmbedBuilder
 import net.dv8tion.jda.api.JDA
 import net.dv8tion.jda.api.MessageBuilder
+import net.dv8tion.jda.api.entities.Emoji
 import net.dv8tion.jda.api.entities.User
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent
+import net.dv8tion.jda.api.exceptions.ErrorResponseException
+import net.dv8tion.jda.api.interactions.components.ActionRow
+import net.dv8tion.jda.api.interactions.components.Button
+import net.dv8tion.jda.api.interactions.components.ButtonStyle
+import net.dv8tion.jda.api.interactions.components.Component
 import net.dv8tion.jda.api.requests.restaction.MessageAction
 import net.perfectdreams.loritta.helper.LorittaHelper
 import net.perfectdreams.loritta.helper.listeners.ApproveReportsOnReactionListener
+import net.perfectdreams.loritta.helper.utils.ComponentDataUtils
 import net.perfectdreams.loritta.helper.utils.Constants
 import net.perfectdreams.loritta.helper.utils.extensions.await
+import java.awt.Color
 import java.net.HttpURLConnection
 import java.net.URL
 import java.time.Instant
 
-class GenerateServerReport(val m: LorittaHelper) {
+class GenerateServerReport(val m: LorittaHelper, val jda: JDA) {
     companion object {
         const val SERVER_REPORTS_CHANNEL_ID = 790308357713559582L
     }
@@ -116,7 +124,7 @@ class GenerateServerReport(val m: LorittaHelper) {
                 logger.info { "Sending report message..." }
 
                 val images = reportMessage.images
-                val embed = reportMessage.embed
+                val embed = reportMessage.reportInfoEmbed
 
                 if (images != null) {
                     embed.addField(
@@ -143,10 +151,34 @@ class GenerateServerReport(val m: LorittaHelper) {
                 if (imageUrl != null)
                     embed.setImage("attachment://image.png")
 
+                val embeds = when (reportMessage) {
+                    is DefaultReportMessage -> listOf(embed)
+                    is ReportWithUserInfoMessage -> listOf(embed, reportMessage.userInfoEmbed)
+                }
+
+                val components = mutableListOf<Component>()
+                if (reportMessage is ReportWithUserInfoMessage && reportMessage.reportedUserId != null) {
+                    components.add(
+                        Button.of(
+                            ButtonStyle.SECONDARY,
+                            // Hack because this ain't Discord InteraKTions (yet!)
+                            "show_uid:${ComponentDataUtils.encode(
+                                ShowUserIdData(reportMessage.reportedUserId)
+                            )}",
+                            "Mostrar ID",
+                            Emoji.fromUnicode("\uD83D\uDCDD")
+                        )
+                    )
+                }
+
                 val action = communityGuild.getTextChannelById(SERVER_REPORTS_CHANNEL_ID)?.sendMessage(
                     MessageBuilder()
                         .setContent("<@&351473717194522647>")
-                        .setEmbed(embed.build())
+                        .setEmbeds(*embeds.map { it.build() }.toTypedArray())
+                        .also {
+                            if (components.isNotEmpty())
+                                it.setActionRows(ActionRow.of(components))
+                        }
                         .build()
                 )
 
@@ -274,7 +306,7 @@ class GenerateServerReport(val m: LorittaHelper) {
         }
     }
 
-    private fun handleOtherRules(
+    private suspend fun handleOtherRules(
         userThatMadeTheReport: User,
         reportType: String,
         items: List<GoogleFormItem>
@@ -333,10 +365,15 @@ class GenerateServerReport(val m: LorittaHelper) {
 
         embed.addFinalConsiderations(items)
 
-        return ReportMessage(embed, images = images)
+        return ReportWithUserInfoMessage(
+            embed,
+            userId,
+            createReportedUserEmbed(jda, userId),
+            images = images
+        )
     }
 
-    private fun handleLoriInviteDMRules(
+    private suspend fun handleLoriInviteDMRules(
         userThatMadeTheReport: User,
         reportType: String,
         items: List<GoogleFormItem>
@@ -389,10 +426,15 @@ class GenerateServerReport(val m: LorittaHelper) {
 
         embed.addFinalConsiderations(items)
 
-        return ReportMessage(embed, images = images)
+        return ReportWithUserInfoMessage(
+            embed,
+            userId,
+            createReportedUserEmbed(jda, userId),
+            images = images
+        )
     }
 
-    private fun handleLoriBrokeOtherServerRules(
+    private suspend fun handleLoriBrokeOtherServerRules(
         userThatMadeTheReport: User,
         reportType: String,
         items: List<GoogleFormItem>
@@ -443,7 +485,12 @@ class GenerateServerReport(val m: LorittaHelper) {
             addFinalConsiderations(items)
         }
 
-        return ReportMessage(embed, images = images)
+        return ReportWithUserInfoMessage(
+            embed,
+            userId,
+            createReportedUserEmbed(jda, userId),
+            images = images
+        )
     }
 
     private fun createBaseEmbed(userThatMadeTheReport: User, reportType: String) = EmbedBuilder()
@@ -535,9 +582,9 @@ class GenerateServerReport(val m: LorittaHelper) {
         embed.addFinalConsiderations(items)
 
         return if (savedMessages.isNotEmpty())
-            ReportMessage(embed, savedMessages.toString().toByteArray(Charsets.UTF_8))
+            DefaultReportMessage(embed, savedMessages.toString().toByteArray(Charsets.UTF_8))
         else
-            ReportMessage(embed)
+            DefaultReportMessage(embed)
     }
 
     private fun EmbedBuilder.addFinalConsiderations(items: List<GoogleFormItem>) {
@@ -565,6 +612,44 @@ class GenerateServerReport(val m: LorittaHelper) {
         }
     }
 
+    // ===[ AKIRA/GATO BOT ADDITIONS ]===
+    private suspend fun createReportedUserEmbed(jda: JDA, userId: Long?): EmbedBuilder {
+        if (userId == null)
+            return EmbedBuilder()
+                .setDescription(
+                    buildString {
+                        append("O ID do usuário denunciado é nulo! Essa sim é uma denúncia que vocês amam né? Só rejeitar falando que \"passa os dados direitos\"... Queria que o meu trabalho fosse fácil assim também...")
+                    }
+                )
+                .setColor(Color(255, 94, 94))
+
+        val user = try {
+            jda.retrieveUserById(userId).await()
+        } catch (e: ErrorResponseException) {
+            return EmbedBuilder()
+                .setDescription(
+                    buildString {
+                        append("O ID do usuário denunciado é inválido! Essa sim é uma denúncia que vocês amam né? Só rejeitar falando que \"passa os dados direitos\"... Queria que o meu trabalho fosse fácil assim também...")
+                    }
+                )
+                .setColor(Color(255, 94, 94))
+        }
+
+        return EmbedBuilder()
+            .setDescription(
+                buildString {
+                    append("**Usuário denunciado**: `${user.asTag}` (${user.idLong})\n")
+                    append("**Data de Criação da Conta**: <t:${user.timeCreated.toEpochSecond()}:F>\n")
+                    append("\n\n")
+                    user.mutualGuilds.forEach {
+                        append("✅ ${it.name}\n")
+                    }
+                }
+            )
+            .setThumbnail(user.effectiveAvatarUrl)
+            .setColor(Color(154, 255, 94))
+    }
+
     val JsonElement.string
         get() = this.jsonPrimitive.content
     val JsonElement.stringArray
@@ -576,9 +661,23 @@ class GenerateServerReport(val m: LorittaHelper) {
         val answer: JsonElement
     )
 
-    class ReportMessage(
-        val embed: EmbedBuilder,
+    sealed class ReportMessage(
+        val reportInfoEmbed: EmbedBuilder,
         val messageFile: ByteArray? = null,
         val images: List<String>? = null
     )
+
+    class DefaultReportMessage(
+        reportInfoEmbed: EmbedBuilder,
+        messageFile: ByteArray? = null,
+        images: List<String>? = null
+    ) : ReportMessage(reportInfoEmbed, messageFile, images)
+
+    class ReportWithUserInfoMessage(
+        reportInfoEmbed: EmbedBuilder,
+        val reportedUserId: Long?,
+        val userInfoEmbed: EmbedBuilder,
+        messageFile: ByteArray? = null,
+        images: List<String>? = null
+    ) : ReportMessage(reportInfoEmbed, messageFile, images)
 }
