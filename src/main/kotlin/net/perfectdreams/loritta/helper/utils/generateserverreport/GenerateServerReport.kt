@@ -643,13 +643,23 @@ class GenerateServerReport(val m: LorittaHelper) {
                 .setColor(Color(255, 94, 94))
         }
 
+        // Mutual Guilds via the REST API, because maybe the user isn't in the user cache yet!
+        val mutualGuilds = jda.guilds.filter {
+            try {
+                it.retrieveMemberById(userId).await()
+                true
+            } catch (e: ErrorResponseException) {
+                false
+            }
+        }.sortedBy { it.name }
+
         return EmbedBuilder()
             .setDescription(
                 buildString {
                     append("**Usuário denunciado**: `${user.asTag}` (${user.idLong})\n")
                     append("**Data de Criação da Conta**: <t:${user.timeCreated.toEpochSecond()}:F>\n")
                     append("\n\n")
-                    user.mutualGuilds.forEach {
+                    mutualGuilds.forEach {
                         append("✅ ${it.name}\n")
                     }
                 }
