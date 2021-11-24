@@ -659,7 +659,7 @@ class GenerateServerReport(val m: LorittaHelper) {
                     append("**Usuário denunciado**: `${user.asTag}` (${user.idLong})\n")
                     append("**Data de Criação da Conta**: <t:${user.timeCreated.toEpochSecond()}:F>\n")
                     if (mutualGuilds.isNotEmpty()) {
-                        append("\n\n")
+                        append("\n")
                         mutualGuilds.forEach {
                             append("✅ ${it.name}\n")
                         }
