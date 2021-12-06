@@ -174,7 +174,7 @@ class GenerateServerReport(val m: LorittaHelper) {
                         )
                     )
                 }
-                
+
                 if (reportMessage is ReportWithUserInfoMessage && reportMessage.reportedUserId != null) {
                     components.add(
                         Button.of(

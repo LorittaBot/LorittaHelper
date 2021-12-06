@@ -19,7 +19,7 @@ class ShowFilesExecutor(val m: LorittaHelperKord) : ButtonClickWithDataExecutor 
         context.sendMessage {
             content = imagesField.value
                 .split("\n")
-                .joinToString("\n") { GoogleDriveUtils.getEmbeddableDirectGoogleDriveUrl(it.substringAfterLast("/")) }
+                .joinToString("\n") { GoogleDriveUtils.getEmbeddableDirectGoogleDriveUrl(it.removeSuffix("/view").substringAfterLast("/")) }
         }
     }
 }

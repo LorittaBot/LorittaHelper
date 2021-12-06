@@ -24,7 +24,7 @@ class DriveImageRetrieverExecutor(helper: LorittaHelperKord) : HelperSlashExecut
         if (url.startsWith("https://drive.google.com/file/d/")) {
             context.deferChannelMessage()
 
-            val imageUrl = GoogleDriveUtils.getEmbeddableDirectGoogleDriveUrl(url.substringAfterLast("/"))
+            val imageUrl = GoogleDriveUtils.getEmbeddableDirectGoogleDriveUrl(url.removeSuffix("/view").substringAfterLast("/"))
 
             context.sendMessage {
                 content = "(─‿‿─) $imageUrl"
