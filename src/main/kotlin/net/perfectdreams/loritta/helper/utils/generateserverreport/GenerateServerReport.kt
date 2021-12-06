@@ -26,6 +26,7 @@ import net.perfectdreams.loritta.helper.LorittaHelper
 import net.perfectdreams.loritta.helper.listeners.ApproveReportsOnReactionListener
 import net.perfectdreams.loritta.helper.utils.ComponentDataUtils
 import net.perfectdreams.loritta.helper.utils.Constants
+import net.perfectdreams.loritta.helper.utils.GoogleDriveUtils.getEmbeddableDirectGoogleDriveUrl
 import net.perfectdreams.loritta.helper.utils.extensions.await
 import java.awt.Color
 import java.net.HttpURLConnection
@@ -134,10 +135,11 @@ class GenerateServerReport(val m: LorittaHelper) {
                     )
                 }
 
+                // TODO: Do we really need to do this? Discord already embeds the result without the need of us downloading the photo
                 val imageUrl = run {
                     val firstImage = images?.firstOrNull() ?: return@run null
                     return@run runCatching {
-                        val urlString = "https://drive.google.com/uc?export=view&id=$firstImage"
+                        val urlString = getEmbeddableDirectGoogleDriveUrl(firstImage)
                         val connection = URL(urlString)
                             .openConnection() as HttpURLConnection
                         connection.instanceFollowRedirects = false
@@ -158,6 +160,21 @@ class GenerateServerReport(val m: LorittaHelper) {
                 }
 
                 val components = mutableListOf<Component>()
+
+                if (images?.isNotEmpty() == true) {
+                    components.add(
+                        Button.of(
+                            ButtonStyle.SECONDARY,
+                            // Hack because this ain't Discord InteraKTions (yet!)
+                            "show_files:${ComponentDataUtils.encode(
+                                ShowFilesData()
+                            )}",
+                            "Mostrar arquivos",
+                            Emoji.fromUnicode("\uD83D\uDDBC️")
+                        )
+                    )
+                }
+                
                 if (reportMessage is ReportWithUserInfoMessage && reportMessage.reportedUserId != null) {
                     components.add(
                         Button.of(

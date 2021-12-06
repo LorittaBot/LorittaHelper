@@ -20,6 +20,7 @@ import net.perfectdreams.loritta.helper.utils.cache.ChannelsCache
 import net.perfectdreams.loritta.helper.utils.config.FanArtsConfig
 import net.perfectdreams.loritta.helper.utils.config.LorittaConfig
 import net.perfectdreams.loritta.helper.utils.config.LorittaHelperConfig
+import net.perfectdreams.loritta.helper.utils.generateserverreport.ShowFilesExecutor
 import net.perfectdreams.loritta.helper.utils.generateserverreport.ShowUserIdExecutor
 import net.perfectdreams.loritta.helper.utils.slash.AllTransactionsExecutor
 import net.perfectdreams.loritta.helper.utils.slash.AttachDenyReasonExecutor
@@ -184,6 +185,11 @@ class LorittaHelperKord(
                 register(
                     ShowUserIdExecutor,
                     ShowUserIdExecutor(this@LorittaHelperKord)
+                )
+
+                register(
+                    ShowFilesExecutor,
+                    ShowFilesExecutor(this@LorittaHelperKord)
                 )
             }
 

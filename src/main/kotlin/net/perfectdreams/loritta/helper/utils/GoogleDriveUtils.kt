@@ -9,6 +9,8 @@ import kotlinx.serialization.json.jsonArray
 import kotlinx.serialization.json.jsonPrimitive
 
 object GoogleDriveUtils {
+    fun getEmbeddableDirectGoogleDriveUrl(fileId: String) = "https://drive.google.com/uc?export=view&id=$fileId"
+
     suspend fun retrieveImageFromDrive(url: String, httpClient: HttpClient): DriveImage? {
         val request = httpClient.get<HttpResponse>(url)
 

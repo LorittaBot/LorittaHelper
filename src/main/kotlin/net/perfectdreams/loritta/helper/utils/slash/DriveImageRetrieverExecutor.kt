@@ -1,6 +1,5 @@
 package net.perfectdreams.loritta.helper.utils.slash
 
-import io.ktor.client.request.*
 import net.perfectdreams.discordinteraktions.common.context.commands.ApplicationCommandContext
 import net.perfectdreams.discordinteraktions.common.context.commands.slash.SlashCommandArguments
 import net.perfectdreams.discordinteraktions.declarations.commands.slash.SlashCommandExecutorDeclaration
@@ -25,26 +24,10 @@ class DriveImageRetrieverExecutor(helper: LorittaHelperKord) : HelperSlashExecut
         if (url.startsWith("https://drive.google.com/file/d/")) {
             context.deferChannelMessage()
 
-            val image = GoogleDriveUtils.retrieveImageFromDrive(url, LorittaHelperKord.http)
+            val imageUrl = GoogleDriveUtils.getEmbeddableDirectGoogleDriveUrl(url.substringAfterLast("/"))
 
-            if (image != null) {
-                val extension = when (image.mimeType) {
-                    "image/png" -> "png"
-                    "image/jpeg" -> "jpg"
-                    "image/bmp" -> "bmp"
-                    else -> "png"
-                }
-
-                val downloadedImage = LorittaHelperKord.http.get<ByteArray>(image.url)
-
-                context.sendMessage {
-                    content = "(─‿‿─)"
-                    addFile("unknown.$extension", downloadedImage.inputStream())
-                }
-            } else {
-                context.sendMessage {
-                    content = "Não foi possível baixar a imagem..."
-                }
+            context.sendMessage {
+                content = "(─‿‿─) $imageUrl"
             }
         } else {
             context.sendMessage {
