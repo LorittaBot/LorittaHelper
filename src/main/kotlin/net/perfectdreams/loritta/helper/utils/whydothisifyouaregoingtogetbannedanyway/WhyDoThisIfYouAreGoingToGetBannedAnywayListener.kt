@@ -12,7 +12,6 @@ class WhyDoThisIfYouAreGoingToGetBannedAnywayListener : ListenerAdapter() {
         )
 
         val BLOCKED_NAMES = listOf(
-            Regex("l[e3][o0]x[i1]s", RegexOption.IGNORE_CASE),
             Regex("tr[a4]j[a4]d[o0]", RegexOption.IGNORE_CASE),
         )
 
@@ -21,12 +20,6 @@ class WhyDoThisIfYouAreGoingToGetBannedAnywayListener : ListenerAdapter() {
                 listOf(
                     Regex("k[a4]n[e3]k[i1íe]", RegexOption.IGNORE_CASE),
                     Regex("tr[a4]j[a4]d[o0]", RegexOption.IGNORE_CASE)
-                )
-            ),
-            BlockedNamesMultiMatch(
-                listOf(
-                    Regex("k[a4]n[e3]k[i1íe]", RegexOption.IGNORE_CASE),
-                    Regex("l[e3][o0]x[i1]s", RegexOption.IGNORE_CASE)
                 )
             ),
             BlockedNamesMultiMatch(
