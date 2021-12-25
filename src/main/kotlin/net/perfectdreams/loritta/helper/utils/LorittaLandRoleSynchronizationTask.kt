@@ -1,14 +1,24 @@
 package net.perfectdreams.loritta.helper.utils
 
+import io.ktor.client.request.*
+import io.ktor.client.statement.*
+import io.ktor.http.*
+import kotlinx.coroutines.runBlocking
+import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.json.Json
 import mu.KotlinLogging
 import net.dv8tion.jda.api.JDA
 import net.dv8tion.jda.api.entities.Guild
 import net.dv8tion.jda.api.entities.Role
+import net.dv8tion.jda.api.exceptions.ErrorResponseException
 import net.dv8tion.jda.api.managers.RoleManager
+import net.perfectdreams.galleryofdreams.common.data.DiscordSocialConnection
+import net.perfectdreams.galleryofdreams.common.data.GalleryOfDreamsDataResponse
 import net.perfectdreams.loritta.helper.LorittaHelper
 import net.perfectdreams.loritta.helper.dao.Payment
 import net.perfectdreams.loritta.helper.tables.Payments
 import net.perfectdreams.loritta.helper.utils.buttonroles.LorittaCommunityRoleButtons
+import net.perfectdreams.loritta.helper.utils.extensions.await
 import net.perfectdreams.loritta.utils.payments.PaymentReason
 import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.transactions.transaction
@@ -40,7 +50,7 @@ class LorittaLandRoleSynchronizationTask(val m: LorittaHelper, val jda: JDA) : R
             RoleColorComparator(),
             RolePermissionsComparator(),
             RoleHoistedComparator(),
-            RoleIsMentionaableComparator()
+            RoleIsMentionableComparator()
         )
 
         private val logger = KotlinLogging.logger {}
@@ -69,107 +79,11 @@ class LorittaLandRoleSynchronizationTask(val m: LorittaHelper, val jda: JDA) : R
                 logger.warn { "Sparkly Guild is missing..." }
 
             if (communityGuild != null) {
-                // Apply donators roles
-                logger.info { "Applying donator roles in the community server..." }
+                // ===[ DONATORS ]===
+                updateMembersDonationRoles(communityGuild)
 
-                val payments = transaction(m.databases.lorittaDatabase) {
-                    Payment.find {
-                        (Payments.reason eq PaymentReason.DONATION) and (Payments.paidAt.isNotNull())
-                    }.toMutableList()
-                }
-
-                val donatorsPlusQuantity = mutableMapOf<Long, Double>()
-                val donatorsPlusFirstDate = mutableMapOf<Long, Long>()
-                val inactiveDonators = mutableSetOf<Long>()
-
-                val donatorRole = communityGuild.getRoleById(364201981016801281L)
-                val superDonatorRole = communityGuild.getRoleById(463652112656629760L)
-                val megaDonatorRole = communityGuild.getRoleById(534659343656681474L)
-                val advertisementRole = communityGuild.getRoleById(619691791041429574L)
-                val inactiveRole = communityGuild.getRoleById(435856512787677214L)
-
-                for (payment in payments) {
-                    if (payment.expiresAt ?: 0 >= System.currentTimeMillis()) {
-                        donatorsPlusQuantity[payment.userId] = payment.money.toDouble() + donatorsPlusQuantity.getOrDefault(payment.userId, 0.0)
-                        if (!donatorsPlusFirstDate.containsKey(payment.userId)) {
-                            donatorsPlusFirstDate[payment.userId] = payment.paidAt ?: 0L
-                        }
-                    } else {
-                        inactiveDonators.add(payment.userId)
-                    }
-                }
-
-                for (member in communityGuild.members) {
-                    val roles = member.roles.toMutableSet()
-
-                    if (donatorsPlusQuantity.containsKey(member.user.idLong)) {
-                        // Loritta also ceil the result
-                        val donated = ceil(donatorsPlusQuantity[member.user.idLong] ?: 0.0)
-
-                        if (!roles.contains(donatorRole))
-                            roles.add(donatorRole)
-
-                        if (roles.contains(inactiveRole))
-                            roles.remove(inactiveRole)
-
-                        if (donated >= 99.99) {
-                            if (!roles.contains(megaDonatorRole))
-                                roles.add(megaDonatorRole)
-                        } else {
-                            if (roles.contains(megaDonatorRole))
-                                roles.remove(megaDonatorRole)
-                        }
-
-                        if (donated >= 59.99) {
-                            if (!roles.contains(superDonatorRole))
-                                roles.add(superDonatorRole)
-                        } else {
-                            if (roles.contains(superDonatorRole))
-                                roles.remove(superDonatorRole)
-                        }
-
-                        if (donated >= 39.99) {
-                            if (!roles.contains(advertisementRole))
-                                roles.add(advertisementRole)
-                        } else {
-                            if (roles.contains(advertisementRole))
-                                roles.remove(advertisementRole)
-                        }
-                    } else {
-                        // Remove custom colors
-                        val filter = roles.filter { userRole -> LorittaCommunityRoleButtons.colors.any { it.roleId.value.toLong() == userRole.idLong } }
-                        roles.removeAll(filter)
-
-                        // Remove custom badges if the user is not Level 10
-                        val coolBadgesFilter = roles.filter { userRole -> LorittaCommunityRoleButtons.coolBadges.any { it.roleId.value.toLong() == userRole.idLong } }
-                        if (!member.roles.any { it.idLong == 655132411566358548L })
-                            roles.removeAll(coolBadgesFilter)
-
-                        if (roles.contains(advertisementRole))
-                            roles.remove(advertisementRole)
-
-                        if (roles.contains(donatorRole))
-                            roles.remove(donatorRole)
-
-                        if (roles.contains(superDonatorRole))
-                            roles.remove(superDonatorRole)
-
-                        if (roles.contains(megaDonatorRole))
-                            roles.remove(megaDonatorRole)
-
-                        if (inactiveDonators.contains(member.user.idLong)) {
-                            if (!roles.contains(inactiveRole)) {
-                                roles.add(inactiveRole)
-                            }
-                        } else
-                            roles.remove(inactiveRole)
-                    }
-
-                    if (!(roles.containsAll(member.roles) && member.roles.containsAll(roles))) {// Novos cargos foram adicionados
-                        logger.info { "Changing roles of $member, current roles are ${member.roles}, new roles will be $roles" }
-                        member.guild.modifyMemberRoles(member, roles).queue()
-                    }
-                }
+                // ===[ FAN ARTISTS ]===
+                updateFanArtistsRoles(communityGuild)
             }
 
             if (communityGuild != null && supportGuild != null) {
@@ -205,7 +119,171 @@ class LorittaLandRoleSynchronizationTask(val m: LorittaHelper, val jda: JDA) : R
         }
     }
 
-    fun synchronizeRoles(fromGuild: Guild, toGuild: Guild, originalRoleId: Long, giveRoleId: Long) {
+    private fun updateMembersDonationRoles(communityGuild: Guild) {
+        // Apply donators roles
+        logger.info { "Applying donator roles in the community server..." }
+
+        val payments = transaction(m.databases.lorittaDatabase) {
+            Payment.find {
+                (Payments.reason eq PaymentReason.DONATION) and (Payments.paidAt.isNotNull())
+            }.toMutableList()
+        }
+
+        val donatorsPlusQuantity = mutableMapOf<Long, Double>()
+        val donatorsPlusFirstDate = mutableMapOf<Long, Long>()
+        val inactiveDonators = mutableSetOf<Long>()
+
+        val donatorRole = communityGuild.getRoleById(364201981016801281L)
+        val superDonatorRole = communityGuild.getRoleById(463652112656629760L)
+        val megaDonatorRole = communityGuild.getRoleById(534659343656681474L)
+        val advertisementRole = communityGuild.getRoleById(619691791041429574L)
+        val inactiveRole = communityGuild.getRoleById(435856512787677214L)
+
+        for (payment in payments) {
+            if ((payment.expiresAt ?: 0) >= System.currentTimeMillis()) {
+                donatorsPlusQuantity[payment.userId] = payment.money.toDouble() + donatorsPlusQuantity.getOrDefault(payment.userId, 0.0)
+                if (!donatorsPlusFirstDate.containsKey(payment.userId)) {
+                    donatorsPlusFirstDate[payment.userId] = payment.paidAt ?: 0L
+                }
+            } else {
+                inactiveDonators.add(payment.userId)
+            }
+        }
+
+        for (member in communityGuild.members) {
+            val roles = member.roles.toMutableSet()
+
+            if (donatorsPlusQuantity.containsKey(member.user.idLong)) {
+                // Loritta also ceil the result
+                val donated = ceil(donatorsPlusQuantity[member.user.idLong] ?: 0.0)
+
+                if (!roles.contains(donatorRole))
+                    roles.add(donatorRole)
+
+                if (roles.contains(inactiveRole))
+                    roles.remove(inactiveRole)
+
+                if (donated >= 99.99) {
+                    if (!roles.contains(megaDonatorRole))
+                        roles.add(megaDonatorRole)
+                } else {
+                    if (roles.contains(megaDonatorRole))
+                        roles.remove(megaDonatorRole)
+                }
+
+                if (donated >= 59.99) {
+                    if (!roles.contains(superDonatorRole))
+                        roles.add(superDonatorRole)
+                } else {
+                    if (roles.contains(superDonatorRole))
+                        roles.remove(superDonatorRole)
+                }
+
+                if (donated >= 39.99) {
+                    if (!roles.contains(advertisementRole))
+                        roles.add(advertisementRole)
+                } else {
+                    if (roles.contains(advertisementRole))
+                        roles.remove(advertisementRole)
+                }
+            } else {
+                // Remove custom colors
+                val filter = roles.filter { userRole -> LorittaCommunityRoleButtons.colors.any { it.roleId.value.toLong() == userRole.idLong } }
+                roles.removeAll(filter)
+
+                // Remove custom badges if the user is not Level 10
+                val coolBadgesFilter = roles.filter { userRole -> LorittaCommunityRoleButtons.coolBadges.any { it.roleId.value.toLong() == userRole.idLong } }
+                if (!member.roles.any { it.idLong == 655132411566358548L })
+                    roles.removeAll(coolBadgesFilter)
+
+                if (roles.contains(advertisementRole))
+                    roles.remove(advertisementRole)
+
+                if (roles.contains(donatorRole))
+                    roles.remove(donatorRole)
+
+                if (roles.contains(superDonatorRole))
+                    roles.remove(superDonatorRole)
+
+                if (roles.contains(megaDonatorRole))
+                    roles.remove(megaDonatorRole)
+
+                if (inactiveDonators.contains(member.user.idLong)) {
+                    if (!roles.contains(inactiveRole)) {
+                        roles.add(inactiveRole)
+                    }
+                } else
+                    roles.remove(inactiveRole)
+            }
+
+            if (!(roles.containsAll(member.roles) && member.roles.containsAll(roles))) {// Novos cargos foram adicionados
+                logger.info { "Changing roles of $member, current roles are ${member.roles}, new roles will be $roles" }
+                member.guild.modifyMemberRoles(member, roles).queue()
+            }
+        }
+    }
+
+    private fun updateFanArtistsRoles(communityGuild: Guild) {
+        // Apply donators roles
+        logger.info { "Applying fan artists roles in the community server..." }
+
+        val drawingRole = communityGuild.getRoleById(341343754336337921L)
+
+        if (drawingRole == null) {
+            logger.warn { "Artist role in the community server does not exist!" }
+            return
+        }
+
+        runBlocking {
+            val response = LorittaHelper.http.get<HttpResponse>("https://fanarts.perfectdreams.net/api/v1/fan-arts")
+
+            if (response.status != HttpStatusCode.OK) {
+                logger.warn { "Gallery of Dreams' Get Fan Arts API response was ${response.status}!" }
+                return@runBlocking
+            }
+
+            val payload = response.readText()
+            val galleryOfDreamsDataResponse = Json.decodeFromString<GalleryOfDreamsDataResponse>(payload)
+
+            val validIllustratorIds = galleryOfDreamsDataResponse.artists.mapNotNull {
+                it.socialConnections
+                    .filterIsInstance<DiscordSocialConnection>()
+                    .firstOrNull()
+                    ?.id
+            }
+
+            // First we will give the members
+            for (userId in validIllustratorIds) {
+                try {
+                    val member = communityGuild.retrieveMemberById(userId)
+                        .await()
+
+                    if (!member.roles.contains(drawingRole)) {
+                        logger.info { "Giving artist role to ${member.idLong}..." }
+
+                        communityGuild
+                            .addRoleToMember(member, drawingRole)
+                            .reason("The member is present in the Gallery of Dreams!")
+                            .await()
+                    }
+                } catch (e: ErrorResponseException) {
+                    logger.warn(e) { "Exception while retrieving $userId" }
+                }
+            }
+
+            val invalidIllustrators = communityGuild.getMembersWithRoles(drawingRole).filter { !validIllustratorIds.contains(it.idLong) }
+            invalidIllustrators.forEach {
+                logger.info("Removing artist role from ${it.user.id}...")
+
+                communityGuild
+                    .removeRoleFromMember(it, drawingRole)
+                    .reason("The member is not present in the Gallery of Dreams...")
+                    .await()
+            }
+        }
+    }
+
+    private fun synchronizeRoles(fromGuild: Guild, toGuild: Guild, originalRoleId: Long, giveRoleId: Long) {
         val originalRole = fromGuild.getRoleById(originalRoleId) ?: return
         val giveRole = toGuild.getRoleById(giveRoleId) ?: return
 
@@ -254,7 +332,7 @@ class LorittaLandRoleSynchronizationTask(val m: LorittaHelper, val jda: JDA) : R
         override fun setValue(manager: RoleManager, newValue: Any) { manager.setHoisted(newValue as Boolean) }
     }
 
-    class RoleIsMentionaableComparator : RoleFieldComparator<Boolean>() {
+    class RoleIsMentionableComparator : RoleFieldComparator<Boolean>() {
         override fun getValue(role: Role) = role.isMentionable
         override fun setValue(manager: RoleManager, newValue: Any) { manager.setMentionable(newValue as Boolean) }
     }
