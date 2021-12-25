@@ -100,47 +100,6 @@ sourceSets.main {
     java.srcDir("build/generated/languages")
 }
 
-tasks {
-    val fatJar = task("fatJar", type = Jar::class) {
-        println("Building fat jar for ${project.name}...")
-
-        archiveBaseName.set("${project.name}-fat")
-
-        manifest {
-            fun addIfAvailable(name: String, attrName: String) {
-                attributes[attrName] = System.getProperty(name) ?: "Unknown"
-            }
-
-            addIfAvailable("build.number", "Build-Number")
-            addIfAvailable("commit.hash", "Commit-Hash")
-            addIfAvailable("git.branch", "Git-Branch")
-            addIfAvailable("compiled.at", "Compiled-At")
-
-            attributes["Main-Class"] = "net.perfectdreams.loritta.helper.LorittaHelperLauncher"
-            attributes["Class-Path"] = configurations.runtimeClasspath.get().joinToString(" ", transform = { "libs/" + it.name })
-        }
-
-        val libs = File(rootProject.projectDir, "libs")
-        // libs.deleteRecursively()
-        libs.mkdirs()
-
-        from(configurations.runtimeClasspath.get().mapNotNull {
-            val output = File(libs, it.name)
-
-            if (!output.exists())
-                it.copyTo(output, true)
-
-            null
-        })
-
-        with(jar.get() as CopySpec)
-    }
-
-    "build" {
-        dependsOn(fatJar)
-    }
-}
-
 tasks.test {
     useJUnitPlatform()
 

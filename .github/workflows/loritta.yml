@@ -40,23 +40,5 @@ jobs:
     - name: Build with Gradle
       run: "./gradlew build -Dbuild.number=$GITHUB_RUN_NUMBER -Dgit.branch=$GITHUB_REF -Dcommit.hash=$GITHUB_SHA -Dcompiled.at=${{ steps.current-time.outputs.time }}"
 
-    # Upload Artifacts to GitHub
-    # Loritta
-    - uses: actions/upload-artifact@v2
-      name: "Upload Loritta Helper"
-      with:
-        name: Loritta Helper (Discord)
-        path: build/libs/loritta-helper-*.jar
-
-    # Libs
-    - uses: actions/upload-artifact@v2
-      name: "Upload Loritta Helper's Libs"
-      with:
-        name: Loritta Helper (Libs)
-        path: libs/*
-
-    - name: Send Webhook
-      run: "curl -X POST -H \"Content-Type: application/json\" -d '{\"content\": \"Atualização OwO! ${{ github.sha }}\"}' ${{ secrets.DiscordWebhookUrl }}"
-      
     - name: Publish to Docker
       run: "./gradlew jib -Dgithub.build.id=$GITHUB_RUN_ID -Dbuild.number=$GITHUB_RUN_NUMBER -Dgit.branch=$GITHUB_REF -Dcommit.hash=$GITHUB_SHA -Dcompiled.at=${{ steps.current-time.outputs.time }}"
