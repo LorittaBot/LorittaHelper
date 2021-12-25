@@ -12,6 +12,7 @@ import net.dv8tion.jda.api.entities.Guild
 import net.dv8tion.jda.api.entities.Role
 import net.dv8tion.jda.api.exceptions.ErrorResponseException
 import net.dv8tion.jda.api.managers.RoleManager
+import net.dv8tion.jda.api.requests.ErrorResponse
 import net.perfectdreams.galleryofdreams.common.data.DiscordSocialConnection
 import net.perfectdreams.galleryofdreams.common.data.GalleryOfDreamsDataResponse
 import net.perfectdreams.loritta.helper.LorittaHelper
@@ -221,6 +222,8 @@ class LorittaLandRoleSynchronizationTask(val m: LorittaHelper, val jda: JDA) : R
                 member.guild.modifyMemberRoles(member, roles).queue()
             }
         }
+
+        logger.info { "Finished synchronizing donator roles!" }
     }
 
     private fun updateFanArtistsRoles(communityGuild: Guild) {
@@ -267,19 +270,24 @@ class LorittaLandRoleSynchronizationTask(val m: LorittaHelper, val jda: JDA) : R
                             .await()
                     }
                 } catch (e: ErrorResponseException) {
-                    logger.warn(e) { "Exception while retrieving $userId" }
+                    if (e.errorResponse == ErrorResponse.UNKNOWN_MEMBER)
+                        logger.warn(e) { "Member $userId is not in Loritta's community server!" }
+                        else
+                        logger.warn(e) { "Exception while retrieving $userId" }
                 }
             }
 
             val invalidIllustrators = communityGuild.getMembersWithRoles(drawingRole).filter { !validIllustratorIds.contains(it.idLong) }
             invalidIllustrators.forEach {
-                logger.info("Removing artist role from ${it.user.id}...")
+                logger.info { "Removing artist role from ${it.user.id}..." }
 
                 communityGuild
                     .removeRoleFromMember(it, drawingRole)
                     .reason("The member is not present in the Gallery of Dreams...")
                     .await()
             }
+
+            logger.info { "Finished synchronizing artist roles!" }
         }
     }
 
