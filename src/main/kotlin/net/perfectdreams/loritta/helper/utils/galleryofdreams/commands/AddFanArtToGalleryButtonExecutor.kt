@@ -13,7 +13,7 @@ class AddFanArtToGalleryButtonExecutor(val m: LorittaHelperKord) : ButtonClickWi
     override suspend fun onClick(user: User, context: ComponentContext, data: String) {
         val data = ComponentDataUtils.decode<AddFanArtData>(data)
 
-        context.sendEphemeralMessage {
+        context.updateMessage {
             content = "$data"
         }
     }

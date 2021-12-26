@@ -12,7 +12,7 @@ class SelectAttachmentSelectMenuExecutor(val m: LorittaHelperKord) : SelectMenuW
     companion object : SelectMenuExecutorDeclaration(SelectAttachmentSelectMenuExecutor::class, "select_fa_attach")
 
     override suspend fun onSelect(user: User, context: ComponentContext, data: String, values: List<String>) {
-        context.deferChannelMessageEphemerally()
+        context.deferUpdateMessage()
 
         val data = ComponentDataUtils.decode<AddFanArtData>(data)
 

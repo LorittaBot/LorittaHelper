@@ -28,7 +28,11 @@ object GalleryOfDreamsUtils {
         actionRow {
             selectMenu(SelectAttachmentSelectMenuExecutor, encodedData) {
                 for (attachment in attachments) {
-                    option(attachment.filename, attachment.id.toString())
+                    option(attachment.filename, attachment.id.toString()) {
+                        if (attachment.id == data.selectedAttachmentId) {
+                            default = true
+                        }
+                    }
                 }
             }
         }
@@ -38,7 +42,9 @@ object GalleryOfDreamsUtils {
                 this.allowedValues = 0..FanArtTag.values().size
 
                 for (tag in FanArtTag.values()) {
-                    option(tag.name, tag.ordinal.toString())
+                    option(tag.name, tag.ordinal.toString()) {
+                        default = true
+                    }
                 }
             }
         }
