@@ -14,7 +14,7 @@ class ShowFilesExecutor(val m: LorittaHelperKord) : ButtonClickWithDataExecutor 
 
     override suspend fun onClick(user: User, context: ComponentContext, data: String) {
         val m = context.message as KordPublicMessage
-        val imagesField = m.handle.embeds.first().fields.first { it.name == "Imagens" }
+        val imagesField = m.data.embeds.first().fields.first { it.name == "Imagens" }
 
         context.sendMessage {
             content = imagesField.value
