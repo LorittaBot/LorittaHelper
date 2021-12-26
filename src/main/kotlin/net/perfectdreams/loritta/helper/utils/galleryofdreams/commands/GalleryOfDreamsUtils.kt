@@ -43,7 +43,9 @@ object GalleryOfDreamsUtils {
 
                 for (tag in FanArtTag.values()) {
                     option(tag.name, tag.ordinal.toString()) {
-                        default = true
+                        if (tag in data.tags) {
+                            default = true
+                        }
                     }
                 }
             }
