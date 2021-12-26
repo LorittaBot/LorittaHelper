@@ -5,7 +5,6 @@ import net.perfectdreams.discordinteraktions.common.context.commands.Application
 import net.perfectdreams.discordinteraktions.common.context.commands.GuildApplicationCommandContext
 import net.perfectdreams.discordinteraktions.common.entities.messages.Message
 import net.perfectdreams.discordinteraktions.declarations.commands.message.MessageCommandExecutorDeclaration
-import net.perfectdreams.discordinteraktions.platforms.kord.entities.messages.KordMessage
 import net.perfectdreams.loritta.helper.LorittaHelperKord
 
 class AddFanArtToGalleryExecutor(private val m: LorittaHelperKord) : MessageCommandExecutor() {
@@ -21,14 +20,26 @@ class AddFanArtToGalleryExecutor(private val m: LorittaHelperKord) : MessageComm
             return
         }
 
-        targetMessage as KordMessage
-        println(targetMessage.data)
-        
+        val attachments = targetMessage.attachments
+
+        if (attachments.isEmpty()) {
+            context.sendMessage {
+                content = "Não existe nenhuma imagem na mensagem que você selecionou!"
+            }
+        }
+
+        val builtMessage = GalleryOfDreamsUtils.createMessage(
+            AddFanArtData(
+                targetMessage.channelId,
+                targetMessage.id,
+                null,
+                listOf()
+            ),
+            attachments
+        )
+
         context.sendEphemeralMessage {
-            content = """Mensagem enviada em ${targetMessage.timestamp}
-                Arquivos: ${targetMessage.attachments.size}
-                ${targetMessage.attachments.joinToString { "\n" }}
-                """
+            apply(builtMessage)
         }
     }
 }

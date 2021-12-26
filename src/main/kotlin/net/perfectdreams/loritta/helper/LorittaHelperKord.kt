@@ -20,9 +20,12 @@ import net.perfectdreams.loritta.helper.utils.cache.ChannelsCache
 import net.perfectdreams.loritta.helper.utils.config.FanArtsConfig
 import net.perfectdreams.loritta.helper.utils.config.LorittaConfig
 import net.perfectdreams.loritta.helper.utils.config.LorittaHelperConfig
+import net.perfectdreams.loritta.helper.utils.galleryofdreams.commands.AddFanArtToGalleryButtonExecutor
 import net.perfectdreams.loritta.helper.utils.generateserverreport.ShowFilesExecutor
 import net.perfectdreams.loritta.helper.utils.generateserverreport.ShowUserIdExecutor
 import net.perfectdreams.loritta.helper.utils.galleryofdreams.commands.AddFanArtToGalleryExecutor
+import net.perfectdreams.loritta.helper.utils.galleryofdreams.commands.SelectAttachmentSelectMenuExecutor
+import net.perfectdreams.loritta.helper.utils.galleryofdreams.commands.SelectBadgesSelectMenuExecutor
 import net.perfectdreams.loritta.helper.utils.slash.AllTransactionsExecutor
 import net.perfectdreams.loritta.helper.utils.slash.AttachDenyReasonExecutor
 import net.perfectdreams.loritta.helper.utils.slash.BroadcastDailyShopWinnersExecutor
@@ -198,6 +201,21 @@ class LorittaHelperKord(
                 register(
                     AddFanArtToGalleryCommand,
                     AddFanArtToGalleryExecutor(this@LorittaHelperKord)
+                )
+
+                register(
+                    AddFanArtToGalleryButtonExecutor,
+                    AddFanArtToGalleryButtonExecutor(this@LorittaHelperKord)
+                )
+
+                register(
+                    SelectAttachmentSelectMenuExecutor,
+                    SelectAttachmentSelectMenuExecutor(this@LorittaHelperKord)
+                )
+
+                register(
+                    SelectBadgesSelectMenuExecutor,
+                    SelectBadgesSelectMenuExecutor(this@LorittaHelperKord)
                 )
             }
 
