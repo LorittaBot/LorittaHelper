@@ -19,6 +19,8 @@ object GalleryOfDreamsUtils {
         data: AddFanArtData,
         attachments: List<DiscordAttachment>
     ): MessageBuilder.() -> (Unit) = {
+        content = "Configure as informações da Fan Art!"
+
         val encodedData = ComponentDataUtils.encode(
             data
         )
@@ -36,7 +38,7 @@ object GalleryOfDreamsUtils {
                 this.allowedValues = 0..25
 
                 for (tag in FanArtTag.values()) {
-                    option(tag.name, tag.name)
+                    option(tag.name, tag.ordinal.toString())
                 }
             }
         }

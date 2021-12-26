@@ -20,7 +20,7 @@ class SelectBadgesSelectMenuExecutor(val m: LorittaHelperKord) : SelectMenuWithD
             apply(
                 GalleryOfDreamsUtils.createMessage(
                     data.copy(
-                        tags = values.map { FanArtTag.valueOf(it) }
+                        tags = values.map { FanArtTag.values()[it.toInt()] }
                     ),
                     message.attachments
                 )
