@@ -272,6 +272,8 @@ class LorittaLandRoleSynchronizationTask(val m: LorittaHelper, val jda: JDA) : R
                 } catch (e: ErrorResponseException) {
                     if (e.errorResponse == ErrorResponse.UNKNOWN_MEMBER)
                         logger.warn { "Member $userId is not in Loritta's community server!" }
+                    else if (e.errorResponse == ErrorResponse.UNKNOWN_USER)
+                        logger.warn { "User $userId does not exist!" }
                     else
                         logger.warn(e) { "Exception while retrieving $userId" }
                 }
