@@ -24,7 +24,7 @@ class AddFanArtToGalleryExecutor(private val m: LorittaHelperKord, val galleryOf
         val attachments = targetMessage.attachments
 
         if (attachments.isEmpty()) {
-            context.sendMessage {
+            context.sendEphemeralMessage {
                 content = "Não existe nenhuma imagem na mensagem que você selecionou!"
             }
             return
@@ -33,7 +33,7 @@ class AddFanArtToGalleryExecutor(private val m: LorittaHelperKord, val galleryOf
         val artist = galleryOfDreamsClient.getFanArtArtistByDiscordId(targetMessage.author.id.value.toLong())
 
         if (artist == null) {
-            context.sendMessage {
+            context.sendEphemeralMessage {
                 content = "O usuário não é um artista!"
             }
             return
