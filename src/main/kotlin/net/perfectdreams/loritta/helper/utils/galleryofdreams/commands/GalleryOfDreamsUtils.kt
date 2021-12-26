@@ -35,7 +35,7 @@ object GalleryOfDreamsUtils {
 
         actionRow {
             selectMenu(SelectBadgesSelectMenuExecutor, encodedData) {
-                this.allowedValues = 0..25
+                this.allowedValues = 0..FanArtTag.values().size
 
                 for (tag in FanArtTag.values()) {
                     option(tag.name, tag.ordinal.toString())
