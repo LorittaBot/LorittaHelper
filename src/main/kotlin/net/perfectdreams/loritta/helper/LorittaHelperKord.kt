@@ -22,6 +22,7 @@ import net.perfectdreams.loritta.helper.utils.config.LorittaConfig
 import net.perfectdreams.loritta.helper.utils.config.LorittaHelperConfig
 import net.perfectdreams.loritta.helper.utils.generateserverreport.ShowFilesExecutor
 import net.perfectdreams.loritta.helper.utils.generateserverreport.ShowUserIdExecutor
+import net.perfectdreams.loritta.helper.utils.slash.AddFanArtToGalleryExecutor
 import net.perfectdreams.loritta.helper.utils.slash.AllTransactionsExecutor
 import net.perfectdreams.loritta.helper.utils.slash.AttachDenyReasonExecutor
 import net.perfectdreams.loritta.helper.utils.slash.BroadcastDailyShopWinnersExecutor
@@ -39,6 +40,7 @@ import net.perfectdreams.loritta.helper.utils.slash.PendingScarletExecutor
 import net.perfectdreams.loritta.helper.utils.slash.RetrieveMessageExecutor
 import net.perfectdreams.loritta.helper.utils.slash.ServerMembersExecutor
 import net.perfectdreams.loritta.helper.utils.slash.TicketSenderExecutor
+import net.perfectdreams.loritta.helper.utils.slash.declarations.AddFanArtToGalleryCommand
 import net.perfectdreams.loritta.helper.utils.slash.declarations.AllTransactionsCommand
 import net.perfectdreams.loritta.helper.utils.slash.declarations.AttachDenyReasonCommand
 import net.perfectdreams.loritta.helper.utils.slash.declarations.BroadcastDailyShopWinnersCommand
@@ -190,6 +192,12 @@ class LorittaHelperKord(
                 register(
                     ShowFilesExecutor,
                     ShowFilesExecutor(this@LorittaHelperKord)
+                )
+
+                // ===[ FAN ARTS ]===
+                register(
+                    AddFanArtToGalleryCommand,
+                    AddFanArtToGalleryExecutor(this@LorittaHelperKord)
                 )
             }
 
