@@ -227,7 +227,7 @@ class LorittaLandRoleSynchronizationTask(val m: LorittaHelper, val jda: JDA) : R
     }
 
     private fun updateFanArtistsRoles(communityGuild: Guild) {
-        // Apply donators roles
+        // Apply fan artists roles
         logger.info { "Applying fan artists roles in the community server..." }
 
         val drawingRole = communityGuild.getRoleById(341343754336337921L)
