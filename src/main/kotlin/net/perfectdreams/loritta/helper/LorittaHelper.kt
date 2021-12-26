@@ -22,7 +22,6 @@ import net.dv8tion.jda.api.requests.GatewayIntent
 import net.dv8tion.jda.api.utils.MemberCachePolicy
 import net.perfectdreams.loritta.helper.listeners.AddReactionsToMessagesListener
 import net.perfectdreams.loritta.helper.listeners.ApproveAppealsOnReactionListener
-import net.perfectdreams.loritta.helper.listeners.ApproveFanArtListener
 import net.perfectdreams.loritta.helper.listeners.ApproveReportsOnReactionListener
 import net.perfectdreams.loritta.helper.listeners.BanListener
 import net.perfectdreams.loritta.helper.listeners.BanSuspectedUsersOnReactionListener
@@ -104,13 +103,6 @@ class LorittaHelper(val config: LorittaHelperConfig, val fanArtsConfig: FanArtsC
                 ApproveAppealsOnReactionListener(this),
                 WhyDoThisIfYouAreGoingToGetBannedAnywayListener()
             )
-            .also {
-                if (fanArtsConfig != null) {
-                    it.addEventListeners(ApproveFanArtListener(this, fanArtsConfig))
-                } else {
-                    logger.info { "Fan Arts Config is not present, not registering listener..." }
-                }
-            }
             .setMemberCachePolicy(
                 MemberCachePolicy.ALL
             )

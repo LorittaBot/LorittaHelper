@@ -11,6 +11,7 @@ import net.dv8tion.jda.api.JDA
 import net.perfectdreams.discordinteraktions.common.commands.CommandManager
 import net.perfectdreams.discordinteraktions.platforms.kord.commands.KordCommandRegistry
 import net.perfectdreams.discordinteraktions.platforms.kord.installDiscordInteraKTions
+import net.perfectdreams.galleryofdreams.client.GalleryOfDreamsClient
 import net.perfectdreams.loritta.helper.utils.LanguageManager
 import net.perfectdreams.loritta.helper.utils.buttonroles.LorittaCommunityRoleCoolBadgeButtonExecutor
 import net.perfectdreams.loritta.helper.utils.buttonroles.RoleColorButtonExecutor
@@ -36,9 +37,6 @@ import net.perfectdreams.loritta.helper.utils.slash.CloseTicketExecutor
 import net.perfectdreams.loritta.helper.utils.slash.DailyCatcherCheckExecutor
 import net.perfectdreams.loritta.helper.utils.slash.DailyCheckExecutor
 import net.perfectdreams.loritta.helper.utils.slash.DriveImageRetrieverExecutor
-import net.perfectdreams.loritta.helper.utils.slash.FanArtsOverrideGetExecutor
-import net.perfectdreams.loritta.helper.utils.slash.FanArtsOverrideResetExecutor
-import net.perfectdreams.loritta.helper.utils.slash.FanArtsOverrideSetExecutor
 import net.perfectdreams.loritta.helper.utils.slash.IPLocationExecutor
 import net.perfectdreams.loritta.helper.utils.slash.PendingScarletExecutor
 import net.perfectdreams.loritta.helper.utils.slash.RetrieveMessageExecutor
@@ -53,7 +51,6 @@ import net.perfectdreams.loritta.helper.utils.slash.declarations.CloseTicketComm
 import net.perfectdreams.loritta.helper.utils.slash.declarations.DailyCatcherCheckCommand
 import net.perfectdreams.loritta.helper.utils.slash.declarations.DailyCheckCommand
 import net.perfectdreams.loritta.helper.utils.slash.declarations.DriveImageRetrieverCommand
-import net.perfectdreams.loritta.helper.utils.slash.declarations.FanArtsOverrideCommand
 import net.perfectdreams.loritta.helper.utils.slash.declarations.IPLocationCommand
 import net.perfectdreams.loritta.helper.utils.slash.declarations.PendingScarletCommand
 import net.perfectdreams.loritta.helper.utils.slash.declarations.RetrieveMessageCommand
@@ -91,6 +88,13 @@ class LorittaHelperKord(
         "/languages/"
     )
     val channelsCache = ChannelsCache(helperRest)
+    val galleryOfDreamsClient = fanArtsConfig?.let {
+        GalleryOfDreamsClient(
+            "https://fanarts.perfectdreams.net/",
+            it.token,
+            http
+        )
+    }
 
     fun start() {
         val gateway = DefaultGateway()
@@ -110,12 +114,6 @@ class LorittaHelperKord(
                 register(
                     DailyCatcherCheckCommand,
                     DailyCatcherCheckExecutor(this@LorittaHelperKord)
-                )
-                register(
-                    FanArtsOverrideCommand,
-                    FanArtsOverrideGetExecutor(this@LorittaHelperKord),
-                    FanArtsOverrideSetExecutor(this@LorittaHelperKord),
-                    FanArtsOverrideResetExecutor(this@LorittaHelperKord)
                 )
                 register(
                     PendingScarletCommand,
@@ -197,26 +195,29 @@ class LorittaHelperKord(
                     ShowFilesExecutor(this@LorittaHelperKord)
                 )
 
-                // ===[ FAN ARTS ]===
-                register(
-                    AddFanArtToGalleryCommand,
-                    AddFanArtToGalleryExecutor(this@LorittaHelperKord)
-                )
 
-                register(
-                    AddFanArtToGalleryButtonExecutor,
-                    AddFanArtToGalleryButtonExecutor(this@LorittaHelperKord)
-                )
+                if (galleryOfDreamsClient != null) {
+                    // ===[ FAN ARTS ]===
+                    register(
+                        AddFanArtToGalleryCommand,
+                        AddFanArtToGalleryExecutor(this@LorittaHelperKord, galleryOfDreamsClient)
+                    )
 
-                register(
-                    SelectAttachmentSelectMenuExecutor,
-                    SelectAttachmentSelectMenuExecutor(this@LorittaHelperKord)
-                )
+                    register(
+                        AddFanArtToGalleryButtonExecutor,
+                        AddFanArtToGalleryButtonExecutor(this@LorittaHelperKord, galleryOfDreamsClient)
+                    )
 
-                register(
-                    SelectBadgesSelectMenuExecutor,
-                    SelectBadgesSelectMenuExecutor(this@LorittaHelperKord)
-                )
+                    register(
+                        SelectAttachmentSelectMenuExecutor,
+                        SelectAttachmentSelectMenuExecutor(this@LorittaHelperKord, galleryOfDreamsClient)
+                    )
+
+                    register(
+                        SelectBadgesSelectMenuExecutor,
+                        SelectBadgesSelectMenuExecutor(this@LorittaHelperKord, galleryOfDreamsClient)
+                    )
+                }
             }
 
             if (lorittaRest != null) {

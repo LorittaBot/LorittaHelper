@@ -4,11 +4,12 @@ import net.perfectdreams.discordinteraktions.api.entities.User
 import net.perfectdreams.discordinteraktions.common.components.selects.SelectMenuExecutorDeclaration
 import net.perfectdreams.discordinteraktions.common.components.selects.SelectMenuWithDataExecutor
 import net.perfectdreams.discordinteraktions.common.context.components.ComponentContext
+import net.perfectdreams.galleryofdreams.client.GalleryOfDreamsClient
 import net.perfectdreams.galleryofdreams.common.FanArtTag
 import net.perfectdreams.loritta.helper.LorittaHelperKord
 import net.perfectdreams.loritta.helper.utils.ComponentDataUtils
 
-class SelectBadgesSelectMenuExecutor(val m: LorittaHelperKord) : SelectMenuWithDataExecutor {
+class SelectBadgesSelectMenuExecutor(val m: LorittaHelperKord, galleryOfDreamsClient: GalleryOfDreamsClient) : SelectMenuWithDataExecutor {
     companion object : SelectMenuExecutorDeclaration(SelectBadgesSelectMenuExecutor::class, "select_fa_badges")
 
     override suspend fun onSelect(user: User, context: ComponentContext, data: String, values: List<String>) {

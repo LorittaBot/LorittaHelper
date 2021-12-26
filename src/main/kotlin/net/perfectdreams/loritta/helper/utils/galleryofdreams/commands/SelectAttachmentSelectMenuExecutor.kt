@@ -5,10 +5,11 @@ import net.perfectdreams.discordinteraktions.api.entities.User
 import net.perfectdreams.discordinteraktions.common.components.selects.SelectMenuExecutorDeclaration
 import net.perfectdreams.discordinteraktions.common.components.selects.SelectMenuWithDataExecutor
 import net.perfectdreams.discordinteraktions.common.context.components.ComponentContext
+import net.perfectdreams.galleryofdreams.client.GalleryOfDreamsClient
 import net.perfectdreams.loritta.helper.LorittaHelperKord
 import net.perfectdreams.loritta.helper.utils.ComponentDataUtils
 
-class SelectAttachmentSelectMenuExecutor(val m: LorittaHelperKord) : SelectMenuWithDataExecutor {
+class SelectAttachmentSelectMenuExecutor(val m: LorittaHelperKord, galleryOfDreamsClient: GalleryOfDreamsClient) : SelectMenuWithDataExecutor {
     companion object : SelectMenuExecutorDeclaration(SelectAttachmentSelectMenuExecutor::class, "select_fa_attach")
 
     override suspend fun onSelect(user: User, context: ComponentContext, data: String, values: List<String>) {

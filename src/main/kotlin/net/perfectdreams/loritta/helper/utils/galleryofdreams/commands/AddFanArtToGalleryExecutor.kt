@@ -5,9 +5,10 @@ import net.perfectdreams.discordinteraktions.common.context.commands.Application
 import net.perfectdreams.discordinteraktions.common.context.commands.GuildApplicationCommandContext
 import net.perfectdreams.discordinteraktions.common.entities.messages.Message
 import net.perfectdreams.discordinteraktions.declarations.commands.message.MessageCommandExecutorDeclaration
+import net.perfectdreams.galleryofdreams.client.GalleryOfDreamsClient
 import net.perfectdreams.loritta.helper.LorittaHelperKord
 
-class AddFanArtToGalleryExecutor(private val m: LorittaHelperKord) : MessageCommandExecutor() {
+class AddFanArtToGalleryExecutor(private val m: LorittaHelperKord, val galleryOfDreamsClient: GalleryOfDreamsClient) : MessageCommandExecutor() {
     companion object : MessageCommandExecutorDeclaration(AddFanArtToGalleryExecutor::class)
 
     override suspend fun execute(context: ApplicationCommandContext, targetMessage: Message) {
@@ -26,10 +27,22 @@ class AddFanArtToGalleryExecutor(private val m: LorittaHelperKord) : MessageComm
             context.sendMessage {
                 content = "Não existe nenhuma imagem na mensagem que você selecionou!"
             }
+            return
+        }
+
+        val artist = galleryOfDreamsClient.getFanArtArtistByDiscordId(targetMessage.author.id.value.toLong())
+
+        if (artist == null) {
+            context.sendMessage {
+                content = "O usuário não é um artista!"
+            }
+            return
         }
 
         val builtMessage = GalleryOfDreamsUtils.createMessage(
             AddFanArtData(
+                artist.id,
+                artist.slug,
                 targetMessage.channelId,
                 targetMessage.id,
                 null,

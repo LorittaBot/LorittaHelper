@@ -6,6 +6,8 @@ import net.perfectdreams.galleryofdreams.common.FanArtTag
 
 @Serializable
 data class AddFanArtData(
+    val artistId: Long,
+    val artistSlug: String,
     val fanArtChannelId: Snowflake,
     val fanArtMessageId: Snowflake,
     val selectedAttachmentId: Snowflake?,
