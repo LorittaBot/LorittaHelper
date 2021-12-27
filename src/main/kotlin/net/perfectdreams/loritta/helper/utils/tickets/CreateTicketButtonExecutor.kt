@@ -92,8 +92,14 @@ class CreateTicketButtonExecutor(val m: LorittaHelperKord) : ButtonClickWithData
                         }
 
                     searchedAll = result.threads.isEmpty()
-                    if (!searchedAll)
-                        lastInstant = result.threads.last().id.timestamp
+                    if (!searchedAll) {
+                        // Gets the minimum archive timestamp of the thread, because Discord seems to sort them by archival timestamp
+                        lastInstant = result.threads.mapNotNull {
+                            it.threadMetadata.value?.archiveTimestamp?.let {
+                                Instant.parse(it)
+                            }
+                        }.minOrNull()
+                    }
                 }
             }
 
