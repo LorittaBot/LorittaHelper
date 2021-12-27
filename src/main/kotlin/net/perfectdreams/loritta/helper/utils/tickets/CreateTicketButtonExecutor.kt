@@ -3,20 +3,12 @@ package net.perfectdreams.loritta.helper.utils.tickets
 import com.github.benmanes.caffeine.cache.Caffeine
 import dev.kord.common.entity.ArchiveDuration
 import dev.kord.common.entity.ChannelType
-import dev.kord.common.entity.Overwrite
 import dev.kord.common.entity.Snowflake
-import dev.kord.common.entity.optional.Optional
-import dev.kord.common.entity.optional.OptionalBoolean
-import dev.kord.common.entity.optional.OptionalInt
-import dev.kord.common.entity.optional.OptionalSnowflake
 import dev.kord.common.entity.optional.optional
+import dev.kord.rest.builder.channel.thread.ThreadModifyBuilder
 import dev.kord.rest.json.request.ListThreadsByTimestampRequest
 import dev.kord.rest.json.request.StartThreadRequest
-import dev.kord.rest.request.auditLogReason
-import dev.kord.rest.route.Route
 import kotlinx.datetime.Instant
-import kotlinx.serialization.SerialName
-import kotlinx.serialization.Serializable
 import net.perfectdreams.discordinteraktions.api.entities.User
 import net.perfectdreams.discordinteraktions.common.components.buttons.ButtonClickExecutorDeclaration
 import net.perfectdreams.discordinteraktions.common.components.buttons.ButtonClickWithDataExecutor
@@ -127,20 +119,16 @@ class CreateTicketButtonExecutor(val m: LorittaHelperKord) : ButtonClickWithData
             }
 
             // Update thread metadata and name juuuust to be sure
-            // Makeshift hack while Kord does not support updating thread metadata
-            m.helperRest.unsafe(Route.ChannelPatch) {
-                keys[Route.ChannelId] = ticketThread.id
-                body(
-                    ChannelModifyPatchRequestMakeshift.serializer(),
-                    ChannelModifyPatchRequestMakeshift(
-                        name = threadName.optional(),
-                        archived = false.optional(),
-                        locked = false.optional(), // For now let's keep it as not locked to avoid a bug in Discord Mobile related to "You don't have permission!"
-                        invitable = false.optional()
-                    )
-                )
-                auditLogReason("Unarchival request via button by ${user.name}#${user.discriminator} (${user.id.value})")
-            }
+            m.helperRest.channel.patchThread(
+                ticketThread.id,
+                ThreadModifyBuilder().apply {
+                    this.name = threadName
+                    this.archived = false
+                    this.locked = false // For now let's keep it as not locked to avoid a bug in Discord Mobile related to "You don't have permission!"
+                    this.invitable = false
+                }.toRequest(),
+                "Unarchival request via button by ${user.name}#${user.discriminator} (${user.id.value})"
+            )
 
             // We need to add the user to the thread after it is unarchived!
             m.helperRest.channel.addUserToThread(
@@ -188,26 +176,4 @@ class CreateTicketButtonExecutor(val m: LorittaHelperKord) : ButtonClickWithData
             }
         }
     }
-
-    @Serializable
-    data class ChannelModifyPatchRequestMakeshift(
-        val name: Optional<String> = Optional.Missing(),
-        val position: OptionalInt? = OptionalInt.Missing,
-        val topic: Optional<String?> = Optional.Missing(),
-        val nsfw: OptionalBoolean? = OptionalBoolean.Missing,
-        @SerialName("rate_limit_per_user")
-        val rateLimitPerUser: OptionalInt? = OptionalInt.Missing,
-        val bitrate: OptionalInt? = OptionalInt.Missing,
-        @SerialName("user_limit")
-        val userLimit: OptionalInt? = OptionalInt.Missing,
-        @SerialName("permission_overwrites")
-        val permissionOverwrites: Optional<Set<Overwrite>?> = Optional.Missing(),
-        @SerialName("parent_id")
-        val parentId: OptionalSnowflake? = OptionalSnowflake.Missing,
-        val archived: OptionalBoolean = OptionalBoolean.Missing,
-        @SerialName("auto_archive_duration")
-        val autoArchiveDuration: OptionalInt = OptionalInt.Missing,
-        val locked: OptionalBoolean = OptionalBoolean.Missing,
-        val invitable: OptionalBoolean = OptionalBoolean.Missing,
-    )
 }
