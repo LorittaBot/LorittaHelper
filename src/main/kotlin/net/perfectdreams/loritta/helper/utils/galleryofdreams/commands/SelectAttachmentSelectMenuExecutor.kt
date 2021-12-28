@@ -19,7 +19,7 @@ class SelectAttachmentSelectMenuExecutor(val m: LorittaHelperKord, val galleryOf
         context.deferUpdateMessage()
 
         val data = ComponentDataUtils.decode<AddFanArtData>(data)
-        val selectedAttachmentId = Snowflake(values.first().toLong())
+        var selectedAttachmentId: Snowflake? = Snowflake(values.first().toLong())
 
         val message = m.helperRest.channel.getMessage(data.fanArtChannelId, data.fanArtMessageId)
 
@@ -48,6 +48,7 @@ class SelectAttachmentSelectMenuExecutor(val m: LorittaHelperKord, val galleryOf
             context.sendEphemeralMessage {
                 content = "Já existe uma Fan Art com essa imagem! Talvez você esteja enviando uma Fan Art que já está na Galeria..."
             }
+            selectedAttachmentId = null
             // We don't return here because we want to update the dropdown too
         }
 
