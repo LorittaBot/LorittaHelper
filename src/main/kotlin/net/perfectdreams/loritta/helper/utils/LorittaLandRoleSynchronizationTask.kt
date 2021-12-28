@@ -14,7 +14,7 @@ import net.dv8tion.jda.api.exceptions.ErrorResponseException
 import net.dv8tion.jda.api.managers.RoleManager
 import net.dv8tion.jda.api.requests.ErrorResponse
 import net.perfectdreams.galleryofdreams.common.data.DiscordSocialConnection
-import net.perfectdreams.galleryofdreams.common.data.GalleryOfDreamsDataResponse
+import net.perfectdreams.galleryofdreams.common.data.api.GalleryOfDreamsDataResponse
 import net.perfectdreams.loritta.helper.LorittaHelper
 import net.perfectdreams.loritta.helper.dao.Payment
 import net.perfectdreams.loritta.helper.tables.Payments
