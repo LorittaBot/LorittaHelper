@@ -9,7 +9,8 @@ import net.perfectdreams.discordinteraktions.common.components.buttons.ButtonCli
 import net.perfectdreams.discordinteraktions.common.components.buttons.ButtonClickWithDataExecutor
 import net.perfectdreams.discordinteraktions.common.context.components.ComponentContext
 import net.perfectdreams.galleryofdreams.client.GalleryOfDreamsClient
-import net.perfectdreams.galleryofdreams.common.data.UploadFanArtRequest
+import net.perfectdreams.galleryofdreams.common.data.api.FanArtExistsResponse
+import net.perfectdreams.galleryofdreams.common.data.api.UploadFanArtRequest
 import net.perfectdreams.loritta.helper.LorittaHelperKord
 import net.perfectdreams.loritta.helper.utils.ComponentDataUtils
 import java.util.*
@@ -47,7 +48,19 @@ class AddFanArtToGalleryButtonExecutor(val m: LorittaHelperKord, val galleryOfDr
 
         val imageAsByteArray = LorittaHelperKord.http.get<ByteArray>(attachment.url)
 
-        val result = galleryOfDreamsClient.uploadImage(
+        val checkResult = galleryOfDreamsClient.checkFanArt(
+            imageAsByteArray,
+            contentType,
+        )
+
+        if (checkResult is FanArtExistsResponse) {
+            context.sendEphemeralMessage {
+                content = "Já existe uma Fan Art com essa imagem! Talvez você esteja enviando uma Fan Art que já está na Galeria..."
+            }
+            return
+        }
+
+        val result = galleryOfDreamsClient.uploadFanArt(
             artistId,
             imageAsByteArray,
             contentType,
