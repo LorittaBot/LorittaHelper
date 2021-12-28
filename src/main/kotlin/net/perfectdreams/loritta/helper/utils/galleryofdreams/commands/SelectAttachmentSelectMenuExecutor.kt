@@ -48,7 +48,7 @@ class SelectAttachmentSelectMenuExecutor(val m: LorittaHelperKord, val galleryOf
             context.sendEphemeralMessage {
                 content = "Já existe uma Fan Art com essa imagem! Talvez você esteja enviando uma Fan Art que já está na Galeria..."
             }
-            return
+            // We don't return here because we want to update the dropdown too
         }
 
         context.updateMessage {

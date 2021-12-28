@@ -52,14 +52,24 @@ object GalleryOfDreamsUtils {
         }
 
         actionRow {
-            interactiveButton(
-                ButtonStyle.Success,
-                "Adicionar",
-                AddFanArtToGalleryButtonExecutor,
-                ComponentDataUtils.encode(
-                    data
+            if (data.selectedAttachmentId != null) {
+                interactiveButton(
+                    ButtonStyle.Success,
+                    "Adicionar",
+                    AddFanArtToGalleryButtonExecutor,
+                    ComponentDataUtils.encode(
+                        data
+                    )
                 )
-            )
+            } else {
+                interactionButton(
+                    ButtonStyle.Success,
+                    "disabled_button_plz_ignore"
+                ) {
+                    label = "Adicionar"
+                    disabled = true
+                }
+            }
         }
     }
 }
