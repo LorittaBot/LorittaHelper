@@ -19,7 +19,13 @@ object GalleryOfDreamsUtils {
         data: AddFanArtData,
         attachments: List<DiscordAttachment>
     ): MessageBuilder.() -> (Unit) = {
-        content = "Configure as informações da Fan Art!"
+        val selectedAttachment = attachments.firstOrNull { it.id == data.selectedAttachmentId }
+
+        content = if (selectedAttachment != null) {
+            "Configure as informações da Fan Art! Selecionada: ${selectedAttachment.url}"
+        } else {
+            "Configure as informações da Fan Art!"
+        }
 
         val encodedData = ComponentDataUtils.encode(
             data
