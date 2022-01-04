@@ -50,8 +50,6 @@ import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
-import java.util.jar.Attributes
-import java.util.jar.JarFile
 import java.util.zip.ZipInputStream
 
 /**
@@ -107,6 +105,7 @@ class LorittaHelper(val config: LorittaHelperConfig, val fanArtsConfig: FanArtsC
                 MemberCachePolicy.ALL
             )
             .setRawEventsEnabled(true)
+            .setActivity(Activity.listening("https://youtu.be/CNPdO5TZ1DQ"))
             .build()
             .awaitReady()
 
@@ -154,18 +153,6 @@ class LorittaHelper(val config: LorittaHelperConfig, val fanArtsConfig: FanArtsC
             dailyShopWinners = DailyShopWinners(this, jda)
             dailyShopWinners?.start()
         }
-
-        val path = this::class.java.protectionDomain.codeSource.location.path
-        val commitHash = try {
-            val jar = JarFile(path)
-            val mf = jar.manifest
-            val mattr = mf.mainAttributes
-
-            mattr[Attributes.Name("Commit-Hash")] as String
-        } catch (e: Exception) { "Unknown" }
-
-        // OwO whats this???
-        jda.presence.activity = Activity.listening("OwO | commit $commitHash")
 
         FAQEmbedUpdaterPortuguese(this, jda).start()
         FAQEmbedUpdaterEnglish(this, jda).start()
