@@ -41,7 +41,7 @@ class AddFanArtToGallerySlashExecutor(helper: LorittaHelperKord, val galleryOfDr
             return
         }
 
-        val (guildIdAsString, channelIdAsString, messageIdAsString) = link.groupValues
+        val (_, guildIdAsString, channelIdAsString, messageIdAsString) = link.groupValues
 
         val targetMessage = helper.helperRest.channel.getMessage(Snowflake(channelIdAsString), Snowflake(messageIdAsString))
         val attachments = targetMessage.attachments
