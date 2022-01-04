@@ -5,7 +5,6 @@ import io.ktor.client.request.*
 import io.ktor.http.*
 import kotlinx.datetime.Instant
 import net.perfectdreams.discordinteraktions.api.entities.User
-import net.perfectdreams.discordinteraktions.common.builder.message.actionRow
 import net.perfectdreams.discordinteraktions.common.components.buttons.ButtonClickExecutorDeclaration
 import net.perfectdreams.discordinteraktions.common.components.buttons.ButtonClickWithDataExecutor
 import net.perfectdreams.discordinteraktions.common.context.components.ComponentContext
@@ -92,7 +91,7 @@ class AddFanArtToGalleryButtonExecutor(val m: LorittaHelperKord, val galleryOfDr
             content = "Fan Art adicionada! <:gabriela_brush:727259143903248486> $fanArtUrl"
 
             // Remove action rows
-            actionRow {}
+            components = null
         }
 
         // Send that the fan art was successfully added to the user
