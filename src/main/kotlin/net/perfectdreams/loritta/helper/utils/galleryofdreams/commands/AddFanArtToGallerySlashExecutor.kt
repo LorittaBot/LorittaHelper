@@ -1,17 +1,28 @@
 package net.perfectdreams.loritta.helper.utils.galleryofdreams.commands
 
-import net.perfectdreams.discordinteraktions.common.commands.message.MessageCommandExecutor
+import dev.kord.common.entity.Snowflake
 import net.perfectdreams.discordinteraktions.common.context.commands.ApplicationCommandContext
 import net.perfectdreams.discordinteraktions.common.context.commands.GuildApplicationCommandContext
-import net.perfectdreams.discordinteraktions.common.entities.messages.Message
-import net.perfectdreams.discordinteraktions.declarations.commands.message.MessageCommandExecutorDeclaration
+import net.perfectdreams.discordinteraktions.common.context.commands.slash.SlashCommandArguments
+import net.perfectdreams.discordinteraktions.declarations.commands.slash.SlashCommandExecutorDeclaration
+import net.perfectdreams.discordinteraktions.declarations.commands.slash.options.CommandOptions
 import net.perfectdreams.galleryofdreams.client.GalleryOfDreamsClient
 import net.perfectdreams.loritta.helper.LorittaHelperKord
+import net.perfectdreams.loritta.helper.utils.slash.HelperSlashExecutor
 
-class AddFanArtToGalleryExecutor(private val m: LorittaHelperKord, val galleryOfDreamsClient: GalleryOfDreamsClient) : MessageCommandExecutor() {
-    companion object : MessageCommandExecutorDeclaration(AddFanArtToGalleryExecutor::class)
+class AddFanArtToGallerySlashExecutor(helper: LorittaHelperKord, val galleryOfDreamsClient: GalleryOfDreamsClient) : HelperSlashExecutor(helper) {
+    companion object : SlashCommandExecutorDeclaration(AddFanArtToGallerySlashExecutor::class) {
+        object Options : CommandOptions() {
+            val messageUrl = string("message_url", "Link da Mensagem da Fan Art")
+                .register()
+        }
 
-    override suspend fun execute(context: ApplicationCommandContext, targetMessage: Message) {
+        override val options = Options
+
+        val messageLinkRegex = Regex("http(?:s)://(?:[A-z]+\\.)?discord.com/channels/([0-9]+)/([0-9]+)/([0-9]+)")
+    }
+
+    override suspend fun executeHelper(context: ApplicationCommandContext, args: SlashCommandArguments) {
         context.deferChannelMessageEphemerally()
 
         if (context !is GuildApplicationCommandContext || !context.member.roles.any { it in GalleryOfDreamsUtils.ALLOWED_ROLES }) {
@@ -21,6 +32,18 @@ class AddFanArtToGalleryExecutor(private val m: LorittaHelperKord, val galleryOf
             return
         }
 
+        val link = messageLinkRegex.matchEntire(args[Options.messageUrl])
+
+        if (link == null) {
+            context.sendEphemeralMessage {
+                content = "Você não passou o link de uma mensagem!"
+            }
+            return
+        }
+
+        val (guildIdAsString, channelIdAsString, messageIdAsString) = link.groupValues
+
+        val targetMessage = helper.helperRest.channel.getMessage(Snowflake(channelIdAsString), Snowflake(messageIdAsString))
         val attachments = targetMessage.attachments
 
         if (attachments.isEmpty()) {

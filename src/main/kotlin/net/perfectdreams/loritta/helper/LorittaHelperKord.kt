@@ -23,10 +23,12 @@ import net.perfectdreams.loritta.helper.utils.config.FanArtsConfig
 import net.perfectdreams.loritta.helper.utils.config.LorittaConfig
 import net.perfectdreams.loritta.helper.utils.config.LorittaHelperConfig
 import net.perfectdreams.loritta.helper.utils.galleryofdreams.commands.AddFanArtToGalleryButtonExecutor
-import net.perfectdreams.loritta.helper.utils.galleryofdreams.commands.AddFanArtToGalleryExecutor
+import net.perfectdreams.loritta.helper.utils.galleryofdreams.commands.AddFanArtToGalleryMessageExecutor
+import net.perfectdreams.loritta.helper.utils.galleryofdreams.commands.AddFanArtToGallerySlashExecutor
 import net.perfectdreams.loritta.helper.utils.galleryofdreams.commands.SelectAttachmentSelectMenuExecutor
 import net.perfectdreams.loritta.helper.utils.galleryofdreams.commands.SelectBadgesSelectMenuExecutor
-import net.perfectdreams.loritta.helper.utils.galleryofdreams.commands.declarations.AddFanArtToGalleryCommand
+import net.perfectdreams.loritta.helper.utils.galleryofdreams.commands.declarations.AddFanArtToGalleryMessageCommand
+import net.perfectdreams.loritta.helper.utils.galleryofdreams.commands.declarations.GalleryOfDreamsSlashCommand
 import net.perfectdreams.loritta.helper.utils.generateserverreport.ShowFilesExecutor
 import net.perfectdreams.loritta.helper.utils.generateserverreport.ShowUserIdExecutor
 import net.perfectdreams.loritta.helper.utils.slash.AllTransactionsExecutor
@@ -210,8 +212,13 @@ class LorittaHelperKord(
                 if (galleryOfDreamsClient != null) {
                     // ===[ FAN ARTS ]===
                     register(
-                        AddFanArtToGalleryCommand,
-                        AddFanArtToGalleryExecutor(this@LorittaHelperKord, galleryOfDreamsClient)
+                        GalleryOfDreamsSlashCommand,
+                        AddFanArtToGallerySlashExecutor(this@LorittaHelperKord, galleryOfDreamsClient)
+                    )
+
+                    register(
+                        AddFanArtToGalleryMessageCommand,
+                        AddFanArtToGalleryMessageExecutor(this@LorittaHelperKord, galleryOfDreamsClient)
                     )
 
                     register(
