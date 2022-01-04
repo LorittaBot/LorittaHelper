@@ -105,7 +105,7 @@ class LorittaHelper(val config: LorittaHelperConfig, val fanArtsConfig: FanArtsC
                 MemberCachePolicy.ALL
             )
             .setRawEventsEnabled(true)
-            .setActivity(Activity.listening("https://youtu.be/CNPdO5TZ1DQ"))
+            .setActivity(Activity.playing("https://youtu.be/CNPdO5TZ1DQ"))
             .build()
             .awaitReady()
 
