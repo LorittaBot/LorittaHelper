@@ -5,6 +5,7 @@ import io.ktor.client.request.*
 import io.ktor.http.*
 import kotlinx.datetime.Instant
 import net.perfectdreams.discordinteraktions.api.entities.User
+import net.perfectdreams.discordinteraktions.common.builder.message.actionRow
 import net.perfectdreams.discordinteraktions.common.components.buttons.ButtonClickExecutorDeclaration
 import net.perfectdreams.discordinteraktions.common.components.buttons.ButtonClickWithDataExecutor
 import net.perfectdreams.discordinteraktions.common.context.components.ComponentContext
@@ -46,7 +47,15 @@ class AddFanArtToGalleryButtonExecutor(val m: LorittaHelperKord, val galleryOfDr
             }
         }
 
+        context.updateMessage {
+            content = "Baixando Fan Art... <a:SCLOADING:715824432450633749>"
+        }
+
         val imageAsByteArray = LorittaHelperKord.http.get<ByteArray>(attachment.url)
+
+        context.updateMessage {
+            content = "Verificando se a Fan Art já existe... <a:SCLOADING:715824432450633749>"
+        }
 
         val checkResult = galleryOfDreamsClient.checkFanArt(
             imageAsByteArray,
@@ -58,6 +67,10 @@ class AddFanArtToGalleryButtonExecutor(val m: LorittaHelperKord, val galleryOfDr
                 content = "Já existe uma Fan Art com essa imagem! Talvez você esteja enviando uma Fan Art que já está na Galeria..."
             }
             return
+        }
+
+        context.updateMessage {
+            content = "Enviando Fan Art... <a:SCLOADING:715824432450633749>"
         }
 
         val result = galleryOfDreamsClient.uploadFanArt(
@@ -77,6 +90,9 @@ class AddFanArtToGalleryButtonExecutor(val m: LorittaHelperKord, val galleryOfDr
 
         context.updateMessage {
             content = "Fan Art adicionada! <:gabriela_brush:727259143903248486> $fanArtUrl"
+
+            // Remove action rows
+            actionRow {}
         }
 
         // Send that the fan art was successfully added to the user

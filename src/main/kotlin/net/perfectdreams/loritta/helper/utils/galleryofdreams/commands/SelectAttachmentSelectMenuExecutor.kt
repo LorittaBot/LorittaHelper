@@ -37,7 +37,15 @@ class SelectAttachmentSelectMenuExecutor(val m: LorittaHelperKord, val galleryOf
             }
         }
 
+        context.updateMessage {
+            content = "Baixando Fan Art... <a:SCLOADING:715824432450633749>"
+        }
+
         val imageAsByteArray = LorittaHelperKord.http.get<ByteArray>(attachment.url)
+
+        context.updateMessage {
+            content = "Verificando se a Fan Art já existe... <a:SCLOADING:715824432450633749>"
+        }
 
         val checkResult = galleryOfDreamsClient.checkFanArt(
             imageAsByteArray,

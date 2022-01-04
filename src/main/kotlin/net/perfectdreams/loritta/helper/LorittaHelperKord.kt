@@ -6,6 +6,7 @@ import dev.kord.gateway.Intent
 import dev.kord.gateway.Intents
 import dev.kord.gateway.start
 import io.ktor.client.*
+import io.ktor.client.features.*
 import kotlinx.coroutines.runBlocking
 import net.dv8tion.jda.api.JDA
 import net.perfectdreams.discordinteraktions.common.commands.CommandManager
@@ -92,7 +93,17 @@ class LorittaHelperKord(
         GalleryOfDreamsClient(
             "https://fanarts.perfectdreams.net/",
             it.token,
-            http
+            HttpClient {
+                expectSuccess = false
+                followRedirects = false
+
+                // Because some fan arts are gigantic
+                install(HttpTimeout) {
+                    socketTimeoutMillis = 120_000
+                    connectTimeoutMillis = 120_000
+                    requestTimeoutMillis = 120_000
+                }
+            }
         )
     }
 
