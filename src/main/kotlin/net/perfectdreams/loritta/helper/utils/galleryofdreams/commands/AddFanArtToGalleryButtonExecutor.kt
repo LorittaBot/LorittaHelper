@@ -91,7 +91,7 @@ class AddFanArtToGalleryButtonExecutor(val m: LorittaHelperKord, val galleryOfDr
             content = "Fan Art adicionada! <:gabriela_brush:727259143903248486> $fanArtUrl"
 
             // Remove action rows
-            components = null
+            components = mutableListOf()
         }
 
         // Send that the fan art was successfully added to the user
