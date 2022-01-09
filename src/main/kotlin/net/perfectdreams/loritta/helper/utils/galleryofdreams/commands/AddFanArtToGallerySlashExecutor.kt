@@ -19,7 +19,7 @@ class AddFanArtToGallerySlashExecutor(helper: LorittaHelperKord, val galleryOfDr
 
         override val options = Options
 
-        val messageLinkRegex = Regex("http(?:s)://(?:[A-z]+\\.)?discord.com/channels/([0-9]+)/([0-9]+)/([0-9]+)")
+        val messageLinkRegex = Regex("https?://(?:[A-z]+\\.)?discord\\.com/channels/([0-9]+)/([0-9]+)/([0-9]+)")
     }
 
     override suspend fun executeHelper(context: ApplicationCommandContext, args: SlashCommandArguments) {
