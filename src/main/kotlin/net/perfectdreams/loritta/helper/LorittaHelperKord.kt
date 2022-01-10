@@ -41,6 +41,8 @@ import net.perfectdreams.loritta.helper.utils.slash.DailyCatcherCheckExecutor
 import net.perfectdreams.loritta.helper.utils.slash.DailyCheckExecutor
 import net.perfectdreams.loritta.helper.utils.slash.DriveImageRetrieverExecutor
 import net.perfectdreams.loritta.helper.utils.slash.IPLocationExecutor
+import net.perfectdreams.loritta.helper.utils.slash.LoriBanExecutor
+import net.perfectdreams.loritta.helper.utils.slash.LoriUnbanExecutor
 import net.perfectdreams.loritta.helper.utils.slash.PendingScarletExecutor
 import net.perfectdreams.loritta.helper.utils.slash.RetrieveMessageExecutor
 import net.perfectdreams.loritta.helper.utils.slash.ServerMembersExecutor
@@ -55,6 +57,7 @@ import net.perfectdreams.loritta.helper.utils.slash.declarations.DailyCatcherChe
 import net.perfectdreams.loritta.helper.utils.slash.declarations.DailyCheckCommand
 import net.perfectdreams.loritta.helper.utils.slash.declarations.DriveImageRetrieverCommand
 import net.perfectdreams.loritta.helper.utils.slash.declarations.IPLocationCommand
+import net.perfectdreams.loritta.helper.utils.slash.declarations.LoriToolsCommand
 import net.perfectdreams.loritta.helper.utils.slash.declarations.PendingScarletCommand
 import net.perfectdreams.loritta.helper.utils.slash.declarations.RetrieveMessageCommand
 import net.perfectdreams.loritta.helper.utils.slash.declarations.ServerMembersCommand
@@ -208,6 +211,12 @@ class LorittaHelperKord(
                     ShowFilesExecutor(this@LorittaHelperKord)
                 )
 
+                // ===[ LORI TOOLS ]===
+                register(
+                    LoriToolsCommand,
+                    LoriBanExecutor(this@LorittaHelperKord),
+                    LoriUnbanExecutor(this@LorittaHelperKord)
+                )
 
                 if (galleryOfDreamsClient != null) {
                     // ===[ FAN ARTS ]===

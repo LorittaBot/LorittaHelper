@@ -15,6 +15,7 @@ object Constants {
     const val PORTUGUESE_NEWS_CHANNEL_ID = 761349260200509460L
     const val PORTUGUESE_FAQ_CHANNEL_ID = 761337893951635458L
     const val PORTUGUESE_STAFF_CHANNEL_ID = 358774895850815488L
+    const val PORTUGUESE_SADDEST_OF_THE_SADS_CHANNEL_ID = 643624690874712094L
 
     /* English
         Here we'll store english things
@@ -24,6 +25,7 @@ object Constants {
     const val ENGLISH_STATUS_CHANNEL_ID = 761385919479414825L
     const val ENGLISH_NEWS_CHANNEL_ID = 420627916028641280L
     const val ENGLISH_FAQ_CHANNEL_ID = 761337709720633392L
+
     /* Other
         Here we'll store other things
      */
