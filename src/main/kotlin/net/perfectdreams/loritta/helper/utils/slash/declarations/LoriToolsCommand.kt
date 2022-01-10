@@ -14,7 +14,7 @@ object LoriToolsCommand : SlashCommandDeclarationWrapper {
             executor = LoriBanExecutor
         }
 
-        subcommand("loriunban", "Bane alguém de usar a Loritta") {
+        subcommand("loriunban", "Desbane alguém de usar a Loritta") {
             executor = LoriUnbanExecutor
         }
     }
