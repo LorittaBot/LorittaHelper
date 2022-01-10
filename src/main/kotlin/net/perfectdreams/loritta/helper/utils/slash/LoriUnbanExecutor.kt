@@ -20,7 +20,7 @@ class LoriUnbanExecutor(helper: LorittaHelperKord) : HelperSlashExecutor(helper)
         override val options = Options
 
         object Options : CommandOptions() {
-            val userId = integer("user_id", "ID do usuário que você deseja desbanir")
+            val userId = string("user_id", "ID do usuário que você deseja desbanir")
                 .register()
 
             val reason = string("reason", "Motivo que irá aparecer no ban")
@@ -29,8 +29,13 @@ class LoriUnbanExecutor(helper: LorittaHelperKord) : HelperSlashExecutor(helper)
     }
 
     override suspend fun executeHelper(context: ApplicationCommandContext, args: SlashCommandArguments) {
-        val userId = args[LoriBanExecutor.options.userId]
-        val reason = args[LoriBanExecutor.options.reason]
+        val userId = args[options.userId].toLongOrNull() ?: run {
+            context.sendEphemeralMessage {
+                content = "Você não colocou um ID válido... <:lori_sob:556524143281963008>"
+            }
+            return
+        }
+        val reason = args[options.reason]
 
         val result = transaction(helper.databases.lorittaDatabase) {
             // Checks if the user has any valid bans
