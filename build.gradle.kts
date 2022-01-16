@@ -4,7 +4,7 @@ plugins {
     kotlin("jvm") version "1.6.10"
     kotlin("plugin.serialization") version "1.6.10"
     id("com.google.cloud.tools.jib") version "3.1.4"
-    id("net.perfectdreams.i18nhelper.plugin") version "0.0.2-SNAPSHOT"
+    id("net.perfectdreams.i18nhelper.plugin") version "0.0.3-SNAPSHOT"
 }
 
 i18nHelper {
@@ -53,7 +53,7 @@ dependencies {
     implementation("io.github.netvl.ecoji:ecoji:1.0.0")
 
     // i18nHelper
-    api("net.perfectdreams.i18nhelper.formatters:icu-messageformat-jvm:0.0.2-SNAPSHOT")
+    api("net.perfectdreams.i18nhelper.formatters:icu-messageformat-jvm:0.0.3-SNAPSHOT")
 
     // GalleryOfDreams client
     implementation("net.perfectdreams.galleryofdreams:client:1.0.2-SNAPSHOT")
