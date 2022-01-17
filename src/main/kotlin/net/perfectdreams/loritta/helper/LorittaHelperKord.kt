@@ -4,6 +4,7 @@ import dev.kord.common.entity.Snowflake
 import dev.kord.gateway.DefaultGateway
 import dev.kord.gateway.Intent
 import dev.kord.gateway.Intents
+import dev.kord.gateway.PrivilegedIntent
 import dev.kord.gateway.start
 import io.ktor.client.*
 import io.ktor.client.features.*
@@ -62,6 +63,7 @@ import net.perfectdreams.loritta.helper.utils.slash.declarations.PendingScarletC
 import net.perfectdreams.loritta.helper.utils.slash.declarations.RetrieveMessageCommand
 import net.perfectdreams.loritta.helper.utils.slash.declarations.ServerMembersCommand
 import net.perfectdreams.loritta.helper.utils.slash.declarations.TicketSenderCommand
+import net.perfectdreams.loritta.helper.utils.tickets.AutoCloseTicketWhenMemberLeavesGuildListener
 import net.perfectdreams.loritta.helper.utils.tickets.CloseTicketButtonExecutor
 import net.perfectdreams.loritta.helper.utils.tickets.CreateTicketButtonExecutor
 import net.perfectdreams.loritta.helper.utils.tickets.HelperResponseSelectMenuExecutor
@@ -112,6 +114,7 @@ class LorittaHelperKord(
         )
     }
 
+    @OptIn(PrivilegedIntent::class)
     fun start() {
         val gateway = DefaultGateway()
         languageManager.loadLanguagesAndContexts()
@@ -285,11 +288,13 @@ class LorittaHelperKord(
                 commandManager
             )
 
-            TicketListener(this@LorittaHelperKord).installTicketListener(gateway)
+            TicketListener(this@LorittaHelperKord).installAutoReplyToMessagesInTicketListener(gateway)
+            AutoCloseTicketWhenMemberLeavesGuildListener(this@LorittaHelperKord).installAutoCloseTicketWhenMemberLeavesGuildListener(gateway)
 
             gateway.start(config.token) {
                 intents = Intents {
                     + Intent.GuildMessages
+                    + Intent.GuildMembers
                 }
             }
         }

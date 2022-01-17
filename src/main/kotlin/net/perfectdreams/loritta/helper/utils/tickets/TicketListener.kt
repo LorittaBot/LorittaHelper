@@ -1,9 +1,7 @@
 package net.perfectdreams.loritta.helper.utils.tickets
 
-import com.github.benmanes.caffeine.cache.Caffeine
 import dev.kord.common.entity.ButtonStyle
 import dev.kord.common.entity.ChannelType
-import dev.kord.common.entity.DiscordChannel
 import dev.kord.common.entity.DiscordPartialEmoji
 import dev.kord.common.entity.Snowflake
 import dev.kord.common.entity.optional.value
@@ -21,16 +19,15 @@ import net.perfectdreams.loritta.helper.serverresponses.EnglishResponses
 import net.perfectdreams.loritta.helper.serverresponses.LorittaResponse
 import net.perfectdreams.loritta.helper.serverresponses.PortugueseResponses
 import net.perfectdreams.loritta.helper.utils.ComponentDataUtils
-import java.util.concurrent.TimeUnit
+import net.perfectdreams.loritta.helper.utils.Constants
 
 class TicketListener(private val helper: LorittaHelperKord) {
-    val channels = Caffeine.newBuilder()
-        .expireAfterWrite(1L, TimeUnit.HOURS)
-        .build<Snowflake, DiscordChannel>()
-        .asMap()
-
-    fun installTicketListener(gateway: Gateway) = gateway.on<MessageCreate> {
+    fun installAutoReplyToMessagesInTicketListener(gateway: Gateway) = gateway.on<MessageCreate> {
         if (this.message.author.bot.discordBoolean)
+            return@on
+
+        // Only in Loritta's support server!
+        if (Constants.SUPPORT_SERVER_ID != this.message.guildId.value?.value?.toLong())
             return@on
 
         val channelId = this.message.channelId

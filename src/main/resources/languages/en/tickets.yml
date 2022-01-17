@@ -16,6 +16,7 @@ tickets:
   createATicketIfQuestionWasntFound: "Still didn't find your question? Then can create a ticket by clicking the \"Open Ticket\" button, this will create a private channel where you can ask your question to {lorittaSupport}! I hope that we can help you with your question!!"
   clickToFindYourQuestion: "Click to find your question!"
   ticketClosed: "Ticket closed by {user}, thank you and goodbye!"
+  ticketAutoClosedUserLeftServer: "Ticket was automatically closed because the creator of the ticket left the support server... :("
   threadCreated:
     ready: "Done! I created a ticket for you, ask your question and wait until someone of our support staff comes here to answer your question."
     questionTips: "Ask your question in a simple and objective way and, if you need to, attach pictures. By doing this, you help {role} to understand your question better and to have the answer that you need."
