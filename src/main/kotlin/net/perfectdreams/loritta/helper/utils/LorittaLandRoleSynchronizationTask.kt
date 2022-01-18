@@ -172,18 +172,14 @@ class LorittaLandRoleSynchronizationTask(val m: LorittaHelper, val jda: JDA) : R
                         roles.remove(megaDonatorRole)
                 }
 
-                if (donated >= 59.99) {
+                if (donated >= 39.99) {
                     if (!roles.contains(superDonatorRole))
                         roles.add(superDonatorRole)
-                } else {
-                    if (roles.contains(superDonatorRole))
-                        roles.remove(superDonatorRole)
-                }
-
-                if (donated >= 39.99) {
                     if (!roles.contains(advertisementRole))
                         roles.add(advertisementRole)
                 } else {
+                    if (roles.contains(superDonatorRole))
+                        roles.remove(superDonatorRole)
                     if (roles.contains(advertisementRole))
                         roles.remove(advertisementRole)
                 }
