@@ -4,17 +4,17 @@ import dev.kord.common.entity.Snowflake
 import dev.kord.rest.json.JsonErrorCode
 import dev.kord.rest.request.KtorRequestException
 import dev.kord.rest.service.RestClient
-import net.perfectdreams.discordinteraktions.common.context.commands.ApplicationCommandContext
-import net.perfectdreams.discordinteraktions.common.context.commands.slash.SlashCommandArguments
-import net.perfectdreams.discordinteraktions.declarations.commands.slash.SlashCommandExecutorDeclaration
-import net.perfectdreams.discordinteraktions.declarations.commands.slash.options.CommandOptions
+import net.perfectdreams.discordinteraktions.common.commands.ApplicationCommandContext
+import net.perfectdreams.discordinteraktions.common.commands.SlashCommandExecutorDeclaration
+import net.perfectdreams.discordinteraktions.common.commands.options.ApplicationCommandOptions
+import net.perfectdreams.discordinteraktions.common.commands.options.SlashCommandArguments
 import net.perfectdreams.loritta.helper.LorittaHelperKord
 
 class RetrieveMessageExecutor(helper: LorittaHelperKord, val rest: RestClient) : HelperSlashExecutor(helper) {
     companion object : SlashCommandExecutorDeclaration(RetrieveMessageExecutor::class) {
         override val options = Options
 
-        object Options : CommandOptions() {
+        object Options : ApplicationCommandOptions() {
             val messageUrl = string("message_url", "Link da Mensagem")
                 .register()
         }

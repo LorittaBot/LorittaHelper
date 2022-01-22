@@ -2,10 +2,10 @@ package net.perfectdreams.loritta.helper.utils.slash
 
 import net.dv8tion.jda.api.EmbedBuilder
 import net.dv8tion.jda.api.JDA
-import net.perfectdreams.discordinteraktions.common.context.commands.ApplicationCommandContext
-import net.perfectdreams.discordinteraktions.common.context.commands.slash.SlashCommandArguments
-import net.perfectdreams.discordinteraktions.declarations.commands.slash.SlashCommandExecutorDeclaration
-import net.perfectdreams.discordinteraktions.declarations.commands.slash.options.CommandOptions
+import net.perfectdreams.discordinteraktions.common.commands.ApplicationCommandContext
+import net.perfectdreams.discordinteraktions.common.commands.SlashCommandExecutorDeclaration
+import net.perfectdreams.discordinteraktions.common.commands.options.ApplicationCommandOptions
+import net.perfectdreams.discordinteraktions.common.commands.options.SlashCommandArguments
 import net.perfectdreams.loritta.helper.LorittaHelperKord
 import net.perfectdreams.loritta.helper.utils.Emotes
 import net.perfectdreams.loritta.helper.utils.extensions.await
@@ -20,7 +20,7 @@ class AttachDenyReasonExecutor(helper: LorittaHelperKord, val jda: JDA) : Helper
             GenerateServerReport.SERVER_REPORTS_CHANNEL_ID
         )
 
-        object Options : CommandOptions() {
+        object Options : ApplicationCommandOptions() {
             val messageUrl = string("message_url", "Link da Mensagem")
                 .register()
 

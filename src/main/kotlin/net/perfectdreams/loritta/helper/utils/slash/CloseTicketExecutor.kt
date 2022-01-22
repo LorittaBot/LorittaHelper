@@ -4,10 +4,10 @@ import dev.kord.common.entity.ChannelType
 import dev.kord.common.entity.optional.optional
 import dev.kord.common.entity.optional.value
 import dev.kord.rest.json.request.ChannelModifyPatchRequest
-import net.perfectdreams.discordinteraktions.common.commands.slash.SlashCommandExecutor
-import net.perfectdreams.discordinteraktions.common.context.commands.ApplicationCommandContext
-import net.perfectdreams.discordinteraktions.common.context.commands.slash.SlashCommandArguments
-import net.perfectdreams.discordinteraktions.declarations.commands.slash.SlashCommandExecutorDeclaration
+import net.perfectdreams.discordinteraktions.common.commands.ApplicationCommandContext
+import net.perfectdreams.discordinteraktions.common.commands.SlashCommandExecutor
+import net.perfectdreams.discordinteraktions.common.commands.SlashCommandExecutorDeclaration
+import net.perfectdreams.discordinteraktions.common.commands.options.SlashCommandArguments
 import net.perfectdreams.loritta.helper.LorittaHelperKord
 import net.perfectdreams.loritta.helper.i18n.I18nKeysData
 import net.perfectdreams.loritta.helper.utils.tickets.isEnglishHelpDeskChannel

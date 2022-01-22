@@ -17,61 +17,10 @@ object SparklyPowerRoleButtons {
         return builder.toString()
     }
 
-    const val AUDIT_LOG_REASON = "Loritta Helper's Button Role Manager, yay!"
-
-    // ===[ NOTIFICATIONS ]===
-    val notifyNews = RoleButton(
-        "Novidades da Loritta",
-        Snowflake(334734175531696128L),
-        DiscordPartialEmoji(
-            Snowflake(640141673531441153L),
-            "lori_yay_ping"
-        ),
-        "Seja notificado em <#302976807135739916> e fique por dentro de novas funcionalidades, sorteios, atualizações importantes e muito mais!",
-        {
-            content = "Agora você irá ser notificado sobre as minhas novidades em <#302976807135739916>! Espero que você goste delas!!"
-        },
-        {
-            content = "Sério mesmo que você não quer mais receber minhas incríveis novidades? E eu pensava que nós eramos amigos..."
-        }
-    )
-
-    val notifyBetaNews = RoleButton(
-        "WIPs da Loritta",
-        Snowflake(526720753991811072L),
-        DiscordPartialEmoji(
-            Snowflake(673868465433477126L),
-            "lori_ameno"
-        ),
-        "O cargo de <@&334734175531696128> é supimpa, mas... e se você é um super fã da Loritta e quer *mais* novidades dela? Seja notificado em <#526721901196738571> e fique por dentro de novas funcionalidades que a equipe está fazendo e que estarão na Loritta no futuro! (ou seja, trabalho em progresso/work in progress/WIP)",
-        {
-            content = "Então você gosta de ficar sabendo das novidades antes de todo mundo, não é mesmo? Agora você irá ser notificado sobre as novas funcionalidades WIP em <#526721901196738571>!"
-        },
-        {
-            content = "Mas você queria receber as novidades em progresso... Eu mesmo falo que só é para você pegar o cargo se você é um super fã! E eu pensava que nós eramos amigos..."
-        }
-    )
-
-    val notifyStatus = RoleButton(
-        "Status da Loritta",
-        Snowflake(889852001016487986L),
-        DiscordPartialEmoji(
-            Snowflake(556524143281963008L),
-            "lori_sob"
-        ),
-        "\"aaaah, Lori caiu!!!\", seja notificado em <#610094449737072660> quando a Loritta está offline para manutenção, atualizações, problemas técnicos... ou quando ela resolveu ir tomar uma água geladinha!",
-        {
-            content = "Pois cansa ficar adivinhando quando cai, não é mesmo? Agora você irá ser notificado sobre atualizações de status em <#610094449737072660>!"
-        },
-        {
-            content = "Quer dizer que você acha que eu caio muito para você pedir para que remova o cargo? E eu pensava que nós eramos amigos..."
-        }
-    )
-
-    val notifications = listOf(
-        notifyNews,
-        notifyBetaNews,
-        notifyStatus
+    val notifications = listOf<RoleButton>(
+        // notifyNews,
+        // notifyBetaNews,
+        // notifyStatus
     )
 
     val notDemon = customBadge(
@@ -145,4 +94,100 @@ object SparklyPowerRoleButtons {
             content = "Você removeu seu ícone ${partialEmojiAsMention(emoji)}! Bem, eu *gostava* desse ícone, mas fazer o que né, as vezes *nada* é melhor, certo?~"
         }
     )
+
+    // ===[ CUSTOM COLORS ]===
+    val black = customColor(
+        Snowflake(934578678279594064L),
+        DiscordPartialEmoji(Snowflake(889922793112752138L), "lori_rich_black")
+    )
+
+    val neonGreen = customColor(
+        Snowflake(934577731654524928L),
+        DiscordPartialEmoji(Snowflake(889922793246953553L), "lori_rich_green_neon")
+    )
+
+    val lightViolet = customColor(
+        Snowflake(934578629088804935L),
+        DiscordPartialEmoji(Snowflake(889922793246953552L), "lori_rich_light_violet")
+    )
+
+    val lightBlue = customColor(
+        Snowflake(934578583958077481L),
+        DiscordPartialEmoji(Snowflake(889922793112752139L), "lori_rich_light_blue")
+    )
+
+    val orange = customColor(
+        Snowflake(934578471286497290L),
+        DiscordPartialEmoji(Snowflake(889922793200816169L), "lori_rich_orange")
+    )
+
+    val violet = customColor(
+        Snowflake(934578421864996924L),
+        DiscordPartialEmoji(Snowflake(889922792802361365L), "lori_rich_violet")
+    )
+
+    val darkRed = customColor(
+        Snowflake(934578392068657172L),
+        DiscordPartialEmoji(Snowflake(889922793217622057L), "lori_rich_dark_red")
+    )
+
+    val darkGreen = customColor(
+        Snowflake(934578365074112562L),
+        DiscordPartialEmoji(Snowflake(889922793322463233L), "lori_rich_dark_green")
+    )
+
+    val hotPink = customColor(
+        Snowflake(934578309910642829L),
+        DiscordPartialEmoji(Snowflake(889922793167265852L), "lori_rich_hot_pink")
+    )
+
+    val darkPink = customColor(
+        Snowflake(934578514131296287L),
+        DiscordPartialEmoji(Snowflake(889922793116926053L), "lori_rich_dark_pink")
+    )
+
+    val darkBlue = customColor(
+        Snowflake(934578276054216844L),
+        DiscordPartialEmoji(Snowflake(889922793465065474L), "lori_rich_dark_blue")
+    )
+
+    val lightPink = customColor(
+        Snowflake(934578235507892234L),
+        DiscordPartialEmoji(Snowflake(889922793381187626L), "lori_rich_light_pink")
+    )
+
+    val red = customColor(
+        Snowflake(934578166217981972L),
+        DiscordPartialEmoji(Snowflake(889922792915611659L), "lori_rich_red")
+    )
+
+    val yellow = customColor(
+        Snowflake(934578153505030204L),
+        DiscordPartialEmoji(Snowflake(889922792974336012L), "lori_rich_yellow")
+    )
+
+    val gold = customColor(
+        Snowflake(934578120021921863L),
+        DiscordPartialEmoji(Snowflake(889922793188257823L), "lori_rich_gold")
+    )
+
+    val green = customColor(
+        Snowflake(934577855306821762L),
+        DiscordPartialEmoji(Snowflake(889922793129521212L), "lori_rich_green")
+    )
+
+    val colors = mutableListOf<RoleButton>()
+
+    private fun customColor(roleId: Snowflake, emoji: DiscordPartialEmoji) = RoleButton(
+        null,
+        roleId,
+        emoji,
+        null,
+        {
+            content = "Você definiu sua cor para <@&${it.roleId.value}>! Tá muito chique essa sua cor amigah~"
+        },
+        {
+            content = "Você removeu a cor <@&${it.roleId.value}>! Tá certo amigah tem que mudar o style para não ficar brega~"
+        }
+    ).also { colors.add(it) }
 }

@@ -7,7 +7,6 @@ import net.perfectdreams.loritta.api.messages.LorittaReply
 import net.perfectdreams.loritta.helper.LorittaHelper
 import net.perfectdreams.loritta.helper.tables.GuildProfiles
 import net.perfectdreams.loritta.helper.toNaiveBayesClassifier
-import net.perfectdreams.loritta.helper.utils.Constants
 import net.perfectdreams.loritta.helper.utils.Emotes
 import net.perfectdreams.loritta.helper.utils.checkillegalnitrosell.CheckIllegalNitroSell
 import net.perfectdreams.loritta.helper.utils.splitWords

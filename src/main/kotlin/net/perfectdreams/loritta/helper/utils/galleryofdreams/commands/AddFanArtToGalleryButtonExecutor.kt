@@ -4,10 +4,10 @@ import dev.kord.rest.json.request.DMCreateRequest
 import io.ktor.client.request.*
 import io.ktor.http.*
 import kotlinx.datetime.Instant
-import net.perfectdreams.discordinteraktions.api.entities.User
-import net.perfectdreams.discordinteraktions.common.components.buttons.ButtonClickExecutorDeclaration
-import net.perfectdreams.discordinteraktions.common.components.buttons.ButtonClickWithDataExecutor
-import net.perfectdreams.discordinteraktions.common.context.components.ComponentContext
+import net.perfectdreams.discordinteraktions.common.components.ButtonClickExecutorDeclaration
+import net.perfectdreams.discordinteraktions.common.components.ButtonClickWithDataExecutor
+import net.perfectdreams.discordinteraktions.common.components.ComponentContext
+import net.perfectdreams.discordinteraktions.common.entities.User
 import net.perfectdreams.galleryofdreams.client.GalleryOfDreamsClient
 import net.perfectdreams.galleryofdreams.common.data.api.FanArtExistsResponse
 import net.perfectdreams.galleryofdreams.common.data.api.UploadFanArtRequest

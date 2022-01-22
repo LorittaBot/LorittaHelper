@@ -4,9 +4,9 @@ import mu.KotlinLogging
 import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEvent
 import net.dv8tion.jda.api.hooks.ListenerAdapter
 import net.perfectdreams.loritta.helper.LorittaHelper
+import net.perfectdreams.loritta.helper.utils.Emotes
 import net.perfectdreams.loritta.helper.utils.extensions.await
 import net.perfectdreams.loritta.helper.utils.generateserverreport.GenerateServerReport
-import net.perfectdreams.loritta.helper.utils.Emotes
 
 class ApproveReportsOnReactionListener(val m: LorittaHelper): ListenerAdapter() {
     companion object {

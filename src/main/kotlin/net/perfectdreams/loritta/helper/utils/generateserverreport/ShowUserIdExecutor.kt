@@ -1,9 +1,9 @@
 package net.perfectdreams.loritta.helper.utils.generateserverreport
 
-import net.perfectdreams.discordinteraktions.api.entities.User
-import net.perfectdreams.discordinteraktions.common.components.buttons.ButtonClickExecutorDeclaration
-import net.perfectdreams.discordinteraktions.common.components.buttons.ButtonClickWithDataExecutor
-import net.perfectdreams.discordinteraktions.common.context.components.ComponentContext
+import net.perfectdreams.discordinteraktions.common.components.ButtonClickExecutorDeclaration
+import net.perfectdreams.discordinteraktions.common.components.ButtonClickWithDataExecutor
+import net.perfectdreams.discordinteraktions.common.components.ComponentContext
+import net.perfectdreams.discordinteraktions.common.entities.User
 import net.perfectdreams.loritta.helper.LorittaHelperKord
 import net.perfectdreams.loritta.helper.utils.ComponentDataUtils
 

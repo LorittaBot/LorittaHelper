@@ -11,10 +11,10 @@ import mu.KotlinLogging
 import net.dv8tion.jda.api.events.RawGatewayEvent
 import net.dv8tion.jda.api.hooks.ListenerAdapter
 import net.perfectdreams.discordinteraktions.common.commands.CommandManager
-import net.perfectdreams.discordinteraktions.common.context.InteractionRequestState
-import net.perfectdreams.discordinteraktions.common.context.RequestBridge
+import net.perfectdreams.discordinteraktions.common.requests.InteractionRequestState
+import net.perfectdreams.discordinteraktions.common.requests.RequestBridge
+import net.perfectdreams.discordinteraktions.common.requests.managers.InitialHttpRequestManager
 import net.perfectdreams.discordinteraktions.common.utils.Observable
-import net.perfectdreams.discordinteraktions.platforms.kord.context.manager.InitialHttpRequestManager
 import net.perfectdreams.discordinteraktions.platforms.kord.utils.KordCommandChecker
 import net.perfectdreams.discordinteraktions.platforms.kord.utils.KordComponentChecker
 
@@ -54,8 +54,8 @@ class InteractionListener(
             bridge,
             rest,
             applicationId,
-            request.token,
-            request
+            request.id,
+            request.token
         )
 
         bridge.manager = requestManager

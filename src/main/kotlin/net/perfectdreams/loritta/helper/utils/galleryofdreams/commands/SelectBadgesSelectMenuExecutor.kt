@@ -1,9 +1,9 @@
 package net.perfectdreams.loritta.helper.utils.galleryofdreams.commands
 
-import net.perfectdreams.discordinteraktions.api.entities.User
-import net.perfectdreams.discordinteraktions.common.components.selects.SelectMenuExecutorDeclaration
-import net.perfectdreams.discordinteraktions.common.components.selects.SelectMenuWithDataExecutor
-import net.perfectdreams.discordinteraktions.common.context.components.ComponentContext
+import net.perfectdreams.discordinteraktions.common.components.ComponentContext
+import net.perfectdreams.discordinteraktions.common.components.SelectMenuExecutorDeclaration
+import net.perfectdreams.discordinteraktions.common.components.SelectMenuWithDataExecutor
+import net.perfectdreams.discordinteraktions.common.entities.User
 import net.perfectdreams.galleryofdreams.client.GalleryOfDreamsClient
 import net.perfectdreams.galleryofdreams.common.FanArtTag
 import net.perfectdreams.loritta.helper.LorittaHelperKord

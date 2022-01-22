@@ -9,11 +9,11 @@ import dev.kord.rest.builder.channel.thread.ThreadModifyBuilder
 import dev.kord.rest.json.request.ListThreadsByTimestampRequest
 import dev.kord.rest.json.request.StartThreadRequest
 import kotlinx.datetime.Instant
-import net.perfectdreams.discordinteraktions.api.entities.User
-import net.perfectdreams.discordinteraktions.common.components.buttons.ButtonClickExecutorDeclaration
-import net.perfectdreams.discordinteraktions.common.components.buttons.ButtonClickWithDataExecutor
-import net.perfectdreams.discordinteraktions.common.context.components.ComponentContext
-import net.perfectdreams.discordinteraktions.common.context.components.GuildComponentContext
+import net.perfectdreams.discordinteraktions.common.components.ButtonClickExecutorDeclaration
+import net.perfectdreams.discordinteraktions.common.components.ButtonClickWithDataExecutor
+import net.perfectdreams.discordinteraktions.common.components.ComponentContext
+import net.perfectdreams.discordinteraktions.common.components.GuildComponentContext
+import net.perfectdreams.discordinteraktions.common.entities.User
 import net.perfectdreams.loritta.api.messages.LorittaReply
 import net.perfectdreams.loritta.helper.LorittaHelperKord
 import net.perfectdreams.loritta.helper.i18n.I18nKeysData

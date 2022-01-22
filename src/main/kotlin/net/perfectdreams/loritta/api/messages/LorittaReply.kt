@@ -15,7 +15,7 @@ class LorittaReply(
         return build(event.author.asMention, event.author.asMention + " ")
     }
 
-    fun build(user: net.perfectdreams.discordinteraktions.api.entities.User) = build("<@${user.id.value}>", "<@${user.id.value}> ")
+    fun build(user: net.perfectdreams.discordinteraktions.common.entities.User) = build("<@${user.id.value}>", "<@${user.id.value}> ")
 
     fun build(user: DiscordUser) = build("<@${user.id.value}>", "<@${user.id.value}> ")
 

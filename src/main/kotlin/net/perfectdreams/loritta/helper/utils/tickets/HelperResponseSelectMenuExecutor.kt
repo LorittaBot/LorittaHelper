@@ -2,13 +2,13 @@ package net.perfectdreams.loritta.helper.utils.tickets
 
 import dev.kord.common.entity.ButtonStyle
 import dev.kord.common.entity.DiscordPartialEmoji
-import net.perfectdreams.discordinteraktions.api.entities.User
 import net.perfectdreams.discordinteraktions.common.builder.message.actionRow
+import net.perfectdreams.discordinteraktions.common.components.ComponentContext
+import net.perfectdreams.discordinteraktions.common.components.GuildComponentContext
+import net.perfectdreams.discordinteraktions.common.components.SelectMenuExecutor
+import net.perfectdreams.discordinteraktions.common.components.SelectMenuExecutorDeclaration
 import net.perfectdreams.discordinteraktions.common.components.interactiveButton
-import net.perfectdreams.discordinteraktions.common.components.selects.SelectMenuExecutorDeclaration
-import net.perfectdreams.discordinteraktions.common.components.selects.SelectMenuWithNoDataExecutor
-import net.perfectdreams.discordinteraktions.common.context.components.ComponentContext
-import net.perfectdreams.discordinteraktions.common.context.components.GuildComponentContext
+import net.perfectdreams.discordinteraktions.common.entities.User
 import net.perfectdreams.i18nhelper.core.I18nContext
 import net.perfectdreams.loritta.api.messages.LorittaReply
 import net.perfectdreams.loritta.helper.LorittaHelperKord
@@ -18,7 +18,7 @@ import net.perfectdreams.loritta.helper.serverresponses.LorittaResponse
 import net.perfectdreams.loritta.helper.serverresponses.PortugueseResponses
 import net.perfectdreams.loritta.helper.utils.ComponentDataUtils
 
-class HelperResponseSelectMenuExecutor(val m: LorittaHelperKord) : SelectMenuWithNoDataExecutor {
+class HelperResponseSelectMenuExecutor(val m: LorittaHelperKord) : SelectMenuExecutor {
     companion object : SelectMenuExecutorDeclaration(HelperResponseSelectMenuExecutor::class, "helper_response") {
         const val MY_QUESTION_ISNT_HERE_SPECIAL_KEY = "MyQuestionIsntHere!"
     }

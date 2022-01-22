@@ -2,7 +2,6 @@ package net.perfectdreams.loritta.helper.utils.buttonroles
 
 import dev.kord.common.entity.DiscordPartialEmoji
 import dev.kord.common.entity.Snowflake
-import net.perfectdreams.discordinteraktions.common.builder.message.MessageBuilder
 
 object LorittaCommunityRoleButtons {
     fun partialEmojiAsMention(emoji: DiscordPartialEmoji): String {
@@ -428,14 +427,5 @@ object LorittaCommunityRoleButtons {
         {
             content = "Você removeu a cor <@&${it.roleId.value}>! Tá certo amigah tem que mudar o style para não ficar brega~"
         }
-    )
-
-    data class RoleButton(
-        val label: String?,
-        val roleId: Snowflake,
-        val emoji: DiscordPartialEmoji,
-        val description: String?,
-        val messageReceive: MessageBuilder.(RoleButton) -> (Unit),
-        val messageRemove: MessageBuilder.(RoleButton) -> (Unit)
     )
 }

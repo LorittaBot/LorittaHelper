@@ -1,7 +1,7 @@
 package net.perfectdreams.loritta.helper.utils.galleryofdreams.commands.declarations
 
-import net.perfectdreams.discordinteraktions.declarations.commands.message.messageCommand
-import net.perfectdreams.discordinteraktions.declarations.commands.wrappers.MessageCommandDeclarationWrapper
+import net.perfectdreams.discordinteraktions.common.commands.MessageCommandDeclarationWrapper
+import net.perfectdreams.discordinteraktions.common.commands.messageCommand
 import net.perfectdreams.loritta.helper.utils.galleryofdreams.commands.AddFanArtToGalleryMessageExecutor
 
 object AddFanArtToGalleryMessageCommand : MessageCommandDeclarationWrapper {

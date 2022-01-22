@@ -1,10 +1,10 @@
 package net.perfectdreams.loritta.helper.utils.galleryofdreams.commands
 
-import net.perfectdreams.discordinteraktions.common.commands.message.MessageCommandExecutor
-import net.perfectdreams.discordinteraktions.common.context.commands.ApplicationCommandContext
-import net.perfectdreams.discordinteraktions.common.context.commands.GuildApplicationCommandContext
+import net.perfectdreams.discordinteraktions.common.commands.ApplicationCommandContext
+import net.perfectdreams.discordinteraktions.common.commands.GuildApplicationCommandContext
+import net.perfectdreams.discordinteraktions.common.commands.MessageCommandExecutor
+import net.perfectdreams.discordinteraktions.common.commands.MessageCommandExecutorDeclaration
 import net.perfectdreams.discordinteraktions.common.entities.messages.Message
-import net.perfectdreams.discordinteraktions.declarations.commands.message.MessageCommandExecutorDeclaration
 import net.perfectdreams.galleryofdreams.client.GalleryOfDreamsClient
 import net.perfectdreams.loritta.helper.LorittaHelperKord
 

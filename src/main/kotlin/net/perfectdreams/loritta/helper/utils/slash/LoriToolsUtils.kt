@@ -3,8 +3,8 @@ package net.perfectdreams.loritta.helper.utils.slash
 import dev.kord.common.Color
 import dev.kord.common.entity.Snowflake
 import dev.kord.rest.builder.message.create.embed
-import net.perfectdreams.discordinteraktions.api.entities.User
-import net.perfectdreams.discordinteraktions.api.entities.UserAvatar
+import net.perfectdreams.discordinteraktions.common.entities.User
+import net.perfectdreams.discordinteraktions.common.entities.UserAvatar
 import net.perfectdreams.discordinteraktions.common.utils.author
 import net.perfectdreams.discordinteraktions.common.utils.field
 import net.perfectdreams.discordinteraktions.common.utils.footer

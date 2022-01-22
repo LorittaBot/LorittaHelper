@@ -5,27 +5,27 @@ import dev.kord.common.entity.ButtonStyle
 import dev.kord.common.entity.Snowflake
 import dev.kord.rest.builder.message.create.actionRow
 import dev.kord.rest.builder.message.create.embed
+import net.perfectdreams.discordinteraktions.common.commands.ApplicationCommandContext
+import net.perfectdreams.discordinteraktions.common.commands.GuildApplicationCommandContext
+import net.perfectdreams.discordinteraktions.common.commands.SlashCommandExecutorDeclaration
+import net.perfectdreams.discordinteraktions.common.commands.options.ApplicationCommandOptions
+import net.perfectdreams.discordinteraktions.common.commands.options.SlashCommandArguments
 import net.perfectdreams.discordinteraktions.common.components.interactiveButton
-import net.perfectdreams.discordinteraktions.common.context.commands.ApplicationCommandContext
-import net.perfectdreams.discordinteraktions.common.context.commands.GuildApplicationCommandContext
-import net.perfectdreams.discordinteraktions.common.context.commands.slash.SlashCommandArguments
 import net.perfectdreams.discordinteraktions.common.utils.thumbnailUrl
-import net.perfectdreams.discordinteraktions.declarations.commands.slash.SlashCommandExecutorDeclaration
-import net.perfectdreams.discordinteraktions.declarations.commands.slash.options.CommandOptions
 import net.perfectdreams.loritta.helper.LorittaHelperKord
 import net.perfectdreams.loritta.helper.utils.ComponentDataUtils
+import net.perfectdreams.loritta.helper.utils.LorittaLandGuild
 import net.perfectdreams.loritta.helper.utils.buttonroles.LorittaCommunityRoleButtons
 import net.perfectdreams.loritta.helper.utils.buttonroles.LorittaCommunityRoleButtons.partialEmojiAsMention
-import net.perfectdreams.loritta.helper.utils.buttonroles.LorittaCommunityRoleCoolBadgeButtonExecutor
 import net.perfectdreams.loritta.helper.utils.buttonroles.RoleButtonData
 import net.perfectdreams.loritta.helper.utils.buttonroles.RoleColorButtonExecutor
+import net.perfectdreams.loritta.helper.utils.buttonroles.RoleCoolBadgeButtonExecutor
 import net.perfectdreams.loritta.helper.utils.buttonroles.RoleToggleButtonExecutor
 import net.perfectdreams.loritta.helper.utils.buttonroles.SparklyPowerRoleButtons
-import net.perfectdreams.loritta.helper.utils.buttonroles.SparklyPowerRoleCoolBadgeButtonExecutor
 
 class ButtonRoleSenderExecutor(helper: LorittaHelperKord) : HelperSlashExecutor(helper) {
     companion object : SlashCommandExecutorDeclaration(ButtonRoleSenderExecutor::class) {
-        object Options : CommandOptions() {
+        object Options : ApplicationCommandOptions() {
             val channel = channel("channel", "Canal aonde a mensagem será enviada")
                 .register()
         }
@@ -70,7 +70,7 @@ class ButtonRoleSenderExecutor(helper: LorittaHelperKord) : HelperSlashExecutor(
                                     ButtonStyle.Secondary,
                                     RoleColorButtonExecutor,
                                     ComponentDataUtils.encode(
-                                        RoleButtonData(roleInfo.roleId)
+                                        RoleButtonData(LorittaLandGuild.LORITTA_COMMUNITY, roleInfo.roleId)
                                     )
                                 ) {
                                     emoji = roleInfo.emoji
@@ -102,9 +102,9 @@ class ButtonRoleSenderExecutor(helper: LorittaHelperKord) : HelperSlashExecutor(
                             for (roleInfo in roleList) {
                                 interactiveButton(
                                     ButtonStyle.Secondary,
-                                    LorittaCommunityRoleCoolBadgeButtonExecutor,
+                                    RoleCoolBadgeButtonExecutor,
                                     ComponentDataUtils.encode(
-                                        RoleButtonData(roleInfo.roleId)
+                                        RoleButtonData(LorittaLandGuild.LORITTA_COMMUNITY, roleInfo.roleId)
                                     )
                                 ) {
                                     emoji = roleInfo.emoji
@@ -144,7 +144,7 @@ class ButtonRoleSenderExecutor(helper: LorittaHelperKord) : HelperSlashExecutor(
                                 ButtonStyle.Secondary,
                                 RoleToggleButtonExecutor,
                                 ComponentDataUtils.encode(
-                                    RoleButtonData(roleInfo.roleId)
+                                    RoleButtonData(LorittaLandGuild.LORITTA_COMMUNITY, roleInfo.roleId)
                                 )
                             ) {
                                 label = roleInfo.label
@@ -156,6 +156,40 @@ class ButtonRoleSenderExecutor(helper: LorittaHelperKord) : HelperSlashExecutor(
             }
 
             Snowflake(320248230917046282L) -> {
+                // ===[ CUSTOM COLORS ]===
+                helper.helperRest.channel.createMessage(channel.id) {
+                    embed {
+                        title = "Cores Personalizadas"
+                        color = Color(26, 160, 254)
+
+                        description = """Escolha uma cor personalizada para o seu nome e, de brinde, receba um ícone do lado do seu nome relacionado com a cor que você escolheu aqui no servidor da Loritta!
+                    |
+                    |**Apenas disponível para usuários VIPs (<@&332652664544428044>)!** Ficou interessado? Então [clique aqui](https://sparklypower.net/loja)!
+                """.trimMargin()
+
+                        thumbnailUrl = "https://cdn.discordapp.com/attachments/358774895850815488/889932408177168394/gabriela_sortros_crop.png"
+                    }
+
+                    // We can only fit 5 buttons per action row!
+                    val chunkedRoleButtons = SparklyPowerRoleButtons.colors.chunked(5)
+
+                    for (roleList in chunkedRoleButtons) {
+                        actionRow {
+                            for (roleInfo in roleList) {
+                                interactiveButton(
+                                    ButtonStyle.Secondary,
+                                    RoleColorButtonExecutor,
+                                    ComponentDataUtils.encode(
+                                        RoleButtonData(LorittaLandGuild.SPARKLYPOWER, roleInfo.roleId)
+                                    )
+                                ) {
+                                    emoji = roleInfo.emoji
+                                }
+                            }
+                        }
+                    }
+                }
+
                 // ===[ CUSTOM ROLE ICONS ]===
                 helper.helperRest.channel.createMessage(channel.id) {
                     embed {
@@ -178,9 +212,9 @@ class ButtonRoleSenderExecutor(helper: LorittaHelperKord) : HelperSlashExecutor(
                             for (roleInfo in roleList) {
                                 interactiveButton(
                                     ButtonStyle.Secondary,
-                                    SparklyPowerRoleCoolBadgeButtonExecutor,
+                                    RoleCoolBadgeButtonExecutor,
                                     ComponentDataUtils.encode(
-                                        RoleButtonData(roleInfo.roleId)
+                                        RoleButtonData(LorittaLandGuild.SPARKLYPOWER, roleInfo.roleId)
                                     )
                                 ) {
                                     emoji = roleInfo.emoji

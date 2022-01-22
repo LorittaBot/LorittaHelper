@@ -3,7 +3,11 @@ package net.perfectdreams.loritta.helper.utils.extensions
 import net.dv8tion.jda.api.entities.User
 import net.perfectdreams.loritta.helper.LorittaHelper
 import net.perfectdreams.loritta.helper.tables.BannedUsers
-import org.jetbrains.exposed.sql.*
+import org.jetbrains.exposed.sql.ResultRow
+import org.jetbrains.exposed.sql.SortOrder
+import org.jetbrains.exposed.sql.and
+import org.jetbrains.exposed.sql.or
+import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.transactions.transaction
 
 fun User.getBannedState(m: LorittaHelper): ResultRow? {
