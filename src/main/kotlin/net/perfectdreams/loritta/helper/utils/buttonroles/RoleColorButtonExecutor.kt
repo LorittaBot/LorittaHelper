@@ -32,7 +32,7 @@ class RoleColorButtonExecutor(val m: LorittaHelperKord) : ButtonClickWithDataExe
 
             if (!context.member.roles.any { it in guildData.allowedRoles }) {
                 context.sendEphemeralMessage {
-                    content = "Para você pegar uma cor personalizada, você precisa ser <@&364201981016801281>!"
+                    content = "Para você pegar uma cor personalizada, você precisa ser ${guildData.allowedRoles.joinToString(" ou ") { "<@&${it.value}>" }}!"
                 }
                 return
             }
