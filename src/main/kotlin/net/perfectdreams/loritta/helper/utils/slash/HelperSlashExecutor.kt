@@ -14,7 +14,8 @@ abstract class HelperSlashExecutor(
         private val ALLOWED_ROLES = listOf(
             Snowflake(399301696892829706L), // Support Community
             Snowflake(421325387889377291L), // Support BR Server
-            Snowflake(693606685943660545L) // SparklyPower Coords
+            Snowflake(693606685943660545L), // SparklyPower Coords
+            Snowflake(333601725862641664L), // SparklyPower Owners
         )
     }
     override suspend fun execute(context: ApplicationCommandContext, args: SlashCommandArguments) {
