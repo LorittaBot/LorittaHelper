@@ -68,8 +68,8 @@ object SparklyPowerRoleButtons {
     val catClown = customBadge(
         Snowflake(892198505500774430),
         DiscordPartialEmoji(
-            Snowflake(860889894108004372),
-            "CAT_CLOWN"
+            Snowflake(889949642895290369L),
+            "cat_clown"
         )
     )
 
