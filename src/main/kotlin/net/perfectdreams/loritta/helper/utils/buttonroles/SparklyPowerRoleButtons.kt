@@ -2,6 +2,7 @@ package net.perfectdreams.loritta.helper.utils.buttonroles
 
 import dev.kord.common.entity.DiscordPartialEmoji
 import dev.kord.common.entity.Snowflake
+import net.perfectdreams.loritta.helper.utils.buttonroles.LorittaCommunityRoleButtons.colors
 
 object SparklyPowerRoleButtons {
     fun partialEmojiAsMention(emoji: DiscordPartialEmoji): String {
@@ -96,6 +97,8 @@ object SparklyPowerRoleButtons {
     )
 
     // ===[ CUSTOM COLORS ]===
+    val colors = mutableListOf<RoleButton>()
+    
     val black = customColor(
         Snowflake(934578678279594064L),
         DiscordPartialEmoji(Snowflake(889922793112752138L), "lori_rich_black")
@@ -175,8 +178,6 @@ object SparklyPowerRoleButtons {
         Snowflake(934577855306821762L),
         DiscordPartialEmoji(Snowflake(889922793129521212L), "lori_rich_green")
     )
-
-    val colors = mutableListOf<RoleButton>()
 
     private fun customColor(roleId: Snowflake, emoji: DiscordPartialEmoji) = RoleButton(
         null,
