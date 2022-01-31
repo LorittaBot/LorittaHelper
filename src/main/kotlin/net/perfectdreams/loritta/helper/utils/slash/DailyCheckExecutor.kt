@@ -12,7 +12,7 @@ import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.transactions.transaction
 import java.time.Instant
 
-class DailyCheckExecutor(helper: LorittaHelperKord) : HelperSlashExecutor(helper) {
+class DailyCheckExecutor(helper: LorittaHelperKord) : HelperSlashExecutor(helper, PermissionLevel.ADMIN) {
     companion object : SlashCommandExecutorDeclaration(DailyCheckExecutor::class) {
         override val options = Options
 

@@ -6,7 +6,7 @@ import net.perfectdreams.discordinteraktions.common.commands.options.SlashComman
 import net.perfectdreams.loritta.helper.LorittaHelperKord
 import kotlin.concurrent.thread
 
-class DailyCatcherCheckExecutor(helper: LorittaHelperKord) : HelperSlashExecutor(helper) {
+class DailyCatcherCheckExecutor(helper: LorittaHelperKord) : HelperSlashExecutor(helper, PermissionLevel.ADMIN) {
     companion object : SlashCommandExecutorDeclaration(DailyCatcherCheckExecutor::class)
 
     override suspend fun executeHelper(context: ApplicationCommandContext, args: SlashCommandArguments) {

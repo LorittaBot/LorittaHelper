@@ -8,7 +8,7 @@ import net.perfectdreams.loritta.helper.LorittaHelperKord
 import net.perfectdreams.loritta.helper.utils.GoogleDriveUtils
 import net.perfectdreams.loritta.helper.utils.slash.DriveImageRetrieverExecutor.Companion.Options.imageLink
 
-class DriveImageRetrieverExecutor(helper: LorittaHelperKord) : HelperSlashExecutor(helper) {
+class DriveImageRetrieverExecutor(helper: LorittaHelperKord) : HelperSlashExecutor(helper, PermissionLevel.HELPER) {
     companion object : SlashCommandExecutorDeclaration(DriveImageRetrieverExecutor::class) {
         override val options = Options
 

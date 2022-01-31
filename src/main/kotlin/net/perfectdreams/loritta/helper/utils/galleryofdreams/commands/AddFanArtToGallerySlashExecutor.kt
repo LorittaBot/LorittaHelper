@@ -9,8 +9,9 @@ import net.perfectdreams.discordinteraktions.common.commands.options.SlashComman
 import net.perfectdreams.galleryofdreams.client.GalleryOfDreamsClient
 import net.perfectdreams.loritta.helper.LorittaHelperKord
 import net.perfectdreams.loritta.helper.utils.slash.HelperSlashExecutor
+import net.perfectdreams.loritta.helper.utils.slash.PermissionLevel
 
-class AddFanArtToGallerySlashExecutor(helper: LorittaHelperKord, val galleryOfDreamsClient: GalleryOfDreamsClient) : HelperSlashExecutor(helper) {
+class AddFanArtToGallerySlashExecutor(helper: LorittaHelperKord, val galleryOfDreamsClient: GalleryOfDreamsClient) : HelperSlashExecutor(helper, PermissionLevel.HELPER) {
     companion object : SlashCommandExecutorDeclaration(AddFanArtToGallerySlashExecutor::class) {
         object Options : ApplicationCommandOptions() {
             val messageUrl = string("message_url", "Link da Mensagem da Fan Art")

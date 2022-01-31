@@ -10,7 +10,7 @@ import net.perfectdreams.discordinteraktions.common.commands.options.Application
 import net.perfectdreams.discordinteraktions.common.commands.options.SlashCommandArguments
 import net.perfectdreams.loritta.helper.LorittaHelperKord
 
-class RetrieveMessageExecutor(helper: LorittaHelperKord, val rest: RestClient) : HelperSlashExecutor(helper) {
+class RetrieveMessageExecutor(helper: LorittaHelperKord, val rest: RestClient) : HelperSlashExecutor(helper, PermissionLevel.HELPER) {
     companion object : SlashCommandExecutorDeclaration(RetrieveMessageExecutor::class) {
         override val options = Options
 

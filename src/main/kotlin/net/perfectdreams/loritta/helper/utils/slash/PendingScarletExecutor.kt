@@ -14,7 +14,7 @@ import net.perfectdreams.loritta.helper.utils.dailycatcher.SuspiciousLevel
 import net.perfectdreams.loritta.helper.utils.extensions.await
 import net.perfectdreams.sequins.text.StringUtils
 
-class PendingScarletExecutor(helper: LorittaHelperKord, val jda: JDA) : HelperSlashExecutor(helper) {
+class PendingScarletExecutor(helper: LorittaHelperKord, val jda: JDA) : HelperSlashExecutor(helper, PermissionLevel.ADMIN) {
     private val logger = KotlinLogging.logger {}
 
     companion object : SlashCommandExecutorDeclaration(PendingScarletExecutor::class) {

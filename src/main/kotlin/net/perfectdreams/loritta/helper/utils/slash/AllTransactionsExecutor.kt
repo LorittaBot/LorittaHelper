@@ -13,7 +13,7 @@ import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.transactions.transaction
 import java.time.Instant
 
-class AllTransactionsExecutor(helper: LorittaHelperKord) : HelperSlashExecutor(helper) {
+class AllTransactionsExecutor(helper: LorittaHelperKord) : HelperSlashExecutor(helper, PermissionLevel.HELPER) {
     companion object : SlashCommandExecutorDeclaration(AllTransactionsExecutor::class) {
         override val options = Options
 

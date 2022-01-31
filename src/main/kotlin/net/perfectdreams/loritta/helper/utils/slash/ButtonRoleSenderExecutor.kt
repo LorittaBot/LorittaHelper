@@ -23,7 +23,7 @@ import net.perfectdreams.loritta.helper.utils.buttonroles.RoleCoolBadgeButtonExe
 import net.perfectdreams.loritta.helper.utils.buttonroles.RoleToggleButtonExecutor
 import net.perfectdreams.loritta.helper.utils.buttonroles.SparklyPowerRoleButtons
 
-class ButtonRoleSenderExecutor(helper: LorittaHelperKord) : HelperSlashExecutor(helper) {
+class ButtonRoleSenderExecutor(helper: LorittaHelperKord) : HelperSlashExecutor(helper, PermissionLevel.ADMIN) {
     companion object : SlashCommandExecutorDeclaration(ButtonRoleSenderExecutor::class) {
         object Options : ApplicationCommandOptions() {
             val channel = channel("channel", "Canal aonde a mensagem será enviada")

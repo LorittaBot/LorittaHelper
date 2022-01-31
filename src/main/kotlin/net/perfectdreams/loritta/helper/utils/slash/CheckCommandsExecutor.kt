@@ -12,7 +12,7 @@ import org.jetbrains.exposed.sql.count
 import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.transactions.transaction
 
-class CheckCommandsExecutor(helper: LorittaHelperKord) : HelperSlashExecutor(helper) {
+class CheckCommandsExecutor(helper: LorittaHelperKord) : HelperSlashExecutor(helper, PermissionLevel.HELPER) {
     companion object : SlashCommandExecutorDeclaration(CheckCommandsExecutor::class) {
         override val options = Options
 

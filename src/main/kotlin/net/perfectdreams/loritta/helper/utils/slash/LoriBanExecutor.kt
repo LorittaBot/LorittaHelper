@@ -15,7 +15,7 @@ import org.jetbrains.exposed.sql.or
 import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.transactions.transaction
 
-class LoriBanExecutor(helper: LorittaHelperKord) : HelperSlashExecutor(helper) {
+class LoriBanExecutor(helper: LorittaHelperKord) : HelperSlashExecutor(helper, PermissionLevel.ADMIN) {
     companion object : SlashCommandExecutorDeclaration(LoriBanExecutor::class) {
         override val options = Options
 

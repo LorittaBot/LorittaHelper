@@ -19,7 +19,7 @@ import net.perfectdreams.loritta.helper.utils.tickets.faqChannelId
 import net.perfectdreams.loritta.helper.utils.tickets.getI18nContext
 import net.perfectdreams.loritta.helper.utils.tickets.lorittaStatusChannelId
 
-class TicketSenderExecutor(helper: LorittaHelperKord) : HelperSlashExecutor(helper) {
+class TicketSenderExecutor(helper: LorittaHelperKord) : HelperSlashExecutor(helper, PermissionLevel.ADMIN) {
     companion object : SlashCommandExecutorDeclaration(TicketSenderExecutor::class) {
         object Options : ApplicationCommandOptions() {
             val channel = channel("channel", "Canal aonde a mensagem será enviada")

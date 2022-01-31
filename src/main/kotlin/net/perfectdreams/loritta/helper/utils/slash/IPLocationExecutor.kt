@@ -10,7 +10,7 @@ import net.perfectdreams.discordinteraktions.common.commands.options.Application
 import net.perfectdreams.discordinteraktions.common.commands.options.SlashCommandArguments
 import net.perfectdreams.loritta.helper.LorittaHelperKord
 
-class IPLocationExecutor(helper: LorittaHelperKord) : HelperSlashExecutor(helper) {
+class IPLocationExecutor(helper: LorittaHelperKord) : HelperSlashExecutor(helper, PermissionLevel.HELPER) {
     companion object : SlashCommandExecutorDeclaration(IPLocationExecutor::class) {
         override val options = Options
 
