@@ -15,6 +15,8 @@ abstract class HelperSlashExecutor(
         private val ADMIN_ROLES = listOf(
             Snowflake(693606685943660545L), // SparklyPower Coords
             Snowflake(333601725862641664L), // SparklyPower Owners
+            Snowflake(351473717194522647),  // Loritta Bodyguards Community
+            Snowflake(421325022951637015L), // Loritta Bodyguards Support
         )
 
         private val HELPER_ROLES = listOf(
