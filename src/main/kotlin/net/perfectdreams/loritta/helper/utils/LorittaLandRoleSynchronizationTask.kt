@@ -27,7 +27,7 @@ import kotlin.math.ceil
 
 class LorittaLandRoleSynchronizationTask(val m: LorittaHelper, val jda: JDA) : Runnable {
     companion object {
-        private val roleRemap = mutableMapOf(
+        private val roleRemap = mutableListOf(
             316363779518627842L to 420630427837923328L, // Deusas Supremas
             505144985591480333L to 762374506173431809L, // beep & boops
             351473717194522647L to 421325022951637015L, // Moderators
