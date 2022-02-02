@@ -22,9 +22,17 @@ object GalleryOfDreamsUtils {
         val selectedAttachment = attachments.firstOrNull { it.id == data.selectedAttachmentId }
 
         content = if (selectedAttachment != null) {
-            "Configure as informações da Fan Art! Selecionada: ${selectedAttachment.url}"
+            if (data is AddFanArtToExistingArtistData) {
+                "**(Artista que não está no banco de dados da Galeria dos Sonhos! O artista será criado na galeria dos sonhos ao enviar a fan art)** Configure as informações da Fan Art! Selecionada: ${selectedAttachment.url}"
+            } else {
+                "Configure as informações da Fan Art! Selecionada: ${selectedAttachment.url}"
+            }
         } else {
-            "Configure as informações da Fan Art!"
+            if (data is AddFanArtToExistingArtistData) {
+                "**(Artista que não está no banco de dados da Galeria dos Sonhos! O artista será criado na galeria dos sonhos ao enviar a fan art)** Configure as informações da Fan Art!"
+            } else {
+                "Configure as informações da Fan Art!"
+            }
         }
 
         val encodedData = ComponentDataUtils.encode(

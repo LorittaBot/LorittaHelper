@@ -6,6 +6,7 @@ import net.perfectdreams.discordinteraktions.common.commands.GuildApplicationCom
 import net.perfectdreams.discordinteraktions.common.commands.SlashCommandExecutor
 import net.perfectdreams.discordinteraktions.common.commands.options.SlashCommandArguments
 import net.perfectdreams.loritta.helper.LorittaHelperKord
+import net.perfectdreams.loritta.helper.utils.galleryofdreams.commands.GalleryOfDreamsUtils
 
 abstract class HelperSlashExecutor(
     val helper: LorittaHelperKord,
@@ -23,6 +24,8 @@ abstract class HelperSlashExecutor(
             Snowflake(399301696892829706L), // Support Community
             Snowflake(421325387889377291L), // Support BR Server
         )
+
+        private val FAN_ARTS_MANAGER_ROLES = GalleryOfDreamsUtils.ALLOWED_ROLES
     }
 
     override suspend fun execute(context: ApplicationCommandContext, args: SlashCommandArguments) {
@@ -36,6 +39,7 @@ abstract class HelperSlashExecutor(
         val permissionLevel = when {
             ADMIN_ROLES.any { it in context.member.roles } -> PermissionLevel.ADMIN
             HELPER_ROLES.any { it in context.member.roles } -> PermissionLevel.HELPER
+            FAN_ARTS_MANAGER_ROLES.any { it in context.member.roles } -> PermissionLevel.FAN_ARTS_MANAGER
             else -> PermissionLevel.NOTHING
         }
 

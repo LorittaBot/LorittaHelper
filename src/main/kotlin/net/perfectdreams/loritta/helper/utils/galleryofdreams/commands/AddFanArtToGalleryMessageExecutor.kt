@@ -32,22 +32,28 @@ class AddFanArtToGalleryMessageExecutor(private val m: LorittaHelperKord, val ga
 
         val artist = galleryOfDreamsClient.getFanArtArtistByDiscordId(targetMessage.author.id.value.toLong())
 
-        if (artist == null) {
-            context.sendEphemeralMessage {
-                content = "O usuário não é um artista!"
-            }
-            return
-        }
-
         val builtMessage = GalleryOfDreamsUtils.createMessage(
-            AddFanArtData(
-                artist.id,
-                artist.slug,
-                targetMessage.channelId,
-                targetMessage.id,
-                null,
-                listOf()
-            ),
+            if (artist == null) {
+                AddFanArtToNewArtistData(
+                    targetMessage.author.id,
+                    targetMessage.author.name,
+                    // Cleans up the user's name to make it be the user's name, if the result is a empty string we use a "ifEmpty" call to change it to the user's ID
+                    targetMessage.author.name.lowercase().replace(" ", "-").replace(Regex("[^A-Za-z0-9-]"), "").trim().ifEmpty { targetMessage.author.id.value.toString() },
+                    targetMessage.channelId,
+                    targetMessage.id,
+                    null,
+                    listOf()
+                )
+            } else {
+                AddFanArtToExistingArtistData(
+                    artist.id,
+                    artist.slug,
+                    targetMessage.channelId,
+                    targetMessage.id,
+                    null,
+                    listOf()
+                )
+            },
             attachments
         )
 

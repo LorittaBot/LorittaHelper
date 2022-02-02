@@ -286,7 +286,7 @@ class TicketSenderExecutor(helper: LorittaHelperKord) : HelperSlashExecutor(help
                     title = i18nContext.get(I18nKeysData.Tickets.LorittaHelpDesk)
                     color = Color(26, 160, 254)
 
-                    description = "Cria um ticket para enviar a sua fan art!"
+                    description = "Crie um ticket para enviar a sua fan art!"
                 }
 
                 actionRow {

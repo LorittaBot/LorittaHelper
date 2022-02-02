@@ -189,10 +189,15 @@ class CreateTicketButtonExecutor(val m: LorittaHelperKord) : ButtonClickWithData
                         content = (
                                 listOf(
                                     LorittaReply(
-                                        "Envie a sua fan art aqui! <@&${systemInfo.fanArtsManagerRoleId.value}>",
+                                        "Envie a sua fan art e, caso tenha, envie o processo de criação dela!",
                                         "<:lori_coffee:727631176432484473>",
                                         mentionUser = true
-                                    )
+                                    ),
+                                    LorittaReply(
+                                        "Após enviado, os <@&${systemInfo.fanArtsManagerRoleId.value}> irão averiguar a sua fan art e, caso ela tenha uma qualidade excepcional, ela será incluida na nossa Galeria de Fan Arts!",
+                                        "<:lori_analise:853052040425766922>",
+                                        mentionUser = false
+                                    ),
                                 )
                                 )
                             .joinToString("\n")

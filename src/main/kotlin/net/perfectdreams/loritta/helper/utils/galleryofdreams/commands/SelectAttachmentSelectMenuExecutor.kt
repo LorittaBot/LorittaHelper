@@ -63,9 +63,14 @@ class SelectAttachmentSelectMenuExecutor(val m: LorittaHelperKord, val galleryOf
         context.updateMessage {
             apply(
                 GalleryOfDreamsUtils.createMessage(
-                    data.copy(
-                        selectedAttachmentId = selectedAttachmentId
-                    ),
+                    when (data) {
+                        is AddFanArtToExistingArtistData -> data.copy(
+                            selectedAttachmentId = selectedAttachmentId
+                        )
+                        is AddFanArtToNewArtistData -> data.copy(
+                            selectedAttachmentId = selectedAttachmentId
+                        )
+                    },
                     message.attachments
                 )
             )

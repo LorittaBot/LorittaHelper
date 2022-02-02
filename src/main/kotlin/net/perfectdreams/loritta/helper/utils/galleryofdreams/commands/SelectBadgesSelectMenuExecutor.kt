@@ -20,9 +20,14 @@ class SelectBadgesSelectMenuExecutor(val m: LorittaHelperKord, galleryOfDreamsCl
         context.updateMessage {
             apply(
                 GalleryOfDreamsUtils.createMessage(
-                    data.copy(
-                        tags = values.map { FanArtTag.values()[it.toInt()] }
-                    ),
+                    when (data) {
+                        is AddFanArtToExistingArtistData -> data.copy(
+                            tags = values.map { FanArtTag.values()[it.toInt()] }
+                        )
+                        is AddFanArtToNewArtistData -> data.copy(
+                            tags = values.map { FanArtTag.values()[it.toInt()] }
+                        )
+                    },
                     message.attachments
                 )
             )

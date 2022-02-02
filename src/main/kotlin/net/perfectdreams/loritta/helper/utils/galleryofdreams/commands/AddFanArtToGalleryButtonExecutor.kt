@@ -9,6 +9,8 @@ import net.perfectdreams.discordinteraktions.common.components.ButtonClickWithDa
 import net.perfectdreams.discordinteraktions.common.components.ComponentContext
 import net.perfectdreams.discordinteraktions.common.entities.User
 import net.perfectdreams.galleryofdreams.client.GalleryOfDreamsClient
+import net.perfectdreams.galleryofdreams.common.data.DiscordSocialConnection
+import net.perfectdreams.galleryofdreams.common.data.api.CreateArtistWithFanArtRequest
 import net.perfectdreams.galleryofdreams.common.data.api.FanArtExistsResponse
 import net.perfectdreams.galleryofdreams.common.data.api.UploadFanArtRequest
 import net.perfectdreams.loritta.helper.LorittaHelperKord
@@ -19,9 +21,9 @@ class AddFanArtToGalleryButtonExecutor(val m: LorittaHelperKord, val galleryOfDr
     companion object : ButtonClickExecutorDeclaration(AddFanArtToGalleryButtonExecutor::class, "add_fa_gallery")
 
     override suspend fun onClick(user: User, context: ComponentContext, data: String) {
-        val (artistId, artistSlug, fanArtChannelId, fanArtMessageId, selectedAttachmentId, tags) = ComponentDataUtils.decode<AddFanArtData>(data)
+        val addFanArtData = ComponentDataUtils.decode<AddFanArtData>(data)
 
-        if (selectedAttachmentId == null) {
+        if (addFanArtData.selectedAttachmentId == null) {
             context.sendEphemeralMessage {
                 content = "Você esqueceu de selecionar uma Fan Art!"
             }
@@ -30,9 +32,9 @@ class AddFanArtToGalleryButtonExecutor(val m: LorittaHelperKord, val galleryOfDr
 
         context.deferUpdateMessage()
 
-        val message = m.helperRest.channel.getMessage(fanArtChannelId, fanArtMessageId)
+        val message = m.helperRest.channel.getMessage(addFanArtData.fanArtChannelId, addFanArtData.fanArtMessageId)
 
-        val attachment = message.attachments.first { it.id == selectedAttachmentId }
+        val attachment = message.attachments.first { it.id == addFanArtData.selectedAttachmentId }
 
         val contentType = when (attachment.filename.substringAfterLast(".")) {
             "png" -> ContentType.Image.PNG
@@ -72,20 +74,45 @@ class AddFanArtToGalleryButtonExecutor(val m: LorittaHelperKord, val galleryOfDr
             content = "Enviando Fan Art... <a:SCLOADING:715824432450633749>"
         }
 
-        val result = galleryOfDreamsClient.uploadFanArt(
-            artistId,
-            imageAsByteArray,
-            contentType,
-            UploadFanArtRequest(
-                UUID.randomUUID().toString(),
-                null,
-                null,
-                Instant.parse(message.timestamp),
-                tags
-            )
-        )
+        val fanArtUrl = when (addFanArtData) {
+            is AddFanArtToExistingArtistData -> {
+                val result = galleryOfDreamsClient.uploadFanArt(
+                    addFanArtData.artistId,
+                    imageAsByteArray,
+                    contentType,
+                    UploadFanArtRequest(
+                        UUID.randomUUID().toString(),
+                        null,
+                        null,
+                        Instant.parse(message.timestamp),
+                        addFanArtData.tags
+                    )
+                )
 
-        val fanArtUrl = "https://fanarts.perfectdreams.net/artists/${artistSlug}/${result.fanArt.slug}"
+                "https://fanarts.perfectdreams.net/artists/${addFanArtData.artistSlug}/${result.fanArt.slug}"
+            }
+
+            is AddFanArtToNewArtistData -> {
+                val result = galleryOfDreamsClient.createArtistWithFanArt(
+                    imageAsByteArray,
+                    contentType,
+                    CreateArtistWithFanArtRequest(
+                        addFanArtData.artistName,
+                        addFanArtData.artistSlug,
+                        listOf(DiscordSocialConnection(addFanArtData.artistDiscordId.value.toLong())),
+                        UploadFanArtRequest(
+                            UUID.randomUUID().toString(),
+                            null,
+                            null,
+                            Instant.parse(message.timestamp),
+                            addFanArtData.tags
+                        )
+                    )
+                )
+
+                "https://fanarts.perfectdreams.net/artists/${addFanArtData.artistSlug}/${result.fanArt.slug}"
+            }
+        }
 
         context.updateMessage {
             content = "Fan Art adicionada! <:gabriela_brush:727259143903248486> $fanArtUrl"
