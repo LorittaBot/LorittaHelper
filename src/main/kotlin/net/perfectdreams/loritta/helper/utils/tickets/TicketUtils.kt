@@ -33,7 +33,7 @@ object TicketUtils {
         Snowflake(938247721775661086L) to FirstFanArtTicketSystemInformation(
             TicketSystemType.FIRST_FAN_ARTS_PORTUGUESE,
             LanguageName.PORTUGUESE,
-            Snowflake(938253540336468050L)
+            Snowflake(924649809103691786)
         ),
     )
 
