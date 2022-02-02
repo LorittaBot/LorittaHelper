@@ -29,7 +29,6 @@ class CreateTicketButtonExecutor(val m: LorittaHelperKord) : ButtonClickWithData
 
     override suspend fun onClick(user: User, context: ComponentContext, data: String) {
         if (context is GuildComponentContext) {
-            // TODO: Fix this, change how the data is stored
             val ticketSystemTypeData = ComponentDataUtils.decode<TicketSystemTypeData>(data)
             val systemInfo = TicketUtils.getInformationBySystemType(ticketSystemTypeData.systemType)
             val language = systemInfo.getI18nContext(m.languageManager)
