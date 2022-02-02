@@ -36,6 +36,14 @@ class CreateTicketButtonExecutor(val m: LorittaHelperKord) : ButtonClickWithData
             // Avoid users closing and reopening threads constantly
             val lastTicketCreatedAt = recentlyCreatedTickets[user.id]
 
+            if (context.member.roles.contains(Snowflake(341343754336337921L))) { // Desenhistas role
+                context.sendEphemeralMessage {
+                    // 300 = 5 minutes
+                    content = language.get("Você já tem o cargo de desenhistas, você não precisa enviar uma \"Primeira Fan Art\" novamente! Caso queira enviar mais fan arts para a galeria, basta enviar em <#583406099047252044>")
+                }
+                return
+            }
+
             if (lastTicketCreatedAt != null) {
                 context.sendEphemeralMessage {
                     // 300 = 5 minutes
