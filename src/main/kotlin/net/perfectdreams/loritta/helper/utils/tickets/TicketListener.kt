@@ -11,13 +11,9 @@ import dev.kord.gateway.on
 import dev.kord.rest.builder.message.create.actionRow
 import dev.kord.rest.builder.message.create.allowedMentions
 import net.perfectdreams.discordinteraktions.common.components.interactiveButton
-import net.perfectdreams.i18nhelper.core.I18nContext
 import net.perfectdreams.loritta.api.messages.LorittaReply
 import net.perfectdreams.loritta.helper.LorittaHelperKord
 import net.perfectdreams.loritta.helper.i18n.I18nKeysData
-import net.perfectdreams.loritta.helper.serverresponses.EnglishResponses
-import net.perfectdreams.loritta.helper.serverresponses.LorittaResponse
-import net.perfectdreams.loritta.helper.serverresponses.PortugueseResponses
 import net.perfectdreams.loritta.helper.utils.ComponentDataUtils
 import net.perfectdreams.loritta.helper.utils.Constants
 
@@ -37,20 +33,12 @@ class TicketListener(private val helper: LorittaHelperKord) {
 
         val parentChannelId = channel.parentId.value ?: return@on
 
-        val channelResponses: List<LorittaResponse>
-        val i18nContext: I18nContext
+        val systemInfo = TicketUtils.informations[parentChannelId]!!
+        if (systemInfo !is TicketUtils.HelpDeskTicketSystemInformation)
+            return@on
 
-        when {
-            isPortugueseHelpDeskChannel(parentChannelId) -> {
-                channelResponses = PortugueseResponses.responses
-                i18nContext = helper.languageManager.getI18nContextById("pt")
-            }
-            isEnglishHelpDeskChannel(parentChannelId) -> {
-                channelResponses = EnglishResponses.responses
-                i18nContext = helper.languageManager.getI18nContextById("en")
-            }
-            else -> return@on
-        }
+        val channelResponses = systemInfo.channelResponses
+        val i18nContext = systemInfo.getI18nContext(helper.languageManager)
 
         // We remove any lines starting with > (quote) because this sometimes causes responses to something inside a citation, and that looks kinda bad
         val cleanMessage = this.message.content.lines()
@@ -85,7 +73,7 @@ class TicketListener(private val helper: LorittaHelperKord) {
                         ButtonStyle.Primary,
                         CloseTicketButtonExecutor,
                         ComponentDataUtils.encode(
-                            TicketLanguageData(TicketLanguageData.LanguageName.PORTUGUESE)
+                            TicketSystemTypeData(systemInfo.systemType)
                         )
                     ) {
                         label = i18nContext.get(I18nKeysData.Tickets.CloseTicket)

@@ -45,11 +45,8 @@ class AutoCloseTicketWhenMemberLeavesGuildListener(private val helper: LorittaHe
 
         val parentChannelId = channel.parentId.value ?: return@on
 
-        val i18nContext = when {
-            isPortugueseHelpDeskChannel(parentChannelId) -> helper.languageManager.getI18nContextById("pt")
-            isEnglishHelpDeskChannel(parentChannelId) -> helper.languageManager.getI18nContextById("en")
-            else -> return@on
-        }
+        val ticketSystemInformation = TicketUtils.informations[parentChannelId]!!
+        val i18nContext = ticketSystemInformation.getI18nContext(helper.languageManager)
 
         helper.helperRest.channel.createMessage(
             ticketThread.id

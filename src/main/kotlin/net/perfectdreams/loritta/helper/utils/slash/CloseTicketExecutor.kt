@@ -10,8 +10,7 @@ import net.perfectdreams.discordinteraktions.common.commands.SlashCommandExecuto
 import net.perfectdreams.discordinteraktions.common.commands.options.SlashCommandArguments
 import net.perfectdreams.loritta.helper.LorittaHelperKord
 import net.perfectdreams.loritta.helper.i18n.I18nKeysData
-import net.perfectdreams.loritta.helper.utils.tickets.isEnglishHelpDeskChannel
-import net.perfectdreams.loritta.helper.utils.tickets.isPortugueseHelpDeskChannel
+import net.perfectdreams.loritta.helper.utils.tickets.TicketUtils
 
 class CloseTicketExecutor(val helper: LorittaHelperKord) : SlashCommandExecutor() {
     companion object : SlashCommandExecutorDeclaration(CloseTicketExecutor::class)
@@ -28,20 +27,8 @@ class CloseTicketExecutor(val helper: LorittaHelperKord) : SlashCommandExecutor(
 
         val parentChannelId = channel.parentId.value ?: return
 
-        val i18nContext = when {
-            isPortugueseHelpDeskChannel(parentChannelId) -> {
-                helper.languageManager.getI18nContextById("pt")
-            }
-            isEnglishHelpDeskChannel(parentChannelId) -> {
-                helper.languageManager.getI18nContextById("en")
-            }
-            else -> {
-                context.sendEphemeralMessage {
-                    content = "You aren't in a ticket!"
-                }
-                return
-            }
-        }
+        val ticketSystemInformation = TicketUtils.informations[parentChannelId]!!
+        val i18nContext = ticketSystemInformation.getI18nContext(helper.languageManager)
 
         context.sendEphemeralMessage {
             content = i18nContext.get(I18nKeysData.Tickets.ClosingYourTicket)
