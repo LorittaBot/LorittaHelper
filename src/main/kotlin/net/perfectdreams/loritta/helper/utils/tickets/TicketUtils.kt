@@ -64,7 +64,7 @@ object TicketUtils {
         systemType: TicketSystemType,
         language: LanguageName,
         val fanArtsManagerRoleId: Snowflake,
-        val fanartRulesChannelId: Snowflake
+        val fanArtRulesChannelId: Snowflake
     ) : TicketSystemInformation(systemType, language, ArchiveDuration.Week)
 
     enum class TicketSystemType {
