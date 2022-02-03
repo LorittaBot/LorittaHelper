@@ -16,6 +16,7 @@ import net.perfectdreams.loritta.api.messages.LorittaReply
 import net.perfectdreams.loritta.helper.LorittaHelperKord
 import net.perfectdreams.loritta.helper.i18n.I18nKeysData
 import net.perfectdreams.loritta.helper.utils.ComponentDataUtils
+import net.perfectdreams.loritta.helper.utils.Emotes
 import net.perfectdreams.loritta.helper.utils.tickets.CreateTicketButtonExecutor
 import net.perfectdreams.loritta.helper.utils.tickets.HelperResponseSelectMenuExecutor
 import net.perfectdreams.loritta.helper.utils.tickets.TicketSystemTypeData
@@ -281,12 +282,19 @@ class TicketSenderExecutor(helper: LorittaHelperKord) : HelperSlashExecutor(help
                 }
             }
         } else if (systemInfo is TicketUtils.FirstFanArtTicketSystemInformation) {
+            val rulesChannelId = systemInfo.fanartRulesChannelId
+
             helper.helperRest.channel.createMessage(channel.id) {
                 embed {
-                    title = i18nContext.get(I18nKeysData.Tickets.LorittaHelpDesk)
+                    title = i18nContext.get("${Emotes.LORI_HEART} Enviar Primeira Fan-Art")
                     color = Color(26, 160, 254)
 
-                    description = "Crie um ticket para enviar a sua fan art!"
+                    description = """Quer enviar uma fan-art da Loritta e receber um cargo especial de Desenhista?
+                                    |
+                                    |Então você veio ao lugar certo! Aqui você poderá enviar todas as suas maravilhosas fan-arts, basta apenas clicar no botão abaixo para criar um ticket
+                                    |
+                                    |**Mas lembre-se!** Não iremos aprovar fan-arts mal feitas ou que não estejam de acordo com as regras em <#${fanartRulesChannelId}>!
+                                """.trimMargin()
                 }
 
                 actionRow {
