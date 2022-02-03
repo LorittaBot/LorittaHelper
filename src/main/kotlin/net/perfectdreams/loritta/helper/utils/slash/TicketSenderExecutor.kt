@@ -282,19 +282,21 @@ class TicketSenderExecutor(helper: LorittaHelperKord) : HelperSlashExecutor(help
                 }
             }
         } else if (systemInfo is TicketUtils.FirstFanArtTicketSystemInformation) {
-            val rulesChannelId = systemInfo.fanartRulesChannelId
+            val rulesChannelId = systemInfo.fanArtRulesChannelId
 
             helper.helperRest.channel.createMessage(channel.id) {
                 embed {
-                    title = i18nContext.get("${Emotes.LORI_HEART} Enviar Primeira Fan-Art")
+                    title = i18nContext.get("${Emotes.LORI_HEART} Enviar Primeira Fan Art")
                     color = Color(26, 160, 254)
 
-                    description = """Quer enviar uma fan-art da Loritta e receber um cargo especial de Desenhista?
+                    description = """Quer enviar uma fan art da Loritta e receber um cargo especial de Desenhista?
                                     |
                                     |Então você veio ao lugar certo! Aqui você poderá enviar todas as suas maravilhosas fan-arts, basta apenas clicar no botão abaixo para criar um ticket
                                     |
                                     |**Mas lembre-se!** Não iremos aprovar fan-arts mal feitas ou que não estejam de acordo com as regras em <#${rulesChannelId}>!
                                 """.trimMargin()
+
+                    image = "https://loritta.website/v3/assets/img/faq/fanarts/banner.png"
                 }
 
                 actionRow {
