@@ -286,7 +286,7 @@ class TicketSenderExecutor(helper: LorittaHelperKord) : HelperSlashExecutor(help
 
             helper.helperRest.channel.createMessage(channel.id) {
                 embed {
-                    title = i18nContext.get("${Emotes.LORI_HEART} Enviar Primeira Fan Art")
+                    title = "${Emotes.LORI_HEART} Enviar Primeira Fan Art"
                     color = Color(26, 160, 254)
 
                     description = """Quer enviar uma fan art da Loritta e receber um cargo especial de Desenhista?
