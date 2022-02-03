@@ -293,7 +293,7 @@ class TicketSenderExecutor(helper: LorittaHelperKord) : HelperSlashExecutor(help
                                     |
                                     |Então você veio ao lugar certo! Aqui você poderá enviar todas as suas maravilhosas fan-arts, basta apenas clicar no botão abaixo para criar um ticket
                                     |
-                                    |**Mas lembre-se!** Não iremos aprovar fan-arts mal feitas ou que não estejam de acordo com as regras em <#${fanartRulesChannelId}>!
+                                    |**Mas lembre-se!** Não iremos aprovar fan-arts mal feitas ou que não estejam de acordo com as regras em <#${rulesChannelId}>!
                                 """.trimMargin()
                 }
 
