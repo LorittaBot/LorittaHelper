@@ -23,7 +23,7 @@ class DJLorittaResponse : RegExResponse() {
                 prefix = Emotes.LORI_SOB
             ),
             LorittaReply(
-                "If you're in need for some sound waves in your ears through discord, we recommend you use Groovy! <https://groovy.bot/>",
+                "If you're in need for some sound waves in your ears through discord, we recommend **Groovy**! <https://groovy.bot/>",
                 mentionUser = false
             )
         )

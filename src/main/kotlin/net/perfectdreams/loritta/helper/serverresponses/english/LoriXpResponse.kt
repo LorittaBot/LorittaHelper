@@ -21,11 +21,11 @@ class LoriXpResponse : RegExResponse() {
                     prefix = "<a:lori_yay_wobbly:638040459721310238>"
                 ),
                 LorittaReply(
-                    "You can see how much experience you have using `+profile`",
+                    "And you can see how much experience you have using `+profile`",
                     mentionUser = false
                 ),
                 LorittaReply(
-                    "If you're apart of a server's staff, you can also edit a user's experience points using `+editxp`!",
+                    "Also, if you're an administrator, you can edit a user's experience points using `+editxp`!",
                     mentionUser = false
                 )
             )

@@ -18,7 +18,7 @@ class JoinLeaveResponse : RegExResponse() {
     override fun getResponse(message: String) =
             listOf(
                 LorittaReply(
-                    "**Enabling the join/leave messages is very easy!**",
+                    "**Enabling join/leave messages is very easy!**",
                     prefix = Emotes.LORI_PAC
                 ),
                 LorittaReply(
@@ -30,7 +30,7 @@ class JoinLeaveResponse : RegExResponse() {
                     mentionUser = false
                 ),
                 LorittaReply(
-                    "Now you just have to set it up like you want it! <:eu_te_moido:366047906689581085>",
+                    "Now you just have to set it up the way you want it! <:eu_te_moido:366047906689581085>",
                     mentionUser = false
                 ),
                 LorittaReply(

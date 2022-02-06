@@ -29,7 +29,7 @@ class ReceiveSonhosResponse : RegExResponse() {
                             mentionUser = false
                     ),
                     LorittaReply(
-                            "If you want to know other ways to get sonhos, read the <#761337709720633392>",
+                            "If you want to know other ways to get sonhos, read the <#761337709720633392> channel.",
                             prefix = Emotes.LORI_COFFEE,
                             mentionUser = false
                     )

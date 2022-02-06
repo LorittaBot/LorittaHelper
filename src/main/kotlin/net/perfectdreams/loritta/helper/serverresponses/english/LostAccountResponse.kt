@@ -19,7 +19,7 @@ class LostAccountResponse : RegExResponse() {
     override fun getResponse(message: String) =
             listOf(
                 LorittaReply(
-                    "We don't transfer sonhos/marriages/reputation/etc from acconuts you lost access to. We also don't restore data from accounts suspended by Discord for breaking it's terms of service.",
+                    "We don't transfer sonhos/marriages/reputation/etc from accounts you lost access to. We also don't restore data from accounts suspended by Discord for breaking its terms of service.",
                     Emotes.LORI_SHRUG
                 )
             )

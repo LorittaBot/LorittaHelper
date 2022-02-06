@@ -16,7 +16,7 @@ class LoriNameResponse: RegExResponse() {
     }
 
     override fun getResponse(message: String): List<LorittaReply> = listOf(LorittaReply(
-        message = "Just a reminder, my name is actually `Loritta` and my nickname is `Lori`, don't worry, it's very common to misspell my name. And yes, we can still be friends!",
+        message = "Just a reminder, my name is actually `Loritta` and my nickname is `Lori`. Don't worry, it's very common to misspell my name. And yes, we can still be friends!",
         prefix = Emotes.LORI_OWO
     ))
 

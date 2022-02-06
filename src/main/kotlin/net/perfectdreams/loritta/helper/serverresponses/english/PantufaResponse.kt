@@ -19,15 +19,15 @@ class PantufaResponse : RegExResponse() {
     override fun getResponse(message: String) =
         listOf(
             LorittaReply(
-                "Pantufinha (<@390927821997998081>) is my best friend and is the #1 helper in SparklyPower!",
+                "Pantufinha (<@390927821997998081>) is my best friend and the #1 helper in SparklyPower!",
                 prefix = Emotes.LORI_PAC
             ),
             LorittaReply(
-                "She does a lot of things related to my minecraft server, meaning... she's not that interesting for you.",
+                "She does a lot of things related to my minecraft server, meaning... she might not be that interesting to you.",
                 mentionUser = false
             ),
             LorittaReply(
-                "(And she can blow up your server any time she wants!!) <:canella_triste:505191542982705174>",
+                "(And she can blow your server up any time she wants!!) <:canella_triste:505191542982705174>",
                 mentionUser = false
             )
         )

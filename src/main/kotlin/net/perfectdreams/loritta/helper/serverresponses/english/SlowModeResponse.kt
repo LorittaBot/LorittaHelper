@@ -17,7 +17,7 @@ class SlowModeResponse : RegExResponse() {
     override fun getResponse(message: String) =
         listOf(
             LorittaReply(
-                "You can enable slow mode in a channel using `+slowmode` or in the channel's discord configurations!",
+                "You can enable slow mode in a channel using `+slowmode`, or in the channel's discord configurations!",
                 Emotes.LORI_OWO
             )
         )

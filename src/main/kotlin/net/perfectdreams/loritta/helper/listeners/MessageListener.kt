@@ -15,7 +15,6 @@ import net.perfectdreams.loritta.helper.utils.dontmentionstaff.PortugueseDontMen
 import net.perfectdreams.loritta.helper.utils.generatebanstatusreport.GenerateBanStatusReport
 import net.perfectdreams.loritta.helper.utils.generateserverreport.GenerateAppealsReport
 import net.perfectdreams.loritta.helper.utils.generateserverreport.GenerateServerReport
-import net.perfectdreams.loritta.helper.utils.gotolangchannel.GoToCorrectLanguageChannel
 
 class MessageListener(val m: LorittaHelper) : ListenerAdapter() {
     private val dontMentionStaffs = listOf(
@@ -23,7 +22,6 @@ class MessageListener(val m: LorittaHelper) : ListenerAdapter() {
             PortugueseDontMentionStaff()
     )
 
-    val goToTheCorrectLanguageChannel = GoToCorrectLanguageChannel(m)
     val checkIllegalNitroSell = CheckIllegalNitroSell()
     val generateBanStatusReport = GenerateBanStatusReport(m)
     val generateServerReport = GenerateServerReport(m)
@@ -68,10 +66,6 @@ class MessageListener(val m: LorittaHelper) : ListenerAdapter() {
             dontMentionStaffs.forEach {
                 it.onMessageReceived(event)
             }
-        }
-
-        m.launch {
-            goToTheCorrectLanguageChannel.onMessageReceived(event)
         }
 
         m.launch {

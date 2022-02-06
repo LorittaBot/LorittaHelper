@@ -29,15 +29,15 @@ class LoriMandarCmdsResponse : RegExResponse() {
                     mentionUser = false
                 ),
                 LorittaReply(
-                    "Did I answer? Cool! Now read what I said and solve the problem! <:lori_yum:414222275223617546> Usually it's because you blocked the text channel so I can't use commands, or because you took away a role's permission to use my commands, among other basic issues like that...",
+                    "Did I answer? Cool! Now read what I said and solve the problem! <:lori_yum:414222275223617546> It's usually because you blocked the text channel so I can't use commands, or because you took a role's permission to use my commands away, among other dummy mistakes like that...",
                     mentionUser = false
                 ),
                 LorittaReply(
-                    "I didn't answer? Then check if I have permission to read and send messages in the text channel (if I don't show up in the online members list, I probably can't read the channel!)",
+                    "I didn't reply? Then check if I have permission to read and send messages in the text channel (if I don't show up in the online members list, I probably can't read the channel!)",
                     mentionUser = false
                 ),
                 LorittaReply(
-                    "I didn't answer, it says that I'am typing but I don't send anything? Then something went wrong!",
+                    "I didn't reply, and it says that I'm typing without actually sending anything? Then something really broke!",
                     mentionUser = false
                 ),
                 LorittaReply(
