@@ -72,7 +72,6 @@ dependencies {
     implementation("org.jetbrains.exposed:exposed-dao:0.36.1")
     implementation("org.jetbrains.exposed:exposed-jdbc:0.36.1")
 
-    implementation("com.github.pemistahl:lingua:6a6d284145")
     testImplementation("org.junit.jupiter:junit-jupiter:5.8.2")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.8.2")
 
