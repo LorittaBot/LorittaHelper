@@ -18,7 +18,7 @@ class VotarResponse : RegExResponse() {
 
     override fun getResponse(message: String) = listOf(
         LorittaReply(
-            "Thanks for wanting to vote for me! It helps me grow and rewards you with Sonhos! To see the link, use `+dbl`!",
+            "Thanks for wanting to vote in me! It helps me grow and also rewards you with Sonhos! It's a great deal, don't you think? To see the voting link, use `+dbl`!",
             Emotes.LORI_OWO
         )
     )

@@ -21,7 +21,7 @@ class AddLoriResponse : RegExResponse() {
     override fun getResponse(message: String) =
         listOf(
             LorittaReply(
-                "Adding me to your server is easy! Just click here and add me to your server ^-^ <https://loritta.website/dashboard>",
+                "Adding me to your server is easy! Just click here and select the server you want to add me ^-^ <https://loritta.website/dashboard>",
                 Emotes.LORI_PAC
             )
         )

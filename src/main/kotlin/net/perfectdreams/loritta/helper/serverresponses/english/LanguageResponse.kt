@@ -18,7 +18,7 @@ class LanguageResponse : RegExResponse() {
     override fun getResponse(message: String) =
             listOf(
                     LorittaReply(
-                            "You can change my language using `+language` and picking the one that you want!",
+                            "You can change my language using `+language` and picking the one you want!",
                             "\uD83D\uDE09"
                     )
             )

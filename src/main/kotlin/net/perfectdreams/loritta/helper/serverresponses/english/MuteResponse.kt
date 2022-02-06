@@ -18,15 +18,15 @@ class MuteResponse : RegExResponse() {
     override fun getResponse(message: String) =
         listOf(
             LorittaReply(
-                "To mute a user, just use `+mute`",
+                "To mute a user, simply use `+mute`",
                 prefix = "<:lori_pac:503600573741006863>"
             ),
             LorittaReply(
-                "To remove a user's mute, just use `+unmute`",
+                "To unmute a user, again just simply use `+unmute`",
                 mentionUser = false
             ),
             LorittaReply(
-                "When you mute someone, I'll give them the `Muted` role!",
+                "(Tip: When you mute someone, I'll give them the `Muted` role. Don't try deleting or messing with that role, because it can break things on my side!)",
                 prefix = Emotes.LORI_OWO,
                 mentionUser = false
             )

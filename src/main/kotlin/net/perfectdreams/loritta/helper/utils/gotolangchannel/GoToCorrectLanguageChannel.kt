@@ -83,7 +83,7 @@ class GoToCorrectLanguageChannel(val m: LorittaHelper) {
                         )
                         Language.ENGLISH -> listOf(
                             LorittaReply(
-                                "It looks like you are talking in English on the Portuguese support channel! Please ask your question in the <#420628148044955648> channel and mention <@&${Constants.ENGLISH_LORITTA_SUPPORT_ROLE_ID}> when sending your message there, thank you!",
+                                "It looks like you are talking in English on the Portuguese support channel! Please redirect your question to <#420628148044955648> and mention <@&${Constants.ENGLISH_LORITTA_SUPPORT_ROLE_ID}> when sending your message there, thank you!",
                                 Emotes.LORI_SOB
                             )
                         )

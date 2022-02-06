@@ -18,7 +18,7 @@ class NoStaffSpotResponse : RegExResponse() {
     override fun getResponse(message: String): List<LorittaReply> =
         listOf(
             LorittaReply(
-                "unfortunly, we don't have room for new admins, https://cdn.discordapp.com/attachments/358774895850815488/703645649995825182/stream.mp4"
+                "Unfortunately, we don't have room for new administrators, https://cdn.discordapp.com/attachments/358774895850815488/703645649995825182/stream.mp4"
             )
         )
 }

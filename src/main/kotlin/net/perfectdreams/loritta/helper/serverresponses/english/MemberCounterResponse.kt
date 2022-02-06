@@ -23,7 +23,7 @@ class MemberCounterResponse : RegExResponse() {
                 prefix = Emotes.LORI_PAC
             ),
             LorittaReply(
-                "Go to the dashboard by clicking here <https://loritta.website/dashboard> and pick the server you want to enable the member counter on!",
+                "Go to the dashboard by clicking here <https://loritta.website/dashboard> and pick the server you want to activate the member counter on!",
                 mentionUser = false
             ),
             LorittaReply(
@@ -31,11 +31,11 @@ class MemberCounterResponse : RegExResponse() {
                 mentionUser = false
             ),
             LorittaReply(
-                "Look for the channel you want to put the counter on, and in the text box, write \"{counter}\" and save",
+                "Look for the channel you want to put the counter on, and in the text box, write \"{counter}\", then save",
                 mentionUser = false
             ),
             LorittaReply(
-                "Now you just have to wait for someone to join the server to see the magic happen!",
+                "Now you just have to wait for someone to join your server to see the magic happen!",
                 prefix = Emotes.LORI_OWO,
                 mentionUser = false
             )

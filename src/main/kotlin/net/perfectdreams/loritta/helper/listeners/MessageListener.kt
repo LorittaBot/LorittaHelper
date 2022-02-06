@@ -71,7 +71,8 @@ class MessageListener(val m: LorittaHelper) : ListenerAdapter() {
         }
 
         m.launch {
-            goToTheCorrectLanguageChannel.onMessageReceived(event)
+            // Disable `goToTheCorrectLanguageChannel` module in favor of the new tickets system
+            // goToTheCorrectLanguageChannel.onMessageReceived(event)
         }
 
         m.launch {
