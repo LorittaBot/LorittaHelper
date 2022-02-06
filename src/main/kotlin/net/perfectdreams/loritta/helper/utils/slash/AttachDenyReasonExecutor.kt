@@ -12,7 +12,7 @@ import net.perfectdreams.loritta.helper.utils.extensions.await
 import net.perfectdreams.loritta.helper.utils.generateserverreport.GenerateAppealsReport
 import net.perfectdreams.loritta.helper.utils.generateserverreport.GenerateServerReport
 
-class AttachDenyReasonExecutor(helper: LorittaHelperKord, val jda: JDA) : HelperSlashExecutor(helper, PermissionLevel.ADMIN) {
+class AttachDenyReasonExecutor(helper: LorittaHelperKord, val jda: JDA) : HelperSlashExecutor(helper, PermissionLevel.HELPER) {
     companion object : SlashCommandExecutorDeclaration(AttachDenyReasonExecutor::class) {
         override val options = Options
         val VALID_CHANNEL_IDS = listOf(
