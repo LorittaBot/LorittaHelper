@@ -24,10 +24,6 @@ class AutoCloseTicketWhenMemberLeavesGuildListener(private val helper: LorittaHe
         val guildId = this.member.guildId
         logger.info { "User $userId left guild $guildId... :(" }
 
-        // Only in Loritta's support server!
-        if (Constants.SUPPORT_SERVER_ID != guildId.value.toLong())
-            return@on
-
         val ticketThread: DiscordChannel = helper.helperRest.guild.listActiveThreads(guildId)
             .threads
             .firstOrNull {
@@ -45,7 +41,7 @@ class AutoCloseTicketWhenMemberLeavesGuildListener(private val helper: LorittaHe
 
         val parentChannelId = channel.parentId.value ?: return@on
 
-        val ticketSystemInformation = TicketUtils.informations[parentChannelId]!!
+        val ticketSystemInformation = TicketUtils.informations[parentChannelId] ?: return@on
         val i18nContext = ticketSystemInformation.getI18nContext(helper.languageManager)
 
         helper.helperRest.channel.createMessage(

@@ -33,7 +33,8 @@ object TicketUtils {
         Snowflake(938247721775661086L) to FirstFanArtTicketSystemInformation(
             TicketSystemType.FIRST_FAN_ARTS_PORTUGUESE,
             LanguageName.PORTUGUESE,
-            Snowflake(924649809103691786)
+            Snowflake(924649809103691786),
+            Snowflake(557629480391409666)
         ),
     )
 
@@ -62,7 +63,8 @@ object TicketUtils {
     class FirstFanArtTicketSystemInformation(
         systemType: TicketSystemType,
         language: LanguageName,
-        val fanArtsManagerRoleId: Snowflake
+        val fanArtsManagerRoleId: Snowflake,
+        val fanArtRulesChannelId: Snowflake
     ) : TicketSystemInformation(systemType, language, ArchiveDuration.Week)
 
     enum class TicketSystemType {
