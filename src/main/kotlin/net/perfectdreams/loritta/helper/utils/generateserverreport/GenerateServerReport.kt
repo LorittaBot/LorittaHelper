@@ -416,10 +416,10 @@ class GenerateServerReport(val m: LorittaHelper) {
             .filter { it.isNotBlank() }
             .map { it.trim() }
 
-        val guilds = items.first { it.question == "A pessoa está em servidores da LorittaLand? Se sim, quais?" }
-            .answer
-            .stringArray
-            .map {
+        val guilds = items.firstOrNull { it.question == "A pessoa está em servidores da LorittaLand? Se sim, quais?" }
+            ?.answer
+            ?.stringArray
+            ?.map {
                 it.trim()
             }
 
@@ -442,11 +442,12 @@ class GenerateServerReport(val m: LorittaHelper) {
             false
         )
 
-        embed.addField(
-            "Servidores",
-            guilds.joinToString("\n"),
-            false
-        )
+        if (guilds != null)
+            embed.addField(
+                "Servidores",
+                guilds.joinToString("\n"),
+                false
+            )
 
         embed.addFinalConsiderations(items)
 
