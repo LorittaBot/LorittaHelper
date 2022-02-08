@@ -16,7 +16,7 @@ class StarboardResponse : RegExResponse() {
 
     override fun getResponse(message: String) = listOf(
         LorittaReply(
-            "The starboard is a system for members to \\\"pin\\\" messages they think are cool/interesting/funny, the message will automatically go to the starboard when it has an X number of ⭐ in the message's reactions! You can configure the Starboard on my dashboard! <https://loritta.website/dashboard>",
+            "The starboard is a system for members to \\\"pin\\\" messages they think are cool/interesting/funny. Messages go automatically to the starboard when they achieve an X number of ⭐ in the message's reactions. You can configure the Starboard on my dashboard! <https://loritta.website/dashboard>",
             Emotes.LORI_OWO
         )
     )

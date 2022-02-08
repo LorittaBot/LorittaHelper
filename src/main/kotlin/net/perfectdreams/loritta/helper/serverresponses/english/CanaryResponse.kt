@@ -23,11 +23,11 @@ class CanaryResponse : RegExResponse() {
                 prefix = Emotes.LORI_PAC
             ),
             LorittaReply(
-                "That means new features go there first, get tested, and then go to my main account! We do it this way to avoid getting experimental and unstable features on my main account.",
+                "That means new features are sent there first, get tested, and then finally come to my main account! This happens because we want to avoid getting experimental and unstable features breaking things in my main account.",
                 mentionUser = false
             ),
             LorittaReply(
-                "She's private and you can't add her, sorry! If you want to use a canary-only feature, wait for it to make it's way to Loritta! And why would you want a version of mine that can accidentally blow up your server? Keep your server safe and never add bots if you don't know what they do!",
+                "She's private so you can't add her, sorry! If you wish to use a canary-only feature, wait for it to make it's way to Loritta! And why would you want a version of mine that could accidentally blow up your server? Keep your server safe and never add bots you don't know what they do!",
                 mentionUser = false,
                 prefix = "<:canella_triste:505191542982705174>"
             )

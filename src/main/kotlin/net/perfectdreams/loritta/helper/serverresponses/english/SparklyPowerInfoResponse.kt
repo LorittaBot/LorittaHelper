@@ -17,7 +17,7 @@ class SparklyPowerInfoResponse: RegExResponse() {
 
     override fun getResponse(message: String): List<LorittaReply> = listOf(
             LorittaReply(
-                    message = "SparklyPower is Loritta & Pantufa Survival Minecraft Server! **IP:** `mc.sparklypower.net`",
+                    message = "SparklyPower is Loritta & Pantufa's Survival Minecraft Server! **IP:** `mc.sparklypower.net`",
                     prefix = Emotes.LORI_PAT
             ),
             LorittaReply(
@@ -25,7 +25,7 @@ class SparklyPowerInfoResponse: RegExResponse() {
                     prefix = Emotes.LORI_COFFEE
             ),
             LorittaReply(
-                    message = "If you need help with things related to **SparklyPower**, I recommend you look for it here: ${Constants.SPARKLY_POWER_INVITE_CODE}",
+                    message = "If you need help with things related to **SparklyPower**, I recommend you to search for support here: ${Constants.SPARKLY_POWER_INVITE_CODE}",
                     prefix = Emotes.WUMPUS_KEYBOARD
             )
     )

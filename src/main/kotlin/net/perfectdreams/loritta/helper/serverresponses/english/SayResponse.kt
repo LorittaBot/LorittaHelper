@@ -26,11 +26,11 @@ class SayResponse : RegExResponse() {
                     prefix = Emotes.LORI_PAC
                 ),
                 LorittaReply(
-                    "You can also *pick* what server I'll send the message in with `+say #channel-here your message here`",
+                    "You can also *pick* what server I'll send the message with `+say #channel-here your message here`",
                     mentionUser = false
                 ),
                 LorittaReply(
-                    "But please, don't make me say mean things... If someone complains that I said something bad and I find out you did it, you'll be banned from using Loritta!",
+                    "But please, don't make me say mean things... If someone complains that I said something bad and I find out you did it, you'll be banned from using my features!",
                     Emotes.LORI_SOB,
                     mentionUser = false
                 ),

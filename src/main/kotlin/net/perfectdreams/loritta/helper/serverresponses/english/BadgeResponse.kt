@@ -20,7 +20,7 @@ class BadgeResponse : RegExResponse() {
     override fun getResponse(message: String) =
         listOf(
             LorittaReply(
-                "Read more about badges and how you can get them in <#761337709720633392>",
+                "Read more about badges and how you can acquire them in <#761337709720633392>",
                 Emotes.LORI_OWO
             )
         )

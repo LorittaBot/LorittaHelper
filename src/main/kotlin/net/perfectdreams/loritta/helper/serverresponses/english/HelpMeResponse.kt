@@ -24,7 +24,7 @@ class HelpMeResponse : RegExResponse() {
             if (!message.contains(Constants.ENGLISH_LORITTA_SUPPORT_ROLE_ID.toString())) {
                 listOf(
                         LorittaReply(
-                                "Pst! If you have a question, write it in the chat and ping the <@&${Constants.ENGLISH_LORITTA_SUPPORT_ROLE_ID}> role!",
+                                "Pst! If you have a question, send it in the chat and ping the <@&${Constants.ENGLISH_LORITTA_SUPPORT_ROLE_ID}> role!",
                                 Emotes.LORI_PAT
                         )
                 )

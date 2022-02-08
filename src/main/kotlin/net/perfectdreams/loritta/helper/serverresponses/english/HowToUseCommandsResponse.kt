@@ -20,14 +20,14 @@ class HowToUseCommandsResponse : RegExResponse() {
     override fun getResponse(message: String) =
         listOf(
             LorittaReply(
-                "You can use my commands using `+command`, default my prefix is `+` but in other servers it might be different!",
+                "You can use my commands using `+command`. My prefix is `+` by default, but in other servers it might be different!",
                 Emotes.LORI_COFFEE
             ),
             LorittaReply(
-                "To see what my prefix is in any server, send a message *just @pinging me* in the server's chat to see what the prefix is!",
+                "To see what my prefix is in any server, send a message *just @pinging me* in the server's chat and I'll reply with the guild's prefix!",
             ),
             LorittaReply(
-                "See all my commands in my website! <https://loritta.website/commands>",
+                "See all of my commands in my website! <https://loritta.website/commands>",
                 Emotes.WUMPUS_KEYBOARD
             )
         )

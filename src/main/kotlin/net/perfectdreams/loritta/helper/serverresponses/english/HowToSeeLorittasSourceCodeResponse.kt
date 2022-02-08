@@ -16,7 +16,7 @@ class HowToSeeLorittasSourceCodeResponse : RegExResponse()  {
         override fun getResponse(message: String): List<LorittaReply> =
             listOf(
                     LorittaReply(
-                            "You can read my source code here: https://bit.ly/lorittagit",
+                            "You can find my source code here: https://bit.ly/lorittagit",
                             Emotes.LORI_PAT
                     )
             )
