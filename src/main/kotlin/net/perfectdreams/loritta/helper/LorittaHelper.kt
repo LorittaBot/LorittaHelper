@@ -98,8 +98,7 @@ class LorittaHelper(val config: LorittaHelperConfig, val fanArtsConfig: FanArtsC
                 PrivateMessageListener(this),
                 ApproveReportsOnReactionListener(this),
                 AddReactionsToMessagesListener(this),
-                ApproveAppealsOnReactionListener(this),
-                WhyDoThisIfYouAreGoingToGetBannedAnywayListener()
+                ApproveAppealsOnReactionListener(this)
             )
             .setMemberCachePolicy(
                 MemberCachePolicy.ALL
