@@ -42,7 +42,6 @@ import net.perfectdreams.loritta.helper.utils.faqembed.FAQEmbedUpdaterPortuguese
 import net.perfectdreams.loritta.helper.utils.faqembed.FAQEmbedUpdaterSparklyPower
 import net.perfectdreams.loritta.helper.utils.generateserverreport.PendingReportsListTask
 import net.perfectdreams.loritta.helper.utils.topsonhos.TopSonhosRankingSender
-import net.perfectdreams.loritta.helper.utils.whydothisifyouaregoingtogetbannedanyway.WhyDoThisIfYouAreGoingToGetBannedAnywayListener
 import java.io.File
 import java.time.Instant
 import java.time.LocalDateTime
