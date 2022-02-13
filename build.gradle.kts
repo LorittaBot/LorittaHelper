@@ -37,8 +37,8 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-hocon:1.3.1")
 
     // Kord
-    implementation("dev.kord:kord-rest:0.8.x-SNAPSHOT")
-    implementation("dev.kord:kord-gateway:0.8.x-SNAPSHOT")
+    implementation("dev.kord:kord-rest:0.8.x-lori-fork-20220209.211412-5")
+    implementation("dev.kord:kord-gateway:0.8.x-lori-fork-20220209.211412-5")
 
     // Sequins
     implementation("net.perfectdreams.sequins.text:text-utils:1.0.0")
