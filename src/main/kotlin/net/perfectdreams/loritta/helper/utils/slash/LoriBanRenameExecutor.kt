@@ -69,7 +69,7 @@ class LoriBanRenameExecutor(helper: LorittaHelperKord) : HelperSlashExecutor(hel
                     Snowflake(userId),
                     "Motivo do Ban Alterado",
                     reason,
-                    Color(237, 66, 69)
+                    Color(214, 0, 255)
                 )
             }
             is UserIsNotBannedResult -> {
