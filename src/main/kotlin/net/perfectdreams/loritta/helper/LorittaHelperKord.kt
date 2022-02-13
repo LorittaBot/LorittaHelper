@@ -42,6 +42,7 @@ import net.perfectdreams.loritta.helper.utils.slash.DailyCheckExecutor
 import net.perfectdreams.loritta.helper.utils.slash.DriveImageRetrieverExecutor
 import net.perfectdreams.loritta.helper.utils.slash.IPLocationExecutor
 import net.perfectdreams.loritta.helper.utils.slash.LoriBanExecutor
+import net.perfectdreams.loritta.helper.utils.slash.LoriBanRenameExecutor
 import net.perfectdreams.loritta.helper.utils.slash.LoriUnbanExecutor
 import net.perfectdreams.loritta.helper.utils.slash.PendingScarletExecutor
 import net.perfectdreams.loritta.helper.utils.slash.RetrieveMessageExecutor
@@ -213,7 +214,8 @@ class LorittaHelperKord(
                 register(
                     LoriToolsCommand,
                     LoriBanExecutor(this@LorittaHelperKord),
-                    LoriUnbanExecutor(this@LorittaHelperKord)
+                    LoriUnbanExecutor(this@LorittaHelperKord),
+                    LoriBanRenameExecutor(this@LorittaHelperKord)
                 )
 
                 if (galleryOfDreamsClient != null) {
