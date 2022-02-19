@@ -42,6 +42,7 @@ class AddFanArtToGalleryMessageExecutor(private val m: LorittaHelperKord, val ga
                     targetMessage.channelId,
                     targetMessage.id,
                     null,
+                    null,
                     listOf()
                 )
             } else {
@@ -50,6 +51,7 @@ class AddFanArtToGalleryMessageExecutor(private val m: LorittaHelperKord, val ga
                     artist.slug,
                     targetMessage.channelId,
                     targetMessage.id,
+                    null,
                     null,
                     listOf()
                 )
