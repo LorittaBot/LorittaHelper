@@ -21,10 +21,6 @@ class DJLorittaResponse : RegExResponse() {
             LorittaReply(
                 "Infelizmente o YouTube e a Google fizeram alterações e os comandos de música foram removidos... Leia mais aqui <https://loritta.website/blog/youtube-google-block>",
                 prefix = Emotes.LORI_SOB
-            ),
-            LorittaReply(
-                "Se você tá com fogo de escutar ondas sonoras no seu ouvido pelo Discord, nós recomendamos utilizar o Groovy! <https://groovy.bot/>",
-                mentionUser = false
             )
         )
 }
