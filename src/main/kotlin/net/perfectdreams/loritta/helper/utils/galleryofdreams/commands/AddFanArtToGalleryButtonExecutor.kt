@@ -36,7 +36,7 @@ class AddFanArtToGalleryButtonExecutor(val m: LorittaHelperKord, val galleryOfDr
 
         val attachment = message.attachments.first { it.id == addFanArtData.selectedAttachmentId }
 
-        val contentType = when (attachment.filename.substringAfterLast(".")) {
+        val contentType = when (addFanArtData.extensionOverride ?: attachment.filename.substringAfterLast(".")) {
             "png" -> ContentType.Image.PNG
             "jpeg", "jpg" -> ContentType.Image.JPEG
             "gif" -> ContentType.Image.GIF

@@ -16,6 +16,9 @@ class AddFanArtToGallerySlashExecutor(helper: LorittaHelperKord, val galleryOfDr
         object Options : ApplicationCommandOptions() {
             val messageUrl = string("message_url", "Link da Mensagem da Fan Art")
                 .register()
+
+            val extensionOverride = string("extension_override", "Substitui a extensão da Fan Art enviada")
+                .register()
         }
 
         override val options = Options
@@ -65,6 +68,7 @@ class AddFanArtToGallerySlashExecutor(helper: LorittaHelperKord, val galleryOfDr
                     targetMessage.author.username.lowercase().replace(" ", "-").replace(Regex("[^A-Za-z0-9-]"), "").trim().ifEmpty { targetMessage.author.id.value.toString() },
                     targetMessage.channelId,
                     targetMessage.id,
+                    args[Options.extensionOverride],
                     null,
                     listOf()
                 )
@@ -74,6 +78,7 @@ class AddFanArtToGallerySlashExecutor(helper: LorittaHelperKord, val galleryOfDr
                     artist.slug,
                     targetMessage.channelId,
                     targetMessage.id,
+                    args[Options.extensionOverride],
                     null,
                     listOf()
                 )

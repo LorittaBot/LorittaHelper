@@ -25,7 +25,7 @@ class SelectAttachmentSelectMenuExecutor(val m: LorittaHelperKord, val galleryOf
 
         val attachment = message.attachments.first { it.id == selectedAttachmentId }
 
-        val contentType = when (attachment.filename.substringAfterLast(".")) {
+        val contentType = when (data.extensionOverride ?: attachment.filename.substringAfterLast(".")) {
             "png" -> ContentType.Image.PNG
             "jpeg", "jpg" -> ContentType.Image.JPEG
             "gif" -> ContentType.Image.GIF

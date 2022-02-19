@@ -10,6 +10,7 @@ import net.perfectdreams.galleryofdreams.common.FanArtTag
 sealed class AddFanArtData {
     abstract val fanArtChannelId: Snowflake
     abstract val fanArtMessageId: Snowflake
+    abstract val extensionOverride: String?
     abstract val selectedAttachmentId: Snowflake?
     abstract val tags: List<FanArtTag>
 }
@@ -21,6 +22,7 @@ data class AddFanArtToExistingArtistData(
     val artistSlug: String,
     override val fanArtChannelId: Snowflake,
     override val fanArtMessageId: Snowflake,
+    override val extensionOverride: String?,
     override val selectedAttachmentId: Snowflake?,
     override val tags: List<FanArtTag>
 ) : AddFanArtData()
@@ -33,6 +35,7 @@ data class AddFanArtToNewArtistData(
     val artistSlug: String,
     override val fanArtChannelId: Snowflake,
     override val fanArtMessageId: Snowflake,
+    override val extensionOverride: String?,
     override val selectedAttachmentId: Snowflake?,
     override val tags: List<FanArtTag>
 ) : AddFanArtData()
