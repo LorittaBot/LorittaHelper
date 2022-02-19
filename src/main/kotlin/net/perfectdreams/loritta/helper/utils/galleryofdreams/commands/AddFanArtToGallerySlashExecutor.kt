@@ -17,7 +17,7 @@ class AddFanArtToGallerySlashExecutor(helper: LorittaHelperKord, val galleryOfDr
             val messageUrl = string("message_url", "Link da Mensagem da Fan Art")
                 .register()
 
-            val extensionOverride = string("extension_override", "Substitui a extensão da Fan Art enviada")
+            val extensionOverride = optionalString("extension_override", "Substitui a extensão da Fan Art enviada caso o usuário tenha enviado com uma extensão errada")
                 .register()
         }
 
