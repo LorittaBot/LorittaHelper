@@ -31,38 +31,8 @@ import net.perfectdreams.loritta.helper.utils.galleryofdreams.commands.declarati
 import net.perfectdreams.loritta.helper.utils.galleryofdreams.commands.declarations.GalleryOfDreamsSlashCommand
 import net.perfectdreams.loritta.helper.utils.generateserverreport.ShowFilesExecutor
 import net.perfectdreams.loritta.helper.utils.generateserverreport.ShowUserIdExecutor
-import net.perfectdreams.loritta.helper.utils.slash.AllTransactionsExecutor
-import net.perfectdreams.loritta.helper.utils.slash.AttachDenyReasonExecutor
-import net.perfectdreams.loritta.helper.utils.slash.BroadcastDailyShopWinnersExecutor
-import net.perfectdreams.loritta.helper.utils.slash.ButtonRoleSenderExecutor
-import net.perfectdreams.loritta.helper.utils.slash.CheckCommandsExecutor
-import net.perfectdreams.loritta.helper.utils.slash.CloseTicketExecutor
-import net.perfectdreams.loritta.helper.utils.slash.DailyCatcherCheckExecutor
-import net.perfectdreams.loritta.helper.utils.slash.DailyCheckExecutor
-import net.perfectdreams.loritta.helper.utils.slash.DriveImageRetrieverExecutor
-import net.perfectdreams.loritta.helper.utils.slash.IPLocationExecutor
-import net.perfectdreams.loritta.helper.utils.slash.LoriBanExecutor
-import net.perfectdreams.loritta.helper.utils.slash.LoriBanRenameExecutor
-import net.perfectdreams.loritta.helper.utils.slash.LoriUnbanExecutor
-import net.perfectdreams.loritta.helper.utils.slash.PendingScarletExecutor
-import net.perfectdreams.loritta.helper.utils.slash.RetrieveMessageExecutor
-import net.perfectdreams.loritta.helper.utils.slash.ServerMembersExecutor
-import net.perfectdreams.loritta.helper.utils.slash.TicketSenderExecutor
-import net.perfectdreams.loritta.helper.utils.slash.declarations.AllTransactionsCommand
-import net.perfectdreams.loritta.helper.utils.slash.declarations.AttachDenyReasonCommand
-import net.perfectdreams.loritta.helper.utils.slash.declarations.BroadcastDailyShopWinnersCommand
-import net.perfectdreams.loritta.helper.utils.slash.declarations.ButtonRoleSenderCommand
-import net.perfectdreams.loritta.helper.utils.slash.declarations.CheckCommandsCommand
-import net.perfectdreams.loritta.helper.utils.slash.declarations.CloseTicketCommand
-import net.perfectdreams.loritta.helper.utils.slash.declarations.DailyCatcherCheckCommand
-import net.perfectdreams.loritta.helper.utils.slash.declarations.DailyCheckCommand
-import net.perfectdreams.loritta.helper.utils.slash.declarations.DriveImageRetrieverCommand
-import net.perfectdreams.loritta.helper.utils.slash.declarations.IPLocationCommand
-import net.perfectdreams.loritta.helper.utils.slash.declarations.LoriToolsCommand
-import net.perfectdreams.loritta.helper.utils.slash.declarations.PendingScarletCommand
-import net.perfectdreams.loritta.helper.utils.slash.declarations.RetrieveMessageCommand
-import net.perfectdreams.loritta.helper.utils.slash.declarations.ServerMembersCommand
-import net.perfectdreams.loritta.helper.utils.slash.declarations.TicketSenderCommand
+import net.perfectdreams.loritta.helper.utils.slash.*
+import net.perfectdreams.loritta.helper.utils.slash.declarations.*
 import net.perfectdreams.loritta.helper.utils.tickets.AutoCloseTicketWhenMemberLeavesGuildListener
 import net.perfectdreams.loritta.helper.utils.tickets.CloseTicketButtonExecutor
 import net.perfectdreams.loritta.helper.utils.tickets.CreateTicketButtonExecutor
@@ -137,6 +107,10 @@ class LorittaHelperKord(
                 register(
                     PendingScarletCommand,
                     PendingScarletExecutor(this@LorittaHelperKord, jda)
+                )
+                register(
+                    PendingReportsCommand,
+                    PendingReportsExecutor(this@LorittaHelperKord, jda)
                 )
                 register(
                     IPLocationCommand,
