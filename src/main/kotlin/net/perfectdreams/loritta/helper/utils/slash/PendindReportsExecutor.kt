@@ -37,7 +37,7 @@ class PendingReportsExecutor(helper: LorittaHelperKord, val jda: JDA) : HelperSl
 
         try {
             val history = channel.history
-            var dayOfTheLastMessageInTheChannel: Int? = null
+            var monthOfTheLastMessageInTheChannel: Int? = null
 
             val messages = mutableListOf<Message>()
 
@@ -46,16 +46,16 @@ class PendingReportsExecutor(helper: LorittaHelperKord, val jda: JDA) : HelperSl
                 if (newMessages.isEmpty())
                     break
 
-                if (dayOfTheLastMessageInTheChannel == null)
-                    dayOfTheLastMessageInTheChannel = newMessages.first()
+                if (monthOfTheLastMessageInTheChannel == null)
+                    monthOfTheLastMessageInTheChannel = newMessages.first()
                         .timeCreated
                         .monthValue
 
                 val onlyMessagesInTheSameDay = newMessages.filter {
-                    it.timeCreated.monthValue == dayOfTheLastMessageInTheChannel
+                    it.timeCreated.monthValue == monthOfTheLastMessageInTheChannel
                 }
 
-                logger.info { "There are ${onlyMessagesInTheSameDay.size} messages that were sent in $dayOfTheLastMessageInTheChannel!" }
+                logger.info { "There are ${onlyMessagesInTheSameDay.size} messages that were sent in $monthOfTheLastMessageInTheChannel!" }
 
                 if (onlyMessagesInTheSameDay.isEmpty())
                     break
