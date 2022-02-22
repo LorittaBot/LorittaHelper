@@ -70,6 +70,7 @@ class PendingReportsExecutor(helper: LorittaHelperKord, val jda: JDA) : HelperSl
                 .filter { it.author.idLong == jda.selfUser.idLong }
                 .filter { it.type == MessageType.DEFAULT }
                 .filter { !it.isWebhookMessage }
+                .filter { it.embeds.isNotEmpty() }
                 .filter {
                     it.reactions.all { reaction ->
                         reaction.count == 1
