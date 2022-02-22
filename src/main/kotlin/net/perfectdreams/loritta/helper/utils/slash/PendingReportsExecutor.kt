@@ -18,7 +18,7 @@ import net.perfectdreams.sequins.text.StringUtils
 class PendingReportsExecutor(helper: LorittaHelperKord, val jda: JDA) : HelperSlashExecutor(helper, PermissionLevel.ADMIN) {
     private val logger = KotlinLogging.logger {}
 
-    companion object : SlashCommandExecutorDeclaration(AttachDenyReasonExecutor::class) {
+    companion object : SlashCommandExecutorDeclaration(PendingReportsExecutor::class) {
         override val options = Options
 
         object Options : ApplicationCommandOptions() {
