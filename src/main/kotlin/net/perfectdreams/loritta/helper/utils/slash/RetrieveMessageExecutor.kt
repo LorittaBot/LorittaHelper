@@ -44,12 +44,16 @@ class RetrieveMessageExecutor(helper: LorittaHelperKord, val rest: RestClient) :
             if (guild != null)
                 builder.append("**Guild:** `${guild.name}` (`${guild.id}`)" + "\n")
 
+            builder.append("""
+                |**Channel:** `${channel.name}` (`${channel.id}`)
+                |**Author:** `${message.author.username}#${message.author.discriminator}` (`${message.author.id.value}`)
+                |
+                |""".trimMargin()
+            )
+
             if (message.content.length < 2000) {
                 context.sendMessage {
                     content = builder.append("""
-                                |**Channel:** `${channel.name}` (`${channel.id}`)
-                                |**Author:** `${message.author.username}#${message.author.discriminator}` (`${message.author.id.value}`)
-                                |
                                 |```
                                 |${message.content}
                                 |```
@@ -58,12 +62,7 @@ class RetrieveMessageExecutor(helper: LorittaHelperKord, val rest: RestClient) :
                 }
             } else {
                 context.sendMessage {
-                    content = builder.append("""
-                        |**Channel:** `${channel.name}` (`${channel.id}`)
-                        |**Author:** `${message.author.username}#${message.author.discriminator}` (`${message.author.id.value}`)
-                        |
-                        |""".trimMargin()
-                    ).toString()
+                    content = builder.toString()
                 }
 
                 val chunkedLines = StringUtils.chunkedLines(message.content.split("\n"), 2000, true)
