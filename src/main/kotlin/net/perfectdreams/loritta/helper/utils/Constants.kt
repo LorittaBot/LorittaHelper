@@ -29,6 +29,7 @@ object Constants {
     /* Other
         Here we'll store other things
      */
+    const val COMMUNITY_SERVER_ID = 297732013006389252L
     const val SUPPORT_SERVER_ID = 420626099257475072L
     const val OTHER_BOTS_CHANNEL_ID = 761956906368892958L
     const val SPARKLY_POWER_INVITE_CODE = "https://discord.gg/JYN6g2s"

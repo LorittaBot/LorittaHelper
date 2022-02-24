@@ -9,16 +9,19 @@ import dev.kord.gateway.start
 import io.ktor.client.*
 import io.ktor.client.features.*
 import kotlinx.coroutines.runBlocking
+import mu.KotlinLogging
 import net.dv8tion.jda.api.JDA
 import net.perfectdreams.discordinteraktions.common.commands.CommandManager
 import net.perfectdreams.discordinteraktions.platforms.kord.commands.KordCommandRegistry
 import net.perfectdreams.discordinteraktions.platforms.kord.installDiscordInteraKTions
 import net.perfectdreams.galleryofdreams.client.GalleryOfDreamsClient
+import net.perfectdreams.loritta.helper.utils.Constants
 import net.perfectdreams.loritta.helper.utils.LanguageManager
 import net.perfectdreams.loritta.helper.utils.buttonroles.RoleColorButtonExecutor
 import net.perfectdreams.loritta.helper.utils.buttonroles.RoleCoolBadgeButtonExecutor
 import net.perfectdreams.loritta.helper.utils.buttonroles.RoleToggleButtonExecutor
 import net.perfectdreams.loritta.helper.utils.cache.ChannelsCache
+import net.perfectdreams.loritta.helper.utils.cache.TicketsCache
 import net.perfectdreams.loritta.helper.utils.config.FanArtsConfig
 import net.perfectdreams.loritta.helper.utils.config.LorittaConfig
 import net.perfectdreams.loritta.helper.utils.config.LorittaHelperConfig
@@ -31,13 +34,49 @@ import net.perfectdreams.loritta.helper.utils.galleryofdreams.commands.declarati
 import net.perfectdreams.loritta.helper.utils.galleryofdreams.commands.declarations.GalleryOfDreamsSlashCommand
 import net.perfectdreams.loritta.helper.utils.generateserverreport.ShowFilesExecutor
 import net.perfectdreams.loritta.helper.utils.generateserverreport.ShowUserIdExecutor
-import net.perfectdreams.loritta.helper.utils.slash.*
-import net.perfectdreams.loritta.helper.utils.slash.declarations.*
+import net.perfectdreams.loritta.helper.utils.slash.AllTransactionsExecutor
+import net.perfectdreams.loritta.helper.utils.slash.AttachDenyReasonExecutor
+import net.perfectdreams.loritta.helper.utils.slash.BroadcastDailyShopWinnersExecutor
+import net.perfectdreams.loritta.helper.utils.slash.ButtonRoleSenderExecutor
+import net.perfectdreams.loritta.helper.utils.slash.CheckCommandsExecutor
+import net.perfectdreams.loritta.helper.utils.slash.CloseTicketExecutor
+import net.perfectdreams.loritta.helper.utils.slash.DailyCatcherCheckExecutor
+import net.perfectdreams.loritta.helper.utils.slash.DailyCheckExecutor
+import net.perfectdreams.loritta.helper.utils.slash.DriveImageRetrieverExecutor
+import net.perfectdreams.loritta.helper.utils.slash.FindTicketExecutor
+import net.perfectdreams.loritta.helper.utils.slash.IPLocationExecutor
+import net.perfectdreams.loritta.helper.utils.slash.LoriBanExecutor
+import net.perfectdreams.loritta.helper.utils.slash.LoriBanRenameExecutor
+import net.perfectdreams.loritta.helper.utils.slash.LoriUnbanExecutor
+import net.perfectdreams.loritta.helper.utils.slash.PendingReportsExecutor
+import net.perfectdreams.loritta.helper.utils.slash.PendingScarletExecutor
+import net.perfectdreams.loritta.helper.utils.slash.RetrieveMessageExecutor
+import net.perfectdreams.loritta.helper.utils.slash.ServerMembersExecutor
+import net.perfectdreams.loritta.helper.utils.slash.TicketInfoExecutor
+import net.perfectdreams.loritta.helper.utils.slash.TicketSenderExecutor
+import net.perfectdreams.loritta.helper.utils.slash.declarations.AllTransactionsCommand
+import net.perfectdreams.loritta.helper.utils.slash.declarations.AttachDenyReasonCommand
+import net.perfectdreams.loritta.helper.utils.slash.declarations.BroadcastDailyShopWinnersCommand
+import net.perfectdreams.loritta.helper.utils.slash.declarations.ButtonRoleSenderCommand
+import net.perfectdreams.loritta.helper.utils.slash.declarations.CheckCommandsCommand
+import net.perfectdreams.loritta.helper.utils.slash.declarations.CloseTicketCommand
+import net.perfectdreams.loritta.helper.utils.slash.declarations.DailyCatcherCheckCommand
+import net.perfectdreams.loritta.helper.utils.slash.declarations.DailyCheckCommand
+import net.perfectdreams.loritta.helper.utils.slash.declarations.DriveImageRetrieverCommand
+import net.perfectdreams.loritta.helper.utils.slash.declarations.IPLocationCommand
+import net.perfectdreams.loritta.helper.utils.slash.declarations.LoriToolsCommand
+import net.perfectdreams.loritta.helper.utils.slash.declarations.PendingReportsCommand
+import net.perfectdreams.loritta.helper.utils.slash.declarations.PendingScarletCommand
+import net.perfectdreams.loritta.helper.utils.slash.declarations.RetrieveMessageCommand
+import net.perfectdreams.loritta.helper.utils.slash.declarations.ServerMembersCommand
+import net.perfectdreams.loritta.helper.utils.slash.declarations.TicketSenderCommand
+import net.perfectdreams.loritta.helper.utils.slash.declarations.TicketUtilsCommand
 import net.perfectdreams.loritta.helper.utils.tickets.AutoCloseTicketWhenMemberLeavesGuildListener
 import net.perfectdreams.loritta.helper.utils.tickets.CloseTicketButtonExecutor
 import net.perfectdreams.loritta.helper.utils.tickets.CreateTicketButtonExecutor
 import net.perfectdreams.loritta.helper.utils.tickets.HelperResponseSelectMenuExecutor
 import net.perfectdreams.loritta.helper.utils.tickets.TicketListener
+import net.perfectdreams.loritta.helper.utils.tickets.TicketUtils
 
 // Hack, hack, hack!
 class LorittaHelperKord(
@@ -52,6 +91,8 @@ class LorittaHelperKord(
             expectSuccess = false
             followRedirects = false
         }
+
+        private val logger = KotlinLogging.logger {}
     }
 
     val helperRest = helper.helperRest
@@ -66,6 +107,26 @@ class LorittaHelperKord(
         "/languages/"
     )
     val channelsCache = ChannelsCache(helperRest)
+    val ticketsCache = mapOf(
+        TicketUtils.TicketSystemType.HELP_DESK_PORTUGUESE to TicketsCache(
+            Snowflake(Constants.SUPPORT_SERVER_ID),
+            Snowflake(891834050073997383L),
+            helperRest
+        ),
+
+        TicketUtils.TicketSystemType.HELP_DESK_ENGLISH to TicketsCache(
+            Snowflake(Constants.SUPPORT_SERVER_ID),
+            Snowflake(891834950159044658L),
+            helperRest
+        ),
+
+        TicketUtils.TicketSystemType.FIRST_FAN_ARTS_PORTUGUESE to TicketsCache(
+            Snowflake(Constants.COMMUNITY_SERVER_ID),
+            Snowflake(938247721775661086L),
+            helperRest
+        )
+    )
+
     val galleryOfDreamsClient = fanArtsConfig?.let {
         GalleryOfDreamsClient(
             "https://fanarts.perfectdreams.net/",
@@ -90,6 +151,12 @@ class LorittaHelperKord(
         languageManager.loadLanguagesAndContexts()
 
         runBlocking {
+            for ((type, cache) in ticketsCache) {
+                logger.info { "Populating ${type}'s ticket cache..." }
+                cache.populateCache()
+                logger.info { "Now tracking ${cache.tickets.size} tickets!" }
+            }
+
             // Register Commands
             commandManager.apply {
                 register(
@@ -155,6 +222,11 @@ class LorittaHelperKord(
                 register(
                     CloseTicketCommand,
                     CloseTicketExecutor(this@LorittaHelperKord)
+                )
+                register(
+                    TicketUtilsCommand,
+                    TicketInfoExecutor(this@LorittaHelperKord),
+                    FindTicketExecutor(this@LorittaHelperKord)
                 )
                 register(
                     CreateTicketButtonExecutor,
@@ -270,4 +342,6 @@ class LorittaHelperKord(
             }
         }
     }
+
+    fun getTicketsCacheBySystemType(type: TicketUtils.TicketSystemType) = ticketsCache[type]!!
 }

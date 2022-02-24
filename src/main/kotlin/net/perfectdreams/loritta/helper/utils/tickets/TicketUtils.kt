@@ -8,9 +8,13 @@ import net.perfectdreams.loritta.helper.serverresponses.PortugueseResponses
 import net.perfectdreams.loritta.helper.utils.LanguageManager
 
 object TicketUtils {
+    val PORTUGUESE_HELP_DESK_CHANNEL_ID = Snowflake(891834050073997383L)
+    val ENGLISH_HELP_DESK_CHANNEL_ID = Snowflake(891834950159044658L)
+    val FIRST_FAN_ART_CHANNEL_ID = Snowflake(938247721775661086L)
+
     val informations = mapOf(
         // Portuguese Help Desk Channel
-        Snowflake(891834050073997383L) to HelpDeskTicketSystemInformation(
+        PORTUGUESE_HELP_DESK_CHANNEL_ID to HelpDeskTicketSystemInformation(
             TicketSystemType.HELP_DESK_PORTUGUESE,
             LanguageName.PORTUGUESE,
             PortugueseResponses.responses,
@@ -20,7 +24,7 @@ object TicketUtils {
         ),
 
         // English Help Desk Channel
-        Snowflake(891834950159044658L) to HelpDeskTicketSystemInformation(
+        ENGLISH_HELP_DESK_CHANNEL_ID to HelpDeskTicketSystemInformation(
             TicketSystemType.HELP_DESK_ENGLISH,
             LanguageName.ENGLISH,
             EnglishResponses.responses,
@@ -30,7 +34,7 @@ object TicketUtils {
         ),
 
         // Portuguese First Fan Art Channel
-        Snowflake(938247721775661086L) to FirstFanArtTicketSystemInformation(
+        FIRST_FAN_ART_CHANNEL_ID to FirstFanArtTicketSystemInformation(
             TicketSystemType.FIRST_FAN_ARTS_PORTUGUESE,
             LanguageName.PORTUGUESE,
             Snowflake(924649809103691786),

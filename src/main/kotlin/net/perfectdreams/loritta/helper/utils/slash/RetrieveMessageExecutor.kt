@@ -37,8 +37,8 @@ class RetrieveMessageExecutor(helper: LorittaHelperKord, val rest: RestClient) :
             )
 
             val builder = StringBuilder()
-
             val channel = rest.channel.getChannel(message.channelId)
+         
             if (message.guildId.value != null) {
                 val guild = rest.guild.getGuild(message.guildId.value!!)
 
