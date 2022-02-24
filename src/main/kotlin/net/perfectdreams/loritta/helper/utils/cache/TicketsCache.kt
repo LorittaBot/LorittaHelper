@@ -38,7 +38,8 @@ class TicketsCache(
             val result = rest.channel.listPrivateArchivedThreads(
                 channelId,
                 ListThreadsByTimestampRequest(
-                    before = lastInstant
+                    before = lastInstant,
+                    limit = 100 // Increase limit from 5 (Discord Default) to 100
                 )
             )
 
