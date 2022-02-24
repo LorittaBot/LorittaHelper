@@ -6,8 +6,8 @@ import dev.kord.rest.service.RestClient
 import kotlinx.datetime.Instant
 
 class TicketsCache(
-    private val guildId: Snowflake,
-    private val channelId: Snowflake,
+    val guildId: Snowflake,
+    val channelId: Snowflake,
     private val rest: RestClient
 ) {
     val tickets = mutableMapOf<Snowflake, DiscordThreadTicketData>()

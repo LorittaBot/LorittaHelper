@@ -31,7 +31,7 @@ class FindTicketExecutor(helper: LorittaHelperKord) : HelperSlashExecutor(helper
 
         context.sendEphemeralMessage {
             content = if (cachedTicketId != null) {
-                "Ticket do usuário em ${ticketSystemType}: <#${cachedTicketId.id.value}>"
+                "Ticket do usuário em ${ticketSystemType}: <#${cachedTicketId.id.value}> https://discord.com/channels/${cache.guildId}/${cachedTicketId.id.value}/0"
             } else {
                 "O usuário não possui um ticket em ${ticketSystemType}!"
             }
