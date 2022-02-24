@@ -5,9 +5,8 @@ import dev.kord.common.entity.ChannelType
 import dev.kord.common.entity.Snowflake
 import dev.kord.common.entity.optional.optional
 import dev.kord.rest.builder.channel.thread.ThreadModifyBuilder
-import dev.kord.rest.json.request.ListThreadsByTimestampRequest
 import dev.kord.rest.json.request.StartThreadRequest
-import kotlinx.datetime.Instant
+import mu.KotlinLogging
 import net.perfectdreams.discordinteraktions.common.components.ButtonClickExecutorDeclaration
 import net.perfectdreams.discordinteraktions.common.components.ButtonClickWithDataExecutor
 import net.perfectdreams.discordinteraktions.common.components.ComponentContext
@@ -20,7 +19,9 @@ import net.perfectdreams.loritta.helper.utils.ComponentDataUtils
 import java.util.concurrent.TimeUnit
 
 class CreateTicketButtonExecutor(val m: LorittaHelperKord) : ButtonClickWithDataExecutor {
-    companion object : ButtonClickExecutorDeclaration(CreateTicketButtonExecutor::class, "create_ticket")
+    companion object : ButtonClickExecutorDeclaration(CreateTicketButtonExecutor::class, "create_ticket") {
+        private val logger = KotlinLogging.logger {}
+    }
 
     val recentlyCreatedTickets = Caffeine.newBuilder()
         .expireAfterWrite(5L, TimeUnit.MINUTES)
@@ -62,54 +63,9 @@ class CreateTicketButtonExecutor(val m: LorittaHelperKord) : ButtonClickWithData
                 content = language.get(I18nKeysData.Tickets.CreatingATicket)
             }
 
-            var ticketThread = m.helperRest.guild.listActiveThreads(context.guildId)
-                .threads
-                .firstOrNull {
-                    val name = it.name.value ?: return@firstOrNull false
-                    if (!name.contains("(") && !name.contains(")"))
-                        return@firstOrNull false
-
-                    val onlyTheId = name.substringAfterLast("(").substringBeforeLast(")")
-                    onlyTheId.toULongOrNull() == context.sender.id.value
-                }
-
-            val wasAnAlreadyActiveThread = ticketThread != null
-
-            if (ticketThread == null) {
-                // Active Ticket Thread is null, let's try finding an archived thread!
-                var searchedAll = false
-                var lastInstant: Instant? = null
-
-                while (!searchedAll && ticketThread == null) {
-                    val result = m.helperRest.channel.listPrivateArchivedThreads(
-                        context.channelId,
-                        ListThreadsByTimestampRequest(
-                            before = lastInstant
-                        )
-                    )
-
-                    ticketThread = result
-                        .threads
-                        .firstOrNull {
-                            val name = it.name.value ?: return@firstOrNull false
-                            if (!name.contains("(") && !name.contains(")"))
-                                return@firstOrNull false
-
-                            val onlyTheId = name.substringAfterLast("(").substringBeforeLast(")")
-                            onlyTheId.toULongOrNull() == context.sender.id.value
-                        }
-
-                    searchedAll = result.threads.isEmpty()
-                    if (!searchedAll) {
-                        // Gets the minimum archive timestamp of the thread, because Discord seems to sort them by archival timestamp
-                        lastInstant = result.threads.mapNotNull {
-                            it.threadMetadata.value?.archiveTimestamp?.let {
-                                Instant.parse(it)
-                            }
-                        }.minOrNull()
-                    }
-                }
-            }
+            val cachedTickets = m.getTicketsCacheBySystemType(ticketSystemTypeData.systemType)
+            val alreadyCreatedUserTicketData = cachedTickets.tickets[context.sender.id]
+            var ticketThreadId = alreadyCreatedUserTicketData?.id
 
             // Max username size = 32
             // Max ID length (well it can be bigger): 18
@@ -119,9 +75,9 @@ class CreateTicketButtonExecutor(val m: LorittaHelperKord) : ButtonClickWithData
             // Threads can have at most 100 chars!
             val threadName = "\uD83D\uDCE8 ${user.name} (${user.id.value})"
 
-            if (ticketThread == null) {
+            if (alreadyCreatedUserTicketData == null) {
                 // If it is STILL null, we will create a thread!
-                ticketThread = m.helperRest.channel.startThread(
+                ticketThreadId = m.helperRest.channel.startThread(
                     context.channelId,
                     StartThreadRequest(
                         threadName,
@@ -129,12 +85,20 @@ class CreateTicketButtonExecutor(val m: LorittaHelperKord) : ButtonClickWithData
                         ChannelType.PrivateThread.optional(),
                     ),
                     "Ticket created for <@${user.id.value}>"
-                )
+                ).id
+            }
+
+            if (ticketThreadId == null) {
+                logger.warn { "ticketThreadId is null, this should never happen! Invalidating cached ticket ID and retrying..." }
+                recentlyCreatedTickets[user.id] = null
+                cachedTickets.tickets.remove(context.sender.id)
+                onClick(user, context, data)
+                return
             }
 
             // Update thread metadata and name juuuust to be sure
             m.helperRest.channel.patchThread(
-                ticketThread.id,
+                ticketThreadId,
                 ThreadModifyBuilder().apply {
                     this.name = threadName
                     this.archived = false
@@ -146,76 +110,75 @@ class CreateTicketButtonExecutor(val m: LorittaHelperKord) : ButtonClickWithData
 
             // We need to add the user to the thread after it is unarchived!
             m.helperRest.channel.addUserToThread(
-                ticketThread.id,
+                ticketThreadId,
                 user.id
             )
 
             // Only resend the message if the thread was archived or if it is a new thread
-            if (!wasAnAlreadyActiveThread)
-                if (systemInfo is TicketUtils.HelpDeskTicketSystemInformation) {
-                    m.helperRest.channel.createMessage(
-                        ticketThread.id
-                    ) {
-                        content = (
-                                listOf(
-                                    LorittaReply(
-                                        language.get(I18nKeysData.Tickets.ThreadCreated.Ready),
-                                        "<:lori_coffee:727631176432484473>",
-                                        mentionUser = true
-                                    ),
-                                    LorittaReply(
-                                        language.get(I18nKeysData.Tickets.ThreadCreated.QuestionTips("<@&${systemInfo.supportRoleId.value}>")),
-                                        "<:lori_coffee:727631176432484473>",
-                                        mentionUser = false
-                                    ),
-                                    LorittaReply(
-                                        "**${
-                                            language.get(
-                                                I18nKeysData.Tickets.ThreadCreated.PleaseRead(
-                                                    "<#${systemInfo.faqChannelId.value}>",
-                                                    "<https://loritta.website/extras>"
-                                                )
+            if (systemInfo is TicketUtils.HelpDeskTicketSystemInformation) {
+                m.helperRest.channel.createMessage(
+                    ticketThreadId
+                ) {
+                    content = (
+                            listOf(
+                                LorittaReply(
+                                    language.get(I18nKeysData.Tickets.ThreadCreated.Ready),
+                                    "<:lori_coffee:727631176432484473>",
+                                    mentionUser = true
+                                ),
+                                LorittaReply(
+                                    language.get(I18nKeysData.Tickets.ThreadCreated.QuestionTips("<@&${systemInfo.supportRoleId.value}>")),
+                                    "<:lori_coffee:727631176432484473>",
+                                    mentionUser = false
+                                ),
+                                LorittaReply(
+                                    "**${
+                                        language.get(
+                                            I18nKeysData.Tickets.ThreadCreated.PleaseRead(
+                                                "<#${systemInfo.faqChannelId.value}>",
+                                                "<https://loritta.website/extras>"
                                             )
-                                        }**",
-                                        "<:lori_analise:853052040425766922>",
-                                        mentionUser = false
-                                    ),
-                                    LorittaReply(
-                                        language.get(I18nKeysData.Tickets.ThreadCreated.AfterAnswer),
-                                        "<a:lori_pat:706263175892566097>",
-                                        mentionUser = false
-                                    )
+                                        )
+                                    }**",
+                                    "<:lori_analise:853052040425766922>",
+                                    mentionUser = false
+                                ),
+                                LorittaReply(
+                                    language.get(I18nKeysData.Tickets.ThreadCreated.AfterAnswer),
+                                    "<a:lori_pat:706263175892566097>",
+                                    mentionUser = false
                                 )
-                                )
-                            .joinToString("\n")
-                            { it.build(context.sender) }
-                    }
-                } else if (systemInfo is TicketUtils.FirstFanArtTicketSystemInformation) {
-                    m.helperRest.channel.createMessage(
-                        ticketThread.id
-                    ) {
-                        content = (
-                                listOf(
-                                    LorittaReply(
-                                        "Envie a sua fan art e, caso tenha, envie o processo de criação dela!",
-                                        "<:lori_coffee:727631176432484473>",
-                                        mentionUser = true
-                                    ),
-                                    LorittaReply(
-                                        "Após enviado, os <@&${systemInfo.fanArtsManagerRoleId.value}> irão averiguar a sua fan art e, caso ela tenha uma qualidade excepcional, ela será incluida na nossa Galeria de Fan Arts!",
-                                        "<:lori_analise:853052040425766922>",
-                                        mentionUser = false
-                                    ),
-                                )
-                                )
-                            .joinToString("\n")
-                            { it.build(context.sender) }
-                    }
+                            )
+                            )
+                        .joinToString("\n")
+                        { it.build(context.sender) }
                 }
+            } else if (systemInfo is TicketUtils.FirstFanArtTicketSystemInformation) {
+                m.helperRest.channel.createMessage(
+                    ticketThreadId
+                ) {
+                    content = (
+                            listOf(
+                                LorittaReply(
+                                    "Envie a sua fan art e, caso tenha, envie o processo de criação dela!",
+                                    "<:lori_coffee:727631176432484473>",
+                                    mentionUser = true
+                                ),
+                                LorittaReply(
+                                    "Após enviado, os <@&${systemInfo.fanArtsManagerRoleId.value}> irão averiguar a sua fan art e, caso ela tenha uma qualidade excepcional, ela será incluida na nossa Galeria de Fan Arts!",
+                                    "<:lori_analise:853052040425766922>",
+                                    mentionUser = false
+                                ),
+                            )
+                            )
+                        .joinToString("\n")
+                        { it.build(context.sender) }
+                }
+            }
 
             context.sendEphemeralMessage {
                 content = language.get(
-                    I18nKeysData.Tickets.TicketWasCreated("<#${ticketThread.id.value}>")
+                    I18nKeysData.Tickets.TicketWasCreated("<#${ticketThreadId}>")
                 )
             }
         }
