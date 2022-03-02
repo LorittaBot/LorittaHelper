@@ -37,15 +37,18 @@ class RetrieveMessageExecutor(helper: LorittaHelperKord, val rest: RestClient) :
             )
 
             val builder = StringBuilder()
-
             val channel = rest.channel.getChannel(message.channelId)
-            val guild = message.guildId.value?.let { rest.guild.getGuild(it) }
+         
+            if (message.guildId.value != null) {
+                val guild = rest.guild.getGuild(message.guildId.value!!)
 
-            if (guild != null)
-                builder.append("**Guild:** `${guild.name}` (`${guild.id}`)" + "\n")
+                builder.append(
+                    "**Guild:** `${guild.name}` (`${guild.id}`)" + "\n"
+                )
+            }
 
             builder.append("""
-                |**Channel:** `${channel.name}` (`${channel.id}`)
+                |**Channel:** `${channel.name.value ?: "Canal sem nome!"}` (`${channel.id}`)
                 |**Author:** `${message.author.username}#${message.author.discriminator}` (`${message.author.id.value}`)
                 |
                 |""".trimMargin()
@@ -73,7 +76,7 @@ class RetrieveMessageExecutor(helper: LorittaHelperKord, val rest: RestClient) :
                             |```
                             |${line}
                             |```
-                        """.trimIndent()
+                        """.trimMargin()
                     }
                 }
             }
@@ -87,6 +90,12 @@ class RetrieveMessageExecutor(helper: LorittaHelperKord, val rest: RestClient) :
             if (e.error?.code == JsonErrorCode.UnknownMessage) {
                 context.sendMessage {
                     content = "Mensagem desconhecida!"
+                }
+            }
+
+            if (e.error?.code == JsonErrorCode.MissingAccess) {
+                context.sendMessage {
+                    content = "Não tenho permissão pra ver mensagens deste canal!"
                 }
             }
         }
