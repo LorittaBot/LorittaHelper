@@ -16,6 +16,7 @@ import net.perfectdreams.loritta.api.messages.LorittaReply
 import net.perfectdreams.loritta.helper.LorittaHelperKord
 import net.perfectdreams.loritta.helper.i18n.I18nKeysData
 import net.perfectdreams.loritta.helper.utils.ComponentDataUtils
+import net.perfectdreams.loritta.helper.utils.cache.TicketsCache
 import java.util.concurrent.TimeUnit
 
 class CreateTicketButtonExecutor(val m: LorittaHelperKord) : ButtonClickWithDataExecutor {
@@ -113,6 +114,8 @@ class CreateTicketButtonExecutor(val m: LorittaHelperKord) : ButtonClickWithData
                 ticketThreadId,
                 user.id
             )
+
+            cachedTickets.tickets[user.id] = TicketsCache.DiscordThreadTicketData(ticketThreadId)
 
             // Only resend the message if the thread was archived or if it is a new thread
             if (systemInfo is TicketUtils.HelpDeskTicketSystemInformation) {
