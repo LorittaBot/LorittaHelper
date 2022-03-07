@@ -20,6 +20,7 @@ import net.dv8tion.jda.api.JDABuilder
 import net.dv8tion.jda.api.entities.Activity
 import net.dv8tion.jda.api.requests.GatewayIntent
 import net.dv8tion.jda.api.utils.MemberCachePolicy
+import net.perfectdreams.loritta.cinnamon.pudding.utils.exposed.createOrUpdatePostgreSQLEnum
 import net.perfectdreams.loritta.helper.listeners.AddReactionsToMessagesListener
 import net.perfectdreams.loritta.helper.listeners.ApproveAppealsOnReactionListener
 import net.perfectdreams.loritta.helper.listeners.ApproveReportsOnReactionListener
@@ -29,6 +30,7 @@ import net.perfectdreams.loritta.helper.listeners.CheckLoriBannedUsersListener
 import net.perfectdreams.loritta.helper.listeners.MessageListener
 import net.perfectdreams.loritta.helper.listeners.PrivateMessageListener
 import net.perfectdreams.loritta.helper.network.Databases
+import net.perfectdreams.loritta.helper.tables.SelectedResponsesLog
 import net.perfectdreams.loritta.helper.utils.LorittaLandRoleSynchronizationTask
 import net.perfectdreams.loritta.helper.utils.checkbannedusers.LorittaBannedRoleTask
 import net.perfectdreams.loritta.helper.utils.config.FanArtsConfig
@@ -41,7 +43,10 @@ import net.perfectdreams.loritta.helper.utils.faqembed.FAQEmbedUpdaterEnglish
 import net.perfectdreams.loritta.helper.utils.faqembed.FAQEmbedUpdaterPortuguese
 import net.perfectdreams.loritta.helper.utils.faqembed.FAQEmbedUpdaterSparklyPower
 import net.perfectdreams.loritta.helper.utils.generateserverreport.PendingReportsListTask
+import net.perfectdreams.loritta.helper.utils.tickets.TicketUtils
 import net.perfectdreams.loritta.helper.utils.topsonhos.TopSonhosRankingSender
+import org.jetbrains.exposed.sql.SchemaUtils
+import org.jetbrains.exposed.sql.transactions.transaction
 import java.io.File
 import java.time.Instant
 import java.time.LocalDateTime
@@ -81,6 +86,14 @@ class LorittaHelper(val config: LorittaHelperConfig, val fanArtsConfig: FanArtsC
     val lorittaRest = lorittaConfig?.token?.let { RestClient(it) }
 
     fun start() {
+        transaction(databases.helperDatabase) {
+            createOrUpdatePostgreSQLEnum(TicketUtils.TicketSystemType.values())
+
+            SchemaUtils.createMissingTablesAndColumns(
+                SelectedResponsesLog
+            )
+        }
+
         // We only care about specific intents
         val jda = JDABuilder.createLight(
             config.token,

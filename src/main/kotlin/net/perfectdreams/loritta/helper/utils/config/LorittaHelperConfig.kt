@@ -8,7 +8,8 @@ class LorittaHelperConfig(
     val token: String,
     val githubToken: String,
     val secretKey: String,
-    val lorittaDatabase: DatabaseConfig? = null
+    val lorittaDatabase: DatabaseConfig? = null,
+    val helperDatabase: DatabaseConfig? = null
 ) {
     @Serializable
     class DatabaseConfig constructor(

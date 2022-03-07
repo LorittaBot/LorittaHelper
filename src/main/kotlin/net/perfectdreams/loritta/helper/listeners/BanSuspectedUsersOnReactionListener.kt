@@ -80,7 +80,7 @@ class BanSuspectedUsersOnReactionListener(val m: LorittaHelper): ListenerAdapter
 
                     logger.info { "Banning $id for $reason" }
 
-                    val successfullyBanned = transaction {
+                    val successfullyBanned = transaction(m.databases.lorittaDatabase) {
                         if (BannedUsers.select {
                                 BannedUsers.userId eq id and (BannedUsers.valid eq true) and (BannedUsers.expiresAt.isNull())
                             }.count() != 0L) {

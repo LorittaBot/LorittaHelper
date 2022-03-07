@@ -28,7 +28,7 @@ class TopSonhosRankingSender(val m: LorittaHelper, val jda: JDA) {
 
     fun start() = GlobalScope.launch {
         while (true) {
-            val results = newSuspendedTransaction {
+            val results = newSuspendedTransaction(db = m.databases.lorittaDatabase) {
                 Profiles.select {
                     Profiles.money neq 0
                 }.orderBy(Profiles.money, SortOrder.DESC)
