@@ -3,9 +3,9 @@ package net.perfectdreams.loritta.helper.utils.dailycatcher.catchers
 import kotlinx.coroutines.channels.Channel
 import net.dv8tion.jda.api.EmbedBuilder
 import net.dv8tion.jda.api.JDA
-import net.perfectdreams.loritta.helper.tables.Dailies
+import net.perfectdreams.loritta.cinnamon.pudding.tables.Dailies
+import net.perfectdreams.loritta.cinnamon.pudding.tables.Profiles
 import net.perfectdreams.loritta.helper.tables.ExecutedCommandsLog
-import net.perfectdreams.loritta.helper.tables.Profiles
 import net.perfectdreams.loritta.helper.tables.SonhosTransaction
 import net.perfectdreams.loritta.helper.utils.SonhosPaymentReason
 import net.perfectdreams.loritta.helper.utils.dailycatcher.DailyCatcherManager

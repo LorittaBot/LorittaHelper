@@ -15,12 +15,12 @@ import net.dv8tion.jda.api.managers.RoleManager
 import net.dv8tion.jda.api.requests.ErrorResponse
 import net.perfectdreams.galleryofdreams.common.data.DiscordSocialConnection
 import net.perfectdreams.galleryofdreams.common.data.api.GalleryOfDreamsDataResponse
+import net.perfectdreams.loritta.cinnamon.pudding.tables.Payments
+import net.perfectdreams.loritta.cinnamon.pudding.utils.PaymentReason
 import net.perfectdreams.loritta.helper.LorittaHelper
 import net.perfectdreams.loritta.helper.dao.Payment
-import net.perfectdreams.loritta.helper.tables.Payments
 import net.perfectdreams.loritta.helper.utils.buttonroles.LorittaCommunityRoleButtons
 import net.perfectdreams.loritta.helper.utils.extensions.await
-import net.perfectdreams.loritta.utils.payments.PaymentReason
 import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.transactions.transaction
 import kotlin.math.ceil

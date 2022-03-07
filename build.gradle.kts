@@ -43,6 +43,9 @@ dependencies {
     // Sequins
     implementation("net.perfectdreams.sequins.text:text-utils:1.0.0")
 
+    // Pudding
+    api("net.perfectdreams.loritta.cinnamon.pudding:client:0.0.2-20220306.142003-161")
+
     // Discord InteraKTions
     // We use the Gateway Kord impl because Gateway JDA is disabled for now, so we will convert the raw gateway events to Kord events
     implementation("net.perfectdreams.discordinteraktions:gateway-kord:0.0.12-SNAPSHOT")

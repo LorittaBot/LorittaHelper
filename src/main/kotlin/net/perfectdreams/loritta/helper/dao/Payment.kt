@@ -1,6 +1,6 @@
 package net.perfectdreams.loritta.helper.dao
 
-import net.perfectdreams.loritta.helper.tables.Payments
+import net.perfectdreams.loritta.cinnamon.pudding.tables.Payments
 import org.jetbrains.exposed.dao.LongEntity
 import org.jetbrains.exposed.dao.LongEntityClass
 import org.jetbrains.exposed.dao.id.EntityID
