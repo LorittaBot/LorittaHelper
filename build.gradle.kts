@@ -1,8 +1,8 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    kotlin("jvm") version "1.6.10"
-    kotlin("plugin.serialization") version "1.6.10"
+    kotlin("jvm") version "1.6.20-M1"
+    kotlin("plugin.serialization") version "1.6.20-M1"
     id("com.google.cloud.tools.jib") version "3.1.4"
     id("net.perfectdreams.i18nhelper.plugin") version "0.0.3-SNAPSHOT"
 }
@@ -33,8 +33,8 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.0")
     api("org.jetbrains.kotlinx:kotlinx-coroutines-jdk8:1.6.0")
     implementation("com.github.ben-manes.caffeine:caffeine:3.0.5")
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.1")
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-hocon:1.3.1")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.2")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-hocon:1.3.2")
 
     // Kord
     implementation("dev.kord:kord-rest:0.8.x-lori-fork-20220209.211412-5")
@@ -48,7 +48,7 @@ dependencies {
     implementation("net.perfectdreams.discordinteraktions:gateway-kord:0.0.12-SNAPSHOT")
 
     // Used to serialize state on components
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-protobuf:1.3.1")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-protobuf:1.3.2")
     // Used to serialize state on components
     implementation("io.github.netvl.ecoji:ecoji:1.0.0")
 
@@ -60,17 +60,17 @@ dependencies {
 
     // Used for the LocaleManager
     implementation("org.yaml:snakeyaml:1.29")
-    implementation("com.charleskorn.kaml:kaml:0.38.0")
+    implementation("com.charleskorn.kaml:kaml:0.40.0")
 
     // ICU
     implementation("com.ibm.icu:icu4j:70.1")
 
     // Database
-    implementation("org.postgresql:postgresql:42.3.1")
-    implementation("com.zaxxer:HikariCP:5.0.0")
-    implementation("org.jetbrains.exposed:exposed-core:0.36.1")
-    implementation("org.jetbrains.exposed:exposed-dao:0.36.1")
-    implementation("org.jetbrains.exposed:exposed-jdbc:0.36.1")
+    implementation("org.postgresql:postgresql:42.3.3")
+    implementation("com.zaxxer:HikariCP:5.0.1")
+    implementation("org.jetbrains.exposed:exposed-core:0.37.3")
+    implementation("org.jetbrains.exposed:exposed-dao:0.37.3")
+    implementation("org.jetbrains.exposed:exposed-jdbc:0.37.3")
 
     testImplementation("org.junit.jupiter:junit-jupiter:5.8.2")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.8.2")
