@@ -127,6 +127,7 @@ class CheckSonhosMendigagemTimeoutListener(val m: LorittaHelperKord) {
                 m.helperRest.channel.createMessage(channel.id) {
                     content = "Pare de mendigar sonhos, isso incomoda as pessoas que estão no chat e, se você continuar, você poderá ser banido do servidor! <:lori_sob:950109140880080956>"
                 }
+                break
             }
         }
     }
