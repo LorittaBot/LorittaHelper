@@ -3,7 +3,7 @@ package net.perfectdreams.loritta.helper.utils.checkillegalnitrosell
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent
 import net.dv8tion.jda.api.utils.MarkdownSanitizer
 import net.perfectdreams.loritta.helper.LorittaHelper
-import net.perfectdreams.loritta.helper.toNaiveBayesClassifier
+import net.perfectdreams.loritta.helper.utils.toNaiveBayesClassifier
 import net.perfectdreams.loritta.helper.utils.splitWords
 
 /**

@@ -1,4 +1,4 @@
-package net.perfectdreams.loritta.helper
+package net.perfectdreams.loritta.helper.utils
 
 import java.util.concurrent.atomic.AtomicBoolean
 import kotlin.math.ln
@@ -8,11 +8,11 @@ import kotlin.math.ln
  * New sets of features `F` can then be used to predict a category `C`.
  */
 fun <T,F,C> Iterable<T>.toNaiveBayesClassifier(
-        featuresSelector: ((T) -> Iterable<F>),
-        categorySelector: ((T) -> C),
-        observationLimit: Int = Int.MAX_VALUE,
-        k1: Double = 0.5,
-        k2: Double = k1 * 2.0
+    featuresSelector: ((T) -> Iterable<F>),
+    categorySelector: ((T) -> C),
+    observationLimit: Int = Int.MAX_VALUE,
+    k1: Double = 0.5,
+    k2: Double = k1 * 2.0
 ) = NaiveBayesClassifier<F,C>(observationLimit, k1,k2).also { nbc ->
 
     forEach { nbc.addObservation(categorySelector(it), featuresSelector(it)) }
@@ -23,11 +23,11 @@ fun <T,F,C> Iterable<T>.toNaiveBayesClassifier(
  * New sets of features `F` can then be used to predict a category `C`.
  */
 fun <T,F,C> Sequence<T>.toNaiveBayesClassifier(
-        featuresSelector: ((T) -> Iterable<F>),
-        categorySelector: ((T) -> C),
-        observationLimit: Int = Int.MAX_VALUE,
-        k1: Double = 0.5,
-        k2: Double = k1 * 2.0
+    featuresSelector: ((T) -> Iterable<F>),
+    categorySelector: ((T) -> C),
+    observationLimit: Int = Int.MAX_VALUE,
+    k1: Double = 0.5,
+    k2: Double = k1 * 2.0
 ) = NaiveBayesClassifier<F,C>(observationLimit, k1,k2).also { nbc ->
     forEach { nbc.addObservation(categorySelector(it), featuresSelector(it)) }
 }
@@ -37,18 +37,18 @@ fun <T,F,C> Sequence<T>.toNaiveBayesClassifier(
  * New sets of features `F` can then be used to predict a category `C`.
  */
 class NaiveBayesClassifier<F,C>(
-        val observationLimit: Int = Int.MAX_VALUE,
-        val k1: Double = 0.5,
-        val k2: Double = k1 * 2.0
+    val observationLimit: Int = Int.MAX_VALUE,
+    val k1: Double = 0.5,
+    val k2: Double = k1 * 2.0
 
 ) {
 
-    private val _population = mutableListOf<BayesInput<F,C>>()
+    private val _population = mutableListOf<BayesInput<F, C>>()
     private val modelStale = AtomicBoolean(false)
 
     @Volatile
-    private var probabilities = mapOf<FeatureProbability.Key<F,C>, FeatureProbability<F,C>>()
-    val population: List<BayesInput<F,C>> get() = _population
+    private var probabilities = mapOf<FeatureProbability.Key<F, C>, FeatureProbability<F, C>>()
+    val population: List<BayesInput<F, C>> get() = _population
 
     /**
      * Adds an observation of features to a category
@@ -69,14 +69,14 @@ class NaiveBayesClassifier<F,C>(
     private fun rebuildModel() {
 
         probabilities = _population.asSequence().flatMap { it.features.asSequence() }
-                .distinct()
-                .flatMap { f ->
-                    _population.asSequence()
-                            .map { it.category }
-                            .distinct()
-                            .map { c -> FeatureProbability.Key(f,c) }
-                }.map { it to FeatureProbability(it.feature, it.category, this) }
-                .toMap()
+            .distinct()
+            .flatMap { f ->
+                _population.asSequence()
+                    .map { it.category }
+                    .distinct()
+                    .map { c -> FeatureProbability.Key(f, c) }
+            }.map { it to FeatureProbability(it.feature, it.category, this) }
+            .toMap()
 
         modelStale.set(false)
     }
@@ -110,32 +110,32 @@ class NaiveBayesClassifier<F,C>(
         val f = features.toSet()
 
         return categories.asSequence()
-                .filter { c ->  population.any { it.category == c} && probabilities.values.any { it.feature in f } }
-                .map { c ->
-                    val probIfCategory = probabilities.values.asSequence().filter { it.category == c }.map {
-                        if (it.feature in f) {
-                            ln(it.probability)
-                        } else {
-                            ln(1.0 - it.probability)
-                        }
-                    }.sum().let(Math::exp)
+            .filter { c ->  population.any { it.category == c} && probabilities.values.any { it.feature in f } }
+            .map { c ->
+                val probIfCategory = probabilities.values.asSequence().filter { it.category == c }.map {
+                    if (it.feature in f) {
+                        ln(it.probability)
+                    } else {
+                        ln(1.0 - it.probability)
+                    }
+                }.sum().let(Math::exp)
 
-                    val probIfNotCategory = probabilities.values.asSequence().filter { it.category == c }.map {
-                        if (it.feature in f) {
-                            ln(it.notProbability)
-                        } else {
-                            ln(1.0 - it.notProbability)
-                        }
-                    }.sum().let(Math::exp)
+                val probIfNotCategory = probabilities.values.asSequence().filter { it.category == c }.map {
+                    if (it.feature in f) {
+                        ln(it.notProbability)
+                    } else {
+                        ln(1.0 - it.notProbability)
+                    }
+                }.sum().let(Math::exp)
 
-                    CategoryProbability(category = c, probability = probIfCategory / (probIfCategory + probIfNotCategory))
-                }// .filter { it.probability >= .1 }
-                .sortedByDescending { it.probability }
-                .firstOrNull()
+                CategoryProbability(category = c, probability = probIfCategory / (probIfCategory + probIfNotCategory))
+            }.filter { it.probability >= .1 }
+            .sortedByDescending { it.probability }
+            .firstOrNull()
 
     }
 
-    class FeatureProbability<F,C>(val feature: F, val category: C, nbc: NaiveBayesClassifier<F,C>) {
+    class FeatureProbability<F,C>(val feature: F, val category: C, nbc: NaiveBayesClassifier<F, C>) {
 
         val probability = (nbc.k1 + nbc.population.count { it.category == category && feature in it.features } ) /
                 (nbc.k2 + nbc.population.count { it.category == category })

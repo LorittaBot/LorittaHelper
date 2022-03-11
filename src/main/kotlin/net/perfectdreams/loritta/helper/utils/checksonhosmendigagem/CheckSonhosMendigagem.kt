@@ -6,7 +6,7 @@ import net.dv8tion.jda.api.utils.MarkdownSanitizer
 import net.perfectdreams.loritta.api.messages.LorittaReply
 import net.perfectdreams.loritta.helper.LorittaHelper
 import net.perfectdreams.loritta.helper.tables.GuildProfiles
-import net.perfectdreams.loritta.helper.toNaiveBayesClassifier
+import net.perfectdreams.loritta.helper.utils.toNaiveBayesClassifier
 import net.perfectdreams.loritta.helper.utils.Emotes
 import net.perfectdreams.loritta.helper.utils.checkillegalnitrosell.CheckIllegalNitroSell
 import net.perfectdreams.loritta.helper.utils.splitWords
