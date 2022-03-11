@@ -31,6 +31,8 @@ class CheckSequenciaTimeoutListener(val m: LorittaHelperKord) {
         Regex("demente", RegexOption.IGNORE_CASE),
         Regex("retardad", RegexOption.IGNORE_CASE),
         Regex("n[aã]o p[oô]", RegexOption.IGNORE_CASE),
+        Regex("sorte", RegexOption.IGNORE_CASE),
+        Regex("cagad", RegexOption.IGNORE_CASE)
     )
 
     fun installCheckSequenciaTimeoutListener(gateway: Gateway) = gateway.on<MessageCreate> {
