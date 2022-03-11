@@ -28,7 +28,9 @@ class CheckSonhosMendigagemRegexTest {
             "Alg me doa sonhos?",
             "Me da sonhos ai alguém kkk",
             "Alguém me doa 50k to pobre",
-            "doa 1k ai por favor"
+            "doa 1k ai por favor",
+            "oi gente me doa sonhos",
+            "estou falido me doa sonhos"
         )
 
         messageLoop@for (message in mendigagemMessages) {

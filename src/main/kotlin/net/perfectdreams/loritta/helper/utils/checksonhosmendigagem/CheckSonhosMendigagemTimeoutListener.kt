@@ -22,8 +22,8 @@ class CheckSonhosMendigagemTimeoutListener(val m: LorittaHelperKord) {
         private val DUDE = "(mano|mana|cara|doido)"
         private val LORITTA_COMMAND = "(\\+[A-z]+)"
         private val USER_MENTION = "<@!?[0-9]+>"
-        private val HEY = "a[ií]"
-        private val A_BIT = "($HEY )?um pouco"
+        private val THERE = "a[ií]"
+        private val A_BIT = "($THERE )?um pouco"
         private val PO = "p[oô]"
         private val FARMING = "(farm|farmar|apostar)"
         private val TO = "(pr[aá]|para)"
@@ -31,51 +31,57 @@ class CheckSonhosMendigagemTimeoutListener(val m: LorittaHelperKord) {
         private val OF_SONHOS = "de $SONHOS"
         private val PLEASE = "(p[ou0]r ?fav[ou0]r|pfv|plis|pliz|plz|pls)"
         private val QUESTION_MARK_WITH_SPACE = " ?\\?"
+        private val HEY = "(o[ií]|ol[aá])"
+        private val EVERYONE = "(galera|galerinha|gente|povo|pess?oal|pessoas)"
+        private val STUPID_STORY_1 = "(eu( (estou|me))? (fali|falido|falida|faliram|pobre|triste|mendigando|mendigo))"
+        private val STUPID_STORY_2 = "((estou|me) (fali|falido|falida|faliram|pobre|triste|mendigando|mendigo))"
+        private val STUPID_STORIES = "($STUPID_STORY_1|$STUPID_STORY_2)"
+        private val GENERIC_PREFIX = "($USER_MENTION )?($LORITTA_COMMAND )?($PO,? )?($HEY( $EVERYONE)|$EVERYONE)?$STUPID_STORIES? ?"
 
         val regexes = listOf(
             NamedRegex(
                 "Alguém dá sonhos",
-                Regex("($USER_MENTION )?($LORITTA_COMMAND )?($PO,? )?$SOMEONE( $COULD)? $GIVE( $SOME)?( $SONHOS).*", setOf(RegexOption.IGNORE_CASE, RegexOption.MULTILINE)),
+                Regex("$GENERIC_PREFIX$SOMEONE( $COULD)? $GIVE( $SOME)?( $SONHOS).*", setOf(RegexOption.IGNORE_CASE, RegexOption.MULTILINE)),
             ),
             NamedRegex(
                 "Me doa sonhos",
-                Regex("($USER_MENTION )?($LORITTA_COMMAND )?($PO,? )?$ME $GIVE( $SOME)?( $SONHOS).*", setOf(RegexOption.IGNORE_CASE, RegexOption.MULTILINE)),
+                Regex("$GENERIC_PREFIX$ME $GIVE( $SOME)?( $SONHOS).*", setOf(RegexOption.IGNORE_CASE, RegexOption.MULTILINE)),
             ),
             NamedRegex(
                 "Alguém dá 10k sonhos",
-                Regex("($USER_MENTION )?($LORITTA_COMMAND )?($PO,? )?$SOMEONE( $COULD)?( $ME)? $GIVE $SONHOS_QUANTITY( de)? $SONHOS( $HEY)?.*", setOf(RegexOption.IGNORE_CASE, RegexOption.MULTILINE)),
+                Regex("$GENERIC_PREFIX$SOMEONE( $COULD)?( $ME)? $GIVE $SONHOS_QUANTITY( de)? $SONHOS( $THERE)?.*", setOf(RegexOption.IGNORE_CASE, RegexOption.MULTILINE)),
             ),
             NamedRegex(
                 "Alguém me dá sonhos",
-                Regex("($USER_MENTION )?($LORITTA_COMMAND )?($PO,? )?$SOMEONE( $COULD)?( $ME) $GIVE $SONHOS( $HEY)?.*", setOf(RegexOption.IGNORE_CASE, RegexOption.MULTILINE)), // same as above but more strict
+                Regex("$GENERIC_PREFIX$SOMEONE( $COULD)?( $ME) $GIVE $SONHOS( $THERE)?.*", setOf(RegexOption.IGNORE_CASE, RegexOption.MULTILINE)), // same as above but more strict
             ),
             NamedRegex(
                 "Alguém poderia dar 10k",
-                Regex("($USER_MENTION )?($LORITTA_COMMAND )?($PO,? )?$SOMEONE( $COULD)( $ME)? $GIVE $SONHOS_QUANTITY( $HEY)?( $OF_SONHOS)?( $HEY)?.*", setOf(RegexOption.IGNORE_CASE, RegexOption.MULTILINE)), // same as above but more strict
+                Regex("$GENERIC_PREFIX$SOMEONE( $COULD)( $ME)? $GIVE $SONHOS_QUANTITY( $THERE)?( $OF_SONHOS)?( $THERE)?.*", setOf(RegexOption.IGNORE_CASE, RegexOption.MULTILINE)), // same as above but more strict
             ),
             NamedRegex(
                 "Alguém dá 10k (strict)",
-                Regex("($USER_MENTION )?($LORITTA_COMMAND )?($PO,? )?$SOMEONE( $COULD)?( $ME)? $GIVE $SONHOS_QUANTITY( $HEY)?( $OF_SONHOS)?( $HEY)?( (to|eu|mim) (pobre|falido|falida))?${QUESTION_MARK_WITH_SPACE}?", setOf(RegexOption.IGNORE_CASE, RegexOption.MULTILINE)), // same as above but way more strict
+                Regex("$GENERIC_PREFIX$SOMEONE( $COULD)?( $ME)? $GIVE $SONHOS_QUANTITY( $THERE)?( $OF_SONHOS)?( $THERE)?( (to|eu|mim) (pobre|falido|falida))?${QUESTION_MARK_WITH_SPACE}?", setOf(RegexOption.IGNORE_CASE, RegexOption.MULTILINE)), // same as above but way more strict
             ),
             NamedRegex(
                 "Dá 10k aí por favor",
-                Regex("($USER_MENTION )?($LORITTA_COMMAND )?($PO,? )?$GIVE $SONHOS_QUANTITY( $HEY)? $PLEASE.*", setOf(RegexOption.IGNORE_CASE, RegexOption.MULTILINE)),
+                Regex("$GENERIC_PREFIX$GIVE $SONHOS_QUANTITY( $THERE)? $PLEASE.*", setOf(RegexOption.IGNORE_CASE, RegexOption.MULTILINE)),
             ),
             NamedRegex(
                 "Sonhos para Farmar",
-                Regex("($USER_MENTION )?($LORITTA_COMMAND )?($PO,? )?$SOMEONE( $COULD)?( $ME)? $GIVE( $SONHOS_QUANTITY|$SONHOS)?( $JUST)? $TO( (me|eu|mim))? $FARMING.*", setOf(RegexOption.IGNORE_CASE, RegexOption.MULTILINE)),
+                Regex("$GENERIC_PREFIX$SOMEONE( $COULD)?( $ME)? $GIVE( $SONHOS_QUANTITY|$SONHOS)?( $JUST)? $TO( (me|eu|mim))? $FARMING.*", setOf(RegexOption.IGNORE_CASE, RegexOption.MULTILINE)),
             ),
             NamedRegex(
                 "Dá sonhos cara",
-                Regex("($USER_MENTION )?($LORITTA_COMMAND )?($PO,? )?($ME )?$GIVE $SONHOS $DUDE.*", setOf(RegexOption.IGNORE_CASE, RegexOption.MULTILINE)),
+                Regex("$GENERIC_PREFIX($ME )?$GIVE $SONHOS $DUDE.*", setOf(RegexOption.IGNORE_CASE, RegexOption.MULTILINE)),
             ),
             NamedRegex(
                 "Dá sonhos? (strict)",
-                Regex("($USER_MENTION )?($LORITTA_COMMAND )?($PO,? )?$GIVE $SONHOS${QUESTION_MARK_WITH_SPACE}?", setOf(RegexOption.IGNORE_CASE, RegexOption.MULTILINE)), // super strict because it is just "doa sonhos"
+                Regex("$GENERIC_PREFIX$GIVE $SONHOS${QUESTION_MARK_WITH_SPACE}?", setOf(RegexOption.IGNORE_CASE, RegexOption.MULTILINE)), // super strict because it is just "doa sonhos"
             ),
             NamedRegex(
                 "Dá um pouco de sonhos",
-                Regex("($USER_MENTION )?($LORITTA_COMMAND )?($PO,? )?($ME )?$GIVE $A_BIT( de)? $SONHOS.*", setOf(RegexOption.IGNORE_CASE, RegexOption.MULTILINE)),
+                Regex("$GENERIC_PREFIX($ME )?$GIVE $A_BIT( de)? $SONHOS.*", setOf(RegexOption.IGNORE_CASE, RegexOption.MULTILINE)),
             ),
             NamedRegex(
                 "Alguém me doa (strict)",
