@@ -10,10 +10,11 @@ import kotlin.time.Duration.Companion.seconds
 
 class CheckSonhosMendigagemTimeoutListener(val m: LorittaHelperKord) {
     val activeChannels = listOf(
-        Snowflake(547119872568459284),
-        Snowflake(673531793546149899),
-        Snowflake(704874923104927835),
-        Snowflake(798014569191571506)
+        Snowflake(297732013006389252), // bate-papo
+        Snowflake(547119872568459284), // open-bar
+        Snowflake(673531793546149899), // comandos raiz
+        Snowflake(704874923104927835), // comandos nutella
+        Snowflake(798014569191571506) // comandos brocolis
     )
 
     val regexes = listOf(
