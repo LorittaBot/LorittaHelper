@@ -4,6 +4,7 @@ import dev.kord.common.entity.Snowflake
 import dev.kord.gateway.Gateway
 import dev.kord.gateway.MessageCreate
 import dev.kord.gateway.on
+import dev.kord.rest.json.request.DMCreateRequest
 import dev.kord.rest.request.KtorRequestException
 import kotlinx.datetime.Clock
 import net.perfectdreams.loritta.helper.LorittaHelperKord
@@ -108,7 +109,7 @@ class CheckSonhosMendigagemTimeoutListener(val m: LorittaHelperKord) {
                         message.author.id
                     ) {
                         this.communicationDisabledUntil = Clock.System.now()
-                            .plus(120.seconds)
+                            .plus(60.seconds)
 
                         this.reason = "User matched mendigagem RegEx \"$name\"!"
                     }
@@ -121,6 +122,11 @@ class CheckSonhosMendigagemTimeoutListener(val m: LorittaHelperKord) {
                     message.id,
                     "User matched mendigagem RegEx \"$name\"!"
                 )
+
+                val channel = m.helperRest.user.createDM(DMCreateRequest(message.author.id))
+                m.helperRest.channel.createMessage(channel.id) {
+                    content = "Pare de mendigar sonhos, isso incomoda as pessoas que estão no chat e, se você continuar, você poderá ser banido do servidor! <:lori_sob:950109140880080956>"
+                }
             }
         }
     }
