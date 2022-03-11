@@ -13,7 +13,7 @@ import kotlin.time.Duration.Companion.seconds
 class CheckSonhosMendigagemTimeoutListener(val m: LorittaHelperKord) {
     companion object {
         private val SOMEONE = "(algu([eé])m|alg|algm|agl)"
-        private val GIVE = "(doar?|d[aá]|empresta)"
+        private val GIVE = "(doar?|d[aá]|empresta|doem|deem|dê)"
         private val SOME = "(alguns|algns|algms|algn|algm)"
         private val SONHOS = "(s ?[o0] ?n? ?h ?[ou0] ?s?)"
         private val ME = "me"
