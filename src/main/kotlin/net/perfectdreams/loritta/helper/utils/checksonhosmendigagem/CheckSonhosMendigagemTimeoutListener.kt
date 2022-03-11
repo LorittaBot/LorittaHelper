@@ -25,6 +25,9 @@ class CheckSonhosMendigagemTimeoutListener(val m: LorittaHelperKord) {
         if (this.message.channelId !in activeChannels)
             return@on
 
+        if (this.message.author.id.value == m.config.applicationId.toULong())
+            return@on
+
         for (regex in regexes) {
             val matches = regex.matches(this.message.content)
 

@@ -18,10 +18,13 @@ class CheckSequenciaTimeoutListener(val m: LorittaHelperKord) {
         if (this.message.channelId !in activeChannels)
             return@on
 
+        if (this.message.author.id.value == m.config.applicationId.toULong())
+            return@on
+
         if (this.message.content.contains("sequência", true) || this.message.content.contains("sequencia", true)) {
             if (!(this.message.content.contains("vitória", true) || this.message.content.contains("vitoria", true)) || this.message.content.contains("não existe", true) || this.message.content.contains("nao existe", true)) {
                 m.helperRest.channel.createMessage(this.message.channelId) {
-                    this.content = """<@${message.author.id.value} 👏SEQUÊNCIA👏DE👏APOSTAS👏NÃO👏EXISTE👏
+                    this.content = """<@${message.author.id.value}> 👏SEQUÊNCIA👏DE👏APOSTAS👏NÃO👏EXISTE👏
                         |
                         |<:lori_clown:950111543574536212> Contas novas não tem chance maior de ganharem.
                         |<:lori_clown:950111543574536212> Usuários premiums da Loritta não tem chance maior de ganharem.
