@@ -40,6 +40,10 @@ class CheckSonhosMendigagemRegexTest {
             "Alg me doa um pouco de sonhos"
         )
 
+        val stuffThatShouldntBeBlocked = listOf(
+            "Alguém me dá uma dica"
+        )
+
         messageLoop@for (message in mendigagemMessages) {
             println("Testing $message")
 
@@ -50,6 +54,16 @@ class CheckSonhosMendigagemRegexTest {
             }
 
             throw IllegalArgumentException("Missing match for \"$message\"!")
+        }
+
+        messageLoop@for (message in stuffThatShouldntBeBlocked) {
+            println("Testing $message")
+
+            for ((name, regex) in CheckSonhosMendigagemTimeoutListener.regexes) {
+                println("Testing RegEx \"$name\": $regex")
+                if (regex.matches(message))
+                    throw IllegalArgumentException("RegEx was matched for \"$message\", but it shouldn't!")
+            }
         }
     }
 }

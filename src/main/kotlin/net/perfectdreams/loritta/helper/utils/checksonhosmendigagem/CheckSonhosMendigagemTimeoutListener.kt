@@ -17,7 +17,7 @@ class CheckSonhosMendigagemTimeoutListener(val m: LorittaHelperKord) {
         private val SOME = "(alguns|algns|algms|algn|algm|um pou[ck]o? d[eêií])"
         private val SONHOS = "(s ?[o0] ?n? ?h ?[ou0] ?s?)"
         private val ME = "me"
-        private val SONHOS_QUANTITY = "([A-z0-9]+)"
+        private val SONHOS_QUANTITY = "([0-9\\.,]+ ?(k|m(il(h[õo0][e3]s)?)?))"
         private val COULD = "(pode|poderia)"
         private val DUDE = "(mano|mana|cara|doido)"
         private val LORITTA_COMMAND = "(\\+[A-z]+)"
