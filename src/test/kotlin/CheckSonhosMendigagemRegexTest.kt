@@ -39,7 +39,8 @@ class CheckSonhosMendigagemRegexTest {
             "me deem sonhos",
             "Alg me doa um pouco de sonhos",
             "Vc mim doa sonhos?",
-            "Alguém doa pfv ?"
+            "Alguém doa pfv ?",
+            "doa 20k favor?"
         )
 
         val stuffThatShouldntBeBlocked = listOf(

@@ -29,7 +29,7 @@ class CheckSonhosMendigagemTimeoutListener(val m: LorittaHelperKord) {
         private val TO = "(pr[aá]|para)"
         private val JUST = "s[oó]"
         private val OF_SONHOS = "de $SONHOS"
-        private val PLEASE = "(p[ou0]r ?fav[ou0]r|pfv|plis|pliz|plz|pls)"
+        private val PLEASE = "(p[ou0]r ?fav[ou0]r|pfv|plis|pliz|plz|pls|fav[ou0]r)"
         private val QUESTION_MARK_WITH_SPACE = " ?\\?"
         private val HEY = "(o[ií]|ol[aá])"
         private val EVERYONE = "(galera|galerinha|gente|povo|pess?oal|pessoas)"
