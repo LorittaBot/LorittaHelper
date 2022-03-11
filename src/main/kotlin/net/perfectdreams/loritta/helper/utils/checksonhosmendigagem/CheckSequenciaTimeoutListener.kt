@@ -22,7 +22,7 @@ class CheckSequenciaTimeoutListener(val m: LorittaHelperKord) {
             return@on
 
         if (this.message.content.contains("sequência", true) || this.message.content.contains("sequencia", true)) {
-            if (!(this.message.content.contains("vitória", true) || this.message.content.contains("vitoria", true)) || this.message.content.contains("não existe", true) || this.message.content.contains("nao existe", true)) {
+            if (!(this.message.content.contains("vitória", true) || this.message.content.contains("vitoria", true) || this.message.content.contains("não existe", true) || this.message.content.contains("nao existe", true) || this.message.content.contains("n existe", true) || this.message.content.contains("balela", true) || this.message.content.contains("mentira", true))) {
                 m.helperRest.channel.createMessage(this.message.channelId) {
                     this.content = """<@${message.author.id.value}> 👏SEQUÊNCIA👏DE👏APOSTAS👏NÃO👏EXISTE👏
                         |
