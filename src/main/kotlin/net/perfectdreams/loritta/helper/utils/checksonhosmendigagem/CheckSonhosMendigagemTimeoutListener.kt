@@ -33,10 +33,10 @@ class CheckSonhosMendigagemTimeoutListener(val m: LorittaHelperKord) {
         private val QUESTION_MARK_WITH_SPACE = " ?\\?"
         private val HEY = "(o[ií]|ol[aá])"
         private val EVERYONE = "(galera|galerinha|gente|povo|pess?oal|pessoas)"
-        private val STUPID_STORY_1 = "(eu( (estou|me))? (fali|falido|falida|faliram|pobre|triste|mendigando|mendigo))"
-        private val STUPID_STORY_2 = "((estou|me) (fali|falido|falida|faliram|pobre|triste|mendigando|mendigo))"
+        private val STUPID_STORY_1 = "(eu( (estou|me|t[oô]))? (fali|falido|falida|faliram|pobre|triste|mendigando|mendigo))"
+        private val STUPID_STORY_2 = "((estou|me|t[oô]) (fali|falido|falida|faliram|pobre|triste|mendigando|mendigo))"
         private val STUPID_STORIES = "($STUPID_STORY_1|$STUPID_STORY_2)"
-        private val GENERIC_PREFIX = "($USER_MENTION )?($LORITTA_COMMAND )?($PO,? )?($HEY( $EVERYONE)|$EVERYONE)?$STUPID_STORIES? ?"
+        private val GENERIC_PREFIX = "($USER_MENTION )?($LORITTA_COMMAND )?($PO,? )?$STUPID_STORIES? ?($HEY( $EVERYONE)|$EVERYONE)?$STUPID_STORIES? ?"
 
         val regexes = listOf(
             NamedRegex(
