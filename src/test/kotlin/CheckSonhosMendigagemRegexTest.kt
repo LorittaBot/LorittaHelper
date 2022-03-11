@@ -33,7 +33,10 @@ class CheckSonhosMendigagemRegexTest {
             "oi gente doa sonhos",
             "estou falido me doa sonhos",
             "to falida gente me doa sonhos",
-            "oi galera me doem sonhos"
+            "oi galera me doem sonhos",
+            "gente eu fali me doem sonhos",
+            "oi gente fali me doa sonhos",
+            "me deem sonhos"
         )
 
         messageLoop@for (message in mendigagemMessages) {
