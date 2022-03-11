@@ -18,7 +18,7 @@ class CheckSonhosMendigagemTimeoutListener(val m: LorittaHelperKord) {
     )
 
     val regexes = listOf(
-        Regex("(sou pobre |[eés]t[oô]u? falid[oae]|(eu )?fali)?(algu([eé])m|alg|algm)? ?(me )?(d[áa]|doa|doar|d[eê]|doem) ([0-9A-z]+ )?(de )?sonhos ?(porfavor*|por favor|pfv*|pliz*)?", RegexOption.IGNORE_CASE), // ALGUÉM ME DÁ 30K DE SONHOS POR FAVOR
+        Regex("((sou pobre|[eés]t[oô]u? falid[oae]|(eu )?fali) )?(algu([eé])m|alg|algm)? ?(me )?(d[áa]|doa|doar|d[eê]|doem) ([0-9A-z]+ )?(de )?sonhos ?(porfavor*|por favor|pfv*|pliz*)?", RegexOption.IGNORE_CASE), // ALGUÉM ME DÁ 30K DE SONHOS POR FAVOR
     )
 
     fun installCheckSonhosMendigagemTimeoutListener(gateway: Gateway) = gateway.on<MessageCreate> {
