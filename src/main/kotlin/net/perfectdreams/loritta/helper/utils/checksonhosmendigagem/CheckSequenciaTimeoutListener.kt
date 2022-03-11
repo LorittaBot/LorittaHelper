@@ -4,7 +4,9 @@ import dev.kord.common.entity.Snowflake
 import dev.kord.gateway.Gateway
 import dev.kord.gateway.MessageCreate
 import dev.kord.gateway.on
+import kotlinx.datetime.Clock
 import net.perfectdreams.loritta.helper.LorittaHelperKord
+import kotlin.time.Duration.Companion.seconds
 
 class CheckSequenciaTimeoutListener(val m: LorittaHelperKord) {
     val activeChannels = listOf(
@@ -22,7 +24,27 @@ class CheckSequenciaTimeoutListener(val m: LorittaHelperKord) {
             return@on
 
         if (this.message.content.contains("sequência", true) || this.message.content.contains("sequencia", true)) {
-            if (!(this.message.content.contains("vitória", true) || this.message.content.contains("vitoria", true) || this.message.content.contains("não existe", true) || this.message.content.contains("nao existe", true) || this.message.content.contains("n existe", true) || this.message.content.contains("balela", true) || this.message.content.contains("mentira", true))) {
+            if (!(this.message.content.contains("vitória", true) ||
+                        this.message.content.contains("vitoria", true) ||
+                        this.message.content.contains("não existe", true) ||
+                        this.message.content.contains("nao existe", true) ||
+                        this.message.content.contains("n existe", true) ||
+                        this.message.content.contains("balela", true) ||
+                        this.message.content.contains("mentira", true) ||
+                        this.message.content.contains("burr", true) ||
+                        this.message.content.contains("idiota", true) ||
+                        this.message.content.contains("demente", true) ||
+                        this.message.content.contains("retardad", true))) {
+                m.helperRest.guild.modifyGuildMember(
+                    message.guildId.value!!,
+                    message.author.id
+                ) {
+                    this.communicationDisabledUntil = Clock.System.now()
+                        .plus(7.seconds)
+
+                    this.reason = "User matched sequência!"
+                }
+
                 m.helperRest.channel.createMessage(this.message.channelId) {
                     this.content = """<@${message.author.id.value}> 👏SEQUÊNCIA👏DE👏APOSTAS👏NÃO👏EXISTE👏
                         |
