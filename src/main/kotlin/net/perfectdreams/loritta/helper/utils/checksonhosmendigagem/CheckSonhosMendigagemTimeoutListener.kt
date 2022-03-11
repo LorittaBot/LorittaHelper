@@ -12,7 +12,7 @@ import kotlin.time.Duration.Companion.seconds
 
 class CheckSonhosMendigagemTimeoutListener(val m: LorittaHelperKord) {
     companion object {
-        private val SOMEONE = "(algu([eé])m|alg|algm|agl)"
+        private val SOMEONE = "(algu([eé])m|alg|algm|agl|vo?c[eê]?)"
         private val GIVE = "(doar?|d[aá]|empresta|doem|deem|dê)"
         private val SOME = "(alguns|algns|algms|algn|algm|um pou[ck]o? d[eêií])"
         private val SONHOS = "(s ?[o0] ?n? ?h ?[ou0] ?s?)"
@@ -41,7 +41,7 @@ class CheckSonhosMendigagemTimeoutListener(val m: LorittaHelperKord) {
         val regexes = listOf(
             NamedRegex(
                 "Alguém dá sonhos",
-                Regex("$GENERIC_PREFIX$SOMEONE( $COULD| me)? $GIVE( $SOME)?( $SONHOS).*", setOf(RegexOption.IGNORE_CASE, RegexOption.MULTILINE)),
+                Regex("$GENERIC_PREFIX$SOMEONE( $COULD| me| mim)? $GIVE( $SOME)?( $SONHOS).*", setOf(RegexOption.IGNORE_CASE, RegexOption.MULTILINE)),
             ),
             NamedRegex(
                 "Me doa sonhos",
@@ -66,6 +66,10 @@ class CheckSonhosMendigagemTimeoutListener(val m: LorittaHelperKord) {
             NamedRegex(
                 "Dá 10k aí por favor",
                 Regex("$GENERIC_PREFIX$GIVE $SONHOS_QUANTITY( $THERE)? $PLEASE.*", setOf(RegexOption.IGNORE_CASE, RegexOption.MULTILINE)),
+            ),
+            NamedRegex(
+                "Alguém doa por favor",
+                Regex("$GENERIC_PREFIX$SOMEONE $GIVE $PLEASE$QUESTION_MARK_WITH_SPACE", setOf(RegexOption.IGNORE_CASE, RegexOption.MULTILINE)),
             ),
             NamedRegex(
                 "Sonhos para Farmar",
