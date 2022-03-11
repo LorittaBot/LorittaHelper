@@ -15,7 +15,7 @@ class CheckSonhosMendigagemTimeoutListener(val m: LorittaHelperKord) {
         private val SOMEONE = "(algu([eé])m|alg|algm|agl)"
         private val GIVE = "(doar?|d[aá]|empresta)"
         private val SOME = "(alguns|algns|algms|algn|algm)"
-        private val SONHOS = "(s ?[o0] ? n? ?h ?[ou0] ?s?)"
+        private val SONHOS = "(s ?[o0] ?n? ?h ?[ou0] ?s?)"
         private val ME = "me"
         private val SONHOS_QUANTITY = "([A-z0-9]+)"
         private val COULD = "(pode|poderia)"
