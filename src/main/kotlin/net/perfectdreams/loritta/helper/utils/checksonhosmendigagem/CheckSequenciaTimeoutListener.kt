@@ -57,7 +57,7 @@ class CheckSequenciaTimeoutListener(val m: LorittaHelperKord) {
                 }
 
                 m.helperRest.channel.createMessage(this.message.channelId) {
-                    this.content = """<@${message.author.id.value}> 👏SEQUÊNCIA👏DE👏APOSTAS👏NÃO👏EXISTE👏
+                    this.content = """<@${message.author.id.value}> **👏SEQUÊNCIA👏DE👏APOSTAS👏NÃO👏EXISTE👏**
                         |
                         |<:lori_clown:950111543574536212> Contas novas não tem chance maior de ganharem.
                         |<:lori_clown:950111543574536212> Usuários premiums da Loritta não tem chance maior de ganharem.
