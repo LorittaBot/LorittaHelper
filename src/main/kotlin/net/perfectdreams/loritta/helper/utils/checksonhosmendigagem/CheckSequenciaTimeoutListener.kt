@@ -72,7 +72,7 @@ class CheckSequenciaTimeoutListener(val m: LorittaHelperKord) {
                         |
                         |Pare de acreditar que sequência existe, quem acredita nessas coisas é mais burro que o Bolsonaro, e eu não acho que você é mais burro que o Bolsonaro <:lori_sob:950109140880080956>
                         |
-                        |**Se você continuar a falar que "sequência existe" sem provar que exista, você será banido do servidor e da Loritta! Se existe, prove para a equipe e ganhe R$ 250 por ter reportado um bug de "manipular a sequência", desde que seja um jeito consistente que te deixe com uma probabilidade de ganhar muito acima de 60% ao longo de 100+ partidas.** <:lori_sunglasses:950114031337865257>
+                        |**As apostas são baseadas em "sorte", se você está perdendo é porque você é azarado. Se você continuar a falar que "sequência existe" sem provar que exista, você será banido do servidor e da Loritta! Se existe, prove para a equipe e ganhe R$ 250 por ter reportado um bug de "manipular a sequência", desde que seja um jeito consistente que te deixe com uma probabilidade de ganhar muito acima de 60% ao longo de 100+ partidas.** <:lori_sunglasses:950114031337865257>
                         |
                         |**Saiba mais:** <https://loritta.website/br/extras/faq-loritta/coinflip-bug?utm_source=discord&utm_medium=sequence-warn&utm_campaign=sequence-psa>
                     """.trimMargin()
