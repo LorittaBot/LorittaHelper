@@ -22,6 +22,7 @@ import net.perfectdreams.loritta.helper.utils.buttonroles.RoleCoolBadgeButtonExe
 import net.perfectdreams.loritta.helper.utils.buttonroles.RoleToggleButtonExecutor
 import net.perfectdreams.loritta.helper.utils.cache.ChannelsCache
 import net.perfectdreams.loritta.helper.utils.cache.TicketsCache
+import net.perfectdreams.loritta.helper.utils.checksonhosmendigagem.CheckSonhosMendigagemTimeoutListener
 import net.perfectdreams.loritta.helper.utils.config.FanArtsConfig
 import net.perfectdreams.loritta.helper.utils.config.LorittaConfig
 import net.perfectdreams.loritta.helper.utils.config.LorittaHelperConfig
@@ -333,6 +334,7 @@ class LorittaHelperKord(
 
             TicketListener(this@LorittaHelperKord).installAutoReplyToMessagesInTicketListener(gateway)
             AutoCloseTicketWhenMemberLeavesGuildListener(this@LorittaHelperKord).installAutoCloseTicketWhenMemberLeavesGuildListener(gateway)
+            CheckSonhosMendigagemTimeoutListener(this@LorittaHelperKord).installCheckSonhosMendigagemTimeoutListener(gateway)
 
             gateway.start(config.token) {
                 intents = Intents {
