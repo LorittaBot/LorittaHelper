@@ -50,7 +50,7 @@ class CheckSequenciaTimeoutListener(val m: LorittaHelperKord) {
                         message.author.id
                     ) {
                         this.communicationDisabledUntil = Clock.System.now()
-                            .plus(15.seconds)
+                            .plus(7.seconds)
 
                         this.reason = "User matched sequência!"
                     }
