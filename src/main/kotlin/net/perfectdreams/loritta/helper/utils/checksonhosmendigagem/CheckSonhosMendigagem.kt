@@ -6,10 +6,10 @@ import net.dv8tion.jda.api.utils.MarkdownSanitizer
 import net.perfectdreams.loritta.api.messages.LorittaReply
 import net.perfectdreams.loritta.helper.LorittaHelper
 import net.perfectdreams.loritta.helper.tables.GuildProfiles
-import net.perfectdreams.loritta.helper.utils.toNaiveBayesClassifier
 import net.perfectdreams.loritta.helper.utils.Emotes
 import net.perfectdreams.loritta.helper.utils.checkillegalnitrosell.CheckIllegalNitroSell
 import net.perfectdreams.loritta.helper.utils.splitWords
+import net.perfectdreams.loritta.helper.utils.toNaiveBayesClassifier
 import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.transactions.transaction
@@ -32,25 +32,36 @@ class CheckSonhosMendigagem(val m: LorittaHelper) {
         val logger = KotlinLogging.logger {  }
 
         private val channels = listOf(297732013006389252L)
-        private val reply = listOf(
+
+        fun buildReply(campaignContent: String) = listOf(
             LorittaReply(
-                "Que feio... Pare de mendigar! Pegue seus sonhos diários usando `+daily`!",
+                "**Pare de mendigar sonhos**, isso incomoda as pessoas que estão no chat e, se você continuar, você poderá ser banido do servidor!",
                 Emotes.LORI_RAGE,
                 mentionUser = true
             ),
             LorittaReply(
-                "Você já pegou o daily? Então você pode votar em mim usando `+dbl`! Sabia que você ganha sonhos votando em mim?",
+                "**Se você quer sonhos**, pegue a sua recompensa diária usando `+daily`!",
+                Emotes.LORI_SUNGLASSES,
+                mentionUser = false
+            ),
+            LorittaReply(
+                "**Você já pegou o daily? Vote em mim usando `+dbl`!** Sabia que você ganha sonhos votando em mim? Você pode votar em mim a cada 12 horas!",
                 Emotes.LORI_THINKING,
                 mentionUser = false
             ),
             LorittaReply(
-                "Ainda não está satisfeito? Então jogue no servidor de Minecraft SparklyPower! `mc.sparklypower.net`",
-                Emotes.PANTUFA_GASP,
+                "**Ainda não está satisfeito? Então jogue no SparklyPower, o servidor de Minecraft da Loritta!** Você pode transferir o dinheiro que você ganha lá para a Loritta, e vice-versa! `mc.sparklypower.net`",
+                Emotes.PANTUFA_GAMING,
                 mentionUser = false
             ),
             LorittaReply(
-                "**Se você continuar a mendigar você será punido!**",
-                Emotes.LORI_BAN_HAMMER,
+                "**Psiu, está querendo mais sonhos? Então compre na minha lojinha!** Nós aceitamos pagamentos via boleto, cartão de crédito e Pix e comprando por lá você me ajuda a ficar online enquanto você se diverte com mais sonhos! Mas não se preocupe, a escolha é sua e você pode continuar a usar a Loritta sem se preocupar em tirar dinheiro do seu bolso. Ficou interessado? Então acesse! https://loritta.website/user/@me/dashboard/bundles?utm_source=discord&utm_medium=dont-beg-warn&utm_campaign=sonhos-bundles-upsell&utm_content=$campaignContent",
+                Emotes.LORI_RICH,
+                mentionUser = false
+            ),
+            LorittaReply(
+                "**Aprenda tudo sobre sonhos em:** https://loritta.website/br/extras/faq-loritta/sonhos?utm_source=discord&utm_medium=dont-beg-warn&utm_campaign=sonhos-wiki&utm_content=$campaignContent",
+                Emotes.LORI_PAT,
                 mentionUser = false
             )
         )
@@ -79,7 +90,7 @@ class CheckSonhosMendigagem(val m: LorittaHelper) {
             logger.info { "Category: ${predictedCategory?.category} | Probability: ${predictedCategory?.probability}" }
 
             if (predictedCategory?.category == true && predictedCategory.probability >= 0.8) {
-                event.channel.sendMessage(reply.joinToString("\n") { it.build(event.author) })
+                event.channel.sendMessage(buildReply("warned-beg").joinToString("\n") { it.build(event.author) })
                     .reference(event.message)
                     .queue()
             }

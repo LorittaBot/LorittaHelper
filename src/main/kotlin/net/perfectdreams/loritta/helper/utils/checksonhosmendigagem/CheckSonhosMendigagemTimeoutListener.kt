@@ -15,7 +15,7 @@ class CheckSonhosMendigagemTimeoutListener(val m: LorittaHelperKord) {
         private val SOMEONE = "(algu([eé])m|alg|algm|agl)"
         private val GIVE = "(doar?|d[aá]|empresta)"
         private val SOME = "(alguns|algns|algms|algn|algm)"
-        private val SONHOS = "(sonhos?|sonhus?|s o n h o s)"
+        private val SONHOS = "(s ?[o0] ? n? ?h ?[ou0] ?s?)"
         private val ME = "me"
         private val SONHOS_QUANTITY = "([A-z0-9]+)"
         private val COULD = "(pode|poderia)"
@@ -125,7 +125,7 @@ class CheckSonhosMendigagemTimeoutListener(val m: LorittaHelperKord) {
 
                 val channel = m.helperRest.user.createDM(DMCreateRequest(message.author.id))
                 m.helperRest.channel.createMessage(channel.id) {
-                    content = "Pare de mendigar sonhos, isso incomoda as pessoas que estão no chat e, se você continuar, você poderá ser banido do servidor! <:lori_sob:950109140880080956>"
+                    content = CheckSonhosMendigagem.buildReply("blocked-beg").joinToString("\n") { it.build(message.author) }
                 }
                 break
             }
