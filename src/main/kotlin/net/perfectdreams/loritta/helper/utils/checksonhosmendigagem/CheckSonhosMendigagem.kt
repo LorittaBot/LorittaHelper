@@ -55,12 +55,12 @@ class CheckSonhosMendigagem(val m: LorittaHelper) {
                 mentionUser = false
             ),
             LorittaReply(
-                "**Psiu, está querendo mais sonhos? Então compre na minha lojinha!** Nós aceitamos pagamentos via boleto, cartão de crédito e Pix e comprando por lá você me ajuda a ficar online enquanto você se diverte com mais sonhos! Mas não se preocupe, a escolha é sua e você pode continuar a usar a Loritta sem se preocupar em tirar dinheiro do seu bolso. Ficou interessado? Então acesse! https://loritta.website/user/@me/dashboard/bundles?utm_source=discord&utm_medium=dont-beg-warn&utm_campaign=sonhos-bundles-upsell&utm_content=$campaignContent",
+                "**Psiu, está querendo mais sonhos? Então compre na minha lojinha!** Nós aceitamos pagamentos via boleto, cartão de crédito e Pix e comprando por lá você me ajuda a ficar online enquanto você se diverte com mais sonhos! Mas não se preocupe, a escolha é sua e você pode continuar a usar a Loritta sem se preocupar em tirar dinheiro do seu bolso. Ficou interessado? Então acesse! <https://loritta.website/user/@me/dashboard/bundles?utm_source=discord&utm_medium=dont-beg-warn&utm_campaign=sonhos-bundles-upsell&utm_content=$campaignContent>",
                 Emotes.LORI_RICH,
                 mentionUser = false
             ),
             LorittaReply(
-                "**Aprenda tudo sobre sonhos em:** https://loritta.website/br/extras/faq-loritta/sonhos?utm_source=discord&utm_medium=dont-beg-warn&utm_campaign=sonhos-wiki&utm_content=$campaignContent",
+                "**Aprenda tudo sobre sonhos em:** <https://loritta.website/br/extras/faq-loritta/sonhos?utm_source=discord&utm_medium=dont-beg-warn&utm_campaign=sonhos-wiki&utm_content=$campaignContent>",
                 Emotes.LORI_PAT,
                 mentionUser = false
             )
