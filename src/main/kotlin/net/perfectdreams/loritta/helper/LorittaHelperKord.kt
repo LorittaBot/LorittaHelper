@@ -36,6 +36,7 @@ import net.perfectdreams.loritta.helper.utils.galleryofdreams.commands.declarati
 import net.perfectdreams.loritta.helper.utils.galleryofdreams.commands.declarations.GalleryOfDreamsSlashCommand
 import net.perfectdreams.loritta.helper.utils.generateserverreport.ShowFilesExecutor
 import net.perfectdreams.loritta.helper.utils.generateserverreport.ShowUserIdExecutor
+import net.perfectdreams.loritta.helper.utils.loribantimeout.LorittaBanTimeoutListener
 import net.perfectdreams.loritta.helper.utils.slash.AllTransactionsExecutor
 import net.perfectdreams.loritta.helper.utils.slash.AttachDenyReasonExecutor
 import net.perfectdreams.loritta.helper.utils.slash.BroadcastDailyShopWinnersExecutor
@@ -337,7 +338,8 @@ class LorittaHelperKord(
             AutoCloseTicketWhenMemberLeavesGuildListener(this@LorittaHelperKord).installAutoCloseTicketWhenMemberLeavesGuildListener(gateway)
             CheckSonhosMendigagemTimeoutListener(this@LorittaHelperKord).installCheckSonhosMendigagemTimeoutListener(gateway)
             CheckSequenciaTimeoutListener(this@LorittaHelperKord).installCheckSequenciaTimeoutListener(gateway)
-
+            LorittaBanTimeoutListener(this@LorittaHelperKord).installLorittaBanTimeout(gateway)
+            
             gateway.start(config.token) {
                 intents = Intents {
                     + Intent.GuildMessages
