@@ -78,7 +78,7 @@ class LoriUnbanExecutor(helper: LorittaHelperKord) : HelperSlashExecutor(helper,
                 try {
                     helper.helperRest.guild.modifyGuildMember(
                         Snowflake(Constants.COMMUNITY_SERVER_ID),
-                        context.sender.id
+                        Snowflake(userId)
                     ) {
                         this.communicationDisabledUntil = null
 

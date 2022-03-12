@@ -91,7 +91,7 @@ class LoriBanExecutor(helper: LorittaHelperKord) : HelperSlashExecutor(helper, P
                 try {
                     helper.helperRest.guild.modifyGuildMember(
                         Snowflake(Constants.COMMUNITY_SERVER_ID),
-                        context.sender.id
+                        Snowflake(userId)
                     ) {
                         this.communicationDisabledUntil = Clock.System.now()
                             .plus(28.days)
