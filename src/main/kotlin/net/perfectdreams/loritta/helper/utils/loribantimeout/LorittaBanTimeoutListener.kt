@@ -23,21 +23,23 @@ class LorittaBanTimeoutListener(val m: LorittaHelperKord) {
             if (this.message.guildId.value?.value?.toLong() != Constants.COMMUNITY_SERVER_ID)
                 return@on
 
-            m.helperRest.guild.modifyGuildMember(
-                message.guildId.value!!,
-                message.author.id
-            ) {
-                this.communicationDisabledUntil = Clock.System.now()
-                    .plus(28.days)
+            if (isLorittaBanned(m, message.author.id)) {
+                m.helperRest.guild.modifyGuildMember(
+                    message.guildId.value!!,
+                    message.author.id
+                ) {
+                    this.communicationDisabledUntil = Clock.System.now()
+                        .plus(28.days)
 
-                this.reason = "User is Loritta Banned!"
+                    this.reason = "User is Loritta Banned!"
+                }
+
+                m.helperRest.channel.deleteMessage(
+                    message.channelId,
+                    message.id,
+                    "User is Loritta Banned!"
+                )
             }
-
-            m.helperRest.channel.deleteMessage(
-                message.channelId,
-                message.id,
-                "User is Loritta Banned!"
-            )
         }
 
         gateway.on<GuildMemberAdd> {
