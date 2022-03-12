@@ -339,7 +339,7 @@ class LorittaHelperKord(
             CheckSonhosMendigagemTimeoutListener(this@LorittaHelperKord).installCheckSonhosMendigagemTimeoutListener(gateway)
             CheckSequenciaTimeoutListener(this@LorittaHelperKord).installCheckSequenciaTimeoutListener(gateway)
             LorittaBanTimeoutListener(this@LorittaHelperKord).installLorittaBanTimeout(gateway)
-            
+
             gateway.start(config.token) {
                 intents = Intents {
                     + Intent.GuildMessages

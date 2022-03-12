@@ -32,6 +32,12 @@ class LorittaBanTimeoutListener(val m: LorittaHelperKord) {
 
                 this.reason = "User is Loritta Banned!"
             }
+
+            m.helperRest.channel.deleteMessage(
+                message.channelId,
+                message.id,
+                "User is Loritta Banned!"
+            )
         }
 
         gateway.on<GuildMemberAdd> {
