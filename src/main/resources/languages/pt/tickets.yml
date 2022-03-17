@@ -12,7 +12,7 @@ tickets:
     - ""
     - "Antes de perguntar, verifique se a resposta dela não está no {faqChannel} ou {extras}! Se você irá perguntar se a Loritta caiu, veja o {lorittaStatus} primeiro!"
 
-  selectYourQuestion: "Vamos começar a busca de encontrar a resposta para a sua pergunta, verifique se a sua pergunta está no menu de seleção abaixo!"
+  selectYourQuestion: "Vamos começar a busca de encontrar a resposta para a sua pergunta, verifique e selecione a sua pergunta no menu de seleção abaixo! Leia atentamente as opções do menu e, caso você não encontre a pergunta desejada, a última opção do menu permitirá você criar um ticket de suporte para falar com a nossa equipe."
   lookUpInTheFAQIfQuestionWasntFound: "Não encontrou a sua pergunta? Então tente procurar no {faqChannel} ou em {extras}!"
   createATicketIfQuestionWasntFound: "Mesmo assim não encontrou a sua pergunta? Então crie um ticket clicando no botão de \"Abrir Ticket\", isto irá criar um canal privado que irá permitir você perguntar a sua dúvida para o {lorittaSupport}! Eu espero que a gente possa te ajudar com a sua dúvida!!"
   clickToFindYourQuestion: "Clique para encontrar a sua dúvida!"

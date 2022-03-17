@@ -11,7 +11,7 @@ tickets:
     - "Welcome to Loritta's Help Desk! The place where you can find answers to your questions, as long as they are related to Loritta, of course!"
     - ""
     - "Before asking, please check if your question's answer is not in the {faqChannel} or {extras}! And if you are going to ask whether Loritta is down, please check {lorittaStatus} first!"
-  selectYourQuestion: "Let's begin the quest to find the answer to your question. Please select the option that most suits your question here:"
+  selectYourQuestion: "Let's begin the quest to find the answer to your question. Please find and select the option in the menu that most suits your question! Please read the menu options carefully, and if you don't find the question you need, the last option in the menu will allow you to create a support ticket to talk to our support staff."
   lookUpInTheFAQIfQuestionWasntFound: "Couldn't find your question? Then try looking in our {faqChannel} or in the {extras} channel!"
   createATicketIfQuestionWasntFound: "Still didn't find your question? Then create a ticket by clicking the \"Open Ticket\" button, option which creates a private channel where you can direct your question to {lorittaSupport}!"
   clickToFindYourQuestion: "Click to search for support to your question!"
