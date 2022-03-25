@@ -2,9 +2,10 @@ package net.perfectdreams.loritta.helper.utils.slash
 
 import dev.kord.common.Color
 import dev.kord.common.entity.Snowflake
+import dev.kord.rest.Image
 import dev.kord.rest.builder.message.create.embed
+import net.perfectdreams.discordinteraktions.common.entities.Icon
 import net.perfectdreams.discordinteraktions.common.entities.User
-import net.perfectdreams.discordinteraktions.common.entities.UserAvatar
 import net.perfectdreams.discordinteraktions.common.utils.author
 import net.perfectdreams.discordinteraktions.common.utils.field
 import net.perfectdreams.discordinteraktions.common.utils.footer
@@ -31,7 +32,9 @@ object LoriToolsUtils {
             Snowflake(Constants.PORTUGUESE_SADDEST_OF_THE_SADS_CHANNEL_ID)
         ) {
             embed {
-                author("${moderator.name}#${moderator.discriminator} (${moderator.id})", null, moderator.avatar.url)
+                author("${moderator.name}#${moderator.discriminator} (${moderator.id})", null, moderator.avatar.cdnUrl.toUrl {
+                    format = Image.Format.PNG
+                })
                 this.title = "$punishedUserId | $title"
                 field("Motivo", reason, true)
                 this.color = color
@@ -39,8 +42,15 @@ object LoriToolsUtils {
                 if (punishedUser != null)
                     footer(
                         "${punishedUser.username}#${punishedUser.discriminator} (${punishedUser.id})",
-                        UserAvatar(punishedUserId.value, punishedUser.discriminator.toInt(), punishedUser.avatar)
-                            .url
+                        (
+                                punishedUser.avatar?.let {
+                                    Icon.UserAvatar(Snowflake(punishedUserId.value), it)
+                                } ?: Icon.DefaultUserAvatar(punishedUser.discriminator.toInt())
+                                )
+                            .cdnUrl
+                            .toUrl {
+                                format = Image.Format.PNG
+                            }
                     )
             }
         }
