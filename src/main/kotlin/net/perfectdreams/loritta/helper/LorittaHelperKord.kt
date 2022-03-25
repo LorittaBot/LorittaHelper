@@ -344,6 +344,7 @@ class LorittaHelperKord(
                 intents = Intents {
                     + Intent.GuildMessages
                     + Intent.GuildMembers
+                    + Intent.MessageContent
                 }
             }
         }
