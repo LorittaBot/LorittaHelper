@@ -59,6 +59,7 @@ dependencies {
     api("net.perfectdreams.i18nhelper.formatters:icu-messageformat-jvm:0.0.3-SNAPSHOT")
 
     // GalleryOfDreams client
+    implementation("net.perfectdreams.galleryofdreams:common:1.0.3-20220326.222724-9")
     implementation("net.perfectdreams.galleryofdreams:client:1.0.3-20220326.222724-9")
 
     // Used for the LocaleManager
