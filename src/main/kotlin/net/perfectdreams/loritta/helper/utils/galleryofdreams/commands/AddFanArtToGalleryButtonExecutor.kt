@@ -4,6 +4,7 @@ import dev.kord.rest.json.request.DMCreateRequest
 import io.ktor.client.request.*
 import io.ktor.http.*
 import kotlinx.datetime.Instant
+import kotlinx.serialization.json.JsonNull.content
 import net.perfectdreams.discordinteraktions.common.components.ButtonClickExecutorDeclaration
 import net.perfectdreams.discordinteraktions.common.components.ButtonClickWithDataExecutor
 import net.perfectdreams.discordinteraktions.common.components.ComponentContext
@@ -122,7 +123,7 @@ class AddFanArtToGalleryButtonExecutor(val m: LorittaHelperKord, val galleryOfDr
         }
 
         // Send that the fan art was successfully added to the user
-        val dmChannel = m.helperRest.user.createDM(DMCreateRequest(message.author.id))
+        val dmChannel = m.helperRest.user.createDM(DMCreateRequest(addFanArtData.artistDiscordId))
 
         m.helperRest.channel.createMessage(
             dmChannel.id
