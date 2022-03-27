@@ -60,13 +60,16 @@ class AddFanArtToGallerySlashExecutor(helper: LorittaHelperKord, val galleryOfDr
             return
         }
 
-        val artist = galleryOfDreamsClient.getFanArtArtistByDiscordId(args[Options.userOverride]?.id?.value?.toLong() ?: targetMessage.author.id.value.toLong())
+        val artistId = args[Options.userOverride]?.id ?: targetMessage.author.id
+        val artistName = args[Options.userOverride]?.name ?: targetMessage.author.username
+
+        val artist = galleryOfDreamsClient.getFanArtArtistByDiscordId(artistId.value.toLong())
 
         val builtMessage = GalleryOfDreamsUtils.createMessage(
             if (artist == null) {
                 AddFanArtToNewArtistData(
-                    targetMessage.author.id,
-                    targetMessage.author.username,
+                    artistId,
+                    artistName,
                     // Cleans up the user's name to make it be the user's name, if the result is a empty string we use a "ifEmpty" call to change it to the user's ID
                     targetMessage.author.username.lowercase().replace(" ", "-").replace(Regex("[^A-Za-z0-9-]"), "").trim().ifEmpty { targetMessage.author.id.value.toString() },
                     targetMessage.channelId,
