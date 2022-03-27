@@ -19,6 +19,9 @@ class AddFanArtToGallerySlashExecutor(helper: LorittaHelperKord, val galleryOfDr
 
             val extensionOverride = optionalString("extension_override", "Substitui a extensão da Fan Art enviada caso o usuário tenha enviado com uma extensão errada")
                 .register()
+
+            val userOverride = optionalUser("user_override", "Substitui o usuário da Fan Art enviada para outro usuário")
+                .register()
         }
 
         override val options = Options
@@ -57,7 +60,7 @@ class AddFanArtToGallerySlashExecutor(helper: LorittaHelperKord, val galleryOfDr
             return
         }
 
-        val artist = galleryOfDreamsClient.getFanArtArtistByDiscordId(targetMessage.author.id.value.toLong())
+        val artist = galleryOfDreamsClient.getFanArtArtistByDiscordId(args[Options.userOverride]?.id?.value?.toLong() ?: targetMessage.author.id.value.toLong())
 
         val builtMessage = GalleryOfDreamsUtils.createMessage(
             if (artist == null) {
