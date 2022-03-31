@@ -10,7 +10,6 @@ import net.perfectdreams.loritta.helper.LorittaHelperKord
 import net.perfectdreams.loritta.helper.listeners.ApproveReportsOnReactionListener
 import net.perfectdreams.loritta.helper.tables.StaffProcessedReports
 import net.perfectdreams.loritta.helper.utils.StaffProcessedReportResult
-import org.jetbrains.exposed.sql.SortOrder
 import org.jetbrains.exposed.sql.count
 import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.transactions.transaction
@@ -50,7 +49,6 @@ class StatsReportsExecutor(helper: LorittaHelperKord) : HelperSlashExecutor(help
                 .groupBy(StaffProcessedReports.userId, StaffProcessedReports.result)
                 .toList()
 
-
             currentBanStatus.map { it[StaffProcessedReports.userId] }.toSet().map { userId ->
                 UserStatsResult(
                     userId,
@@ -65,7 +63,7 @@ class StatsReportsExecutor(helper: LorittaHelperKord) : HelperSlashExecutor(help
             embed {
                 title = "Ranking de Denúncias Processadas"
 
-                buildString {
+                description = buildString {
                     for ((index, userStats) in result.sortedByDescending { it.approved + it.rejected }.withIndex()) {
                         append("**${index}.** <@${userStats.userId}> - ${userStats.approved + userStats.rejected} denúncias processadas")
                         append("\n")
