@@ -2,7 +2,6 @@ package net.perfectdreams.loritta.helper.utils.tickets
 
 import dev.kord.common.entity.ButtonStyle
 import dev.kord.common.entity.DiscordPartialEmoji
-import kotlinx.datetime.Clock
 import net.perfectdreams.discordinteraktions.common.builder.message.actionRow
 import net.perfectdreams.discordinteraktions.common.components.ComponentContext
 import net.perfectdreams.discordinteraktions.common.components.GuildComponentContext
@@ -17,6 +16,7 @@ import net.perfectdreams.loritta.helper.tables.SelectedResponsesLog
 import net.perfectdreams.loritta.helper.utils.ComponentDataUtils
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.transactions.transaction
+import java.time.Instant
 
 class HelperResponseSelectMenuExecutor(val m: LorittaHelperKord) : SelectMenuExecutor {
     companion object : SelectMenuExecutorDeclaration(HelperResponseSelectMenuExecutor::class, "helper_response") {
@@ -80,7 +80,7 @@ class HelperResponseSelectMenuExecutor(val m: LorittaHelperKord) : SelectMenuExe
 
                 transaction(m.databases.helperDatabase) {
                     SelectedResponsesLog.insert {
-                        it[SelectedResponsesLog.timestamp] = Clock.System.now()
+                        it[SelectedResponsesLog.timestamp] = Instant.now()
                         it[SelectedResponsesLog.ticketSystemType] = systemInfo.systemType
                         it[SelectedResponsesLog.userId] = user.id.value.toLong()
                         it[SelectedResponsesLog.selectedResponse] = firstValue

@@ -31,7 +31,9 @@ import net.perfectdreams.loritta.helper.listeners.MessageListener
 import net.perfectdreams.loritta.helper.listeners.PrivateMessageListener
 import net.perfectdreams.loritta.helper.network.Databases
 import net.perfectdreams.loritta.helper.tables.SelectedResponsesLog
+import net.perfectdreams.loritta.helper.tables.StaffProcessedReports
 import net.perfectdreams.loritta.helper.utils.LorittaLandRoleSynchronizationTask
+import net.perfectdreams.loritta.helper.utils.StaffProcessedReportResult
 import net.perfectdreams.loritta.helper.utils.checkbannedusers.LorittaBannedRoleTask
 import net.perfectdreams.loritta.helper.utils.config.FanArtsConfig
 import net.perfectdreams.loritta.helper.utils.config.LorittaConfig
@@ -88,9 +90,11 @@ class LorittaHelper(val config: LorittaHelperConfig, val fanArtsConfig: FanArtsC
     fun start() {
         transaction(databases.helperDatabase) {
             createOrUpdatePostgreSQLEnum(TicketUtils.TicketSystemType.values())
+            createOrUpdatePostgreSQLEnum(StaffProcessedReportResult.values())
 
             SchemaUtils.createMissingTablesAndColumns(
-                SelectedResponsesLog
+                SelectedResponsesLog,
+                StaffProcessedReports
             )
         }
 

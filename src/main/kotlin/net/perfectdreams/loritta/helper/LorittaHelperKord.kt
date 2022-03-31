@@ -55,6 +55,7 @@ import net.perfectdreams.loritta.helper.utils.slash.PendingReportsExecutor
 import net.perfectdreams.loritta.helper.utils.slash.PendingScarletExecutor
 import net.perfectdreams.loritta.helper.utils.slash.RetrieveMessageExecutor
 import net.perfectdreams.loritta.helper.utils.slash.ServerMembersExecutor
+import net.perfectdreams.loritta.helper.utils.slash.StatsReportsExecutor
 import net.perfectdreams.loritta.helper.utils.slash.TicketInfoExecutor
 import net.perfectdreams.loritta.helper.utils.slash.TicketSenderExecutor
 import net.perfectdreams.loritta.helper.utils.slash.declarations.AllTransactionsCommand
@@ -72,6 +73,7 @@ import net.perfectdreams.loritta.helper.utils.slash.declarations.PendingReportsC
 import net.perfectdreams.loritta.helper.utils.slash.declarations.PendingScarletCommand
 import net.perfectdreams.loritta.helper.utils.slash.declarations.RetrieveMessageCommand
 import net.perfectdreams.loritta.helper.utils.slash.declarations.ServerMembersCommand
+import net.perfectdreams.loritta.helper.utils.slash.declarations.StatsCommand
 import net.perfectdreams.loritta.helper.utils.slash.declarations.TicketSenderCommand
 import net.perfectdreams.loritta.helper.utils.slash.declarations.TicketUtilsCommand
 import net.perfectdreams.loritta.helper.utils.tickets.AutoCloseTicketWhenMemberLeavesGuildListener
@@ -249,6 +251,11 @@ class LorittaHelperKord(
                 )
 
                 // ===[ REPORTS ]===
+                register(
+                    StatsCommand,
+                    StatsReportsExecutor(this@LorittaHelperKord)
+                )
+
                 register(
                     ShowUserIdExecutor,
                     ShowUserIdExecutor(this@LorittaHelperKord)
