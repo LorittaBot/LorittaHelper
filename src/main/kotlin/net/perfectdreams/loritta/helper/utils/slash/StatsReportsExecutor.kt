@@ -48,6 +48,7 @@ class StatsReportsExecutor(helper: LorittaHelperKord) : HelperSlashExecutor(help
             val currentBanStatus = StaffProcessedReports.slice(StaffProcessedReports.userId, StaffProcessedReports.result, resultCount).select {
                 StaffProcessedReports.timestamp greaterEq since
             }
+                .groupBy(StaffProcessedReports.userId, StaffProcessedReports.result)
                 .orderBy(userIdCount, SortOrder.DESC)
                 .toList()
 
