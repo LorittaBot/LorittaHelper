@@ -34,12 +34,14 @@ class StatsReportsExecutor(helper: LorittaHelperKord) : HelperSlashExecutor(help
     override suspend fun executeHelper(context: ApplicationCommandContext, args: SlashCommandArguments) {
         val filterDay = args[options.filter]
 
-        var since = Instant.MIN
+        // When using Instant.MIN, this happened:
+        // "DefaultDispatcher-worker-2" java.time.DateTimeException: Invalid value for EpochDay (valid values -365243219162 - 365241780471): -365243219528
+        var since = Instant.ofEpochMilli(0)
 
         if (filterDay != null)
             since = Instant.now().minusSeconds(filterDay.toLong() * 86400)
 
-        val result = transaction(helper.databases.lorittaDatabase) {
+        val result = transaction(helper.databases.helperDatabase) {
             val userIdCount = StaffProcessedReports.userId.count()
             val resultCount = StaffProcessedReports.result.count()
 
