@@ -42,14 +42,12 @@ class StatsReportsExecutor(helper: LorittaHelperKord) : HelperSlashExecutor(help
             since = Instant.now().minusSeconds(filterDay.toLong() * 86400)
 
         val result = transaction(helper.databases.helperDatabase) {
-            val userIdCount = StaffProcessedReports.userId.count()
             val resultCount = StaffProcessedReports.result.count()
 
             val currentBanStatus = StaffProcessedReports.slice(StaffProcessedReports.userId, StaffProcessedReports.result, resultCount).select {
                 StaffProcessedReports.timestamp greaterEq since
             }
                 .groupBy(StaffProcessedReports.userId, StaffProcessedReports.result)
-                .orderBy(userIdCount, SortOrder.DESC)
                 .toList()
 
 
