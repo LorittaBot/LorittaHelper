@@ -7,7 +7,6 @@ import net.perfectdreams.discordinteraktions.common.commands.options.Application
 import net.perfectdreams.discordinteraktions.common.commands.options.SlashCommandArguments
 import net.perfectdreams.discordinteraktions.common.utils.footer
 import net.perfectdreams.loritta.helper.LorittaHelperKord
-import net.perfectdreams.loritta.helper.tables.StaffProcessedReports
 import net.perfectdreams.loritta.helper.tables.TicketMessagesActivity
 import org.jetbrains.exposed.sql.countDistinct
 import org.jetbrains.exposed.sql.select
@@ -43,7 +42,7 @@ class StatsTicketsExecutor(helper: LorittaHelperKord) : HelperSlashExecutor(help
             val resultCount = TicketMessagesActivity.supportSolicitationId.countDistinct()
 
             val currentBanStatus = TicketMessagesActivity.slice(TicketMessagesActivity.userId, resultCount).select {
-                StaffProcessedReports.timestamp greaterEq since
+                TicketMessagesActivity.timestamp greaterEq since
             }
                 .groupBy(TicketMessagesActivity.userId)
                 .toList()
