@@ -56,6 +56,7 @@ import net.perfectdreams.loritta.helper.utils.slash.PendingScarletExecutor
 import net.perfectdreams.loritta.helper.utils.slash.RetrieveMessageExecutor
 import net.perfectdreams.loritta.helper.utils.slash.ServerMembersExecutor
 import net.perfectdreams.loritta.helper.utils.slash.StatsReportsExecutor
+import net.perfectdreams.loritta.helper.utils.slash.StatsTicketsExecutor
 import net.perfectdreams.loritta.helper.utils.slash.TicketInfoExecutor
 import net.perfectdreams.loritta.helper.utils.slash.TicketSenderExecutor
 import net.perfectdreams.loritta.helper.utils.slash.declarations.AllTransactionsCommand
