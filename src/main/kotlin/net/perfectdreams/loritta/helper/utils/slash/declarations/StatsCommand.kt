@@ -3,7 +3,7 @@ package net.perfectdreams.loritta.helper.utils.slash.declarations
 import net.perfectdreams.discordinteraktions.common.commands.SlashCommandDeclarationWrapper
 import net.perfectdreams.discordinteraktions.common.commands.slashCommand
 import net.perfectdreams.loritta.helper.utils.slash.StatsReportsExecutor
-import net.perfectdreams.loritta.helper.utils.slash.UpdateReportsStatsExecutor
+import net.perfectdreams.loritta.helper.utils.slash.StatsTicketsExecutor
 
 object StatsCommand : SlashCommandDeclarationWrapper {
     override fun declaration() = slashCommand(
@@ -14,8 +14,8 @@ object StatsCommand : SlashCommandDeclarationWrapper {
             executor = StatsReportsExecutor
         }
 
-        subcommand("updatereportsstats", "Atualiza as estatísticas caso estejam desatualizadas") {
-            executor = UpdateReportsStatsExecutor
+        subcommand("tickets", "Estatísticas sobre tickets") {
+            executor = StatsTicketsExecutor
         }
     }
 }
