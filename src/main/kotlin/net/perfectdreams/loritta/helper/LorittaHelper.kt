@@ -33,6 +33,7 @@ import net.perfectdreams.loritta.helper.network.Databases
 import net.perfectdreams.loritta.helper.tables.SelectedResponsesLog
 import net.perfectdreams.loritta.helper.tables.StaffProcessedReports
 import net.perfectdreams.loritta.helper.tables.StartedSupportSolicitations
+import net.perfectdreams.loritta.helper.tables.TicketMessagesActivity
 import net.perfectdreams.loritta.helper.utils.LorittaLandRoleSynchronizationTask
 import net.perfectdreams.loritta.helper.utils.StaffProcessedReportResult
 import net.perfectdreams.loritta.helper.utils.checkbannedusers.LorittaBannedRoleTask
@@ -95,7 +96,9 @@ class LorittaHelper(val config: LorittaHelperConfig, val fanArtsConfig: FanArtsC
 
             SchemaUtils.createMissingTablesAndColumns(
                 SelectedResponsesLog,
-                StaffProcessedReports
+                StaffProcessedReports,
+                StartedSupportSolicitations,
+                TicketMessagesActivity
             )
         }
 
