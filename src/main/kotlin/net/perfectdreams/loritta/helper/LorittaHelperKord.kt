@@ -252,11 +252,6 @@ class LorittaHelperKord(
 
                 // ===[ REPORTS ]===
                 register(
-                    StatsCommand,
-                    StatsReportsExecutor(this@LorittaHelperKord)
-                )
-
-                register(
                     ShowUserIdExecutor,
                     ShowUserIdExecutor(this@LorittaHelperKord)
                 )
@@ -264,6 +259,13 @@ class LorittaHelperKord(
                 register(
                     ShowFilesExecutor,
                     ShowFilesExecutor(this@LorittaHelperKord)
+                )
+
+                // ===[ STATS ]===
+                register(
+                    StatsCommand,
+                    StatsReportsExecutor(this@LorittaHelperKord),
+                    StatsTicketsExecutor(this@LorittaHelperKord)
                 )
 
                 // ===[ LORI TOOLS ]===
