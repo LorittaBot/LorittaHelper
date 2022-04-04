@@ -48,21 +48,26 @@ class StatsTicketsExecutor(helper: LorittaHelperKord) : HelperSlashExecutor(help
                 .groupBy(TicketMessagesActivity.userId)
                 .toList()
 
-            currentBanStatus.map {
-                UserStatsResult(
-                    it[TicketMessagesActivity.userId],
-                    it[resultCount]
-                )
-            }
+            currentBanStatus
+                .map {
+                    UserStatsResult(
+                        it[TicketMessagesActivity.userId],
+                        it[resultCount]
+                    )
+                }
         }
 
 
         context.sendMessage {
             embed {
-                title = "Ranking de Tickets Respondidos"
+                title = "Ranking de Pessoas Tagarelas em Tickets Respondidos"
 
                 description = buildString {
-                    for ((index, userStats) in result.sortedByDescending { it.ticketsReplied }.withIndex()) {
+                    for ((index, userStats) in result
+                        .sortedByDescending { it.ticketsReplied }
+                        .take(25)
+                        .withIndex()
+                    ) {
                         append("**${index + 1}.** <@${userStats.userId}> - ${userStats.ticketsReplied} tickets respondidos")
                         append("\n")
                     }
