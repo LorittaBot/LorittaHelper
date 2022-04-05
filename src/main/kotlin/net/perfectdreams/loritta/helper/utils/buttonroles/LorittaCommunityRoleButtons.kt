@@ -216,7 +216,8 @@ object LorittaCommunityRoleButtons {
         Snowflake(889952173834768394L),
         DiscordPartialEmoji(
             Snowflake(791641452575850516L),
-            "vegeta_perdemo"
+            "vegeta_perdemo",
+            true.optional()
         )
     )
 
