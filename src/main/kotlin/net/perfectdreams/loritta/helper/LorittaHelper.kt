@@ -46,6 +46,7 @@ import net.perfectdreams.loritta.helper.utils.dailyshopwinners.DailyShopWinners
 import net.perfectdreams.loritta.helper.utils.faqembed.FAQEmbedUpdaterEnglish
 import net.perfectdreams.loritta.helper.utils.faqembed.FAQEmbedUpdaterPortuguese
 import net.perfectdreams.loritta.helper.utils.faqembed.FAQEmbedUpdaterSparklyPower
+import net.perfectdreams.loritta.helper.utils.faqembed.FAQEmbedUpdaterStaffFAQ
 import net.perfectdreams.loritta.helper.utils.generateserverreport.PendingReportsListTask
 import net.perfectdreams.loritta.helper.utils.tickets.TicketUtils
 import net.perfectdreams.loritta.helper.utils.topsonhos.TopSonhosRankingSender
@@ -176,6 +177,7 @@ class LorittaHelper(val config: LorittaHelperConfig, val fanArtsConfig: FanArtsC
         FAQEmbedUpdaterPortuguese(this, jda).start()
         FAQEmbedUpdaterEnglish(this, jda).start()
         FAQEmbedUpdaterSparklyPower(this, jda).start()
+        FAQEmbedUpdaterStaffFAQ(this, jda).start()
         TopSonhosRankingSender(this, jda).start()
 
         timedTaskExecutor.scheduleWithFixedDelay(LorittaLandRoleSynchronizationTask(this, jda), 0, 15, TimeUnit.SECONDS)
