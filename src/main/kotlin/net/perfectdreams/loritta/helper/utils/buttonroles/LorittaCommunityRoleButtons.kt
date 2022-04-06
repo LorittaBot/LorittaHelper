@@ -2,6 +2,7 @@ package net.perfectdreams.loritta.helper.utils.buttonroles
 
 import dev.kord.common.entity.DiscordPartialEmoji
 import dev.kord.common.entity.Snowflake
+import dev.kord.common.entity.optional.optional
 
 object LorittaCommunityRoleButtons {
     fun partialEmojiAsMention(emoji: DiscordPartialEmoji): String {
@@ -215,7 +216,8 @@ object LorittaCommunityRoleButtons {
         Snowflake(889952173834768394L),
         DiscordPartialEmoji(
             Snowflake(791641452575850516L),
-            "vegeta_perdemo"
+            "vegeta_perdemo",
+            true.optional()
         )
     )
 
@@ -255,7 +257,8 @@ object LorittaCommunityRoleButtons {
         Snowflake(889956804191199242L),
         DiscordPartialEmoji(
             Snowflake(706263175892566097L),
-            "lori_pat"
+            "lori_pat",
+            true.optional()
         )
     )
 

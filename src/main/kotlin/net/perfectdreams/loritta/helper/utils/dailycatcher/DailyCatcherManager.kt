@@ -6,8 +6,8 @@ import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.runBlocking
 import mu.KotlinLogging
 import net.dv8tion.jda.api.JDA
+import net.perfectdreams.loritta.cinnamon.pudding.tables.BannedUsers
 import net.perfectdreams.loritta.helper.LorittaHelper
-import net.perfectdreams.loritta.helper.tables.BannedUsers
 import net.perfectdreams.loritta.helper.utils.Constants
 import net.perfectdreams.loritta.helper.utils.dailycatcher.catchers.DailyOnlyEcoCommandsCatcher
 import net.perfectdreams.loritta.helper.utils.dailycatcher.reports.ReportOnlyEcoCatcher

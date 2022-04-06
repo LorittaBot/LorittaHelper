@@ -8,6 +8,7 @@ import net.perfectdreams.galleryofdreams.common.FanArtTag
 // Serial Names are present just to avoid a gigantic select menu payload
 @Serializable
 sealed class AddFanArtData {
+    abstract val artistDiscordId: Snowflake
     abstract val fanArtChannelId: Snowflake
     abstract val fanArtMessageId: Snowflake
     abstract val extensionOverride: String?
@@ -18,6 +19,7 @@ sealed class AddFanArtData {
 @Serializable
 @SerialName("add_existing")
 data class AddFanArtToExistingArtistData(
+    override val artistDiscordId: Snowflake,
     val artistId: Long,
     val artistSlug: String,
     override val fanArtChannelId: Snowflake,
@@ -30,7 +32,7 @@ data class AddFanArtToExistingArtistData(
 @Serializable
 @SerialName("add_new")
 data class AddFanArtToNewArtistData(
-    val artistDiscordId: Snowflake,
+    override val artistDiscordId: Snowflake,
     val artistName: String,
     val artistSlug: String,
     override val fanArtChannelId: Snowflake,

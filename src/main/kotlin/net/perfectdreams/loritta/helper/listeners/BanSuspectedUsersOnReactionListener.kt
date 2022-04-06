@@ -3,8 +3,8 @@ package net.perfectdreams.loritta.helper.listeners
 import mu.KotlinLogging
 import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEvent
 import net.dv8tion.jda.api.hooks.ListenerAdapter
+import net.perfectdreams.loritta.cinnamon.pudding.tables.BannedUsers
 import net.perfectdreams.loritta.helper.LorittaHelper
-import net.perfectdreams.loritta.helper.tables.BannedUsers
 import net.perfectdreams.loritta.helper.utils.dailycatcher.DailyCatcherManager
 import net.perfectdreams.loritta.helper.utils.extensions.await
 import org.jetbrains.exposed.sql.and
@@ -80,7 +80,7 @@ class BanSuspectedUsersOnReactionListener(val m: LorittaHelper): ListenerAdapter
 
                     logger.info { "Banning $id for $reason" }
 
-                    val successfullyBanned = transaction {
+                    val successfullyBanned = transaction(m.databases.lorittaDatabase) {
                         if (BannedUsers.select {
                                 BannedUsers.userId eq id and (BannedUsers.valid eq true) and (BannedUsers.expiresAt.isNull())
                             }.count() != 0L) {

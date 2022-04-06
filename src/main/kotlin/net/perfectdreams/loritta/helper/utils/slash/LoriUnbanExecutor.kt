@@ -2,12 +2,14 @@ package net.perfectdreams.loritta.helper.utils.slash
 
 import dev.kord.common.Color
 import dev.kord.common.entity.Snowflake
+import dev.kord.rest.request.KtorRequestException
 import net.perfectdreams.discordinteraktions.common.commands.ApplicationCommandContext
 import net.perfectdreams.discordinteraktions.common.commands.SlashCommandExecutorDeclaration
 import net.perfectdreams.discordinteraktions.common.commands.options.ApplicationCommandOptions
 import net.perfectdreams.discordinteraktions.common.commands.options.SlashCommandArguments
+import net.perfectdreams.loritta.cinnamon.pudding.tables.BannedUsers
 import net.perfectdreams.loritta.helper.LorittaHelperKord
-import net.perfectdreams.loritta.helper.tables.BannedUsers
+import net.perfectdreams.loritta.helper.utils.Constants
 import org.jetbrains.exposed.sql.SortOrder
 import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.or
@@ -72,6 +74,17 @@ class LoriUnbanExecutor(helper: LorittaHelperKord) : HelperSlashExecutor(helper,
                     reason,
                     Color(88, 101, 242)
                 )
+
+                try {
+                    helper.helperRest.guild.modifyGuildMember(
+                        Snowflake(Constants.COMMUNITY_SERVER_ID),
+                        Snowflake(userId)
+                    ) {
+                        this.communicationDisabledUntil = null
+
+                        this.reason = "User was Loritta Unbanned!"
+                    }
+                } catch (e: KtorRequestException) {} // Maybe they aren't on the server
             }
             is UserIsNotBannedResult -> {
                 context.sendEphemeralMessage {

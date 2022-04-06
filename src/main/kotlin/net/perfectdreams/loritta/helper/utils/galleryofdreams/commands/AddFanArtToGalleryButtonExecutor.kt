@@ -4,6 +4,7 @@ import dev.kord.rest.json.request.DMCreateRequest
 import io.ktor.client.request.*
 import io.ktor.http.*
 import kotlinx.datetime.Instant
+import kotlinx.serialization.json.JsonNull.content
 import net.perfectdreams.discordinteraktions.common.components.ButtonClickExecutorDeclaration
 import net.perfectdreams.discordinteraktions.common.components.ButtonClickWithDataExecutor
 import net.perfectdreams.discordinteraktions.common.components.ComponentContext
@@ -122,14 +123,14 @@ class AddFanArtToGalleryButtonExecutor(val m: LorittaHelperKord, val galleryOfDr
         }
 
         // Send that the fan art was successfully added to the user
-        val dmChannel = m.helperRest.user.createDM(DMCreateRequest(message.author.id))
+        val dmChannel = m.helperRest.user.createDM(DMCreateRequest(addFanArtData.artistDiscordId))
 
         m.helperRest.channel.createMessage(
             dmChannel.id
         ) {
             content = """A sua fan art foi adicionada na minha galeria de fan arts, o lugar aonde o trabalho maravilhoso de nossos fãs é exposto! $fanArtUrl
                 |
-                |Obrigada por fazer fan arts! <:gabriela_brush:727259143903248486><:brush_heart:727272698849525761><:lori_brush:727259089905778799> https://cdn.discordapp.com/attachments/513405772911345664/924776048242065469/cat_lick_sketchmichi_250.gif
+                |Obrigada por fazer fan arts! <:gabriela_brush:727259143903248486><:brush_heart:727272698849525761><:lori_brush:727259089905778799> https://cdn.discordapp.com/attachments/393332226881880074/957369574083407962/lori_lick.gif
             """.trimMargin()
         }
     }

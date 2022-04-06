@@ -18,4 +18,17 @@ class Databases(val m: LorittaHelper) {
         val ds = HikariDataSource(hikariConfig)
         Database.connect(ds)
     }
+
+    val helperDatabase by lazy {
+        if (m.config.helperDatabase == null)
+            throw RuntimeException("Accessing Helper Database, but database is not configured!")
+
+        val hikariConfig = HikariConfig()
+        hikariConfig.jdbcUrl = "jdbc:postgresql://${m.config.helperDatabase.address}/${m.config.helperDatabase.databaseName}"
+        hikariConfig.username = m.config.helperDatabase.username
+        hikariConfig.password = m.config.helperDatabase.password
+
+        val ds = HikariDataSource(hikariConfig)
+        Database.connect(ds)
+    }
 }

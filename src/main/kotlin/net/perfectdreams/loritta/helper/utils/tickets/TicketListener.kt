@@ -14,8 +14,15 @@ import net.perfectdreams.discordinteraktions.common.components.interactiveButton
 import net.perfectdreams.loritta.api.messages.LorittaReply
 import net.perfectdreams.loritta.helper.LorittaHelperKord
 import net.perfectdreams.loritta.helper.i18n.I18nKeysData
+import net.perfectdreams.loritta.helper.tables.StartedSupportSolicitations
+import net.perfectdreams.loritta.helper.tables.TicketMessagesActivity
 import net.perfectdreams.loritta.helper.utils.ComponentDataUtils
 import net.perfectdreams.loritta.helper.utils.Constants
+import org.jetbrains.exposed.sql.SortOrder
+import org.jetbrains.exposed.sql.insert
+import org.jetbrains.exposed.sql.select
+import org.jetbrains.exposed.sql.transactions.transaction
+import java.time.Instant
 
 class TicketListener(private val helper: LorittaHelperKord) {
     fun installAutoReplyToMessagesInTicketListener(gateway: Gateway) = gateway.on<MessageCreate> {
@@ -36,6 +43,24 @@ class TicketListener(private val helper: LorittaHelperKord) {
         val systemInfo = TicketUtils.informations[parentChannelId]!!
         if (systemInfo !is TicketUtils.HelpDeskTicketSystemInformation)
             return@on
+
+        // Track user message
+        transaction(helper.databases.helperDatabase) {
+            val startedSupportSolicitation = StartedSupportSolicitations.select {
+                StartedSupportSolicitations.threadId eq this@on.message.channelId.value.toLong()
+            }.orderBy(StartedSupportSolicitations.startedAt, SortOrder.DESC)
+                .limit(1)
+                .firstOrNull()
+
+            if (startedSupportSolicitation != null) {
+                TicketMessagesActivity.insert {
+                    it[TicketMessagesActivity.userId] = this@on.message.author.id.value.toLong()
+                    it[TicketMessagesActivity.messageId] = this@on.message.id.value.toLong()
+                    it[TicketMessagesActivity.timestamp] = Instant.now()
+                    it[TicketMessagesActivity.supportSolicitationId] = startedSupportSolicitation[StartedSupportSolicitations.id]
+                }
+            }
+        }
 
         val channelResponses = systemInfo.channelResponses
         val i18nContext = systemInfo.getI18nContext(helper.languageManager)

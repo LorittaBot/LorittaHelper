@@ -9,8 +9,8 @@ import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 import mu.KotlinLogging
 import net.dv8tion.jda.api.JDA
+import net.perfectdreams.loritta.cinnamon.pudding.tables.Profiles
 import net.perfectdreams.loritta.helper.LorittaHelper
-import net.perfectdreams.loritta.helper.tables.Profiles
 import net.perfectdreams.sequins.text.StringUtils
 import org.jetbrains.exposed.sql.SortOrder
 import org.jetbrains.exposed.sql.select
@@ -28,7 +28,7 @@ class TopSonhosRankingSender(val m: LorittaHelper, val jda: JDA) {
 
     fun start() = GlobalScope.launch {
         while (true) {
-            val results = newSuspendedTransaction {
+            val results = newSuspendedTransaction(db = m.databases.lorittaDatabase) {
                 Profiles.select {
                     Profiles.money neq 0
                 }.orderBy(Profiles.money, SortOrder.DESC)

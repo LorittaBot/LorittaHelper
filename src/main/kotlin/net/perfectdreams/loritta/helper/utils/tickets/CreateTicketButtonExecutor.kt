@@ -15,7 +15,12 @@ import net.perfectdreams.discordinteraktions.common.entities.User
 import net.perfectdreams.loritta.api.messages.LorittaReply
 import net.perfectdreams.loritta.helper.LorittaHelperKord
 import net.perfectdreams.loritta.helper.i18n.I18nKeysData
+import net.perfectdreams.loritta.helper.tables.StartedSupportSolicitations
 import net.perfectdreams.loritta.helper.utils.ComponentDataUtils
+import net.perfectdreams.loritta.helper.utils.cache.TicketsCache
+import org.jetbrains.exposed.sql.insert
+import org.jetbrains.exposed.sql.transactions.transaction
+import java.time.Instant
 import java.util.concurrent.TimeUnit
 
 class CreateTicketButtonExecutor(val m: LorittaHelperKord) : ButtonClickWithDataExecutor {
@@ -37,7 +42,7 @@ class CreateTicketButtonExecutor(val m: LorittaHelperKord) : ButtonClickWithData
             // Avoid users closing and reopening threads constantly
             val lastTicketCreatedAt = recentlyCreatedTickets[user.id]
 
-            if (context.member.roles.contains(Snowflake(341343754336337921L))) { // Desenhistas role
+            if (systemInfo.systemType == TicketUtils.TicketSystemType.FIRST_FAN_ARTS_PORTUGUESE && context.member.roles.contains(Snowflake(341343754336337921L))) { // Desenhistas role
                 context.sendEphemeralMessage {
                     // 300 = 5 minutes
                     content = language.get("Você já tem o cargo de desenhistas, você não precisa enviar uma \"Primeira Fan Art\" novamente! Caso queira enviar mais fan arts para a galeria, basta enviar em <#583406099047252044>")
@@ -113,6 +118,17 @@ class CreateTicketButtonExecutor(val m: LorittaHelperKord) : ButtonClickWithData
                 ticketThreadId,
                 user.id
             )
+
+            cachedTickets.tickets[user.id] = TicketsCache.DiscordThreadTicketData(ticketThreadId)
+
+            transaction(m.databases.helperDatabase) {
+                StartedSupportSolicitations.insert {
+                    it[StartedSupportSolicitations.userId] = context.sender.id.value.toLong()
+                    it[StartedSupportSolicitations.startedAt] = Instant.now()
+                    it[StartedSupportSolicitations.threadId] = ticketThreadId.value.toLong()
+                    it[StartedSupportSolicitations.systemType] = ticketSystemTypeData.systemType
+                }
+            }
 
             // Only resend the message if the thread was archived or if it is a new thread
             if (systemInfo is TicketUtils.HelpDeskTicketSystemInformation) {

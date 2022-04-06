@@ -1,8 +1,8 @@
 package net.perfectdreams.loritta.helper.utils.extensions
 
 import net.dv8tion.jda.api.entities.User
+import net.perfectdreams.loritta.cinnamon.pudding.tables.BannedUsers
 import net.perfectdreams.loritta.helper.LorittaHelper
-import net.perfectdreams.loritta.helper.tables.BannedUsers
 import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.SortOrder
 import org.jetbrains.exposed.sql.and

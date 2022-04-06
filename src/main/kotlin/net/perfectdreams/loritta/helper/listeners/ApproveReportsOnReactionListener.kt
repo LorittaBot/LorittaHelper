@@ -4,9 +4,14 @@ import mu.KotlinLogging
 import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEvent
 import net.dv8tion.jda.api.hooks.ListenerAdapter
 import net.perfectdreams.loritta.helper.LorittaHelper
+import net.perfectdreams.loritta.helper.tables.StaffProcessedReports
 import net.perfectdreams.loritta.helper.utils.Emotes
+import net.perfectdreams.loritta.helper.utils.StaffProcessedReportResult
 import net.perfectdreams.loritta.helper.utils.extensions.await
 import net.perfectdreams.loritta.helper.utils.generateserverreport.GenerateServerReport
+import org.jetbrains.exposed.sql.insert
+import org.jetbrains.exposed.sql.transactions.transaction
+import java.time.Instant
 
 class ApproveReportsOnReactionListener(val m: LorittaHelper): ListenerAdapter() {
     companion object {
@@ -46,6 +51,18 @@ class ApproveReportsOnReactionListener(val m: LorittaHelper): ListenerAdapter() 
                 if (reactedUsers.size != 2) {
                     logger.info { "Not processing DM messages for message ${event.messageId} because there is already two reactions" }
                     return@launch
+                }
+
+                transaction(m.databases.helperDatabase) {
+                    StaffProcessedReports.insert {
+                        it[StaffProcessedReports.timestamp] = Instant.now()
+                        it[StaffProcessedReports.userId] = event.userIdLong
+                        it[StaffProcessedReports.reporterId] = reporterId
+                        it[StaffProcessedReports.messageId] = event.messageIdLong
+                        it[StaffProcessedReports.result] = if (event.reactionEmote.name == APPROVE_EMOTE)
+                            StaffProcessedReportResult.APPROVED
+                        else StaffProcessedReportResult.REJECTED
+                    }
                 }
 
                 event.jda.retrieveUserById(reporterId)

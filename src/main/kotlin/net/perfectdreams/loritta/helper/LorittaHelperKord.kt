@@ -22,6 +22,8 @@ import net.perfectdreams.loritta.helper.utils.buttonroles.RoleCoolBadgeButtonExe
 import net.perfectdreams.loritta.helper.utils.buttonroles.RoleToggleButtonExecutor
 import net.perfectdreams.loritta.helper.utils.cache.ChannelsCache
 import net.perfectdreams.loritta.helper.utils.cache.TicketsCache
+import net.perfectdreams.loritta.helper.utils.checksonhosmendigagem.CheckSequenciaTimeoutListener
+import net.perfectdreams.loritta.helper.utils.checksonhosmendigagem.CheckSonhosMendigagemTimeoutListener
 import net.perfectdreams.loritta.helper.utils.config.FanArtsConfig
 import net.perfectdreams.loritta.helper.utils.config.LorittaConfig
 import net.perfectdreams.loritta.helper.utils.config.LorittaHelperConfig
@@ -34,6 +36,7 @@ import net.perfectdreams.loritta.helper.utils.galleryofdreams.commands.declarati
 import net.perfectdreams.loritta.helper.utils.galleryofdreams.commands.declarations.GalleryOfDreamsSlashCommand
 import net.perfectdreams.loritta.helper.utils.generateserverreport.ShowFilesExecutor
 import net.perfectdreams.loritta.helper.utils.generateserverreport.ShowUserIdExecutor
+import net.perfectdreams.loritta.helper.utils.loribantimeout.LorittaBanTimeoutListener
 import net.perfectdreams.loritta.helper.utils.slash.AllTransactionsExecutor
 import net.perfectdreams.loritta.helper.utils.slash.AttachDenyReasonExecutor
 import net.perfectdreams.loritta.helper.utils.slash.BroadcastDailyShopWinnersExecutor
@@ -52,6 +55,8 @@ import net.perfectdreams.loritta.helper.utils.slash.PendingReportsExecutor
 import net.perfectdreams.loritta.helper.utils.slash.PendingScarletExecutor
 import net.perfectdreams.loritta.helper.utils.slash.RetrieveMessageExecutor
 import net.perfectdreams.loritta.helper.utils.slash.ServerMembersExecutor
+import net.perfectdreams.loritta.helper.utils.slash.StatsReportsExecutor
+import net.perfectdreams.loritta.helper.utils.slash.StatsTicketsExecutor
 import net.perfectdreams.loritta.helper.utils.slash.TicketInfoExecutor
 import net.perfectdreams.loritta.helper.utils.slash.TicketSenderExecutor
 import net.perfectdreams.loritta.helper.utils.slash.declarations.AllTransactionsCommand
@@ -69,6 +74,7 @@ import net.perfectdreams.loritta.helper.utils.slash.declarations.PendingReportsC
 import net.perfectdreams.loritta.helper.utils.slash.declarations.PendingScarletCommand
 import net.perfectdreams.loritta.helper.utils.slash.declarations.RetrieveMessageCommand
 import net.perfectdreams.loritta.helper.utils.slash.declarations.ServerMembersCommand
+import net.perfectdreams.loritta.helper.utils.slash.declarations.StatsCommand
 import net.perfectdreams.loritta.helper.utils.slash.declarations.TicketSenderCommand
 import net.perfectdreams.loritta.helper.utils.slash.declarations.TicketUtilsCommand
 import net.perfectdreams.loritta.helper.utils.tickets.AutoCloseTicketWhenMemberLeavesGuildListener
@@ -256,6 +262,13 @@ class LorittaHelperKord(
                     ShowFilesExecutor(this@LorittaHelperKord)
                 )
 
+                // ===[ STATS ]===
+                register(
+                    StatsCommand,
+                    StatsReportsExecutor(this@LorittaHelperKord),
+                    StatsTicketsExecutor(this@LorittaHelperKord)
+                )
+
                 // ===[ LORI TOOLS ]===
                 register(
                     LoriToolsCommand,
@@ -333,11 +346,15 @@ class LorittaHelperKord(
 
             TicketListener(this@LorittaHelperKord).installAutoReplyToMessagesInTicketListener(gateway)
             AutoCloseTicketWhenMemberLeavesGuildListener(this@LorittaHelperKord).installAutoCloseTicketWhenMemberLeavesGuildListener(gateway)
+            CheckSonhosMendigagemTimeoutListener(this@LorittaHelperKord).installCheckSonhosMendigagemTimeoutListener(gateway)
+            CheckSequenciaTimeoutListener(this@LorittaHelperKord).installCheckSequenciaTimeoutListener(gateway)
+            LorittaBanTimeoutListener(this@LorittaHelperKord).installLorittaBanTimeout(gateway)
 
             gateway.start(config.token) {
                 intents = Intents {
                     + Intent.GuildMessages
                     + Intent.GuildMembers
+                    + Intent.MessageContent
                 }
             }
         }

@@ -2,18 +2,22 @@ package net.perfectdreams.loritta.helper.utils.slash
 
 import dev.kord.common.Color
 import dev.kord.common.entity.Snowflake
+import dev.kord.rest.request.KtorRequestException
+import kotlinx.datetime.Clock
 import net.perfectdreams.discordinteraktions.common.commands.ApplicationCommandContext
 import net.perfectdreams.discordinteraktions.common.commands.SlashCommandExecutorDeclaration
 import net.perfectdreams.discordinteraktions.common.commands.options.ApplicationCommandOptions
 import net.perfectdreams.discordinteraktions.common.commands.options.SlashCommandArguments
+import net.perfectdreams.loritta.cinnamon.pudding.tables.BannedUsers
 import net.perfectdreams.loritta.helper.LorittaHelperKord
-import net.perfectdreams.loritta.helper.tables.BannedUsers
+import net.perfectdreams.loritta.helper.utils.Constants
 import org.jetbrains.exposed.sql.SortOrder
 import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.insertAndGetId
 import org.jetbrains.exposed.sql.or
 import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.transactions.transaction
+import kotlin.time.Duration.Companion.days
 
 class LoriBanExecutor(helper: LorittaHelperKord) : HelperSlashExecutor(helper, PermissionLevel.ADMIN) {
     companion object : SlashCommandExecutorDeclaration(LoriBanExecutor::class) {
@@ -83,6 +87,18 @@ class LoriBanExecutor(helper: LorittaHelperKord) : HelperSlashExecutor(helper, P
                     reason,
                     Color(237, 66, 69)
                 )
+
+                try {
+                    helper.helperRest.guild.modifyGuildMember(
+                        Snowflake(Constants.COMMUNITY_SERVER_ID),
+                        Snowflake(userId)
+                    ) {
+                        this.communicationDisabledUntil = Clock.System.now()
+                            .plus(28.days)
+
+                        this.reason = "User is Loritta Banned!"
+                    }
+                } catch (e: KtorRequestException) {}
             }
             is UserIsAlreadyBannedResult -> {
                 context.sendEphemeralMessage {

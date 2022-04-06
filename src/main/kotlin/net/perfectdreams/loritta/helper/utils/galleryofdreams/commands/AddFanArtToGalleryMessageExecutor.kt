@@ -47,6 +47,7 @@ class AddFanArtToGalleryMessageExecutor(private val m: LorittaHelperKord, val ga
                 )
             } else {
                 AddFanArtToExistingArtistData(
+                    targetMessage.author.id,
                     artist.id,
                     artist.slug,
                     targetMessage.channelId,
