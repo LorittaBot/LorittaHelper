@@ -17,8 +17,25 @@ object SparklyPowerRoleButtons {
         return builder.toString()
     }
 
+    // ===[ NOTIFICATIONS ]===
+    val notifyWarpResources = RoleButton(
+        "Notificar quando a warp recursos reseta",
+        Snowflake(961736936790302800L),
+        DiscordPartialEmoji(
+            Snowflake(853048447254396978L),
+            "pantufa_comfy"
+        ),
+        "Seja notificado nas <#332866197701918731> e fique sabendo quando a `/warp recursos` é resetada",
+        {
+            content = "Agora você irá ser notificado sobre quando a warp recursos será resetada em <#332866197701918731>!"
+        },
+        {
+            content = "Se você está afim de perder dinheiro sem minerar, o problema não é meu."
+        }
+    )
+
     val notifications = listOf<RoleButton>(
-        // notifyNews,
+        notifyWarpResources,
         // notifyBetaNews,
         // notifyStatus
     )

@@ -223,6 +223,46 @@ class ButtonRoleSenderExecutor(helper: LorittaHelperKord) : HelperSlashExecutor(
                         }
                     }
                 }
+
+                // ===[ NOTIFICATIONS ]===
+                helper.helperRest.channel.createMessage(channel.id) {
+                    embed {
+                        title = "Cargos de Notificações"
+                        color = Color(26, 160, 254)
+
+                        description = buildString {
+                            for (roleInfo in LorittaCommunityRoleButtons.notifications) {
+                                append("**")
+                                append(partialEmojiAsMention(roleInfo.emoji))
+                                append(' ')
+                                append(roleInfo.label)
+                                append(':')
+                                append("**")
+                                append(' ')
+                                append(roleInfo.description)
+                                append('\n')
+                                append('\n')
+                            }
+                        }
+
+                        thumbnailUrl = "https://cdn.discordapp.com/emojis/640141673531441153.png?v=1"
+                    }
+
+                    actionRow {
+                        for (roleInfo in SparklyPowerRoleButtons.notifications) {
+                            interactiveButton(
+                                ButtonStyle.Secondary,
+                                RoleToggleButtonExecutor,
+                                ComponentDataUtils.encode(
+                                    RoleButtonData(LorittaLandGuild.SPARKLYPOWER, roleInfo.roleId)
+                                )
+                            ) {
+                                label = roleInfo.label
+                                emoji = roleInfo.emoji
+                            }
+                        }
+                    }
+                }
             }
         }
     }
