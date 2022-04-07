@@ -231,7 +231,7 @@ class ButtonRoleSenderExecutor(helper: LorittaHelperKord) : HelperSlashExecutor(
                         color = Color(26, 160, 254)
 
                         description = buildString {
-                            for (roleInfo in LorittaCommunityRoleButtons.notifications) {
+                            for (roleInfo in SparklyPowerRoleButtons.notifications) {
                                 append("**")
                                 append(partialEmojiAsMention(roleInfo.emoji))
                                 append(' ')
