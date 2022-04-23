@@ -1,7 +1,7 @@
 package net.perfectdreams.loritta.helper.listeners
 
 import mu.KotlinLogging
-import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEvent
+import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent
 import net.dv8tion.jda.api.hooks.ListenerAdapter
 import net.perfectdreams.loritta.helper.LorittaHelper
 import net.perfectdreams.loritta.helper.tables.StaffProcessedReports
@@ -21,8 +21,9 @@ class ApproveReportsOnReactionListener(val m: LorittaHelper): ListenerAdapter() 
         const val THINKING_EMOTE = "\uD83E\uDD14"
     }
 
-    override fun onGuildMessageReactionAdd(event: GuildMessageReactionAddEvent) {
-        if (event.user.isBot)
+    override fun onMessageReactionAdd(event: MessageReactionAddEvent) {
+        val user = event.user ?: return
+        if (user.isBot)
             return
 
         if (event.channel.idLong != GenerateServerReport.SERVER_REPORTS_CHANNEL_ID)

@@ -108,7 +108,7 @@ abstract class FAQEmbedUpdater(val m: LorittaHelper, val jda: JDA) {
                         }
 
                         embeds.forEach {
-                            channel.sendMessage(it)
+                            channel.sendMessageEmbeds(it)
                                 .queue()
                         }
                     }

@@ -11,13 +11,13 @@ import net.perfectdreams.loritta.helper.utils.extensions.isLorittaBanned
 class LorittaBannedRoleTask(val m: LorittaHelper, val jda: JDA) : Runnable {
     companion object {
         val lorittaGuilds = listOf(
-                // Support server
-                LorittaGuild(
-                        420626099257475072L,
-                        781591507849052200L,
-                        785226414474395670L,
-                        listOf(781583967837093928, 785226629550702623)
-                )
+            // Support server
+            LorittaGuild(
+                420626099257475072L,
+                781591507849052200L,
+                785226414474395670L,
+                listOf(781583967837093928, 785226629550702623)
+            )
         )
 
         val logger = KotlinLogging.logger {}
@@ -73,22 +73,21 @@ class LorittaBannedRoleTask(val m: LorittaHelper, val jda: JDA) : Runnable {
             if (allowedChannels != null && allowedChannels.contains(channel.idLong))
                 continue
 
-            val overrides = channel.rolePermissionOverrides
+            val overrides = channel.permissionContainer.rolePermissionOverrides
             if (overrides.find { it.role!! == everyoneRole
-                            && it.denied.contains(Permission.VIEW_CHANNEL) } == null) {
-                channel.manager.putPermissionOverride(
-                        role,
-                        null,
-                        listOf(Permission.VIEW_CHANNEL)
-                ).queue()
+                        && it.denied.contains(Permission.VIEW_CHANNEL) } == null) {
+                channel.permissionContainer.putPermissionOverride(
+                    role
+                ).deny(Permission.VIEW_CHANNEL)
+                    .queue()
             }
         }
     }
 }
 
 class LorittaGuild(
-        val guildId: Long,
-        val lorittaBannedRole: Long,
-        val lorittaTempBannedRole: Long,
-        val allowedChannels: List<Long>? = null
+    val guildId: Long,
+    val lorittaBannedRole: Long,
+    val lorittaTempBannedRole: Long,
+    val allowedChannels: List<Long>? = null
 )

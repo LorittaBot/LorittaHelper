@@ -268,7 +268,7 @@ class DailyOnlyEcoCommandsCatcher(database: Database) : DailyCatcher<ReportOnlyE
 
         return DailyCatcherMessage(
             MessageBuilder(reportMessage)
-                .setEmbed(
+                .setEmbeds(
                     embed
                         .appendTransactionsToEmbed(report.transactions, userDailyRewardCache)
                         .appendDailyList(report.users)

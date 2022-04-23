@@ -2,7 +2,7 @@ package net.perfectdreams.loritta.helper.listeners
 
 import net.dv8tion.jda.api.MessageBuilder
 import net.dv8tion.jda.api.entities.Message
-import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent
+import net.dv8tion.jda.api.events.message.MessageReceivedEvent
 import net.dv8tion.jda.api.hooks.ListenerAdapter
 import net.perfectdreams.loritta.helper.LorittaHelper
 import net.perfectdreams.loritta.helper.serverresponses.EnglishResponses
@@ -28,10 +28,7 @@ class MessageListener(val m: LorittaHelper) : ListenerAdapter() {
     val generateAppealsReport = GenerateAppealsReport(m)
     val checkSonhosBraggers = CheckSonhosMendigagem(m)
 
-
-    override fun onGuildMessageReceived(event: GuildMessageReceivedEvent) {
-        super.onGuildMessageReceived(event)
-
+    override fun onMessageReceived(event: MessageReceivedEvent) {
         // If this check wasn't here, Loritta Helper will reply to a user... then she thinks that it is someone asking
         // something, and the loop goes on...
         if (event.author.isBot) {

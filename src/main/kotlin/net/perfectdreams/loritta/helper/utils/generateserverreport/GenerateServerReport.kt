@@ -15,12 +15,13 @@ import net.dv8tion.jda.api.JDA
 import net.dv8tion.jda.api.MessageBuilder
 import net.dv8tion.jda.api.entities.Emoji
 import net.dv8tion.jda.api.entities.User
-import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent
+import net.dv8tion.jda.api.events.message.MessageReceivedEvent
 import net.dv8tion.jda.api.exceptions.ErrorResponseException
 import net.dv8tion.jda.api.interactions.components.ActionRow
-import net.dv8tion.jda.api.interactions.components.Button
-import net.dv8tion.jda.api.interactions.components.ButtonStyle
 import net.dv8tion.jda.api.interactions.components.Component
+import net.dv8tion.jda.api.interactions.components.ItemComponent
+import net.dv8tion.jda.api.interactions.components.buttons.Button
+import net.dv8tion.jda.api.interactions.components.buttons.ButtonStyle
 import net.dv8tion.jda.api.requests.restaction.MessageAction
 import net.perfectdreams.loritta.helper.LorittaHelper
 import net.perfectdreams.loritta.helper.listeners.ApproveReportsOnReactionListener
@@ -40,7 +41,7 @@ class GenerateServerReport(val m: LorittaHelper) {
 
     private val logger = KotlinLogging.logger {}
 
-    suspend fun onMessageReceived(event: GuildMessageReceivedEvent) {
+    suspend fun onMessageReceived(event: MessageReceivedEvent) {
         logger.info { "Received a report message!" }
         val attachment = event.message.attachments.first()
 
@@ -159,7 +160,7 @@ class GenerateServerReport(val m: LorittaHelper) {
                     is ReportWithUserInfoMessage -> listOf(embed, reportMessage.userInfoEmbed)
                 }
 
-                val components = mutableListOf<Component>()
+                val components = mutableListOf<ItemComponent>()
 
                 if (images?.isNotEmpty() == true) {
                     components.add(

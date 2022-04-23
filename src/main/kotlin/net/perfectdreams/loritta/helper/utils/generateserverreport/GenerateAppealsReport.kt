@@ -13,7 +13,7 @@ import mu.KotlinLogging
 import net.dv8tion.jda.api.EmbedBuilder
 import net.dv8tion.jda.api.MessageBuilder
 import net.dv8tion.jda.api.entities.User
-import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent
+import net.dv8tion.jda.api.events.message.MessageReceivedEvent
 import net.dv8tion.jda.api.requests.restaction.MessageAction
 import net.perfectdreams.loritta.helper.LorittaHelper
 import net.perfectdreams.loritta.helper.listeners.ApproveReportsOnReactionListener
@@ -30,7 +30,7 @@ class GenerateAppealsReport(val m: LorittaHelper) {
 
     private val logger = KotlinLogging.logger {}
 
-    suspend fun onMessageReceived(event: GuildMessageReceivedEvent) {
+    suspend fun onMessageReceived(event: MessageReceivedEvent) {
         logger.info { "Received a report message!" }
         val attachment = event.message.attachments.first()
 

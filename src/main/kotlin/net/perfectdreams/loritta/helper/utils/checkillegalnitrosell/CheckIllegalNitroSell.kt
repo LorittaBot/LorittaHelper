@@ -1,6 +1,6 @@
 package net.perfectdreams.loritta.helper.utils.checkillegalnitrosell
 
-import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent
+import net.dv8tion.jda.api.events.message.MessageReceivedEvent
 import net.dv8tion.jda.api.utils.MarkdownSanitizer
 import net.perfectdreams.loritta.helper.LorittaHelper
 import net.perfectdreams.loritta.helper.utils.toNaiveBayesClassifier
@@ -28,8 +28,8 @@ class CheckIllegalNitroSell {
     private val channels = listOf(
             358774895850815488L, 547119872568459284L, 643624690874712094L, 619680554820042752L
         )
-    
-    fun onMessageReceived(event: GuildMessageReceivedEvent) {
+
+    fun onMessageReceived(event: MessageReceivedEvent) {
         if (event.author.isBot)
             return
         

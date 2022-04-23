@@ -1,7 +1,7 @@
 package net.perfectdreams.loritta.helper.listeners
 
 import mu.KotlinLogging
-import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEvent
+import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent
 import net.dv8tion.jda.api.hooks.ListenerAdapter
 import net.perfectdreams.loritta.helper.LorittaHelper
 import net.perfectdreams.loritta.helper.utils.Emotes
@@ -15,8 +15,9 @@ class ApproveAppealsOnReactionListener(val m: LorittaHelper): ListenerAdapter() 
         const val REJECT_EMOTE = "\uD83D\uDEAB"
     }
 
-    override fun onGuildMessageReactionAdd(event: GuildMessageReactionAddEvent) {
-        if (event.user.isBot)
+    override fun onMessageReactionAdd(event: MessageReactionAddEvent) {
+        val user = event.user ?: return
+        if (user.isBot)
             return
 
         if (event.channel.idLong != GenerateAppealsReport.SERVER_APPEALS_CHANNEL_ID)

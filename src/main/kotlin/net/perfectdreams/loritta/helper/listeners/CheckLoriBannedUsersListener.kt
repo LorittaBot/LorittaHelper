@@ -1,13 +1,8 @@
 package net.perfectdreams.loritta.helper.listeners
 
-import net.dv8tion.jda.api.entities.Guild
-import net.dv8tion.jda.api.entities.GuildChannel
-import net.dv8tion.jda.api.entities.Member
-import net.dv8tion.jda.api.entities.Message
-import net.dv8tion.jda.api.entities.Role
-import net.dv8tion.jda.api.entities.User
+import net.dv8tion.jda.api.entities.*
 import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent
-import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent
+import net.dv8tion.jda.api.events.message.MessageReceivedEvent
 import net.dv8tion.jda.api.hooks.ListenerAdapter
 import net.perfectdreams.loritta.cinnamon.pudding.tables.BannedUsers
 import net.perfectdreams.loritta.helper.LorittaHelper
@@ -17,9 +12,8 @@ import net.perfectdreams.loritta.helper.utils.extensions.getBannedState
 class CheckLoriBannedUsersListener(val m: LorittaHelper): ListenerAdapter() {
     private val lorittaGuilds = LorittaBannedRoleTask.lorittaGuilds
 
-    override fun onGuildMessageReceived(event: GuildMessageReceivedEvent) {
-        super.onGuildMessageReceived(event)
 
+    override fun onMessageReceived(event: MessageReceivedEvent) {
         handleMemberIfBanned(event.message, event.guild, event.channel, event.message.author)
     }
 
@@ -39,7 +33,7 @@ class CheckLoriBannedUsersListener(val m: LorittaHelper): ListenerAdapter() {
         }
     }
 
-    private fun handleMemberIfBanned(message: Message, guild: Guild, channel: GuildChannel, author: User) {
+    private fun handleMemberIfBanned(message: Message, guild: Guild, channel: MessageChannel, author: User) {
         val member = message.member ?: return
 
         m.launch {

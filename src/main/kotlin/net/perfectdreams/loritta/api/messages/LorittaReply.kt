@@ -2,7 +2,7 @@ package net.perfectdreams.loritta.api.messages
 
 import dev.kord.common.entity.DiscordUser
 import net.dv8tion.jda.api.entities.User
-import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent
+import net.dv8tion.jda.api.events.message.MessageReceivedEvent
 
 class LorittaReply(
         val message: String = " ",
@@ -11,7 +11,7 @@ class LorittaReply(
         val hasPadding: Boolean = true,
         val mentionUser: Boolean = true
 ) {
-    fun build(event: GuildMessageReceivedEvent): String {
+    fun build(event: MessageReceivedEvent): String {
         return build(event.author.asMention, event.author.asMention + " ")
     }
 

@@ -1,7 +1,7 @@
 package net.perfectdreams.loritta.helper.utils.checksonhosmendigagem
 
 import mu.KotlinLogging
-import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent
+import net.dv8tion.jda.api.events.message.MessageReceivedEvent
 import net.dv8tion.jda.api.utils.MarkdownSanitizer
 import net.perfectdreams.loritta.api.messages.LorittaReply
 import net.perfectdreams.loritta.helper.LorittaHelper
@@ -67,7 +67,7 @@ class CheckSonhosMendigagem(val m: LorittaHelper) {
         )
     }
 
-    fun onMessageReceived(event: GuildMessageReceivedEvent) {
+    fun onMessageReceived(event: MessageReceivedEvent) {
         if (event.channel.idLong in channels) {
             val memberXp = transaction(m.databases.lorittaDatabase) {
                 GuildProfiles.select {

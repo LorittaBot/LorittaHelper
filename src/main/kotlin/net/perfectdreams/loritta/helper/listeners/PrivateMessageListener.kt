@@ -3,7 +3,8 @@ package net.perfectdreams.loritta.helper.listeners
 import io.ktor.http.*
 import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.put
-import net.dv8tion.jda.api.events.message.priv.PrivateMessageReceivedEvent
+import net.dv8tion.jda.api.entities.ChannelType
+import net.dv8tion.jda.api.events.message.MessageReceivedEvent
 import net.dv8tion.jda.api.hooks.ListenerAdapter
 import net.perfectdreams.loritta.helper.LorittaHelper
 import net.perfectdreams.loritta.helper.utils.generateserverreport.EncryptionUtils
@@ -29,8 +30,9 @@ class PrivateMessageListener(val m: LorittaHelper) : ListenerAdapter() {
         )
     }
 
-    override fun onPrivateMessageReceived(event: PrivateMessageReceivedEvent) {
-        super.onPrivateMessageReceived(event)
+    override fun onMessageReceived(event: MessageReceivedEvent) {
+        if (!event.isFromType(ChannelType.PRIVATE))
+            return
 
         if (VALID_REPORT_TEXTS.any { event.message.contentRaw.equals(it, true) }) {
             val json = buildJsonObject {

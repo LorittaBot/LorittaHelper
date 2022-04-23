@@ -1,7 +1,7 @@
 package net.perfectdreams.loritta.helper.listeners
 
 import mu.KotlinLogging
-import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEvent
+import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent
 import net.dv8tion.jda.api.hooks.ListenerAdapter
 import net.perfectdreams.loritta.cinnamon.pudding.tables.BannedUsers
 import net.perfectdreams.loritta.helper.LorittaHelper
@@ -17,8 +17,9 @@ class BanSuspectedUsersOnReactionListener(val m: LorittaHelper): ListenerAdapter
         private val logger = KotlinLogging.logger {}
     }
 
-    override fun onGuildMessageReactionAdd(event: GuildMessageReactionAddEvent) {
-        if (event.user.isBot)
+    override fun onMessageReactionAdd(event: MessageReactionAddEvent) {
+        val user = event.user ?: return
+        if (user.isBot)
             return
 
         if (event.channel.idLong != DailyCatcherManager.SCARLET_POLICE_CHANNEL_ID)
@@ -60,7 +61,7 @@ class BanSuspectedUsersOnReactionListener(val m: LorittaHelper): ListenerAdapter
             if (event.reactionEmote.idLong == 412585701054611458L) {
                 retrievedMessage.delete().queue()
 
-                channel?.sendMessage("[Rejeitado] Denúncia Escarlate de ${ids.joinToString(", ")} foi rejeitada por ${event.user.asMention}...")
+                channel?.sendMessage("[Rejeitado] Denúncia Escarlate de ${ids.joinToString(", ")} foi rejeitada por ${user.asMention}...")
                     ?.addFile(
                         retrievedMessage.contentRaw.toByteArray(Charsets.UTF_8),
                         "message.txt"
@@ -100,10 +101,10 @@ class BanSuspectedUsersOnReactionListener(val m: LorittaHelper): ListenerAdapter
                     }
 
                     if (successfullyBanned)
-                        channel?.sendMessage("[Aprovado] Usuário $id foi banido por ${event.user.asMention} pela denúncia da polícia escarlate! <a:cat_groove:745273300850311228> ${retrievedMessage.jumpUrl}")
+                        channel?.sendMessage("[Aprovado] Usuário $id foi banido por ${user.asMention} pela denúncia da polícia escarlate! <a:cat_groove:745273300850311228> ${retrievedMessage.jumpUrl}")
                             ?.queue()
                     else
-                        channel?.sendMessage("[Whoops] Usuário $id já está banido ${event.user.asMention}! <:notlike:585607981639663633>")
+                        channel?.sendMessage("[Whoops] Usuário $id já está banido ${user.asMention}! <:notlike:585607981639663633>")
                             ?.queue()
                 }
 

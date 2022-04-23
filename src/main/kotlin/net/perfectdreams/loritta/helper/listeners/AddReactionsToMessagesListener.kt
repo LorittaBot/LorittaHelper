@@ -1,6 +1,6 @@
 package net.perfectdreams.loritta.helper.listeners
 
-import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent
+import net.dv8tion.jda.api.events.message.MessageReceivedEvent
 import net.dv8tion.jda.api.hooks.ListenerAdapter
 import net.perfectdreams.loritta.helper.LorittaHelper
 
@@ -19,7 +19,7 @@ class AddReactionsToMessagesListener(val m: LorittaHelper): ListenerAdapter() {
         )
     }
 
-    override fun onGuildMessageReceived(event: GuildMessageReceivedEvent) {
+    override fun onMessageReceived(event: MessageReceivedEvent) {
         val content = event.message.contentRaw
 
         if (event.isWebhookMessage || event.author.isBot || content.startsWith(">"))

@@ -26,13 +26,13 @@ repositories {
 
 dependencies {
     implementation(kotlin("stdlib"))
-    implementation("ch.qos.logback:logback-classic:1.3.0-alpha12")
+    implementation("ch.qos.logback:logback-classic:1.3.0-alpha14")
     implementation("io.github.microutils:kotlin-logging:2.1.21")
 
-    implementation("net.dv8tion:JDA:4.3.0_330")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.0")
-    api("org.jetbrains.kotlinx:kotlinx-coroutines-jdk8:1.6.0")
-    implementation("com.github.ben-manes.caffeine:caffeine:3.0.5")
+    implementation("net.dv8tion:JDA:5.0.0-alpha.10")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.1")
+    api("org.jetbrains.kotlinx:kotlinx-coroutines-jdk8:1.6.1")
+    implementation("com.github.ben-manes.caffeine:caffeine:3.0.6")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.2")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-hocon:1.3.2")
 
@@ -63,11 +63,11 @@ dependencies {
     implementation("net.perfectdreams.galleryofdreams:client:1.0.4-20220326.232941-1")
 
     // Used for the LocaleManager
-    implementation("org.yaml:snakeyaml:1.29")
-    implementation("com.charleskorn.kaml:kaml:0.40.0")
+    implementation("org.yaml:snakeyaml:1.30")
+    implementation("com.charleskorn.kaml:kaml:0.43.0")
 
     // ICU
-    implementation("com.ibm.icu:icu4j:70.1")
+    implementation("com.ibm.icu:icu4j:71.1")
 
     // Database
     implementation("org.postgresql:postgresql:42.3.3")

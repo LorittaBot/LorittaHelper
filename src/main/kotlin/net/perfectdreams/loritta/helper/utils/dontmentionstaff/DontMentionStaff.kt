@@ -3,7 +3,7 @@ package net.perfectdreams.loritta.helper.utils.dontmentionstaff
 import com.github.benmanes.caffeine.cache.Caffeine
 import net.dv8tion.jda.api.MessageBuilder
 import net.dv8tion.jda.api.entities.Message
-import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent
+import net.dv8tion.jda.api.events.message.MessageReceivedEvent
 import net.perfectdreams.loritta.api.messages.LorittaReply
 import net.perfectdreams.loritta.helper.utils.extensions.await
 import java.util.concurrent.TimeUnit
@@ -31,7 +31,7 @@ abstract class DontMentionStaff {
      */
     abstract fun getResponse(): List<LorittaReply>
 
-    suspend fun onMessageReceived(event: GuildMessageReceivedEvent) {
+    suspend fun onMessageReceived(event: MessageReceivedEvent) {
         if (event.channel.idLong == channelId) {
             // Please don't mention staff stuff
             sentMessageAt.put(event.author.idLong, System.currentTimeMillis())

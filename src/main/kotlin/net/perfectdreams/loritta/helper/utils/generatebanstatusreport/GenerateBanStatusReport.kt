@@ -1,7 +1,7 @@
 package net.perfectdreams.loritta.helper.utils.generatebanstatusreport
 
 import mu.KotlinLogging
-import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent
+import net.dv8tion.jda.api.events.message.MessageReceivedEvent
 import net.perfectdreams.loritta.cinnamon.pudding.tables.BannedUsers
 import net.perfectdreams.loritta.helper.LorittaHelper
 import net.perfectdreams.loritta.helper.utils.extensions.await
@@ -12,7 +12,7 @@ import org.jetbrains.exposed.sql.transactions.transaction
 class GenerateBanStatusReport(val m: LorittaHelper) {
     private val logger = KotlinLogging.logger {}
 
-    suspend fun onMessageReceived(event: GuildMessageReceivedEvent) {
+    suspend fun onMessageReceived(event: MessageReceivedEvent) {
         val (messageUrl, state, reason) = event.message.contentRaw.split("\n")
 
         val messageUrlSplitted = messageUrl.split("/")
