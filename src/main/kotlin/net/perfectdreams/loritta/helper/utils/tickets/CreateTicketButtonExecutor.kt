@@ -13,12 +13,14 @@ import net.perfectdreams.discordinteraktions.common.components.ComponentContext
 import net.perfectdreams.discordinteraktions.common.components.GuildComponentContext
 import net.perfectdreams.discordinteraktions.common.entities.User
 import net.perfectdreams.loritta.api.messages.LorittaReply
+import net.perfectdreams.loritta.cinnamon.pudding.tables.BannedUsers
 import net.perfectdreams.loritta.helper.LorittaHelperKord
 import net.perfectdreams.loritta.helper.i18n.I18nKeysData
 import net.perfectdreams.loritta.helper.tables.StartedSupportSolicitations
 import net.perfectdreams.loritta.helper.utils.ComponentDataUtils
+import net.perfectdreams.loritta.helper.utils.Constants
 import net.perfectdreams.loritta.helper.utils.cache.TicketsCache
-import org.jetbrains.exposed.sql.insert
+import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.transaction
 import java.time.Instant
 import java.util.concurrent.TimeUnit
@@ -35,6 +37,63 @@ class CreateTicketButtonExecutor(val m: LorittaHelperKord) : ButtonClickWithData
 
     override suspend fun onClick(user: User, context: ComponentContext, data: String) {
         if (context is GuildComponentContext) {
+            // Check if user is banned from Loritta, because it is super annoying them creating tickets just to ask them to be unbanned
+            val currentBanState = transaction(m.databases.lorittaDatabase) {
+                BannedUsers.select {
+                    BannedUsers.userId eq user.id.value.toLong() and
+                            (BannedUsers.valid eq true) and
+                            (
+                                    BannedUsers.expiresAt.isNull()
+                                            or
+                                            (BannedUsers.expiresAt.isNotNull() and (BannedUsers.expiresAt greaterEq System.currentTimeMillis())))
+                }
+                    .orderBy(BannedUsers.bannedAt, SortOrder.DESC)
+                    .limit(1)
+                    .firstOrNull()
+            }
+
+            if (currentBanState != null) {
+                context.deferChannelMessage()
+
+                val permRoleId = Snowflake(781591507849052200L)
+                val tempRoleId = Snowflake(781591507849052200L)
+
+                if (currentBanState[BannedUsers.expiresAt] != null) {
+                    if (context.member.roles.contains(permRoleId)) {
+                        m.helperRest.guild.deleteRoleFromGuildMember(
+                            Snowflake(Constants.SUPPORT_SERVER_ID),
+                            user.id,
+                            permRoleId
+                        )
+                    }
+
+                    if (!context.member.roles.contains(tempRoleId)) {
+                        m.helperRest.guild.addRoleToGuildMember(
+                            Snowflake(Constants.SUPPORT_SERVER_ID),
+                            user.id,
+                            tempRoleId
+                        )
+                    }
+                } else {
+                    if (context.member.roles.contains(tempRoleId)) {
+                        m.helperRest.guild.deleteRoleFromGuildMember(
+                            Snowflake(Constants.SUPPORT_SERVER_ID),
+                            user.id,
+                            tempRoleId
+                        )
+                    }
+
+                    if (!context.member.roles.contains(permRoleId)) {
+                        m.helperRest.guild.addRoleToGuildMember(
+                            Snowflake(Constants.SUPPORT_SERVER_ID),
+                            user.id,
+                            permRoleId
+                        )
+                    }
+                }
+                return
+            }
+
             val ticketSystemTypeData = ComponentDataUtils.decode<TicketSystemTypeData>(data)
             val systemInfo = TicketUtils.getInformationBySystemType(ticketSystemTypeData.systemType)
             val language = systemInfo.getI18nContext(m.languageManager)
