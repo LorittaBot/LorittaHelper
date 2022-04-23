@@ -37,8 +37,8 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-hocon:1.3.2")
 
     // Kord
-    implementation("dev.kord:kord-rest:0.8.x-20220315.083129-149")
-    implementation("dev.kord:kord-gateway:0.8.x-20220315.083129-149")
+    implementation("dev.kord:kord-rest:0.8.0-M13")
+    implementation("dev.kord:kord-gateway:0.8.0-M13")
 
     // Sequins
     implementation("net.perfectdreams.sequins.text:text-utils:1.0.0")
@@ -48,7 +48,7 @@ dependencies {
 
     // Discord InteraKTions
     // We use the Gateway Kord impl because Gateway JDA is disabled for now, so we will convert the raw gateway events to Kord events
-    implementation("net.perfectdreams.discordinteraktions:gateway-kord:0.0.12-20220323.172137-27")
+    implementation("net.perfectdreams.discordinteraktions:gateway-kord:0.0.13")
 
     // Used to serialize state on components
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-protobuf:1.3.2")
