@@ -1,6 +1,7 @@
 package net.perfectdreams.loritta.helper.utils.slash
 
 import io.ktor.client.request.*
+import io.ktor.client.statement.*
 import io.ktor.http.*
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.jsonObject
@@ -25,10 +26,10 @@ class IPLocationExecutor(helper: LorittaHelperKord) : HelperSlashExecutor(helper
         val userIp = args[options.ip]
 
         // pls don't ban us :pray:
-        val response = LorittaHelperKord.http.post<String>("https://iplocation.com/") {
+        val response = LorittaHelperKord.http.post("https://iplocation.com/") {
             userAgent("User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:88.0) Gecko/20100101 Firefox/88.0")
             parameter("ip", userIp)
-        }
+        }.bodyAsText(Charsets.UTF_8)
 
         val data = Json.parseToJsonElement(response)
             .jsonObject

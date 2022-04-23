@@ -1,6 +1,7 @@
 package net.perfectdreams.loritta.helper.utils.galleryofdreams.commands
 
 import dev.kord.common.entity.Snowflake
+import io.ktor.client.call.*
 import io.ktor.client.request.*
 import io.ktor.http.*
 import net.perfectdreams.discordinteraktions.common.components.ComponentContext
@@ -41,7 +42,8 @@ class SelectAttachmentSelectMenuExecutor(val m: LorittaHelperKord, val galleryOf
             content = "Baixando Fan Art... <a:SCLOADING:715824432450633749>"
         }
 
-        val imageAsByteArray = LorittaHelperKord.http.get<ByteArray>(attachment.url)
+        val imageAsByteArray = LorittaHelperKord.http.get(attachment.url)
+            .body<ByteArray>()
 
         context.updateMessage {
             content = "Verificando se a Fan Art já existe... <a:SCLOADING:715824432450633749>"

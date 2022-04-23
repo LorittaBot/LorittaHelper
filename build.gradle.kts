@@ -81,7 +81,7 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter:5.8.2")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.8.2")
 
-    implementation("io.ktor:ktor-client-cio:1.6.7")
+    implementation("io.ktor:ktor-client-cio:2.0.0")
 
     implementation("org.apache.commons:commons-text:1.9")
 }

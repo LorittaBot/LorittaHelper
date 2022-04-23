@@ -1,7 +1,9 @@
 package net.perfectdreams.loritta.helper.utils.galleryofdreams.commands
 
 import dev.kord.rest.json.request.DMCreateRequest
+import io.ktor.client.call.*
 import io.ktor.client.request.*
+import io.ktor.client.statement.*
 import io.ktor.http.*
 import kotlinx.datetime.Instant
 import kotlinx.serialization.json.JsonNull.content
@@ -53,7 +55,8 @@ class AddFanArtToGalleryButtonExecutor(val m: LorittaHelperKord, val galleryOfDr
             content = "Baixando Fan Art... <a:SCLOADING:715824432450633749>"
         }
 
-        val imageAsByteArray = LorittaHelperKord.http.get<ByteArray>(attachment.url)
+        val imageAsByteArray = LorittaHelperKord.http.get(attachment.url)
+            .body<ByteArray>()
 
         context.updateMessage {
             content = "Verificando se a Fan Art já existe... <a:SCLOADING:715824432450633749>"

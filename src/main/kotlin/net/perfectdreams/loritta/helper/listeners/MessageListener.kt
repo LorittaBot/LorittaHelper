@@ -32,15 +32,6 @@ class MessageListener(val m: LorittaHelper) : ListenerAdapter() {
         // If this check wasn't here, Loritta Helper will reply to a user... then she thinks that it is someone asking
         // something, and the loop goes on...
         if (event.author.isBot) {
-            // Updates
-            if (event.channel.idLong == 422103894462824468L && event.author.name == "Loritta Helper Update") { // support staff channel
-                if (event.message.contentRaw.startsWith("Atualização OwO!")) {
-                    m.launch {
-                        m.update()
-                    }
-                }
-            }
-
             m.launch {
                 if (event.message.channel.idLong == 790292619769937940L && event.message.attachments.isNotEmpty()) {
                     if (event.message.contentRaw == "report") {

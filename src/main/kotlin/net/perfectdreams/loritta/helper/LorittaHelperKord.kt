@@ -7,7 +7,7 @@ import dev.kord.gateway.Intents
 import dev.kord.gateway.PrivilegedIntent
 import dev.kord.gateway.start
 import io.ktor.client.*
-import io.ktor.client.features.*
+import io.ktor.client.plugins.*
 import kotlinx.coroutines.runBlocking
 import mu.KotlinLogging
 import net.dv8tion.jda.api.JDA

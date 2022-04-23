@@ -1,5 +1,6 @@
 package net.perfectdreams.loritta.helper.utils
 
+import io.ktor.client.call.*
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
@@ -234,14 +235,14 @@ class LorittaLandRoleSynchronizationTask(val m: LorittaHelper, val jda: JDA) : R
         }
 
         runBlocking {
-            val response = LorittaHelper.http.get<HttpResponse>("https://fanarts.perfectdreams.net/api/v1/fan-arts")
+            val response = LorittaHelper.http.get("https://fanarts.perfectdreams.net/api/v1/fan-arts")
 
             if (response.status != HttpStatusCode.OK) {
                 logger.warn { "Gallery of Dreams' Get Fan Arts API response was ${response.status}!" }
                 return@runBlocking
             }
 
-            val payload = response.readText()
+            val payload = response.bodyAsText(Charsets.UTF_8)
             val galleryOfDreamsDataResponse = Json.decodeFromString<GalleryOfDreamsDataResponse>(payload)
 
             val validIllustratorIds = galleryOfDreamsDataResponse.artists.mapNotNull {

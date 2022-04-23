@@ -12,11 +12,11 @@ object GoogleDriveUtils {
     fun getEmbeddableDirectGoogleDriveUrl(fileId: String) = "https://drive.google.com/uc?export=view&id=$fileId"
 
     suspend fun retrieveImageFromDrive(url: String, httpClient: HttpClient): DriveImage? {
-        val request = httpClient.get<HttpResponse>(url)
+        val request = httpClient.get(url)
 
         if (request.status == HttpStatusCode.OK) {
             val array = Json.parseToJsonElement(
-                request.readText()
+                request.bodyAsText(Charsets.UTF_8)
                     .substringAfter("window.viewerData = ")
                     .substringBefore("};")
                     .substringAfter("itemJson: ")
