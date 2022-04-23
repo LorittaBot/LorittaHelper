@@ -323,20 +323,9 @@ class LorittaHelperKord(
                 commandManager
             )
 
-            registry.updateAllCommandsInGuild(
-                Snowflake(297732013006389252L),
-                true
-            )
-
-            registry.updateAllCommandsInGuild(
-                Snowflake(420626099257475072L),
-                true
-            )
-
-            registry.updateAllCommandsInGuild(
-                Snowflake(320248230917046282L),
-                true
-            )
+            registry.updateAllCommandsInGuild(Snowflake(297732013006389252L))
+            registry.updateAllCommandsInGuild(Snowflake(420626099257475072L))
+            registry.updateAllCommandsInGuild(Snowflake(320248230917046282L))
 
             gateway.installDiscordInteraKTions(
                 Snowflake(config.applicationId),
