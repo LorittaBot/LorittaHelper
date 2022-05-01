@@ -98,6 +98,8 @@ as a group by "user" order by sum(money) desc LIMIT 5;"""
 
         val channel = jda.getTextChannelById(302976807135739916L)
 
+        logger.info { "Broadcast Daily Shop Winners Channel: $channel" }
+
         if (channel != null) {
             val winner1 = topDailyShopSpenders[0]
             val winner2 = topDailyShopSpenders[1]
