@@ -129,6 +129,13 @@ class LorittaHelper(val config: LorittaHelperConfig, val fanArtsConfig: FanArtsC
             .build()
             .awaitReady()
 
+        for (guild in jda.guilds) {
+            logger.info { "Guild: $guild "}
+            for (channel in guild.channels) {
+                logger.info { "Channel: $channel" }
+            }
+        }
+
         if (config.lorittaDatabase != null) {
             val dailyCatcher = DailyCatcherManager(this, jda)
 
