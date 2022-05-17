@@ -29,7 +29,7 @@ dependencies {
     implementation("ch.qos.logback:logback-classic:1.3.0-alpha14")
     implementation("io.github.microutils:kotlin-logging:2.1.21")
 
-    implementation("net.dv8tion:JDA:5.0.0-alpha.10")
+    implementation("net.dv8tion:JDA:5.0.0-alpha.11")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.1")
     api("org.jetbrains.kotlinx:kotlinx-coroutines-jdk8:1.6.1")
     implementation("com.github.ben-manes.caffeine:caffeine:3.0.6")
@@ -59,8 +59,8 @@ dependencies {
     api("net.perfectdreams.i18nhelper.formatters:icu-messageformat-jvm:0.0.3-SNAPSHOT")
 
     // GalleryOfDreams client
-    implementation("net.perfectdreams.galleryofdreams:common:1.0.4-20220326.232941-1")
-    implementation("net.perfectdreams.galleryofdreams:client:1.0.4-20220326.232941-1")
+    implementation("net.perfectdreams.galleryofdreams:common:1.0.6")
+    implementation("net.perfectdreams.galleryofdreams:client:1.0.6")
 
     // Used for the LocaleManager
     implementation("org.yaml:snakeyaml:1.30")

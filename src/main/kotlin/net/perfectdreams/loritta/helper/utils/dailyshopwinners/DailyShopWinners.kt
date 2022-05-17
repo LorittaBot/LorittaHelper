@@ -96,7 +96,7 @@ as a group by "user" order by sum(money) desc LIMIT 5;"""
             list
         }
 
-        val channel = jda.getTextChannelById(302976807135739916L)
+        val channel = jda.getNewsChannelById(302976807135739916L)
 
         if (channel != null) {
             val winner1 = topDailyShopSpenders[0]

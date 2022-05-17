@@ -76,7 +76,7 @@ class LorittaBannedRoleTask(val m: LorittaHelper, val jda: JDA) : Runnable {
             val overrides = channel.permissionContainer.rolePermissionOverrides
             if (overrides.find { it.role!! == everyoneRole
                         && it.denied.contains(Permission.VIEW_CHANNEL) } == null) {
-                channel.permissionContainer.putPermissionOverride(
+                channel.permissionContainer.upsertPermissionOverride(
                     role
                 ).deny(Permission.VIEW_CHANNEL)
                     .queue()
