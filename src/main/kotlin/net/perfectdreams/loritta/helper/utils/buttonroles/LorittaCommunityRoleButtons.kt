@@ -69,10 +69,44 @@ object LorittaCommunityRoleButtons {
         }
     )
 
+    val notifyLorittaSocialNetworks = RoleButton(
+        "Seguidores do Culto do Pudim",
+        Snowflake(979832728537157703L),
+        DiscordPartialEmoji(
+            Snowflake(956404868417990776L),
+            "lori_zap"
+        ),
+        "Receba notificações sobre atualizações nas redes sociais da Loritta!",
+        {
+            content = "Obrigada por me ajudar a chegar mais próximo do meu sonho de dominar o mundo! Você irá receber novas notificações em <#979838040518316073>. <:lori_demon:964699688429297664>"
+        },
+        {
+            content = "Quer dizer que você não quer me ajudar a dominar o mundo? E eu pensava que nós eramos amigos..."
+        }
+    )
+
+    val notifyMrPowerGamerBRSocialNetworks = RoleButton(
+        "Seguidores da Gambiarra",
+        Snowflake(979832965775364236L),
+        DiscordPartialEmoji(
+            Snowflake(775152943607185409L),
+            "pet_the_power"
+        ),
+        "Receba notificações sobre atualizações nas redes sociais do MrPowerGamerBR!",
+        {
+            content = "Agora você irá receber notificações em <#979838040518316073> quando o MrPowerGamerBR resolve lembrar a senha dos canais dele!"
+        },
+        {
+            content = "Cansou das gambiarras? <:lori_troll:971610172529209364>"
+        }
+    )
+
     val notifications = listOf(
         notifyNews,
         notifyBetaNews,
-        notifyStatus
+        notifyStatus,
+        notifyLorittaSocialNetworks,
+        notifyMrPowerGamerBRSocialNetworks
     )
 
     // ===[ CUSTOM BADGES ]===
