@@ -90,7 +90,8 @@ object LorittaCommunityRoleButtons {
         Snowflake(979832965775364236L),
         DiscordPartialEmoji(
             Snowflake(775152943607185409L),
-            "pet_the_power"
+            "pet_the_power",
+            true.optional()
         ),
         "Receba notificações sobre atualizações nas redes sociais do MrPowerGamerBR!",
         {
