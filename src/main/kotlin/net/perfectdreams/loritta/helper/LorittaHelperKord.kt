@@ -27,13 +27,16 @@ import net.perfectdreams.loritta.helper.utils.checksonhosmendigagem.CheckSonhosM
 import net.perfectdreams.loritta.helper.utils.config.FanArtsConfig
 import net.perfectdreams.loritta.helper.utils.config.LorittaConfig
 import net.perfectdreams.loritta.helper.utils.config.LorittaHelperConfig
-import net.perfectdreams.loritta.helper.utils.galleryofdreams.commands.AddFanArtToGalleryButtonExecutor
-import net.perfectdreams.loritta.helper.utils.galleryofdreams.commands.AddFanArtToGalleryMessageExecutor
-import net.perfectdreams.loritta.helper.utils.galleryofdreams.commands.AddFanArtToGallerySlashExecutor
-import net.perfectdreams.loritta.helper.utils.galleryofdreams.commands.SelectAttachmentSelectMenuExecutor
-import net.perfectdreams.loritta.helper.utils.galleryofdreams.commands.SelectBadgesSelectMenuExecutor
+import net.perfectdreams.loritta.helper.utils.galleryofdreams.commands.add.AddFanArtSelectAttachmentSelectMenuExecutor
+import net.perfectdreams.loritta.helper.utils.galleryofdreams.commands.add.AddFanArtSelectBadgesSelectMenuExecutor
+import net.perfectdreams.loritta.helper.utils.galleryofdreams.commands.add.AddFanArtToGalleryButtonExecutor
+import net.perfectdreams.loritta.helper.utils.galleryofdreams.commands.add.AddFanArtToGalleryMessageExecutor
+import net.perfectdreams.loritta.helper.utils.galleryofdreams.commands.add.AddFanArtToGallerySlashExecutor
 import net.perfectdreams.loritta.helper.utils.galleryofdreams.commands.declarations.AddFanArtToGalleryMessageCommand
 import net.perfectdreams.loritta.helper.utils.galleryofdreams.commands.declarations.GalleryOfDreamsSlashCommand
+import net.perfectdreams.loritta.helper.utils.galleryofdreams.commands.patch.PatchFanArtOnGalleryButtonExecutor
+import net.perfectdreams.loritta.helper.utils.galleryofdreams.commands.patch.PatchFanArtSelectBadgesSelectMenuExecutor
+import net.perfectdreams.loritta.helper.utils.galleryofdreams.commands.patch.PatchFanArtSlashExecutor
 import net.perfectdreams.loritta.helper.utils.generateserverreport.ShowFilesExecutor
 import net.perfectdreams.loritta.helper.utils.generateserverreport.ShowUserIdExecutor
 import net.perfectdreams.loritta.helper.utils.loribantimeout.LorittaBanTimeoutListener
@@ -281,7 +284,8 @@ class LorittaHelperKord(
                     // ===[ FAN ARTS ]===
                     register(
                         GalleryOfDreamsSlashCommand,
-                        AddFanArtToGallerySlashExecutor(this@LorittaHelperKord, galleryOfDreamsClient)
+                        AddFanArtToGallerySlashExecutor(this@LorittaHelperKord, galleryOfDreamsClient),
+                        PatchFanArtSlashExecutor(this@LorittaHelperKord, galleryOfDreamsClient)
                     )
 
                     register(
@@ -295,13 +299,23 @@ class LorittaHelperKord(
                     )
 
                     register(
-                        SelectAttachmentSelectMenuExecutor,
-                        SelectAttachmentSelectMenuExecutor(this@LorittaHelperKord, galleryOfDreamsClient)
+                        AddFanArtSelectAttachmentSelectMenuExecutor,
+                        AddFanArtSelectAttachmentSelectMenuExecutor(this@LorittaHelperKord, galleryOfDreamsClient)
                     )
 
                     register(
-                        SelectBadgesSelectMenuExecutor,
-                        SelectBadgesSelectMenuExecutor(this@LorittaHelperKord, galleryOfDreamsClient)
+                        AddFanArtSelectBadgesSelectMenuExecutor,
+                        AddFanArtSelectBadgesSelectMenuExecutor(this@LorittaHelperKord, galleryOfDreamsClient)
+                    )
+
+                    register(
+                        PatchFanArtOnGalleryButtonExecutor,
+                        PatchFanArtOnGalleryButtonExecutor(this@LorittaHelperKord, galleryOfDreamsClient)
+                    )
+
+                    register(
+                        PatchFanArtSelectBadgesSelectMenuExecutor,
+                        PatchFanArtSelectBadgesSelectMenuExecutor(this@LorittaHelperKord, galleryOfDreamsClient)
                     )
                 }
             }

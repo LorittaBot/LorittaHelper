@@ -9,13 +9,21 @@ import net.perfectdreams.discordinteraktions.common.components.interactiveButton
 import net.perfectdreams.discordinteraktions.common.components.selectMenu
 import net.perfectdreams.galleryofdreams.common.FanArtTag
 import net.perfectdreams.loritta.helper.utils.ComponentDataUtils
+import net.perfectdreams.loritta.helper.utils.galleryofdreams.commands.add.AddFanArtData
+import net.perfectdreams.loritta.helper.utils.galleryofdreams.commands.add.AddFanArtSelectAttachmentSelectMenuExecutor
+import net.perfectdreams.loritta.helper.utils.galleryofdreams.commands.add.AddFanArtSelectBadgesSelectMenuExecutor
+import net.perfectdreams.loritta.helper.utils.galleryofdreams.commands.add.AddFanArtToGalleryButtonExecutor
+import net.perfectdreams.loritta.helper.utils.galleryofdreams.commands.add.AddFanArtToNewArtistData
+import net.perfectdreams.loritta.helper.utils.galleryofdreams.commands.patch.PatchFanArtData
+import net.perfectdreams.loritta.helper.utils.galleryofdreams.commands.patch.PatchFanArtOnGalleryButtonExecutor
+import net.perfectdreams.loritta.helper.utils.galleryofdreams.commands.patch.PatchFanArtSelectBadgesSelectMenuExecutor
 
 object GalleryOfDreamsUtils {
     val ALLOWED_ROLES = listOf(
         Snowflake(924649809103691786L)
     )
 
-    fun createMessage(
+    fun createAddFanArtMessage(
         data: AddFanArtData,
         attachments: List<DiscordAttachment>
     ): MessageBuilder.() -> (Unit) = {
@@ -40,7 +48,7 @@ object GalleryOfDreamsUtils {
         )
 
         actionRow {
-            selectMenu(SelectAttachmentSelectMenuExecutor, encodedData) {
+            selectMenu(AddFanArtSelectAttachmentSelectMenuExecutor, encodedData) {
                 for (attachment in attachments) {
                     option(attachment.filename, attachment.id.toString()) {
                         if (attachment.id == data.selectedAttachmentId) {
@@ -52,7 +60,7 @@ object GalleryOfDreamsUtils {
         }
 
         actionRow {
-            selectMenu(SelectBadgesSelectMenuExecutor, encodedData) {
+            selectMenu(AddFanArtSelectBadgesSelectMenuExecutor, encodedData) {
                 this.allowedValues = 0..FanArtTag.values().size
 
                 for (tag in FanArtTag.values()) {
@@ -84,6 +92,41 @@ object GalleryOfDreamsUtils {
                     disabled = true
                 }
             }
+        }
+    }
+
+    fun createPatchFanArtMessage(
+        data: PatchFanArtData
+    ): MessageBuilder.() -> (Unit) = {
+        content = "Configure as informações da Fan Art!"
+
+        val encodedData = ComponentDataUtils.encode(
+            data
+        )
+
+        actionRow {
+            selectMenu(PatchFanArtSelectBadgesSelectMenuExecutor, encodedData) {
+                this.allowedValues = 0..FanArtTag.values().size
+
+                for (tag in FanArtTag.values()) {
+                    option(tag.name, tag.ordinal.toString()) {
+                        if (tag in data.tags) {
+                            default = true
+                        }
+                    }
+                }
+            }
+        }
+
+        actionRow {
+            interactiveButton(
+                ButtonStyle.Success,
+                "Atualizar",
+                PatchFanArtOnGalleryButtonExecutor,
+                ComponentDataUtils.encode(
+                    data
+                )
+            )
         }
     }
 }

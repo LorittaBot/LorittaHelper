@@ -1,4 +1,4 @@
-package net.perfectdreams.loritta.helper.utils.galleryofdreams.commands
+package net.perfectdreams.loritta.helper.utils.galleryofdreams.commands.add
 
 import dev.kord.common.entity.Snowflake
 import kotlinx.serialization.SerialName

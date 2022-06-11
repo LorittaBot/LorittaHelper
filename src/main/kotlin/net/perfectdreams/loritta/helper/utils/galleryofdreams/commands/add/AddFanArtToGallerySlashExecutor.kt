@@ -1,4 +1,4 @@
-package net.perfectdreams.loritta.helper.utils.galleryofdreams.commands
+package net.perfectdreams.loritta.helper.utils.galleryofdreams.commands.add
 
 import dev.kord.common.entity.Snowflake
 import net.perfectdreams.discordinteraktions.common.commands.ApplicationCommandContext
@@ -8,6 +8,7 @@ import net.perfectdreams.discordinteraktions.common.commands.options.Application
 import net.perfectdreams.discordinteraktions.common.commands.options.SlashCommandArguments
 import net.perfectdreams.galleryofdreams.client.GalleryOfDreamsClient
 import net.perfectdreams.loritta.helper.LorittaHelperKord
+import net.perfectdreams.loritta.helper.utils.galleryofdreams.commands.GalleryOfDreamsUtils
 import net.perfectdreams.loritta.helper.utils.slash.HelperSlashExecutor
 import net.perfectdreams.loritta.helper.utils.slash.PermissionLevel
 
@@ -65,13 +66,14 @@ class AddFanArtToGallerySlashExecutor(helper: LorittaHelperKord, val galleryOfDr
 
         val artist = galleryOfDreamsClient.getFanArtArtistByDiscordId(artistId.value.toLong())
 
-        val builtMessage = GalleryOfDreamsUtils.createMessage(
+        val builtMessage = GalleryOfDreamsUtils.createAddFanArtMessage(
             if (artist == null) {
                 AddFanArtToNewArtistData(
                     artistId,
                     artistName,
                     // Cleans up the user's name to make it be the user's name, if the result is a empty string we use a "ifEmpty" call to change it to the user's ID
-                    artistName.lowercase().replace(" ", "-").replace(Regex("[^A-Za-z0-9-]"), "").trim().ifEmpty { targetMessage.author.id.value.toString() },
+                    artistName.lowercase().replace(" ", "-").replace(Regex("[^A-Za-z0-9-]"), "").trim()
+                        .ifEmpty { targetMessage.author.id.value.toString() },
                     targetMessage.channelId,
                     targetMessage.id,
                     args[Options.extensionOverride],

@@ -1,12 +1,10 @@
-package net.perfectdreams.loritta.helper.utils.galleryofdreams.commands
+package net.perfectdreams.loritta.helper.utils.galleryofdreams.commands.add
 
 import dev.kord.rest.json.request.DMCreateRequest
 import io.ktor.client.call.*
 import io.ktor.client.request.*
-import io.ktor.client.statement.*
 import io.ktor.http.*
 import kotlinx.datetime.Instant
-import kotlinx.serialization.json.JsonNull.content
 import net.perfectdreams.discordinteraktions.common.components.ButtonClickExecutorDeclaration
 import net.perfectdreams.discordinteraktions.common.components.ButtonClickWithDataExecutor
 import net.perfectdreams.discordinteraktions.common.components.ComponentContext

@@ -2,7 +2,7 @@ package net.perfectdreams.loritta.helper.utils.galleryofdreams.commands.declarat
 
 import net.perfectdreams.discordinteraktions.common.commands.MessageCommandDeclarationWrapper
 import net.perfectdreams.discordinteraktions.common.commands.messageCommand
-import net.perfectdreams.loritta.helper.utils.galleryofdreams.commands.AddFanArtToGalleryMessageExecutor
+import net.perfectdreams.loritta.helper.utils.galleryofdreams.commands.add.AddFanArtToGalleryMessageExecutor
 
 object AddFanArtToGalleryMessageCommand : MessageCommandDeclarationWrapper {
     override fun declaration() = messageCommand("Adicionar Fan Art na Galeria", AddFanArtToGalleryMessageExecutor)

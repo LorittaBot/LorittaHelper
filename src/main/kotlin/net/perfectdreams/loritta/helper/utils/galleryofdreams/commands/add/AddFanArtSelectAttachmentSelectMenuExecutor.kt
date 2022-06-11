@@ -1,4 +1,4 @@
-package net.perfectdreams.loritta.helper.utils.galleryofdreams.commands
+package net.perfectdreams.loritta.helper.utils.galleryofdreams.commands.add
 
 import dev.kord.common.entity.Snowflake
 import io.ktor.client.call.*
@@ -12,9 +12,11 @@ import net.perfectdreams.galleryofdreams.client.GalleryOfDreamsClient
 import net.perfectdreams.galleryofdreams.common.data.api.FanArtExistsResponse
 import net.perfectdreams.loritta.helper.LorittaHelperKord
 import net.perfectdreams.loritta.helper.utils.ComponentDataUtils
+import net.perfectdreams.loritta.helper.utils.galleryofdreams.commands.GalleryOfDreamsUtils
 
-class SelectAttachmentSelectMenuExecutor(val m: LorittaHelperKord, val galleryOfDreamsClient: GalleryOfDreamsClient) : SelectMenuWithDataExecutor {
-    companion object : SelectMenuExecutorDeclaration(SelectAttachmentSelectMenuExecutor::class, "select_fa_attach")
+class AddFanArtSelectAttachmentSelectMenuExecutor(val m: LorittaHelperKord, val galleryOfDreamsClient: GalleryOfDreamsClient) :
+    SelectMenuWithDataExecutor {
+    companion object : SelectMenuExecutorDeclaration(AddFanArtSelectAttachmentSelectMenuExecutor::class, "select_fa_attach")
 
     override suspend fun onSelect(user: User, context: ComponentContext, data: String, values: List<String>) {
         context.deferUpdateMessage()
@@ -64,7 +66,7 @@ class SelectAttachmentSelectMenuExecutor(val m: LorittaHelperKord, val galleryOf
 
         context.updateMessage {
             apply(
-                GalleryOfDreamsUtils.createMessage(
+                GalleryOfDreamsUtils.createAddFanArtMessage(
                     when (data) {
                         is AddFanArtToExistingArtistData -> data.copy(
                             selectedAttachmentId = selectedAttachmentId

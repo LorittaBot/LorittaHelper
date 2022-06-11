@@ -1,4 +1,4 @@
-package net.perfectdreams.loritta.helper.utils.galleryofdreams.commands
+package net.perfectdreams.loritta.helper.utils.galleryofdreams.commands.add
 
 import net.perfectdreams.discordinteraktions.common.components.ComponentContext
 import net.perfectdreams.discordinteraktions.common.components.SelectMenuExecutorDeclaration
@@ -8,9 +8,11 @@ import net.perfectdreams.galleryofdreams.client.GalleryOfDreamsClient
 import net.perfectdreams.galleryofdreams.common.FanArtTag
 import net.perfectdreams.loritta.helper.LorittaHelperKord
 import net.perfectdreams.loritta.helper.utils.ComponentDataUtils
+import net.perfectdreams.loritta.helper.utils.galleryofdreams.commands.GalleryOfDreamsUtils
 
-class SelectBadgesSelectMenuExecutor(val m: LorittaHelperKord, galleryOfDreamsClient: GalleryOfDreamsClient) : SelectMenuWithDataExecutor {
-    companion object : SelectMenuExecutorDeclaration(SelectBadgesSelectMenuExecutor::class, "select_fa_badges")
+class AddFanArtSelectBadgesSelectMenuExecutor(val m: LorittaHelperKord, galleryOfDreamsClient: GalleryOfDreamsClient) :
+    SelectMenuWithDataExecutor {
+    companion object : SelectMenuExecutorDeclaration(AddFanArtSelectBadgesSelectMenuExecutor::class, "select_fa_badges")
 
     override suspend fun onSelect(user: User, context: ComponentContext, data: String, values: List<String>) {
         val data = ComponentDataUtils.decode<AddFanArtData>(data)
@@ -19,7 +21,7 @@ class SelectBadgesSelectMenuExecutor(val m: LorittaHelperKord, galleryOfDreamsCl
 
         context.updateMessage {
             apply(
-                GalleryOfDreamsUtils.createMessage(
+                GalleryOfDreamsUtils.createAddFanArtMessage(
                     when (data) {
                         is AddFanArtToExistingArtistData -> data.copy(
                             tags = values.map { FanArtTag.values()[it.toInt()] }
