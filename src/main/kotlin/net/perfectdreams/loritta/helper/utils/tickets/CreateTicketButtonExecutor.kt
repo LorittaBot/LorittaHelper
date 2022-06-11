@@ -53,7 +53,7 @@ class CreateTicketButtonExecutor(val m: LorittaHelperKord) : ButtonClickWithData
             }
 
             if (currentBanState != null) {
-                context.deferChannelMessage()
+                context.deferUpdateMessage()
 
                 val permRoleId = Snowflake(781591507849052200L)
                 val tempRoleId = Snowflake(781591507849052200L)
