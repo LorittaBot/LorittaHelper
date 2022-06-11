@@ -1,8 +1,8 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    kotlin("jvm") version "1.6.20-M1"
-    kotlin("plugin.serialization") version "1.6.20-M1"
+    kotlin("jvm") version "1.6.21"
+    kotlin("plugin.serialization") version "1.6.21"
     id("com.google.cloud.tools.jib") version "3.1.4"
     id("net.perfectdreams.i18nhelper.plugin") version "0.0.3-SNAPSHOT"
 }
@@ -48,7 +48,7 @@ dependencies {
 
     // Discord InteraKTions
     // We use the Gateway Kord impl because Gateway JDA is disabled for now, so we will convert the raw gateway events to Kord events
-    implementation("net.perfectdreams.discordinteraktions:gateway-kord:0.0.13-SNAPSHOT")
+    implementation("net.perfectdreams.discordinteraktions:gateway-kord:0.0.14-SNAPSHOT")
 
     // Used to serialize state on components
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-protobuf:1.3.2")
@@ -59,8 +59,8 @@ dependencies {
     api("net.perfectdreams.i18nhelper.formatters:icu-messageformat-jvm:0.0.3-SNAPSHOT")
 
     // GalleryOfDreams client
-    implementation("net.perfectdreams.galleryofdreams:common:1.0.7")
-    implementation("net.perfectdreams.galleryofdreams:client:1.0.7")
+    implementation("net.perfectdreams.galleryofdreams:common:1.0.8")
+    implementation("net.perfectdreams.galleryofdreams:client:1.0.8")
 
     // Used for the LocaleManager
     implementation("org.yaml:snakeyaml:1.30")
