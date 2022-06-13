@@ -15,7 +15,6 @@ import net.perfectdreams.galleryofdreams.common.data.api.CreateArtistWithFanArtR
 import net.perfectdreams.galleryofdreams.common.data.api.FanArtExistsResponse
 import net.perfectdreams.galleryofdreams.common.data.api.UploadFanArtRequest
 import net.perfectdreams.loritta.helper.LorittaHelperKord
-import net.perfectdreams.loritta.helper.utils.ComponentDataUtils
 import net.perfectdreams.loritta.helper.utils.galleryofdreams.commands.GalleryOfDreamsUtils
 import java.util.*
 
@@ -23,7 +22,7 @@ class AddFanArtToGalleryButtonExecutor(val m: LorittaHelperKord, val galleryOfDr
     companion object : ButtonClickExecutorDeclaration(AddFanArtToGalleryButtonExecutor::class, "add_fa_gallery")
 
     override suspend fun onClick(user: User, context: ComponentContext, data: String) {
-        val data = GalleryOfDreamsUtils.CACHED_DATA[UUID.fromString(data)] ?: error("Unknown Data")
+        val addFanArtData = GalleryOfDreamsUtils.CACHED_DATA[UUID.fromString(data)] ?: error("Unknown Data")
 
         if (addFanArtData.selectedAttachmentId == null) {
             context.sendEphemeralMessage {
