@@ -52,12 +52,8 @@ object GalleryOfDreamsUtils {
             }
         }
 
-        val encodedData = ComponentDataUtils.encode(
-            data
-        )
-
         actionRow {
-            selectMenu(AddFanArtSelectAttachmentSelectMenuExecutor, encodedData) {
+            selectMenu(AddFanArtSelectAttachmentSelectMenuExecutor, randomId.toString()) {
                 for (attachment in attachments) {
                     option(attachment.filename, attachment.id.toString()) {
                         if (attachment.id == data.selectedAttachmentId) {
@@ -69,7 +65,7 @@ object GalleryOfDreamsUtils {
         }
 
         actionRow {
-            selectMenu(AddFanArtSelectBadgesSelectMenuExecutor, encodedData) {
+            selectMenu(AddFanArtSelectBadgesSelectMenuExecutor, randomId.toString()) {
                 this.allowedValues = 0..FanArtTag.values().size
 
                 for (tag in FanArtTag.values()) {
