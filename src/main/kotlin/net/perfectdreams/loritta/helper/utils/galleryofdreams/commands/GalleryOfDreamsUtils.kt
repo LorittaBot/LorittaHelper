@@ -84,9 +84,7 @@ object GalleryOfDreamsUtils {
                     ButtonStyle.Success,
                     "Adicionar",
                     AddFanArtToGalleryButtonExecutor,
-                    ComponentDataUtils.encode(
-                        data
-                    )
+                    randomId.toString()
                 )
             } else {
                 interactionButton(
