@@ -7,15 +7,15 @@ import net.perfectdreams.discordinteraktions.common.entities.User
 import net.perfectdreams.galleryofdreams.client.GalleryOfDreamsClient
 import net.perfectdreams.galleryofdreams.common.FanArtTag
 import net.perfectdreams.loritta.helper.LorittaHelperKord
-import net.perfectdreams.loritta.helper.utils.ComponentDataUtils
 import net.perfectdreams.loritta.helper.utils.galleryofdreams.commands.GalleryOfDreamsUtils
+import java.util.*
 
 class AddFanArtSelectBadgesSelectMenuExecutor(val m: LorittaHelperKord, galleryOfDreamsClient: GalleryOfDreamsClient) :
     SelectMenuWithDataExecutor {
     companion object : SelectMenuExecutorDeclaration(AddFanArtSelectBadgesSelectMenuExecutor::class, "select_fa_badges")
 
     override suspend fun onSelect(user: User, context: ComponentContext, data: String, values: List<String>) {
-        val data = ComponentDataUtils.decode<AddFanArtData>(data)
+        val data = GalleryOfDreamsUtils.CACHED_DATA[UUID.fromString(data)] ?: error("Unknown Data")
 
         val message = m.helperRest.channel.getMessage(data.fanArtChannelId, data.fanArtMessageId)
 

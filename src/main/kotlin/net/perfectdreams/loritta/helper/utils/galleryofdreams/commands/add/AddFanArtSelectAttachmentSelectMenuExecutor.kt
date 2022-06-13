@@ -11,8 +11,8 @@ import net.perfectdreams.discordinteraktions.common.entities.User
 import net.perfectdreams.galleryofdreams.client.GalleryOfDreamsClient
 import net.perfectdreams.galleryofdreams.common.data.api.FanArtExistsResponse
 import net.perfectdreams.loritta.helper.LorittaHelperKord
-import net.perfectdreams.loritta.helper.utils.ComponentDataUtils
 import net.perfectdreams.loritta.helper.utils.galleryofdreams.commands.GalleryOfDreamsUtils
+import java.util.*
 
 class AddFanArtSelectAttachmentSelectMenuExecutor(val m: LorittaHelperKord, val galleryOfDreamsClient: GalleryOfDreamsClient) :
     SelectMenuWithDataExecutor {
@@ -21,7 +21,8 @@ class AddFanArtSelectAttachmentSelectMenuExecutor(val m: LorittaHelperKord, val 
     override suspend fun onSelect(user: User, context: ComponentContext, data: String, values: List<String>) {
         context.deferUpdateMessage()
 
-        val data = ComponentDataUtils.decode<AddFanArtData>(data)
+        val data = GalleryOfDreamsUtils.CACHED_DATA[UUID.fromString(data)] ?: error("Unknown Data")
+
         var selectedAttachmentId: Snowflake? = Snowflake(values.first().toLong())
 
         val message = m.helperRest.channel.getMessage(data.fanArtChannelId, data.fanArtMessageId)

@@ -1,5 +1,6 @@
 package net.perfectdreams.loritta.helper.utils.galleryofdreams.commands
 
+import com.github.benmanes.caffeine.cache.Caffeine
 import dev.kord.common.entity.ButtonStyle
 import dev.kord.common.entity.DiscordAttachment
 import dev.kord.common.entity.Snowflake
@@ -17,17 +18,25 @@ import net.perfectdreams.loritta.helper.utils.galleryofdreams.commands.add.AddFa
 import net.perfectdreams.loritta.helper.utils.galleryofdreams.commands.patch.PatchFanArtData
 import net.perfectdreams.loritta.helper.utils.galleryofdreams.commands.patch.PatchFanArtOnGalleryButtonExecutor
 import net.perfectdreams.loritta.helper.utils.galleryofdreams.commands.patch.PatchFanArtSelectBadgesSelectMenuExecutor
+import java.util.*
+import java.util.concurrent.TimeUnit
 
 object GalleryOfDreamsUtils {
     val ALLOWED_ROLES = listOf(
         Snowflake(924649809103691786L)
     )
+    val CACHED_DATA = Caffeine.newBuilder()
+        .expireAfterAccess(1L, TimeUnit.HOURS)
+        .build<UUID, AddFanArtData>()
+        .asMap()
 
     fun createAddFanArtMessage(
         data: AddFanArtData,
         attachments: List<DiscordAttachment>
     ): MessageBuilder.() -> (Unit) = {
         val selectedAttachment = attachments.firstOrNull { it.id == data.selectedAttachmentId }
+        val randomId = UUID.randomUUID()
+        CACHED_DATA.getOrPut(randomId) { data }
 
         content = if (selectedAttachment != null) {
             if (data is AddFanArtToNewArtistData) {

@@ -16,13 +16,14 @@ import net.perfectdreams.galleryofdreams.common.data.api.FanArtExistsResponse
 import net.perfectdreams.galleryofdreams.common.data.api.UploadFanArtRequest
 import net.perfectdreams.loritta.helper.LorittaHelperKord
 import net.perfectdreams.loritta.helper.utils.ComponentDataUtils
+import net.perfectdreams.loritta.helper.utils.galleryofdreams.commands.GalleryOfDreamsUtils
 import java.util.*
 
 class AddFanArtToGalleryButtonExecutor(val m: LorittaHelperKord, val galleryOfDreamsClient: GalleryOfDreamsClient) : ButtonClickWithDataExecutor {
     companion object : ButtonClickExecutorDeclaration(AddFanArtToGalleryButtonExecutor::class, "add_fa_gallery")
 
     override suspend fun onClick(user: User, context: ComponentContext, data: String) {
-        val addFanArtData = ComponentDataUtils.decode<AddFanArtData>(data)
+        val data = GalleryOfDreamsUtils.CACHED_DATA[UUID.fromString(data)] ?: error("Unknown Data")
 
         if (addFanArtData.selectedAttachmentId == null) {
             context.sendEphemeralMessage {
