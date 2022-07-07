@@ -1,8 +1,8 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    kotlin("jvm") version "1.6.21"
-    kotlin("plugin.serialization") version "1.6.21"
+    kotlin("jvm") version "1.7.0"
+    kotlin("plugin.serialization") version "1.7.0"
     id("com.google.cloud.tools.jib") version "3.1.4"
     id("net.perfectdreams.i18nhelper.plugin") version "0.0.3-SNAPSHOT"
 }
@@ -37,8 +37,8 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-hocon:1.3.2")
 
     // Kord
-    implementation("dev.kord:kord-rest:0.8.0-M13")
-    implementation("dev.kord:kord-gateway:0.8.0-M13")
+    implementation("dev.kord:kord-rest:0.8.x-SNAPSHOT")
+    implementation("dev.kord:kord-gateway:0.8.x-SNAPSHOT")
 
     // Sequins
     implementation("net.perfectdreams.sequins.text:text-utils:1.0.0")
