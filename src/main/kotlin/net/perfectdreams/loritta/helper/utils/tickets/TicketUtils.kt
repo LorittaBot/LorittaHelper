@@ -49,7 +49,7 @@ object TicketUtils {
             listOf(),
             Snowflake(760262410098442270),
             Snowflake(332866197701918731),
-            Snowflake(333602241564901378)
+            Snowflake(332650495522897920) // Staff Role
         ),
     )
 
