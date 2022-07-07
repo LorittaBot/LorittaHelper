@@ -21,6 +21,8 @@ import net.perfectdreams.loritta.helper.utils.tickets.CreateTicketButtonExecutor
 import net.perfectdreams.loritta.helper.utils.tickets.HelperResponseSelectMenuExecutor
 import net.perfectdreams.loritta.helper.utils.tickets.TicketSystemTypeData
 import net.perfectdreams.loritta.helper.utils.tickets.TicketUtils
+import net.perfectdreams.loritta.helper.utils.tickets.systems.FirstFanArtTicketSystem
+import net.perfectdreams.loritta.helper.utils.tickets.systems.HelpDeskTicketSystem
 
 class TicketSenderExecutor(helper: LorittaHelperKord) : HelperSlashExecutor(helper, PermissionLevel.ADMIN) {
     companion object : SlashCommandExecutorDeclaration(TicketSenderExecutor::class) {
@@ -46,10 +48,10 @@ class TicketSenderExecutor(helper: LorittaHelperKord) : HelperSlashExecutor(help
 
         val channel = args[options.channel]
         val ticketSystemType = TicketUtils.TicketSystemType.valueOf(args[options.type])
-        val systemInfo = TicketUtils.getInformationBySystemType(ticketSystemType)
+        val systemInfo = helper.ticketUtils.getSystemBySystemType(ticketSystemType)
         val i18nContext = systemInfo.getI18nContext(helper.languageManager)
 
-        if (systemInfo is TicketUtils.HelpDeskTicketSystemInformation) {
+        if (systemInfo is HelpDeskTicketSystem) {
             if (systemInfo.systemType == TicketUtils.TicketSystemType.SPARKLYPOWER_HELP_DESK_PORTUGUESE) {
                 helper.helperRest.channel.createMessage(channel.id) {
                     embed {
@@ -313,7 +315,7 @@ class TicketSenderExecutor(helper: LorittaHelperKord) : HelperSlashExecutor(help
                     }
                 }
             }
-        } else if (systemInfo is TicketUtils.FirstFanArtTicketSystemInformation) {
+        } else if (systemInfo is FirstFanArtTicketSystem) {
             val rulesChannelId = systemInfo.fanArtRulesChannelId
 
             helper.helperRest.channel.createMessage(channel.id) {

@@ -1,23 +1,27 @@
 package net.perfectdreams.loritta.helper.utils.tickets
 
-import dev.kord.common.entity.ArchiveDuration
 import dev.kord.common.entity.Snowflake
+import net.perfectdreams.loritta.helper.LorittaHelperKord
 import net.perfectdreams.loritta.helper.serverresponses.EnglishResponses
-import net.perfectdreams.loritta.helper.serverresponses.LorittaResponse
 import net.perfectdreams.loritta.helper.serverresponses.PortugueseResponses
-import net.perfectdreams.loritta.helper.utils.LanguageManager
+import net.perfectdreams.loritta.helper.utils.Constants
+import net.perfectdreams.loritta.helper.utils.tickets.systems.FirstFanArtTicketSystem
+import net.perfectdreams.loritta.helper.utils.tickets.systems.HelpDeskTicketSystem
 
-object TicketUtils {
-    val PORTUGUESE_HELP_DESK_CHANNEL_ID = Snowflake(891834050073997383L)
-    val ENGLISH_HELP_DESK_CHANNEL_ID = Snowflake(891834950159044658L)
-    val FIRST_FAN_ART_CHANNEL_ID = Snowflake(938247721775661086L)
-    val SPARKLYPOWER_HELP_DESK_CHANNEL_ID = Snowflake(994664055933517925L)
+class TicketUtils(val m: LorittaHelperKord) {
+    private val PORTUGUESE_HELP_DESK_CHANNEL_ID = Snowflake(891834050073997383L)
+    private val ENGLISH_HELP_DESK_CHANNEL_ID = Snowflake(891834950159044658L)
+    private val FIRST_FAN_ART_CHANNEL_ID = Snowflake(938247721775661086L)
+    private val SPARKLYPOWER_HELP_DESK_CHANNEL_ID = Snowflake(994664055933517925L)
 
-    val informations = mapOf(
+    val systems = mapOf(
         // Portuguese Help Desk Channel
-        PORTUGUESE_HELP_DESK_CHANNEL_ID to HelpDeskTicketSystemInformation(
+        PORTUGUESE_HELP_DESK_CHANNEL_ID to HelpDeskTicketSystem(
+            m.helperRest,
             TicketSystemType.HELP_DESK_PORTUGUESE,
             LanguageName.PORTUGUESE,
+            Snowflake(Constants.SUPPORT_SERVER_ID),
+            Snowflake(891834050073997383),
             PortugueseResponses.responses,
             Snowflake(761337893951635458),
             Snowflake(752294116708319324),
@@ -25,9 +29,12 @@ object TicketUtils {
         ),
 
         // English Help Desk Channel
-        ENGLISH_HELP_DESK_CHANNEL_ID to HelpDeskTicketSystemInformation(
+        ENGLISH_HELP_DESK_CHANNEL_ID to HelpDeskTicketSystem(
+            m.helperRest,
             TicketSystemType.HELP_DESK_ENGLISH,
             LanguageName.ENGLISH,
+            Snowflake(Constants.SUPPORT_SERVER_ID),
+            Snowflake(891834950159044658),
             EnglishResponses.responses,
             Snowflake(761337709720633392),
             Snowflake(761385919479414825),
@@ -35,17 +42,23 @@ object TicketUtils {
         ),
 
         // Portuguese First Fan Art Channel
-        FIRST_FAN_ART_CHANNEL_ID to FirstFanArtTicketSystemInformation(
+        FIRST_FAN_ART_CHANNEL_ID to FirstFanArtTicketSystem(
+            m.helperRest,
             TicketSystemType.FIRST_FAN_ARTS_PORTUGUESE,
             LanguageName.PORTUGUESE,
+            Snowflake(Constants.COMMUNITY_SERVER_ID),
+            Snowflake(938247721775661086),
             Snowflake(924649809103691786),
             Snowflake(557629480391409666)
         ),
 
         // SparklyPower Help Desk Channel
-        SPARKLYPOWER_HELP_DESK_CHANNEL_ID to HelpDeskTicketSystemInformation(
+        SPARKLYPOWER_HELP_DESK_CHANNEL_ID to HelpDeskTicketSystem(
+            m.helperRest,
             TicketSystemType.SPARKLYPOWER_HELP_DESK_PORTUGUESE,
             LanguageName.PORTUGUESE,
+            Snowflake(320248230917046282),
+            Snowflake(994664055933517925),
             listOf(),
             Snowflake(760262410098442270),
             Snowflake(332866197701918731),
@@ -53,34 +66,7 @@ object TicketUtils {
         ),
     )
 
-    fun getInformationBySystemType(type: TicketSystemType) = informations.values.first { it.systemType == type }
-
-    sealed class TicketSystemInformation(
-        val systemType: TicketSystemType,
-        val language: LanguageName,
-        val archiveDuration: ArchiveDuration
-    ) {
-        fun getI18nContext(languageManager: LanguageManager) = when (language) {
-            LanguageName.PORTUGUESE -> languageManager.getI18nContextById("pt")
-            LanguageName.ENGLISH -> languageManager.getI18nContextById("en")
-        }
-    }
-
-    class HelpDeskTicketSystemInformation(
-        systemType: TicketSystemType,
-        language: LanguageName,
-        val channelResponses: List<LorittaResponse>,
-        val faqChannelId: Snowflake,
-        val statusChannelId: Snowflake,
-        val supportRoleId: Snowflake
-    ) : TicketSystemInformation(systemType, language, ArchiveDuration.Day)
-
-    class FirstFanArtTicketSystemInformation(
-        systemType: TicketSystemType,
-        language: LanguageName,
-        val fanArtsManagerRoleId: Snowflake,
-        val fanArtRulesChannelId: Snowflake
-    ) : TicketSystemInformation(systemType, language, ArchiveDuration.Week)
+    fun getSystemBySystemType(type: TicketSystemType) = systems.values.first { it.systemType == type }
 
     enum class TicketSystemType {
         HELP_DESK_PORTUGUESE,

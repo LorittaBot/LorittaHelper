@@ -11,7 +11,10 @@ class TicketInfoExecutor(helper: LorittaHelperKord) : HelperSlashExecutor(helper
     override suspend fun executeHelper(context: ApplicationCommandContext, args: SlashCommandArguments) {
         context.sendEphemeralMessage {
             content = buildString {
-                helper.ticketsCache.entries.forEach { (type, cache) ->
+                helper.ticketUtils.systems.values.forEach {
+                    val type = it.systemType
+                    val cache = it.cache
+
                     append("**${type}:** ${cache.tickets.size} tickets\n")
                 }
             }

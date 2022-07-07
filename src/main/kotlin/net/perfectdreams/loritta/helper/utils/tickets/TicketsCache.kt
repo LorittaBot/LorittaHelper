@@ -1,4 +1,4 @@
-package net.perfectdreams.loritta.helper.utils.cache
+package net.perfectdreams.loritta.helper.utils.tickets
 
 import dev.kord.common.entity.Snowflake
 import dev.kord.rest.json.request.ListThreadsByTimestampRequest

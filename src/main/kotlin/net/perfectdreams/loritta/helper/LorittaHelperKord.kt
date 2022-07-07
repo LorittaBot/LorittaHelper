@@ -15,13 +15,11 @@ import net.perfectdreams.discordinteraktions.common.commands.CommandManager
 import net.perfectdreams.discordinteraktions.platforms.kord.commands.KordCommandRegistry
 import net.perfectdreams.discordinteraktions.platforms.kord.installDiscordInteraKTions
 import net.perfectdreams.galleryofdreams.client.GalleryOfDreamsClient
-import net.perfectdreams.loritta.helper.utils.Constants
 import net.perfectdreams.loritta.helper.utils.LanguageManager
 import net.perfectdreams.loritta.helper.utils.buttonroles.RoleColorButtonExecutor
 import net.perfectdreams.loritta.helper.utils.buttonroles.RoleCoolBadgeButtonExecutor
 import net.perfectdreams.loritta.helper.utils.buttonroles.RoleToggleButtonExecutor
 import net.perfectdreams.loritta.helper.utils.cache.ChannelsCache
-import net.perfectdreams.loritta.helper.utils.cache.TicketsCache
 import net.perfectdreams.loritta.helper.utils.checksonhosmendigagem.CheckSequenciaTimeoutListener
 import net.perfectdreams.loritta.helper.utils.checksonhosmendigagem.CheckSonhosMendigagemTimeoutListener
 import net.perfectdreams.loritta.helper.utils.config.FanArtsConfig
@@ -115,32 +113,8 @@ class LorittaHelperKord(
         "en",
         "/languages/"
     )
+    val ticketUtils = TicketUtils(this)
     val channelsCache = ChannelsCache(helperRest)
-    val ticketsCache = mapOf(
-        TicketUtils.TicketSystemType.HELP_DESK_PORTUGUESE to TicketsCache(
-            Snowflake(Constants.SUPPORT_SERVER_ID),
-            Snowflake(891834050073997383L),
-            helperRest
-        ),
-
-        TicketUtils.TicketSystemType.HELP_DESK_ENGLISH to TicketsCache(
-            Snowflake(Constants.SUPPORT_SERVER_ID),
-            Snowflake(891834950159044658L),
-            helperRest
-        ),
-
-        TicketUtils.TicketSystemType.FIRST_FAN_ARTS_PORTUGUESE to TicketsCache(
-            Snowflake(Constants.COMMUNITY_SERVER_ID),
-            Snowflake(938247721775661086L),
-            helperRest
-        ),
-
-        TicketUtils.TicketSystemType.SPARKLYPOWER_HELP_DESK_PORTUGUESE to TicketsCache(
-            Snowflake(320248230917046282L),
-            Snowflake(994664055933517925L),
-            helperRest
-        )
-    )
 
     val galleryOfDreamsClient = fanArtsConfig?.let {
         GalleryOfDreamsClient(
@@ -166,7 +140,9 @@ class LorittaHelperKord(
         languageManager.loadLanguagesAndContexts()
 
         runBlocking {
-            for ((type, cache) in ticketsCache) {
+            for (system in ticketUtils.systems.values) {
+                val type = system.systemType
+                val cache = system.cache
                 logger.info { "Populating ${type}'s ticket cache..." }
                 cache.populateCache()
                 logger.info { "Now tracking ${cache.tickets.size} tickets!" }
@@ -368,6 +344,4 @@ class LorittaHelperKord(
             }
         }
     }
-
-    fun getTicketsCacheBySystemType(type: TicketUtils.TicketSystemType) = ticketsCache[type]!!
 }

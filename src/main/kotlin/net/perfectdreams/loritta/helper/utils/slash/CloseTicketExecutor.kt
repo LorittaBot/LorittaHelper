@@ -10,7 +10,6 @@ import net.perfectdreams.discordinteraktions.common.commands.SlashCommandExecuto
 import net.perfectdreams.discordinteraktions.common.commands.options.SlashCommandArguments
 import net.perfectdreams.loritta.helper.LorittaHelperKord
 import net.perfectdreams.loritta.helper.i18n.I18nKeysData
-import net.perfectdreams.loritta.helper.utils.tickets.TicketUtils
 
 class CloseTicketExecutor(val helper: LorittaHelperKord) : SlashCommandExecutor() {
     companion object : SlashCommandExecutorDeclaration(CloseTicketExecutor::class)
@@ -27,7 +26,7 @@ class CloseTicketExecutor(val helper: LorittaHelperKord) : SlashCommandExecutor(
 
         val parentChannelId = channel.parentId.value ?: return
 
-        val ticketSystemInformation = TicketUtils.informations[parentChannelId]!!
+        val ticketSystemInformation = helper.ticketUtils.systems[parentChannelId]!!
         val i18nContext = ticketSystemInformation.getI18nContext(helper.languageManager)
 
         context.sendEphemeralMessage {

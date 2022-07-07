@@ -14,6 +14,7 @@ import net.perfectdreams.loritta.helper.LorittaHelperKord
 import net.perfectdreams.loritta.helper.i18n.I18nKeysData
 import net.perfectdreams.loritta.helper.tables.SelectedResponsesLog
 import net.perfectdreams.loritta.helper.utils.ComponentDataUtils
+import net.perfectdreams.loritta.helper.utils.tickets.systems.HelpDeskTicketSystem
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.transactions.transaction
 import java.time.Instant
@@ -25,8 +26,8 @@ class HelperResponseSelectMenuExecutor(val m: LorittaHelperKord) : SelectMenuExe
 
     override suspend fun onSelect(user: User, context: ComponentContext, values: List<String>) {
         if (context is GuildComponentContext) {
-            val systemInfo = TicketUtils.informations[context.channelId]!!
-            if (systemInfo !is TicketUtils.HelpDeskTicketSystemInformation)
+            val systemInfo = m.ticketUtils.systems[context.channelId]!!
+            if (systemInfo !is HelpDeskTicketSystem)
                 return
             val channelResponses = systemInfo.channelResponses
             val i18nContext = systemInfo.getI18nContext(m.languageManager)

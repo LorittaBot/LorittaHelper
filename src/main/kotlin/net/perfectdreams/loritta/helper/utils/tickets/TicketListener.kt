@@ -17,6 +17,7 @@ import net.perfectdreams.loritta.helper.i18n.I18nKeysData
 import net.perfectdreams.loritta.helper.tables.StartedSupportSolicitations
 import net.perfectdreams.loritta.helper.tables.TicketMessagesActivity
 import net.perfectdreams.loritta.helper.utils.ComponentDataUtils
+import net.perfectdreams.loritta.helper.utils.tickets.systems.HelpDeskTicketSystem
 import org.jetbrains.exposed.sql.SortOrder
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.select
@@ -35,8 +36,8 @@ class TicketListener(private val helper: LorittaHelperKord) {
 
         val parentChannelId = channel.parentId.value ?: return@on
 
-        val systemInfo = TicketUtils.informations[parentChannelId]!!
-        if (systemInfo !is TicketUtils.HelpDeskTicketSystemInformation)
+        val systemInfo = helper.ticketUtils.systems[parentChannelId]!!
+        if (systemInfo !is HelpDeskTicketSystem)
             return@on
 
         // Track user message

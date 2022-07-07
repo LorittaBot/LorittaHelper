@@ -11,7 +11,6 @@ import dev.kord.rest.json.request.ChannelModifyPatchRequest
 import mu.KotlinLogging
 import net.perfectdreams.loritta.helper.LorittaHelperKord
 import net.perfectdreams.loritta.helper.i18n.I18nKeysData
-import net.perfectdreams.loritta.helper.utils.Constants
 
 class AutoCloseTicketWhenMemberLeavesGuildListener(private val helper: LorittaHelperKord) {
     companion object {
@@ -41,7 +40,7 @@ class AutoCloseTicketWhenMemberLeavesGuildListener(private val helper: LorittaHe
 
         val parentChannelId = channel.parentId.value ?: return@on
 
-        val ticketSystemInformation = TicketUtils.informations[parentChannelId] ?: return@on
+        val ticketSystemInformation = helper.ticketUtils.systems[parentChannelId] ?: return@on
         val i18nContext = ticketSystemInformation.getI18nContext(helper.languageManager)
 
         helper.helperRest.channel.createMessage(

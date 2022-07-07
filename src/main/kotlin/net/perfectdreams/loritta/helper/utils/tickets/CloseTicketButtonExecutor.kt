@@ -17,7 +17,7 @@ class CloseTicketButtonExecutor(val m: LorittaHelperKord) : ButtonClickWithDataE
     override suspend fun onClick(user: User, context: ComponentContext, data: String) {
         if (context is GuildComponentContext) {
             val ticketSystemTypeData = ComponentDataUtils.decode<TicketSystemTypeData>(data)
-            val systemInfo = TicketUtils.getInformationBySystemType(ticketSystemTypeData.systemType)
+            val systemInfo = m.ticketUtils.getSystemBySystemType(ticketSystemTypeData.systemType)
             val language = systemInfo.getI18nContext(m.languageManager)
 
             context.sendEphemeralMessage {

@@ -19,8 +19,13 @@ import net.perfectdreams.loritta.helper.i18n.I18nKeysData
 import net.perfectdreams.loritta.helper.tables.StartedSupportSolicitations
 import net.perfectdreams.loritta.helper.utils.ComponentDataUtils
 import net.perfectdreams.loritta.helper.utils.Constants
-import net.perfectdreams.loritta.helper.utils.cache.TicketsCache
-import org.jetbrains.exposed.sql.*
+import net.perfectdreams.loritta.helper.utils.tickets.systems.FirstFanArtTicketSystem
+import net.perfectdreams.loritta.helper.utils.tickets.systems.HelpDeskTicketSystem
+import org.jetbrains.exposed.sql.SortOrder
+import org.jetbrains.exposed.sql.and
+import org.jetbrains.exposed.sql.insert
+import org.jetbrains.exposed.sql.or
+import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.transactions.transaction
 import java.time.Instant
 import java.util.concurrent.TimeUnit
@@ -95,7 +100,7 @@ class CreateTicketButtonExecutor(val m: LorittaHelperKord) : ButtonClickWithData
             }
 
             val ticketSystemTypeData = ComponentDataUtils.decode<TicketSystemTypeData>(data)
-            val systemInfo = TicketUtils.getInformationBySystemType(ticketSystemTypeData.systemType)
+            val systemInfo = m.ticketUtils.getSystemBySystemType(ticketSystemTypeData.systemType)
             val language = systemInfo.getI18nContext(m.languageManager)
 
             // Avoid users closing and reopening threads constantly
@@ -127,7 +132,7 @@ class CreateTicketButtonExecutor(val m: LorittaHelperKord) : ButtonClickWithData
                 content = language.get(I18nKeysData.Tickets.CreatingATicket)
             }
 
-            val cachedTickets = m.getTicketsCacheBySystemType(ticketSystemTypeData.systemType)
+            val cachedTickets = m.ticketUtils.getSystemBySystemType(ticketSystemTypeData.systemType).cache
             val alreadyCreatedUserTicketData = cachedTickets.tickets[context.sender.id]
             var ticketThreadId = alreadyCreatedUserTicketData?.id
 
@@ -190,7 +195,7 @@ class CreateTicketButtonExecutor(val m: LorittaHelperKord) : ButtonClickWithData
             }
 
             // Only resend the message if the thread was archived or if it is a new thread
-            if (systemInfo is TicketUtils.HelpDeskTicketSystemInformation) {
+            if (systemInfo is HelpDeskTicketSystem) {
                 m.helperRest.channel.createMessage(
                     ticketThreadId
                 ) {
@@ -228,7 +233,7 @@ class CreateTicketButtonExecutor(val m: LorittaHelperKord) : ButtonClickWithData
                         .joinToString("\n")
                         { it.build(context.sender) }
                 }
-            } else if (systemInfo is TicketUtils.FirstFanArtTicketSystemInformation) {
+            } else if (systemInfo is FirstFanArtTicketSystem) {
                 m.helperRest.channel.createMessage(
                     ticketThreadId
                 ) {

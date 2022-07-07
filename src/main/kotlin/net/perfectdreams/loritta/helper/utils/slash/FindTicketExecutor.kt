@@ -26,7 +26,7 @@ class FindTicketExecutor(helper: LorittaHelperKord) : HelperSlashExecutor(helper
     override suspend fun executeHelper(context: ApplicationCommandContext, args: SlashCommandArguments) {
         val user = args[options.user]
         val ticketSystemType = TicketUtils.TicketSystemType.valueOf(args[options.type])
-        val cache = helper.getTicketsCacheBySystemType(ticketSystemType)
+        val cache = helper.ticketUtils.getSystemBySystemType(ticketSystemType).cache
         val cachedTicketId = cache.tickets[user.id]
 
         context.sendEphemeralMessage {
