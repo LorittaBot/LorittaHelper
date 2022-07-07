@@ -4,7 +4,6 @@ import dev.kord.common.entity.DiscordGuildMember
 import dev.kord.common.entity.Snowflake
 import dev.kord.rest.route.Position
 import dev.kord.rest.service.RestClient
-import kotlinx.datetime.Instant
 import net.perfectdreams.discordinteraktions.common.commands.ApplicationCommandContext
 import net.perfectdreams.discordinteraktions.common.commands.SlashCommandExecutorDeclaration
 import net.perfectdreams.discordinteraktions.common.commands.options.ApplicationCommandOptions
@@ -49,11 +48,11 @@ class ServerMembersExecutor(helper: LorittaHelperKord, val rest: RestClient) : H
             if (sortType == "created_at")
                 it.user.value!!.id.timestamp
             else
-                Instant.parse(it.joinedAt)
+                it.joinedAt
         }) {
             val user = member.user.value!!
 
-            builder.append("${user.username}#${user.discriminator} (${user.id.value}) <${user.id.timestamp}> [${Instant.parse(member.joinedAt)}]")
+            builder.append("${user.username}#${user.discriminator} (${user.id.value}) <${user.id.timestamp}> [${member.joinedAt}]")
             builder.append("\n")
         }
 

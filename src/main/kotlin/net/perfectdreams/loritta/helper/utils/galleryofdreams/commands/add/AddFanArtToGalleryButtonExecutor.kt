@@ -86,7 +86,7 @@ class AddFanArtToGalleryButtonExecutor(val m: LorittaHelperKord, val galleryOfDr
                         UUID.randomUUID().toString(),
                         null,
                         null,
-                        Instant.parse(message.timestamp),
+                        message.timestamp,
                         addFanArtData.tags
                     )
                 )
@@ -106,7 +106,7 @@ class AddFanArtToGalleryButtonExecutor(val m: LorittaHelperKord, val galleryOfDr
                             UUID.randomUUID().toString(),
                             null,
                             null,
-                            Instant.parse(message.timestamp),
+                            message.timestamp,
                             addFanArtData.tags
                         )
                     )

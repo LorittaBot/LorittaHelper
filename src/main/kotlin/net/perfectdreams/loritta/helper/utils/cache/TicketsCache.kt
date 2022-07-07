@@ -61,9 +61,7 @@ class TicketsCache(
             if (!searchedAll) {
                 // Gets the minimum archive timestamp of the thread, because Discord seems to sort them by archival timestamp
                 lastInstant = result.threads.mapNotNull {
-                    it.threadMetadata.value?.archiveTimestamp?.let {
-                        Instant.parse(it)
-                    }
+                    it.threadMetadata.value?.archiveTimestamp
                 }.minOrNull()
             }
         }
