@@ -133,6 +133,12 @@ class LorittaHelperKord(
             Snowflake(Constants.COMMUNITY_SERVER_ID),
             Snowflake(938247721775661086L),
             helperRest
+        ),
+
+        TicketUtils.TicketSystemType.SPARKLYPOWER_HELP_DESK_PORTUGUESE to TicketsCache(
+            Snowflake(320248230917046282L),
+            Snowflake(994664055933517925L),
+            helperRest
         )
     )
 
