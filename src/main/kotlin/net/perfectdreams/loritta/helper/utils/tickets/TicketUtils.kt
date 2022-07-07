@@ -11,6 +11,7 @@ object TicketUtils {
     val PORTUGUESE_HELP_DESK_CHANNEL_ID = Snowflake(891834050073997383L)
     val ENGLISH_HELP_DESK_CHANNEL_ID = Snowflake(891834950159044658L)
     val FIRST_FAN_ART_CHANNEL_ID = Snowflake(938247721775661086L)
+    val SPARKLYPOWER_HELP_DESK_CHANNEL_ID = Snowflake(994664055933517925L)
 
     val informations = mapOf(
         // Portuguese Help Desk Channel
@@ -39,6 +40,16 @@ object TicketUtils {
             LanguageName.PORTUGUESE,
             Snowflake(924649809103691786),
             Snowflake(557629480391409666)
+        ),
+
+        // SparklyPower Help Desk Channel
+        SPARKLYPOWER_HELP_DESK_CHANNEL_ID to HelpDeskTicketSystemInformation(
+            TicketSystemType.SPARKLYPOWER_HELP_DESK_PORTUGUESE,
+            LanguageName.PORTUGUESE,
+            listOf(),
+            Snowflake(760262410098442270),
+            Snowflake(332866197701918731),
+            Snowflake(333602241564901378)
         ),
     )
 
@@ -74,7 +85,8 @@ object TicketUtils {
     enum class TicketSystemType {
         HELP_DESK_PORTUGUESE,
         HELP_DESK_ENGLISH,
-        FIRST_FAN_ARTS_PORTUGUESE
+        FIRST_FAN_ARTS_PORTUGUESE,
+        SPARKLYPOWER_HELP_DESK_PORTUGUESE
     }
 
     enum class LanguageName {

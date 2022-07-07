@@ -17,7 +17,6 @@ import net.perfectdreams.loritta.helper.i18n.I18nKeysData
 import net.perfectdreams.loritta.helper.tables.StartedSupportSolicitations
 import net.perfectdreams.loritta.helper.tables.TicketMessagesActivity
 import net.perfectdreams.loritta.helper.utils.ComponentDataUtils
-import net.perfectdreams.loritta.helper.utils.Constants
 import org.jetbrains.exposed.sql.SortOrder
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.select
@@ -27,10 +26,6 @@ import java.time.Instant
 class TicketListener(private val helper: LorittaHelperKord) {
     fun installAutoReplyToMessagesInTicketListener(gateway: Gateway) = gateway.on<MessageCreate> {
         if (this.message.author.bot.discordBoolean)
-            return@on
-
-        // Only in Loritta's support server!
-        if (Constants.SUPPORT_SERVER_ID != this.message.guildId.value?.value?.toLong())
             return@on
 
         val channelId = this.message.channelId

@@ -49,232 +49,263 @@ class TicketSenderExecutor(helper: LorittaHelperKord) : HelperSlashExecutor(help
         val i18nContext = systemInfo.getI18nContext(helper.languageManager)
 
         if (systemInfo is TicketUtils.HelpDeskTicketSystemInformation) {
-            val faqChannelId = systemInfo.faqChannelId
-            val statusChannelId = systemInfo.statusChannelId
+            if (systemInfo.systemType == TicketUtils.TicketSystemType.SPARKLYPOWER_HELP_DESK_PORTUGUESE) {
+                helper.helperRest.channel.createMessage(channel.id) {
+                    embed {
+                        title = "${Emotes.LORI_HEART} SparklyPower Dúvidas LTDA"
+                        color = Color(26, 160, 254)
 
-            helper.helperRest.channel.createMessage(channel.id) {
-                embed {
-                    title = i18nContext.get(I18nKeysData.Tickets.LorittaHelpDesk)
-                    color = Color(26, 160, 254)
+                        description = """Quer enviar uma fan art da Loritta e receber um cargo especial de Desenhista?
+                                    |
+                                    |Então você veio ao lugar certo! Aqui você poderá enviar todas as suas maravilhosas fan-arts, basta apenas clicar no botão abaixo para criar um ticket
+                                    |
+                                    |**Mas lembre-se!** Não iremos aprovar fan-arts mal feitas ou que não estejam de acordo com as regras em **TODO**!
+                                """.trimMargin()
 
-                    description = i18nContext.get(
-                        I18nKeysData.Tickets.HelpDeskDescription(
-                            "<#${faqChannelId.value}>",
-                            "<https://loritta.website/extras>",
-                            "<#${statusChannelId.value}>"
-                        )
-                    ).joinToString("\n")
+                        image = "https://loritta.website/v3/assets/img/faq/fanarts/banner.png"
+                    }
 
-                    image = when (systemInfo.language) {
-                        TicketUtils.LanguageName.PORTUGUESE -> "https://cdn.discordapp.com/attachments/358774895850815488/891833452457000980/Support_System_Portuguese.png"
-                        TicketUtils.LanguageName.ENGLISH -> "https://cdn.discordapp.com/attachments/358774895850815488/891831248106963044/Support_System_English.png"
+                    actionRow {
+                        interactiveButton(
+                            ButtonStyle.Primary,
+                            CreateTicketButtonExecutor,
+                            ComponentDataUtils.encode(
+                                TicketSystemTypeData(systemInfo.systemType)
+                            )
+                        ) {
+                            emoji = DiscordPartialEmoji(name = "➕")
+                            label = i18nContext.get(I18nKeysData.Tickets.CreateTicket)
+                        }
                     }
                 }
-            }
+            } else {
+                val faqChannelId = systemInfo.faqChannelId
+                val statusChannelId = systemInfo.statusChannelId
 
-            helper.helperRest.channel.createMessage(channel.id) {
-                content = LorittaReply(
-                    i18nContext.get(I18nKeysData.Tickets.SelectYourQuestion),
-                    "<:lori_reading:853052040430878750>"
-                ).build()
+                helper.helperRest.channel.createMessage(channel.id) {
+                    embed {
+                        title = i18nContext.get(I18nKeysData.Tickets.LorittaHelpDesk)
+                        color = Color(26, 160, 254)
 
-                actionRow {
-                    selectMenu(HelperResponseSelectMenuExecutor) {
-                        placeholder = i18nContext.get(
-                            I18nKeysData.Tickets.ClickToFindYourQuestion
-                        )
+                        description = i18nContext.get(
+                            I18nKeysData.Tickets.HelpDeskDescription(
+                                "<#${faqChannelId.value}>",
+                                "<https://loritta.website/extras>",
+                                "<#${statusChannelId.value}>"
+                            )
+                        ).joinToString("\n")
 
-                        when (systemInfo.language) {
-                            TicketUtils.LanguageName.PORTUGUESE -> {
-                                option(
-                                    i18nContext.get(
-                                        I18nKeysData.Tickets.Menu.HowToAddLorittaToMyServer
-                                    ),
-                                    net.perfectdreams.loritta.helper.serverresponses.portuguese.AddLoriResponse::class.simpleName!!
-                                )
-                                option(
-                                    i18nContext.get(
-                                        I18nKeysData.Tickets.Menu.WhyLorittaIsOffline
-                                    ),
-                                    net.perfectdreams.loritta.helper.serverresponses.portuguese.LoriOfflineResponse::class.simpleName!!
-                                )
-                                option(
-                                    i18nContext.get(
-                                        I18nKeysData.Tickets.Menu.LoriIsNotReplyingToMyCommands
-                                    ),
-                                    net.perfectdreams.loritta.helper.serverresponses.portuguese.LoriMandarCmdsResponse::class.simpleName!!
-                                )
-                                option(
-                                    i18nContext.get(
-                                        I18nKeysData.Tickets.Menu.HowToSetupJoinLeaveMessages
-                                    ),
-                                    net.perfectdreams.loritta.helper.serverresponses.portuguese.JoinLeaveResponse::class.simpleName!!
-                                )
-                                option(
-                                    i18nContext.get(
-                                        I18nKeysData.Tickets.Menu.HowLorittaExperienceSystemWorks
-                                    ),
-                                    net.perfectdreams.loritta.helper.serverresponses.portuguese.LoriXpResponse::class.simpleName!!
-                                )
-                                option(
-                                    i18nContext.get(
-                                        I18nKeysData.Tickets.Menu.HowToEarnSonhos
-                                    ),
-                                    net.perfectdreams.loritta.helper.serverresponses.portuguese.ReceiveSonhosResponse::class.simpleName!!
-                                )
-                                option(
-                                    i18nContext.get(
-                                        I18nKeysData.Tickets.Menu.WhatCanIDoWithSonhos
-                                    ),
-                                    net.perfectdreams.loritta.helper.serverresponses.portuguese.CanIExchangeSonhosForSomethingElseResponse::class.simpleName!!
-                                )
-                                option(
-                                    i18nContext.get(
-                                        I18nKeysData.Tickets.Menu.DailyDoesNotWork
-                                    ),
-                                    net.perfectdreams.loritta.helper.serverresponses.portuguese.DailyCaptchaDoesNotWorkResponse::class.simpleName!!
-                                )
-                                option(
-                                    i18nContext.get(
-                                        I18nKeysData.Tickets.Menu.LorittaPremiumFeatures
-                                    ),
-                                    net.perfectdreams.loritta.helper.serverresponses.portuguese.LorittaPremiumResponse::class.simpleName!!
-                                )
-                                option(
-                                    i18nContext.get(
-                                        I18nKeysData.Tickets.Menu.HowMuteWorks
-                                    ),
-                                    net.perfectdreams.loritta.helper.serverresponses.portuguese.MuteResponse::class.simpleName!!
-                                )
-                                option(
-                                    i18nContext.get(
-                                        I18nKeysData.Tickets.Menu.WhatAreReputations
-                                    ),
-                                    net.perfectdreams.loritta.helper.serverresponses.portuguese.ReputationsResponse::class.simpleName!!
-                                )
-                                option(
-                                    i18nContext.get(
-                                        I18nKeysData.Tickets.Menu.ChangeShipValue
-                                    ),
-                                    net.perfectdreams.loritta.helper.serverresponses.portuguese.ValorShipResponse::class.simpleName!!
-                                )
-                                option(
-                                    i18nContext.get(
-                                        I18nKeysData.Tickets.Menu.HowToReportAnotherUser
-                                    ),
-                                    net.perfectdreams.loritta.helper.serverresponses.portuguese.HowDoIReportResponse::class.simpleName!!
-                                )
-                                option(
-                                    i18nContext.get(
-                                        I18nKeysData.Tickets.Menu.WhatIsSparklyPower
-                                    ),
-                                    net.perfectdreams.loritta.helper.serverresponses.portuguese.SparklyPowerInfoResponse::class.simpleName!!
-                                )
+                        image = when (systemInfo.language) {
+                            TicketUtils.LanguageName.PORTUGUESE -> "https://cdn.discordapp.com/attachments/358774895850815488/891833452457000980/Support_System_Portuguese.png"
+                            TicketUtils.LanguageName.ENGLISH -> "https://cdn.discordapp.com/attachments/358774895850815488/891831248106963044/Support_System_English.png"
+                        }
+                    }
+                }
 
-                                // ===[ SPECIAL CASE ]===
-                                option(
-                                    i18nContext.get(
-                                        I18nKeysData.Tickets.Menu.MyQuestionIsntHere
-                                    ),
-                                    HelperResponseSelectMenuExecutor.MY_QUESTION_ISNT_HERE_SPECIAL_KEY
-                                ) {
-                                    emoji = DiscordPartialEmoji(Snowflake(648695501398605825), "sad_cat18")
+                helper.helperRest.channel.createMessage(channel.id) {
+                    content = LorittaReply(
+                        i18nContext.get(I18nKeysData.Tickets.SelectYourQuestion),
+                        "<:lori_reading:853052040430878750>"
+                    ).build()
+
+                    actionRow {
+                        selectMenu(HelperResponseSelectMenuExecutor) {
+                            placeholder = i18nContext.get(
+                                I18nKeysData.Tickets.ClickToFindYourQuestion
+                            )
+
+                            when (systemInfo.language) {
+                                TicketUtils.LanguageName.PORTUGUESE -> {
+                                    option(
+                                        i18nContext.get(
+                                            I18nKeysData.Tickets.Menu.HowToAddLorittaToMyServer
+                                        ),
+                                        net.perfectdreams.loritta.helper.serverresponses.portuguese.AddLoriResponse::class.simpleName!!
+                                    )
+                                    option(
+                                        i18nContext.get(
+                                            I18nKeysData.Tickets.Menu.WhyLorittaIsOffline
+                                        ),
+                                        net.perfectdreams.loritta.helper.serverresponses.portuguese.LoriOfflineResponse::class.simpleName!!
+                                    )
+                                    option(
+                                        i18nContext.get(
+                                            I18nKeysData.Tickets.Menu.LoriIsNotReplyingToMyCommands
+                                        ),
+                                        net.perfectdreams.loritta.helper.serverresponses.portuguese.LoriMandarCmdsResponse::class.simpleName!!
+                                    )
+                                    option(
+                                        i18nContext.get(
+                                            I18nKeysData.Tickets.Menu.HowToSetupJoinLeaveMessages
+                                        ),
+                                        net.perfectdreams.loritta.helper.serverresponses.portuguese.JoinLeaveResponse::class.simpleName!!
+                                    )
+                                    option(
+                                        i18nContext.get(
+                                            I18nKeysData.Tickets.Menu.HowLorittaExperienceSystemWorks
+                                        ),
+                                        net.perfectdreams.loritta.helper.serverresponses.portuguese.LoriXpResponse::class.simpleName!!
+                                    )
+                                    option(
+                                        i18nContext.get(
+                                            I18nKeysData.Tickets.Menu.HowToEarnSonhos
+                                        ),
+                                        net.perfectdreams.loritta.helper.serverresponses.portuguese.ReceiveSonhosResponse::class.simpleName!!
+                                    )
+                                    option(
+                                        i18nContext.get(
+                                            I18nKeysData.Tickets.Menu.WhatCanIDoWithSonhos
+                                        ),
+                                        net.perfectdreams.loritta.helper.serverresponses.portuguese.CanIExchangeSonhosForSomethingElseResponse::class.simpleName!!
+                                    )
+                                    option(
+                                        i18nContext.get(
+                                            I18nKeysData.Tickets.Menu.DailyDoesNotWork
+                                        ),
+                                        net.perfectdreams.loritta.helper.serverresponses.portuguese.DailyCaptchaDoesNotWorkResponse::class.simpleName!!
+                                    )
+                                    option(
+                                        i18nContext.get(
+                                            I18nKeysData.Tickets.Menu.LorittaPremiumFeatures
+                                        ),
+                                        net.perfectdreams.loritta.helper.serverresponses.portuguese.LorittaPremiumResponse::class.simpleName!!
+                                    )
+                                    option(
+                                        i18nContext.get(
+                                            I18nKeysData.Tickets.Menu.HowMuteWorks
+                                        ),
+                                        net.perfectdreams.loritta.helper.serverresponses.portuguese.MuteResponse::class.simpleName!!
+                                    )
+                                    option(
+                                        i18nContext.get(
+                                            I18nKeysData.Tickets.Menu.WhatAreReputations
+                                        ),
+                                        net.perfectdreams.loritta.helper.serverresponses.portuguese.ReputationsResponse::class.simpleName!!
+                                    )
+                                    option(
+                                        i18nContext.get(
+                                            I18nKeysData.Tickets.Menu.ChangeShipValue
+                                        ),
+                                        net.perfectdreams.loritta.helper.serverresponses.portuguese.ValorShipResponse::class.simpleName!!
+                                    )
+                                    option(
+                                        i18nContext.get(
+                                            I18nKeysData.Tickets.Menu.HowToReportAnotherUser
+                                        ),
+                                        net.perfectdreams.loritta.helper.serverresponses.portuguese.HowDoIReportResponse::class.simpleName!!
+                                    )
+                                    option(
+                                        i18nContext.get(
+                                            I18nKeysData.Tickets.Menu.WhatIsSparklyPower
+                                        ),
+                                        net.perfectdreams.loritta.helper.serverresponses.portuguese.SparklyPowerInfoResponse::class.simpleName!!
+                                    )
+
+                                    // ===[ SPECIAL CASE ]===
+                                    option(
+                                        i18nContext.get(
+                                            I18nKeysData.Tickets.Menu.MyQuestionIsntHere
+                                        ),
+                                        HelperResponseSelectMenuExecutor.MY_QUESTION_ISNT_HERE_SPECIAL_KEY
+                                    ) {
+                                        emoji = DiscordPartialEmoji(Snowflake(648695501398605825), "sad_cat18")
+                                    }
                                 }
-                            }
-                            TicketUtils.LanguageName.ENGLISH -> {
-                                option(
-                                    i18nContext.get(
-                                        I18nKeysData.Tickets.Menu.HowToAddLorittaToMyServer
-                                    ),
-                                    net.perfectdreams.loritta.helper.serverresponses.english.AddLoriResponse::class.simpleName!!
-                                )
-                                option(
-                                    i18nContext.get(
-                                        I18nKeysData.Tickets.Menu.WhyLorittaIsOffline
-                                    ),
-                                    net.perfectdreams.loritta.helper.serverresponses.english.LoriOfflineResponse::class.simpleName!!
-                                )
-                                option(
-                                    i18nContext.get(
-                                        I18nKeysData.Tickets.Menu.LoriIsNotReplyingToMyCommands
-                                    ),
-                                    net.perfectdreams.loritta.helper.serverresponses.english.LoriMandarCmdsResponse::class.simpleName!!
-                                )
-                                option(
-                                    i18nContext.get(
-                                        I18nKeysData.Tickets.Menu.HowToSetupJoinLeaveMessages
-                                    ),
-                                    net.perfectdreams.loritta.helper.serverresponses.english.JoinLeaveResponse::class.simpleName!!
-                                )
-                                option(
-                                    i18nContext.get(
-                                        I18nKeysData.Tickets.Menu.HowLorittaExperienceSystemWorks
-                                    ),
-                                    net.perfectdreams.loritta.helper.serverresponses.english.LoriXpResponse::class.simpleName!!
-                                )
-                                option(
-                                    i18nContext.get(
-                                        I18nKeysData.Tickets.Menu.HowToEarnSonhos
-                                    ),
-                                    net.perfectdreams.loritta.helper.serverresponses.english.ReceiveSonhosResponse::class.simpleName!!
-                                )
-                                /* option(
-                                    i18nContext.get(
-                                        I18nKeysData.Tickets.Menu.WhatCanIDoWithSonhos
-                                    ),
-                                    net.perfectdreams.loritta.helper.serverresponses.english.CanIExchangeSonhosForSomethingElseResponse::class.simpleName!!
-                                )
-                                option(
-                                    i18nContext.get(
-                                        I18nKeysData.Tickets.Menu.DailyDoesNotWork
-                                    ),
-                                    net.perfectdreams.loritta.helper.serverresponses.english.DailyCaptchaDoesNotWorkResponse::class.simpleName!!
-                                )
-                                option(
-                                    i18nContext.get(
-                                        I18nKeysData.Tickets.Menu.LorittaPremiumFeatures
-                                    ),
-                                    net.perfectdreams.loritta.helper.serverresponses.english.LorittaPremiumResponse::class.simpleName!!
-                                ) */
-                                option(
-                                    i18nContext.get(
-                                        I18nKeysData.Tickets.Menu.HowMuteWorks
-                                    ),
-                                    net.perfectdreams.loritta.helper.serverresponses.english.MuteResponse::class.simpleName!!
-                                )
-                                /* option(
-                                    i18nContext.get(
-                                        I18nKeysData.Tickets.Menu.WhatAreReputations
-                                    ),
-                                    net.perfectdreams.loritta.helper.serverresponses.english.ReputationsResponse::class.simpleName!!
-                                ) */
-                                option(
-                                    i18nContext.get(
-                                        I18nKeysData.Tickets.Menu.ChangeShipValue
-                                    ),
-                                    net.perfectdreams.loritta.helper.serverresponses.english.ValorShipResponse::class.simpleName!!
-                                )
-                                /* option(
-                                    i18nContext.get(
-                                        I18nKeysData.Tickets.Menu.HowToReportAnotherUser
-                                    ),
-                                    net.perfectdreams.loritta.helper.serverresponses.english.HowDoIReportResponse::class.simpleName!!
-                                ) */
-                                option(
-                                    i18nContext.get(
-                                        I18nKeysData.Tickets.Menu.WhatIsSparklyPower
-                                    ),
-                                    net.perfectdreams.loritta.helper.serverresponses.english.SparklyPowerInfoResponse::class.simpleName!!
-                                )
+                                TicketUtils.LanguageName.ENGLISH -> {
+                                    option(
+                                        i18nContext.get(
+                                            I18nKeysData.Tickets.Menu.HowToAddLorittaToMyServer
+                                        ),
+                                        net.perfectdreams.loritta.helper.serverresponses.english.AddLoriResponse::class.simpleName!!
+                                    )
+                                    option(
+                                        i18nContext.get(
+                                            I18nKeysData.Tickets.Menu.WhyLorittaIsOffline
+                                        ),
+                                        net.perfectdreams.loritta.helper.serverresponses.english.LoriOfflineResponse::class.simpleName!!
+                                    )
+                                    option(
+                                        i18nContext.get(
+                                            I18nKeysData.Tickets.Menu.LoriIsNotReplyingToMyCommands
+                                        ),
+                                        net.perfectdreams.loritta.helper.serverresponses.english.LoriMandarCmdsResponse::class.simpleName!!
+                                    )
+                                    option(
+                                        i18nContext.get(
+                                            I18nKeysData.Tickets.Menu.HowToSetupJoinLeaveMessages
+                                        ),
+                                        net.perfectdreams.loritta.helper.serverresponses.english.JoinLeaveResponse::class.simpleName!!
+                                    )
+                                    option(
+                                        i18nContext.get(
+                                            I18nKeysData.Tickets.Menu.HowLorittaExperienceSystemWorks
+                                        ),
+                                        net.perfectdreams.loritta.helper.serverresponses.english.LoriXpResponse::class.simpleName!!
+                                    )
+                                    option(
+                                        i18nContext.get(
+                                            I18nKeysData.Tickets.Menu.HowToEarnSonhos
+                                        ),
+                                        net.perfectdreams.loritta.helper.serverresponses.english.ReceiveSonhosResponse::class.simpleName!!
+                                    )
+                                    /* option(
+                                        i18nContext.get(
+                                            I18nKeysData.Tickets.Menu.WhatCanIDoWithSonhos
+                                        ),
+                                        net.perfectdreams.loritta.helper.serverresponses.english.CanIExchangeSonhosForSomethingElseResponse::class.simpleName!!
+                                    )
+                                    option(
+                                        i18nContext.get(
+                                            I18nKeysData.Tickets.Menu.DailyDoesNotWork
+                                        ),
+                                        net.perfectdreams.loritta.helper.serverresponses.english.DailyCaptchaDoesNotWorkResponse::class.simpleName!!
+                                    )
+                                    option(
+                                        i18nContext.get(
+                                            I18nKeysData.Tickets.Menu.LorittaPremiumFeatures
+                                        ),
+                                        net.perfectdreams.loritta.helper.serverresponses.english.LorittaPremiumResponse::class.simpleName!!
+                                    ) */
+                                    option(
+                                        i18nContext.get(
+                                            I18nKeysData.Tickets.Menu.HowMuteWorks
+                                        ),
+                                        net.perfectdreams.loritta.helper.serverresponses.english.MuteResponse::class.simpleName!!
+                                    )
+                                    /* option(
+                                        i18nContext.get(
+                                            I18nKeysData.Tickets.Menu.WhatAreReputations
+                                        ),
+                                        net.perfectdreams.loritta.helper.serverresponses.english.ReputationsResponse::class.simpleName!!
+                                    ) */
+                                    option(
+                                        i18nContext.get(
+                                            I18nKeysData.Tickets.Menu.ChangeShipValue
+                                        ),
+                                        net.perfectdreams.loritta.helper.serverresponses.english.ValorShipResponse::class.simpleName!!
+                                    )
+                                    /* option(
+                                        i18nContext.get(
+                                            I18nKeysData.Tickets.Menu.HowToReportAnotherUser
+                                        ),
+                                        net.perfectdreams.loritta.helper.serverresponses.english.HowDoIReportResponse::class.simpleName!!
+                                    ) */
+                                    option(
+                                        i18nContext.get(
+                                            I18nKeysData.Tickets.Menu.WhatIsSparklyPower
+                                        ),
+                                        net.perfectdreams.loritta.helper.serverresponses.english.SparklyPowerInfoResponse::class.simpleName!!
+                                    )
 
-                                // ===[ SPECIAL CASE ]===
-                                option(
-                                    i18nContext.get(
-                                        I18nKeysData.Tickets.Menu.MyQuestionIsntHere
-                                    ),
-                                    HelperResponseSelectMenuExecutor.MY_QUESTION_ISNT_HERE_SPECIAL_KEY
-                                ) {
-                                    emoji = DiscordPartialEmoji(Snowflake(648695501398605825), "sad_cat18")
+                                    // ===[ SPECIAL CASE ]===
+                                    option(
+                                        i18nContext.get(
+                                            I18nKeysData.Tickets.Menu.MyQuestionIsntHere
+                                        ),
+                                        HelperResponseSelectMenuExecutor.MY_QUESTION_ISNT_HERE_SPECIAL_KEY
+                                    ) {
+                                        emoji = DiscordPartialEmoji(Snowflake(648695501398605825), "sad_cat18")
+                                    }
                                 }
                             }
                         }
