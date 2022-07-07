@@ -32,6 +32,7 @@ class TicketSenderExecutor(helper: LorittaHelperKord) : HelperSlashExecutor(help
                 .choice(TicketUtils.TicketSystemType.HELP_DESK_ENGLISH.name, "Suporte (Inglês)")
                 .choice(TicketUtils.TicketSystemType.HELP_DESK_PORTUGUESE.name, "Suporte (Português)")
                 .choice(TicketUtils.TicketSystemType.FIRST_FAN_ARTS_PORTUGUESE.name, "Primeira Fan Art (Português)")
+                .choice(TicketUtils.TicketSystemType.SPARKLYPOWER_HELP_DESK_PORTUGUESE.name, "SparklyPower Suporte (Português)")
                 .register()
         }
 
