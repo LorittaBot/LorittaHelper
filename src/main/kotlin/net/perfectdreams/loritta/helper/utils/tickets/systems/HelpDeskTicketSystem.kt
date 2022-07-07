@@ -6,7 +6,7 @@ import dev.kord.rest.service.RestClient
 import net.perfectdreams.loritta.helper.serverresponses.LorittaResponse
 import net.perfectdreams.loritta.helper.utils.tickets.TicketUtils
 
-class HelpDeskTicketSystem(
+sealed class HelpDeskTicketSystem(
     rest: RestClient,
     systemType: TicketUtils.TicketSystemType,
     language: TicketUtils.LanguageName,

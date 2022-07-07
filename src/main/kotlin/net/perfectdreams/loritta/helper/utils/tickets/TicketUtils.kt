@@ -6,7 +6,8 @@ import net.perfectdreams.loritta.helper.serverresponses.EnglishResponses
 import net.perfectdreams.loritta.helper.serverresponses.PortugueseResponses
 import net.perfectdreams.loritta.helper.utils.Constants
 import net.perfectdreams.loritta.helper.utils.tickets.systems.FirstFanArtTicketSystem
-import net.perfectdreams.loritta.helper.utils.tickets.systems.HelpDeskTicketSystem
+import net.perfectdreams.loritta.helper.utils.tickets.systems.LorittaHelpDeskTicketSystem
+import net.perfectdreams.loritta.helper.utils.tickets.systems.SparklyPowerHelpDeskTicketSystem
 
 class TicketUtils(val m: LorittaHelperKord) {
     private val PORTUGUESE_HELP_DESK_CHANNEL_ID = Snowflake(891834050073997383L)
@@ -16,7 +17,7 @@ class TicketUtils(val m: LorittaHelperKord) {
 
     val systems = mapOf(
         // Portuguese Help Desk Channel
-        PORTUGUESE_HELP_DESK_CHANNEL_ID to HelpDeskTicketSystem(
+        PORTUGUESE_HELP_DESK_CHANNEL_ID to LorittaHelpDeskTicketSystem(
             m.helperRest,
             TicketSystemType.HELP_DESK_PORTUGUESE,
             LanguageName.PORTUGUESE,
@@ -29,7 +30,7 @@ class TicketUtils(val m: LorittaHelperKord) {
         ),
 
         // English Help Desk Channel
-        ENGLISH_HELP_DESK_CHANNEL_ID to HelpDeskTicketSystem(
+        ENGLISH_HELP_DESK_CHANNEL_ID to LorittaHelpDeskTicketSystem(
             m.helperRest,
             TicketSystemType.HELP_DESK_ENGLISH,
             LanguageName.ENGLISH,
@@ -53,7 +54,7 @@ class TicketUtils(val m: LorittaHelperKord) {
         ),
 
         // SparklyPower Help Desk Channel
-        SPARKLYPOWER_HELP_DESK_CHANNEL_ID to HelpDeskTicketSystem(
+        SPARKLYPOWER_HELP_DESK_CHANNEL_ID to SparklyPowerHelpDeskTicketSystem(
             m.helperRest,
             TicketSystemType.SPARKLYPOWER_HELP_DESK_PORTUGUESE,
             LanguageName.PORTUGUESE,

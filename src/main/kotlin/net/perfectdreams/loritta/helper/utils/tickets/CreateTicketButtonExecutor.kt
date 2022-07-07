@@ -12,15 +12,12 @@ import net.perfectdreams.discordinteraktions.common.components.ButtonClickWithDa
 import net.perfectdreams.discordinteraktions.common.components.ComponentContext
 import net.perfectdreams.discordinteraktions.common.components.GuildComponentContext
 import net.perfectdreams.discordinteraktions.common.entities.User
-import net.perfectdreams.loritta.api.messages.LorittaReply
 import net.perfectdreams.loritta.cinnamon.pudding.tables.BannedUsers
 import net.perfectdreams.loritta.helper.LorittaHelperKord
 import net.perfectdreams.loritta.helper.i18n.I18nKeysData
 import net.perfectdreams.loritta.helper.tables.StartedSupportSolicitations
 import net.perfectdreams.loritta.helper.utils.ComponentDataUtils
 import net.perfectdreams.loritta.helper.utils.Constants
-import net.perfectdreams.loritta.helper.utils.tickets.systems.FirstFanArtTicketSystem
-import net.perfectdreams.loritta.helper.utils.tickets.systems.HelpDeskTicketSystem
 import org.jetbrains.exposed.sql.SortOrder
 import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.insert
@@ -195,65 +192,10 @@ class CreateTicketButtonExecutor(val m: LorittaHelperKord) : ButtonClickWithData
             }
 
             // Only resend the message if the thread was archived or if it is a new thread
-            if (systemInfo is HelpDeskTicketSystem) {
-                m.helperRest.channel.createMessage(
-                    ticketThreadId
-                ) {
-                    content = (
-                            listOf(
-                                LorittaReply(
-                                    language.get(I18nKeysData.Tickets.ThreadCreated.Ready),
-                                    "<:lori_coffee:727631176432484473>",
-                                    mentionUser = true
-                                ),
-                                LorittaReply(
-                                    language.get(I18nKeysData.Tickets.ThreadCreated.QuestionTips("<@&${systemInfo.supportRoleId.value}>")),
-                                    "<:lori_coffee:727631176432484473>",
-                                    mentionUser = false
-                                ),
-                                LorittaReply(
-                                    "**${
-                                        language.get(
-                                            I18nKeysData.Tickets.ThreadCreated.PleaseRead(
-                                                "<#${systemInfo.faqChannelId.value}>",
-                                                "<https://loritta.website/extras>"
-                                            )
-                                        )
-                                    }**",
-                                    "<:lori_analise:853052040425766922>",
-                                    mentionUser = false
-                                ),
-                                LorittaReply(
-                                    language.get(I18nKeysData.Tickets.ThreadCreated.AfterAnswer),
-                                    "<a:lori_pat:706263175892566097>",
-                                    mentionUser = false
-                                )
-                            )
-                            )
-                        .joinToString("\n")
-                        { it.build(context.sender) }
-                }
-            } else if (systemInfo is FirstFanArtTicketSystem) {
-                m.helperRest.channel.createMessage(
-                    ticketThreadId
-                ) {
-                    content = (
-                            listOf(
-                                LorittaReply(
-                                    "Envie a sua fan art e, caso tenha, envie o processo de criação dela!",
-                                    "<:lori_coffee:727631176432484473>",
-                                    mentionUser = true
-                                ),
-                                LorittaReply(
-                                    "Após enviado, os <@&${systemInfo.fanArtsManagerRoleId.value}> irão averiguar a sua fan art e, caso ela tenha uma qualidade excepcional, ela será incluida na nossa Galeria de Fan Arts!",
-                                    "<:lori_analise:853052040425766922>",
-                                    mentionUser = false
-                                ),
-                            )
-                            )
-                        .joinToString("\n")
-                        { it.build(context.sender) }
-                }
+            m.helperRest.channel.createMessage(
+                ticketThreadId
+            ) {
+                systemInfo.ticketCreatedMessage.invoke(this, context.sender, language)
             }
 
             context.sendEphemeralMessage {

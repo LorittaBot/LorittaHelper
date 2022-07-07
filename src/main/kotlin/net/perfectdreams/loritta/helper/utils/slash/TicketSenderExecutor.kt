@@ -207,7 +207,7 @@ class TicketSenderExecutor(helper: LorittaHelperKord) : HelperSlashExecutor(help
                                     // ===[ SPECIAL CASE ]===
                                     option(
                                         i18nContext.get(
-                                            I18nKeysData.Tickets.Menu.MyQuestionIsntHere
+                                            I18nKeysData.Tickets.Menu.CreateSupportTicket
                                         ),
                                         HelperResponseSelectMenuExecutor.MY_QUESTION_ISNT_HERE_SPECIAL_KEY
                                     ) {
@@ -303,7 +303,7 @@ class TicketSenderExecutor(helper: LorittaHelperKord) : HelperSlashExecutor(help
                                     // ===[ SPECIAL CASE ]===
                                     option(
                                         i18nContext.get(
-                                            I18nKeysData.Tickets.Menu.MyQuestionIsntHere
+                                            I18nKeysData.Tickets.Menu.CreateSupportTicket
                                         ),
                                         HelperResponseSelectMenuExecutor.MY_QUESTION_ISNT_HERE_SPECIAL_KEY
                                     ) {
