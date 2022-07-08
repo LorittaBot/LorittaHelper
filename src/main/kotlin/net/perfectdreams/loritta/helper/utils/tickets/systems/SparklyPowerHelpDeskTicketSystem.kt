@@ -1,6 +1,5 @@
 package net.perfectdreams.loritta.helper.utils.tickets.systems
 
-import dev.kord.common.entity.ArchiveDuration
 import dev.kord.common.entity.Snowflake
 import dev.kord.rest.builder.message.create.UserMessageCreateBuilder
 import dev.kord.rest.service.RestClient
@@ -16,11 +15,11 @@ class SparklyPowerHelpDeskTicketSystem(
     language: TicketUtils.LanguageName,
     guildId: Snowflake,
     channelId: Snowflake,
-    val channelResponses: List<LorittaResponse>,
-    val faqChannelId: Snowflake,
-    val statusChannelId: Snowflake,
-    val supportRoleId: Snowflake
-) : TicketSystem(rest, systemType, language, guildId, channelId, ArchiveDuration.Day) {
+    channelResponses: List<LorittaResponse>,
+    faqChannelId: Snowflake,
+    statusChannelId: Snowflake,
+    supportRoleId: Snowflake
+) : HelpDeskTicketSystem(rest, systemType, language, guildId, channelId, channelResponses, faqChannelId, statusChannelId, supportRoleId) {
     override val ticketCreatedMessage: UserMessageCreateBuilder.(User, I18nContext) -> Unit = { sender, language ->
         content = (
                 listOf(
