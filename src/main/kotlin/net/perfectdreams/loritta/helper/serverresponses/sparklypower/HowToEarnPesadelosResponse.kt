@@ -16,7 +16,7 @@ class HowToEarnPesadelosResponse : QuickAnswerResponse() {
                 mentionUser = false
             ),
             LorittaReply(
-                "Ok... e como consigo pesadelos?**",
+                "**Ok... e como consigo pesadelos?**",
                 "<a:pantufa_pickaxe:997671670468853770>",
                 mentionUser = false
             ),
