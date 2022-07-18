@@ -5,6 +5,7 @@ package net.perfectdreams.loritta.helper.serverresponses.sparklypower
  */
 object SparklyPowerResponses {
     val responses = listOf(
+        ServerInformationResponse(),
         HowToBuyPesadelosResponse(),
         HowToEarnPesadelosResponse(),
         HowToEarnSonecasResponse(),

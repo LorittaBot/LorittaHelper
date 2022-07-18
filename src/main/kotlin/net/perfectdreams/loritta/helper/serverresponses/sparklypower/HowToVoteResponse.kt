@@ -11,10 +11,12 @@ class HowToVoteResponse : QuickAnswerResponse() {
                 "<:pantufa_coffee:853048446981111828>"
             ),
             LorittaReply(
-                "Você pode votar todos os dias para nos ajudar a crescer o SparklyPower cada vez mais!"
+                "Você pode votar todos os dias para nos ajudar a crescer o SparklyPower cada vez mais!",
+                mentionUser = false
             ),
             LorittaReply(
-                "E, é claro, você vai receber alguns brindes em troca! 1 mapa, 1 diamante, 1 caixa secreta e 7 pesadelos."
+                "E, é claro, você vai receber alguns brindes em troca! 1 mapa, 1 diamante, 1 caixa secreta e 7 pesadelos.",
+                mentionUser = false
             )
         )
 }

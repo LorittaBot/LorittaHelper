@@ -11,14 +11,17 @@ class HowToBuyPesadelosResponse : QuickAnswerResponse() {
                 "<:pantufa_coffee:853048446981111828>"
             ),
             LorittaReply(
-                "Procurando algumas vantagens no SparklyPower?"
+                "Procurando algumas vantagens no SparklyPower?",
+                mentionUser = false
             ),
             LorittaReply(
-                "Querendo ajudar o SparklyPower a ficar online?"
+                "Querendo ajudar o SparklyPower a ficar online?",
+                mentionUser = false
             ),
             LorittaReply(
                 "Então você encontrou a sua solução!",
-                "<a:pantufa_lick:958906311414796348>"
+                "<a:pantufa_lick:958906311414796348>",
+                mentionUser = false
             )
         )
 }
