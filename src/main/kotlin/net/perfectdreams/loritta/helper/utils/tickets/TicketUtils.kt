@@ -2,8 +2,9 @@ package net.perfectdreams.loritta.helper.utils.tickets
 
 import dev.kord.common.entity.Snowflake
 import net.perfectdreams.loritta.helper.LorittaHelperKord
-import net.perfectdreams.loritta.helper.serverresponses.EnglishResponses
-import net.perfectdreams.loritta.helper.serverresponses.PortugueseResponses
+import net.perfectdreams.loritta.helper.serverresponses.loritta.EnglishResponses
+import net.perfectdreams.loritta.helper.serverresponses.loritta.PortugueseResponses
+import net.perfectdreams.loritta.helper.serverresponses.sparklypower.SparklyPowerResponses
 import net.perfectdreams.loritta.helper.utils.Constants
 import net.perfectdreams.loritta.helper.utils.tickets.systems.FirstFanArtTicketSystem
 import net.perfectdreams.loritta.helper.utils.tickets.systems.LorittaHelpDeskTicketSystem
@@ -60,7 +61,7 @@ class TicketUtils(val m: LorittaHelperKord) {
             LanguageName.PORTUGUESE,
             Snowflake(320248230917046282),
             Snowflake(994664055933517925),
-            listOf(),
+            SparklyPowerResponses.responses,
             Snowflake(760262410098442270),
             Snowflake(332866197701918731),
             Snowflake(332650495522897920) // Staff Role

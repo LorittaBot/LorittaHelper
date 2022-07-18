@@ -15,6 +15,7 @@ import net.perfectdreams.loritta.helper.i18n.I18nKeysData
 import net.perfectdreams.loritta.helper.tables.SelectedResponsesLog
 import net.perfectdreams.loritta.helper.utils.ComponentDataUtils
 import net.perfectdreams.loritta.helper.utils.tickets.systems.HelpDeskTicketSystem
+import net.perfectdreams.loritta.helper.utils.tickets.systems.SparklyPowerHelpDeskTicketSystem
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.transactions.transaction
 import java.time.Instant
@@ -34,37 +35,69 @@ class HelperResponseSelectMenuExecutor(val m: LorittaHelperKord) : SelectMenuExe
 
             val firstValue = values.first()
             if (firstValue == MY_QUESTION_ISNT_HERE_SPECIAL_KEY) {
-                context.sendEphemeralMessage {
-                    content = listOf(
-                        LorittaReply(
-                            i18nContext.get(
-                                I18nKeysData.Tickets.LookUpInTheFAQIfQuestionWasntFound(
-                                    "<#${systemInfo.faqChannelId.value}>",
-                                    "<https://loritta.website/extras>",
-                                )
+                if (systemInfo is SparklyPowerHelpDeskTicketSystem) {
+                    context.sendEphemeralMessage {
+                        content = listOf(
+                            LorittaReply(
+                                "Não encontrou a sua pergunta? Então tente procurar no <#${systemInfo.faqChannelId.value}>!",
+                                "<:pantufa_reading:853048447169986590>"
                             ),
-                            "<:lori_reading:853052040430878750>"
-                        ),
-                        LorittaReply(
-                            i18nContext.get(
-                                I18nKeysData.Tickets.CreateATicketIfQuestionWasntFound(
-                                    "<@&${systemInfo.supportRoleId.value}>",
-                                )
-                            ),
-                            "<:lori_comfy:726873685021163601>"
-                        )
-                    ).joinToString("\n") { it.build() }
-
-                    actionRow {
-                        interactiveButton(
-                            ButtonStyle.Primary,
-                            CreateTicketButtonExecutor,
-                            ComponentDataUtils.encode(
-                                TicketSystemTypeData(systemInfo.systemType)
+                            LorittaReply(
+                                i18nContext.get(
+                                    I18nKeysData.Tickets.CreateATicketIfQuestionWasntFound(
+                                        "<@&${systemInfo.supportRoleId.value}>",
+                                    )
+                                ),
+                                "<:pantufa_comfy:853048447254396978>"
                             )
-                        ) {
-                            emoji = DiscordPartialEmoji(name = "➕")
-                            label = i18nContext.get(I18nKeysData.Tickets.CreateTicket)
+                        ).joinToString("\n") { it.build() }
+
+                        actionRow {
+                            interactiveButton(
+                                ButtonStyle.Primary,
+                                CreateTicketButtonExecutor,
+                                ComponentDataUtils.encode(
+                                    TicketSystemTypeData(systemInfo.systemType)
+                                )
+                            ) {
+                                emoji = DiscordPartialEmoji(name = "➕")
+                                label = i18nContext.get(I18nKeysData.Tickets.CreateTicket)
+                            }
+                        }
+                    }
+                } else {
+                    context.sendEphemeralMessage {
+                        content = listOf(
+                            LorittaReply(
+                                i18nContext.get(
+                                    I18nKeysData.Tickets.LookUpInTheFAQIfQuestionWasntFound(
+                                        "<#${systemInfo.faqChannelId.value}>",
+                                        "<https://loritta.website/extras>",
+                                    )
+                                ),
+                                "<:lori_reading:853052040430878750>"
+                            ),
+                            LorittaReply(
+                                i18nContext.get(
+                                    I18nKeysData.Tickets.CreateATicketIfQuestionWasntFound(
+                                        "<@&${systemInfo.supportRoleId.value}>",
+                                    )
+                                ),
+                                "<:lori_comfy:726873685021163601>"
+                            )
+                        ).joinToString("\n") { it.build() }
+
+                        actionRow {
+                            interactiveButton(
+                                ButtonStyle.Primary,
+                                CreateTicketButtonExecutor,
+                                ComponentDataUtils.encode(
+                                    TicketSystemTypeData(systemInfo.systemType)
+                                )
+                            ) {
+                                emoji = DiscordPartialEmoji(name = "➕")
+                                label = i18nContext.get(I18nKeysData.Tickets.CreateTicket)
+                            }
                         }
                     }
                 }

@@ -5,8 +5,8 @@ import net.dv8tion.jda.api.entities.Message
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent
 import net.dv8tion.jda.api.hooks.ListenerAdapter
 import net.perfectdreams.loritta.helper.LorittaHelper
-import net.perfectdreams.loritta.helper.serverresponses.EnglishResponses
-import net.perfectdreams.loritta.helper.serverresponses.PortugueseResponses
+import net.perfectdreams.loritta.helper.serverresponses.loritta.EnglishResponses
+import net.perfectdreams.loritta.helper.serverresponses.loritta.PortugueseResponses
 import net.perfectdreams.loritta.helper.utils.Constants
 import net.perfectdreams.loritta.helper.utils.checkillegalnitrosell.CheckIllegalNitroSell
 import net.perfectdreams.loritta.helper.utils.checksonhosmendigagem.CheckSonhosMendigagem
