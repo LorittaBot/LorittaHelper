@@ -66,11 +66,9 @@ class TicketSenderExecutor(helper: LorittaHelperKord) : HelperSlashExecutor(help
                         title = "<:pantufa_reading:853048447169986590> Central de Ajuda"
                         color = Color(26, 160, 254)
 
-                        description = """Quer enviar uma fan art da Loritta e receber um cargo especial de Desenhista?
-                                    |
-                                    |Então você veio ao lugar certo! Aqui você poderá enviar todas as suas maravilhosas fan-arts, basta apenas clicar no botão abaixo para criar um ticket
-                                    |
-                                    |**Mas lembre-se!** Não iremos aprovar fan-arts mal feitas ou que não estejam de acordo com as regras em **TODO**!
+                        description = """Seja bem-vind@ a Central de Ajuda do SparklyPower! Um lugar onde você pode encontrar as respostas para as suas perguntas, desde que elas sejam relacionadas ao SparklyPower, é claro!
+
+Antes de perguntar, verifique se a resposta dela não está no <#${systemInfo.faqChannelId}>! Se você irá perguntar se ao SparklyPower caiu, veja as <#332866197701918731> primeiro!
                                 """.trimMargin()
 
                         image =
