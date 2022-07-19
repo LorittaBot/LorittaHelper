@@ -68,7 +68,7 @@ class TicketSenderExecutor(helper: LorittaHelperKord) : HelperSlashExecutor(help
 
                         description = """Seja bem-vind@ a Central de Ajuda do SparklyPower! Um lugar onde você pode encontrar as respostas para as suas perguntas, desde que elas sejam relacionadas ao SparklyPower, é claro!
 
-Antes de perguntar, verifique se a resposta dela não está no <#${systemInfo.faqChannelId}>! Se você irá perguntar se ao SparklyPower caiu, veja as <#332866197701918731> primeiro!
+Antes de perguntar, verifique se a resposta dela não está no <#${systemInfo.faqChannelId}>! Se você irá perguntar se o SparklyPower caiu, veja as <#332866197701918731> primeiro!
                                 """.trimMargin()
 
                         image =
