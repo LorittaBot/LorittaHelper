@@ -20,9 +20,7 @@ import kotlin.time.Duration.Companion.days
 class LorittaBanTimeoutListener(val m: LorittaHelperKord) {
     fun installLorittaBanTimeout(gateway: Gateway) {
         gateway.on<MessageCreate> {
-            if (this.message.guildId.value?.value?.toLong() != Constants.COMMUNITY_SERVER_ID)
-                return@on
-
+            // On any server that Loritta Helper is in...
             if (isLorittaBanned(m, message.author.id)) {
                 m.helperRest.guild.modifyGuildMember(
                     message.guildId.value!!,
@@ -43,9 +41,7 @@ class LorittaBanTimeoutListener(val m: LorittaHelperKord) {
         }
 
         gateway.on<GuildMemberAdd> {
-            if (this.member.guildId.value.toLong() != Constants.COMMUNITY_SERVER_ID)
-                return@on
-
+            // On any server that Loritta Helper is in...
             if (isLorittaBanned(m, this.member.user.value!!.id)) {
                 m.helperRest.guild.modifyGuildMember(
                     this.member.guildId,
