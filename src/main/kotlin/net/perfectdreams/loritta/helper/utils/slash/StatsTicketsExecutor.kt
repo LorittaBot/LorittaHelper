@@ -15,11 +15,11 @@ import java.time.Instant
 class StatsTicketsExecutor(helper: LorittaHelperKord) : HelperSlashExecutor(helper, PermissionLevel.HELPER) {
     inner class Options : ApplicationCommandOptions() {
         val filter = optionalString("filter", "Filtro de data") {
-            choice("7", "Últimos 7 dias")
-            choice("14", "Últimos 14 dias")
-            choice("30", "Últimos 30 dias")
-            choice("90", "Últimos 90 dias")
-            choice("365", "Últimos 365 dias")
+            choice("Últimos 7 dias", "7")
+            choice("Últimos 14 dias", "14")
+            choice("Últimos 30 dias", "30")
+            choice("Últimos 90 dias", "90")
+            choice("Últimos 365 dias", "365")
         }
     }
 

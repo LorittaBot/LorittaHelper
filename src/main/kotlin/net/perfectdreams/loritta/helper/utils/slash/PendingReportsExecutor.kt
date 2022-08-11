@@ -19,8 +19,8 @@ class PendingReportsExecutor(helper: LorittaHelperKord, val jda: JDA) : HelperSl
 
     inner class Options : ApplicationCommandOptions() {
         val channel = optionalString("channel", "Em qual canal deverá ser filtrado os reports pendentes") {
-            choice("${GenerateServerReport.SERVER_REPORTS_CHANNEL_ID}", "Canal de Denúncias")
-            choice("${GenerateAppealsReport.SERVER_APPEALS_CHANNEL_ID}", "Canal de Apelos")
+            choice("Canal de Denúncias", "${GenerateServerReport.SERVER_REPORTS_CHANNEL_ID}")
+            choice("Canal de Apelos", "${GenerateAppealsReport.SERVER_APPEALS_CHANNEL_ID}")
         }
     }
 

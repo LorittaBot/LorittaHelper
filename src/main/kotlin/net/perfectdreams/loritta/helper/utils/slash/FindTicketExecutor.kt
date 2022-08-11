@@ -11,9 +11,9 @@ class FindTicketExecutor(helper: LorittaHelperKord) : HelperSlashExecutor(helper
         val user = user("user", "O usuário que eu irei encontrar o ticket")
 
         val type = string("type", "O tipo da mensagem") {
-            choice(TicketUtils.TicketSystemType.HELP_DESK_ENGLISH.name, "Suporte (Inglês)")
-            choice(TicketUtils.TicketSystemType.HELP_DESK_PORTUGUESE.name, "Suporte (Português)")
-            choice(TicketUtils.TicketSystemType.FIRST_FAN_ARTS_PORTUGUESE.name, "Primeira Fan Art (Português)")
+            choice("Suporte (Inglês)", TicketUtils.TicketSystemType.HELP_DESK_ENGLISH.name)
+            choice("Suporte (Português)", TicketUtils.TicketSystemType.HELP_DESK_PORTUGUESE.name)
+            choice("Primeira Fan Art (Português)", TicketUtils.TicketSystemType.FIRST_FAN_ARTS_PORTUGUESE.name)
         }
     }
 

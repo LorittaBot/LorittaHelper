@@ -36,10 +36,10 @@ class TicketSenderExecutor(helper: LorittaHelperKord) : HelperSlashExecutor(help
         val channel = channel("channel", "Canal aonde a mensagem será enviada")
 
         val type = string("type", "O tipo da mensagem") {
-            choice(TicketUtils.TicketSystemType.HELP_DESK_ENGLISH.name, "Suporte (Inglês)")
-            choice(TicketUtils.TicketSystemType.HELP_DESK_PORTUGUESE.name, "Suporte (Português)")
-            choice(TicketUtils.TicketSystemType.FIRST_FAN_ARTS_PORTUGUESE.name, "Primeira Fan Art (Português)")
-            choice(TicketUtils.TicketSystemType.SPARKLYPOWER_HELP_DESK_PORTUGUESE.name, "SparklyPower Suporte (Português)")
+            choice("Suporte (Inglês)", TicketUtils.TicketSystemType.HELP_DESK_ENGLISH.name)
+            choice("Suporte (Português)", TicketUtils.TicketSystemType.HELP_DESK_PORTUGUESE.name)
+            choice("Primeira Fan Art (Português)", TicketUtils.TicketSystemType.FIRST_FAN_ARTS_PORTUGUESE.name)
+            choice("SparklyPower Suporte (Português)", TicketUtils.TicketSystemType.SPARKLYPOWER_HELP_DESK_PORTUGUESE.name)
         }
     }
 

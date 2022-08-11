@@ -14,8 +14,8 @@ class ServerMembersExecutor(helper: LorittaHelperKord, val rest: RestClient) : H
         val guildId = string("guild_id", "ID do Servidor")
 
         val sortType = string("sort", "Organizar lista por...") {
-            choice("created_at", "Quando a conta foi criada")
-            choice("joined_at", "Quando a conta entrou no servidor")
+            choice("Quando a conta foi criada", "created_at")
+            choice("Quando a conta entrou no servidor", "joined_at")
         }
     }
 
