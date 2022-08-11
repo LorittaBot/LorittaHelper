@@ -1,18 +1,13 @@
 package net.perfectdreams.loritta.helper
 
 import dev.kord.common.entity.Snowflake
-import dev.kord.gateway.DefaultGateway
-import dev.kord.gateway.Intent
-import dev.kord.gateway.Intents
-import dev.kord.gateway.PrivilegedIntent
-import dev.kord.gateway.start
+import dev.kord.gateway.*
 import io.ktor.client.*
 import io.ktor.client.plugins.*
 import kotlinx.coroutines.runBlocking
 import mu.KotlinLogging
 import net.dv8tion.jda.api.JDA
-import net.perfectdreams.discordinteraktions.common.commands.CommandManager
-import net.perfectdreams.discordinteraktions.platforms.kord.commands.KordCommandRegistry
+import net.perfectdreams.discordinteraktions.common.DiscordInteraKTions
 import net.perfectdreams.discordinteraktions.platforms.kord.installDiscordInteraKTions
 import net.perfectdreams.galleryofdreams.client.GalleryOfDreamsClient
 import net.perfectdreams.loritta.helper.utils.LanguageManager
@@ -28,62 +23,15 @@ import net.perfectdreams.loritta.helper.utils.config.LorittaHelperConfig
 import net.perfectdreams.loritta.helper.utils.galleryofdreams.commands.add.AddFanArtSelectAttachmentSelectMenuExecutor
 import net.perfectdreams.loritta.helper.utils.galleryofdreams.commands.add.AddFanArtSelectBadgesSelectMenuExecutor
 import net.perfectdreams.loritta.helper.utils.galleryofdreams.commands.add.AddFanArtToGalleryButtonExecutor
-import net.perfectdreams.loritta.helper.utils.galleryofdreams.commands.add.AddFanArtToGalleryMessageExecutor
-import net.perfectdreams.loritta.helper.utils.galleryofdreams.commands.add.AddFanArtToGallerySlashExecutor
 import net.perfectdreams.loritta.helper.utils.galleryofdreams.commands.declarations.AddFanArtToGalleryMessageCommand
 import net.perfectdreams.loritta.helper.utils.galleryofdreams.commands.declarations.GalleryOfDreamsSlashCommand
 import net.perfectdreams.loritta.helper.utils.galleryofdreams.commands.patch.PatchFanArtOnGalleryButtonExecutor
 import net.perfectdreams.loritta.helper.utils.galleryofdreams.commands.patch.PatchFanArtSelectBadgesSelectMenuExecutor
-import net.perfectdreams.loritta.helper.utils.galleryofdreams.commands.patch.PatchFanArtSlashExecutor
 import net.perfectdreams.loritta.helper.utils.generateserverreport.ShowFilesExecutor
 import net.perfectdreams.loritta.helper.utils.generateserverreport.ShowUserIdExecutor
 import net.perfectdreams.loritta.helper.utils.loribantimeout.LorittaBanTimeoutListener
-import net.perfectdreams.loritta.helper.utils.slash.AllTransactionsExecutor
-import net.perfectdreams.loritta.helper.utils.slash.AttachDenyReasonExecutor
-import net.perfectdreams.loritta.helper.utils.slash.BroadcastDailyShopWinnersExecutor
-import net.perfectdreams.loritta.helper.utils.slash.ButtonRoleSenderExecutor
-import net.perfectdreams.loritta.helper.utils.slash.CheckCommandsExecutor
-import net.perfectdreams.loritta.helper.utils.slash.CloseTicketExecutor
-import net.perfectdreams.loritta.helper.utils.slash.DailyCatcherCheckExecutor
-import net.perfectdreams.loritta.helper.utils.slash.DailyCheckExecutor
-import net.perfectdreams.loritta.helper.utils.slash.DriveImageRetrieverExecutor
-import net.perfectdreams.loritta.helper.utils.slash.FindTicketExecutor
-import net.perfectdreams.loritta.helper.utils.slash.IPLocationExecutor
-import net.perfectdreams.loritta.helper.utils.slash.LoriBanExecutor
-import net.perfectdreams.loritta.helper.utils.slash.LoriBanRenameExecutor
-import net.perfectdreams.loritta.helper.utils.slash.LoriUnbanExecutor
-import net.perfectdreams.loritta.helper.utils.slash.PendingReportsExecutor
-import net.perfectdreams.loritta.helper.utils.slash.PendingScarletExecutor
-import net.perfectdreams.loritta.helper.utils.slash.RetrieveMessageExecutor
-import net.perfectdreams.loritta.helper.utils.slash.ServerMembersExecutor
-import net.perfectdreams.loritta.helper.utils.slash.StatsReportsExecutor
-import net.perfectdreams.loritta.helper.utils.slash.StatsTicketsExecutor
-import net.perfectdreams.loritta.helper.utils.slash.TicketInfoExecutor
-import net.perfectdreams.loritta.helper.utils.slash.TicketSenderExecutor
-import net.perfectdreams.loritta.helper.utils.slash.declarations.AllTransactionsCommand
-import net.perfectdreams.loritta.helper.utils.slash.declarations.AttachDenyReasonCommand
-import net.perfectdreams.loritta.helper.utils.slash.declarations.BroadcastDailyShopWinnersCommand
-import net.perfectdreams.loritta.helper.utils.slash.declarations.ButtonRoleSenderCommand
-import net.perfectdreams.loritta.helper.utils.slash.declarations.CheckCommandsCommand
-import net.perfectdreams.loritta.helper.utils.slash.declarations.CloseTicketCommand
-import net.perfectdreams.loritta.helper.utils.slash.declarations.DailyCatcherCheckCommand
-import net.perfectdreams.loritta.helper.utils.slash.declarations.DailyCheckCommand
-import net.perfectdreams.loritta.helper.utils.slash.declarations.DriveImageRetrieverCommand
-import net.perfectdreams.loritta.helper.utils.slash.declarations.IPLocationCommand
-import net.perfectdreams.loritta.helper.utils.slash.declarations.LoriToolsCommand
-import net.perfectdreams.loritta.helper.utils.slash.declarations.PendingReportsCommand
-import net.perfectdreams.loritta.helper.utils.slash.declarations.PendingScarletCommand
-import net.perfectdreams.loritta.helper.utils.slash.declarations.RetrieveMessageCommand
-import net.perfectdreams.loritta.helper.utils.slash.declarations.ServerMembersCommand
-import net.perfectdreams.loritta.helper.utils.slash.declarations.StatsCommand
-import net.perfectdreams.loritta.helper.utils.slash.declarations.TicketSenderCommand
-import net.perfectdreams.loritta.helper.utils.slash.declarations.TicketUtilsCommand
-import net.perfectdreams.loritta.helper.utils.tickets.AutoCloseTicketWhenMemberLeavesGuildListener
-import net.perfectdreams.loritta.helper.utils.tickets.CloseTicketButtonExecutor
-import net.perfectdreams.loritta.helper.utils.tickets.CreateTicketButtonExecutor
-import net.perfectdreams.loritta.helper.utils.tickets.HelperResponseSelectMenuExecutor
-import net.perfectdreams.loritta.helper.utils.tickets.TicketListener
-import net.perfectdreams.loritta.helper.utils.tickets.TicketUtils
+import net.perfectdreams.loritta.helper.utils.slash.declarations.*
+import net.perfectdreams.loritta.helper.utils.tickets.*
 
 // Hack, hack, hack!
 class LorittaHelperKord(
@@ -102,12 +50,13 @@ class LorittaHelperKord(
         private val logger = KotlinLogging.logger {}
     }
 
+    val interaKTions = DiscordInteraKTions(config.token, Snowflake(config.applicationId))
+
     val helperRest = helper.helperRest
     val lorittaRest = helper.lorittaRest
     val databases = helper.databases
     val dailyCatcherManager = helper.dailyCatcherManager
     val dailyShopWinners = helper.dailyShopWinners
-    val commandManager = CommandManager()
     val languageManager = LanguageManager(
         LorittaHelperKord::class,
         "en",
@@ -149,197 +98,89 @@ class LorittaHelperKord(
             }
 
             // Register Commands
-            commandManager.apply {
-                register(
-                    BroadcastDailyShopWinnersCommand,
-                    BroadcastDailyShopWinnersExecutor(this@LorittaHelperKord)
-                )
-                register(
-                    CheckCommandsCommand,
-                    CheckCommandsExecutor(this@LorittaHelperKord)
-                )
-                register(
-                    DailyCatcherCheckCommand,
-                    DailyCatcherCheckExecutor(this@LorittaHelperKord)
-                )
-                register(
-                    PendingScarletCommand,
-                    PendingScarletExecutor(this@LorittaHelperKord, jda)
-                )
-                register(
-                    PendingReportsCommand,
-                    PendingReportsExecutor(this@LorittaHelperKord, jda)
-                )
-                register(
-                    IPLocationCommand,
-                    IPLocationExecutor(this@LorittaHelperKord)
-                )
-                register(
-                    AttachDenyReasonCommand,
-                    AttachDenyReasonExecutor(this@LorittaHelperKord, jda)
-                )
-                register(
-                    AllTransactionsCommand,
-                    AllTransactionsExecutor(this@LorittaHelperKord)
-                )
-                register(
-                    DailyCheckCommand,
-                    DailyCheckExecutor(this@LorittaHelperKord)
-                )
+            with(interaKTions.manager) {
+                register(BroadcastDailyShopWinnersCommand(this@LorittaHelperKord))
+
+                register(CheckCommandsCommand(this@LorittaHelperKord))
+
+                register(DailyCatcherCheckCommand(this@LorittaHelperKord))
+                register(PendingScarletCommand(this@LorittaHelperKord, jda))
+                register(PendingReportsCommand(this@LorittaHelperKord, jda))
+                register(IPLocationCommand(this@LorittaHelperKord))
+                register(AttachDenyReasonCommand(this@LorittaHelperKord, jda))
+                register(AllTransactionsCommand(this@LorittaHelperKord))
+                register(DailyCheckCommand(this@LorittaHelperKord))
 
                 // ===[ BUTTON ROLES ]===
-                register(
-                    ButtonRoleSenderCommand,
-                    ButtonRoleSenderExecutor(this@LorittaHelperKord)
-                )
-                register(
-                    RoleToggleButtonExecutor,
-                    RoleToggleButtonExecutor(this@LorittaHelperKord)
-                )
-                register(
-                    RoleCoolBadgeButtonExecutor,
-                    RoleCoolBadgeButtonExecutor(this@LorittaHelperKord)
-                )
-                register(
-                    RoleColorButtonExecutor,
-                    RoleColorButtonExecutor(this@LorittaHelperKord)
-                )
+                register(ButtonRoleSenderCommand(this@LorittaHelperKord))
+                register(RoleToggleButtonExecutor(this@LorittaHelperKord))
+                register(RoleCoolBadgeButtonExecutor(this@LorittaHelperKord))
+                register(RoleColorButtonExecutor(this@LorittaHelperKord))
 
                 // ===[ TICKETS ]===
-                register(
-                    TicketSenderCommand,
-                    TicketSenderExecutor(this@LorittaHelperKord)
-                )
-                register(
-                    CloseTicketCommand,
-                    CloseTicketExecutor(this@LorittaHelperKord)
-                )
-                register(
-                    TicketUtilsCommand,
-                    TicketInfoExecutor(this@LorittaHelperKord),
-                    FindTicketExecutor(this@LorittaHelperKord)
-                )
-                register(
-                    CreateTicketButtonExecutor,
-                    CreateTicketButtonExecutor(this@LorittaHelperKord)
-                )
-                register(
-                    CloseTicketButtonExecutor,
-                    CloseTicketButtonExecutor(this@LorittaHelperKord)
-                )
-                register(
-                    HelperResponseSelectMenuExecutor,
-                    HelperResponseSelectMenuExecutor(this@LorittaHelperKord)
-                )
-                register(
-                    DriveImageRetrieverCommand,
-                    DriveImageRetrieverExecutor(this@LorittaHelperKord)
-                )
+                register(TicketSenderCommand(this@LorittaHelperKord))
+                register(CloseTicketCommand(this@LorittaHelperKord))
+                register(TicketUtilsCommand(this@LorittaHelperKord))
+                register(CreateTicketButtonExecutor(this@LorittaHelperKord))
+                register(CloseTicketButtonExecutor(this@LorittaHelperKord))
+                register(HelperResponseSelectMenuExecutor(this@LorittaHelperKord))
+                register(DriveImageRetrieverCommand(this@LorittaHelperKord))
 
                 // ===[ REPORTS ]===
-                register(
-                    ShowUserIdExecutor,
-                    ShowUserIdExecutor(this@LorittaHelperKord)
-                )
-
-                register(
-                    ShowFilesExecutor,
-                    ShowFilesExecutor(this@LorittaHelperKord)
-                )
+                register(ShowUserIdExecutor(this@LorittaHelperKord))
+                register(ShowFilesExecutor(this@LorittaHelperKord))
 
                 // ===[ STATS ]===
-                register(
-                    StatsCommand,
-                    StatsReportsExecutor(this@LorittaHelperKord),
-                    StatsTicketsExecutor(this@LorittaHelperKord)
-                )
+                register(StatsCommand(this@LorittaHelperKord))
 
                 // ===[ LORI TOOLS ]===
-                register(
-                    LoriToolsCommand,
-                    LoriBanExecutor(this@LorittaHelperKord),
-                    LoriUnbanExecutor(this@LorittaHelperKord),
-                    LoriBanRenameExecutor(this@LorittaHelperKord)
-                )
+                register(LoriToolsCommand(this@LorittaHelperKord))
 
                 if (galleryOfDreamsClient != null) {
                     // ===[ FAN ARTS ]===
-                    register(
-                        GalleryOfDreamsSlashCommand,
-                        AddFanArtToGallerySlashExecutor(this@LorittaHelperKord, galleryOfDreamsClient),
-                        PatchFanArtSlashExecutor(this@LorittaHelperKord, galleryOfDreamsClient)
-                    )
+                    register(GalleryOfDreamsSlashCommand(this@LorittaHelperKord, galleryOfDreamsClient))
 
-                    register(
-                        AddFanArtToGalleryMessageCommand,
-                        AddFanArtToGalleryMessageExecutor(this@LorittaHelperKord, galleryOfDreamsClient)
-                    )
+                    register(AddFanArtToGalleryMessageCommand(this@LorittaHelperKord, galleryOfDreamsClient))
 
-                    register(
-                        AddFanArtToGalleryButtonExecutor,
-                        AddFanArtToGalleryButtonExecutor(this@LorittaHelperKord, galleryOfDreamsClient)
-                    )
+                    register(AddFanArtToGalleryButtonExecutor(this@LorittaHelperKord, galleryOfDreamsClient))
 
-                    register(
-                        AddFanArtSelectAttachmentSelectMenuExecutor,
-                        AddFanArtSelectAttachmentSelectMenuExecutor(this@LorittaHelperKord, galleryOfDreamsClient)
-                    )
+                    register(AddFanArtSelectAttachmentSelectMenuExecutor(this@LorittaHelperKord, galleryOfDreamsClient))
 
-                    register(
-                        AddFanArtSelectBadgesSelectMenuExecutor,
-                        AddFanArtSelectBadgesSelectMenuExecutor(this@LorittaHelperKord, galleryOfDreamsClient)
-                    )
+                    register(AddFanArtSelectBadgesSelectMenuExecutor(this@LorittaHelperKord, galleryOfDreamsClient))
 
-                    register(
-                        PatchFanArtOnGalleryButtonExecutor,
-                        PatchFanArtOnGalleryButtonExecutor(this@LorittaHelperKord, galleryOfDreamsClient)
-                    )
+                    register(PatchFanArtOnGalleryButtonExecutor(this@LorittaHelperKord, galleryOfDreamsClient))
 
-                    register(
-                        PatchFanArtSelectBadgesSelectMenuExecutor,
-                        PatchFanArtSelectBadgesSelectMenuExecutor(this@LorittaHelperKord, galleryOfDreamsClient)
-                    )
+                    register(PatchFanArtSelectBadgesSelectMenuExecutor(this@LorittaHelperKord, galleryOfDreamsClient))
+                }
+
+                if (lorittaRest != null) {
+                    register(RetrieveMessageCommand(this@LorittaHelperKord, lorittaRest))
+
+                    register(ServerMembersCommand(this@LorittaHelperKord, lorittaRest))
                 }
             }
 
-            if (lorittaRest != null) {
-                commandManager.register(
-                    RetrieveMessageCommand,
-                    RetrieveMessageExecutor(this@LorittaHelperKord, lorittaRest)
-                )
-                commandManager.register(
-                    ServerMembersCommand,
-                    ServerMembersExecutor(this@LorittaHelperKord, lorittaRest)
-                )
-            }
+            interaKTions.updateAllCommandsInGuild(Snowflake(297732013006389252L))
+            interaKTions.updateAllCommandsInGuild(Snowflake(420626099257475072L))
+            interaKTions.updateAllCommandsInGuild(Snowflake(320248230917046282L))
 
-            val registry = KordCommandRegistry(
-                Snowflake(config.applicationId),
-                helperRest,
-                commandManager
-            )
-
-            registry.updateAllCommandsInGuild(Snowflake(297732013006389252L))
-            registry.updateAllCommandsInGuild(Snowflake(420626099257475072L))
-            registry.updateAllCommandsInGuild(Snowflake(320248230917046282L))
-
-            gateway.installDiscordInteraKTions(
-                Snowflake(config.applicationId),
-                helperRest,
-                commandManager
-            )
+            gateway.installDiscordInteraKTions(interaKTions)
 
             TicketListener(this@LorittaHelperKord).installAutoReplyToMessagesInTicketListener(gateway)
-            AutoCloseTicketWhenMemberLeavesGuildListener(this@LorittaHelperKord).installAutoCloseTicketWhenMemberLeavesGuildListener(gateway)
-            CheckSonhosMendigagemTimeoutListener(this@LorittaHelperKord).installCheckSonhosMendigagemTimeoutListener(gateway)
+            AutoCloseTicketWhenMemberLeavesGuildListener(this@LorittaHelperKord).installAutoCloseTicketWhenMemberLeavesGuildListener(
+                gateway
+            )
+            CheckSonhosMendigagemTimeoutListener(this@LorittaHelperKord).installCheckSonhosMendigagemTimeoutListener(
+                gateway
+            )
             CheckSequenciaTimeoutListener(this@LorittaHelperKord).installCheckSequenciaTimeoutListener(gateway)
             LorittaBanTimeoutListener(this@LorittaHelperKord).installLorittaBanTimeout(gateway)
 
             gateway.start(config.token) {
                 intents = Intents {
-                    + Intent.GuildMessages
-                    + Intent.GuildMembers
-                    + Intent.MessageContent
+                    +Intent.GuildMessages
+                    +Intent.GuildMembers
+                    +Intent.MessageContent
                 }
             }
         }

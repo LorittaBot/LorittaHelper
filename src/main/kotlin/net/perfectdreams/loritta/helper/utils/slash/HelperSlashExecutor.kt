@@ -37,9 +37,9 @@ abstract class HelperSlashExecutor(
         }
 
         val permissionLevel = when {
-            ADMIN_ROLES.any { it in context.member.roles } -> PermissionLevel.ADMIN
-            HELPER_ROLES.any { it in context.member.roles } -> PermissionLevel.HELPER
-            FAN_ARTS_MANAGER_ROLES.any { it in context.member.roles } -> PermissionLevel.FAN_ARTS_MANAGER
+            ADMIN_ROLES.any { it in context.member.roleIds } -> PermissionLevel.ADMIN
+            HELPER_ROLES.any { it in context.member.roleIds } -> PermissionLevel.HELPER
+            FAN_ARTS_MANAGER_ROLES.any { it in context.member.roleIds } -> PermissionLevel.FAN_ARTS_MANAGER
             else -> PermissionLevel.NOTHING
         }
 

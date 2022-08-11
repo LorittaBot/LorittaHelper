@@ -4,7 +4,6 @@ import mu.KotlinLogging
 import net.dv8tion.jda.api.JDA
 import net.dv8tion.jda.api.entities.Message
 import net.perfectdreams.discordinteraktions.common.commands.ApplicationCommandContext
-import net.perfectdreams.discordinteraktions.common.commands.SlashCommandExecutorDeclaration
 import net.perfectdreams.discordinteraktions.common.commands.options.ApplicationCommandOptions
 import net.perfectdreams.discordinteraktions.common.commands.options.ChoiceableCommandOptionBuilder
 import net.perfectdreams.discordinteraktions.common.commands.options.SlashCommandArguments
@@ -17,23 +16,15 @@ import net.perfectdreams.sequins.text.StringUtils
 class PendingScarletExecutor(helper: LorittaHelperKord, val jda: JDA) : HelperSlashExecutor(helper, PermissionLevel.ADMIN) {
     private val logger = KotlinLogging.logger {}
 
-    companion object : SlashCommandExecutorDeclaration(PendingScarletExecutor::class) {
-        override val options = Options
-
-        object Options : ApplicationCommandOptions() {
-            val type = string("type", "Filtrar por um tipo específico")
-                .let { option ->
-                    var temp: ChoiceableCommandOptionBuilder<String, String> = option
-
-                    for (level in SuspiciousLevel.values()) {
-                        temp = temp.choice(level.name, level.name)
-                    }
-
-                    temp
-                }
-                .register()
+    inner class Options : ApplicationCommandOptions() {
+        val type = string("type", "Filtrar por um tipo específico") {
+            for (level in SuspiciousLevel.values()) {
+                choice(level.name, level.name)
+            }
         }
     }
+
+    override val options = Options()
 
     override suspend fun executeHelper(context: ApplicationCommandContext, args: SlashCommandArguments) {
         context.deferChannelMessage()

@@ -7,7 +7,6 @@ import dev.kord.rest.builder.message.create.actionRow
 import dev.kord.rest.builder.message.create.embed
 import net.perfectdreams.discordinteraktions.common.commands.ApplicationCommandContext
 import net.perfectdreams.discordinteraktions.common.commands.GuildApplicationCommandContext
-import net.perfectdreams.discordinteraktions.common.commands.SlashCommandExecutorDeclaration
 import net.perfectdreams.discordinteraktions.common.commands.options.ApplicationCommandOptions
 import net.perfectdreams.discordinteraktions.common.commands.options.SlashCommandArguments
 import net.perfectdreams.discordinteraktions.common.components.interactiveButton
@@ -24,14 +23,11 @@ import net.perfectdreams.loritta.helper.utils.buttonroles.RoleToggleButtonExecut
 import net.perfectdreams.loritta.helper.utils.buttonroles.SparklyPowerRoleButtons
 
 class ButtonRoleSenderExecutor(helper: LorittaHelperKord) : HelperSlashExecutor(helper, PermissionLevel.ADMIN) {
-    companion object : SlashCommandExecutorDeclaration(ButtonRoleSenderExecutor::class) {
-        object Options : ApplicationCommandOptions() {
-            val channel = channel("channel", "Canal aonde a mensagem será enviada")
-                .register()
-        }
-
-        override val options = Options
+    inner class Options : ApplicationCommandOptions() {
+        val channel = channel("channel", "Canal aonde a mensagem será enviada")
     }
+
+    override val options = Options()
 
     override suspend fun executeHelper(context: ApplicationCommandContext, args: SlashCommandArguments) {
         if (context !is GuildApplicationCommandContext)

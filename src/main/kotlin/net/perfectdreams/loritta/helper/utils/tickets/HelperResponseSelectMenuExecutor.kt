@@ -8,7 +8,7 @@ import net.perfectdreams.discordinteraktions.common.components.GuildComponentCon
 import net.perfectdreams.discordinteraktions.common.components.SelectMenuExecutor
 import net.perfectdreams.discordinteraktions.common.components.SelectMenuExecutorDeclaration
 import net.perfectdreams.discordinteraktions.common.components.interactiveButton
-import net.perfectdreams.discordinteraktions.common.entities.User
+import dev.kord.core.entity.User
 import net.perfectdreams.loritta.api.messages.LorittaReply
 import net.perfectdreams.loritta.helper.LorittaHelperKord
 import net.perfectdreams.loritta.helper.i18n.I18nKeysData

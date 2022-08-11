@@ -1,9 +1,9 @@
 package net.perfectdreams.loritta.helper.utils.tickets.systems
 
 import dev.kord.common.entity.Snowflake
+import dev.kord.core.entity.User
 import dev.kord.rest.builder.message.create.UserMessageCreateBuilder
 import dev.kord.rest.service.RestClient
-import net.perfectdreams.discordinteraktions.common.entities.User
 import net.perfectdreams.i18nhelper.core.I18nContext
 import net.perfectdreams.loritta.api.messages.LorittaReply
 import net.perfectdreams.loritta.helper.serverresponses.LorittaResponse

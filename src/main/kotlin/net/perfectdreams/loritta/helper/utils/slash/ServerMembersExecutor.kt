@@ -5,25 +5,21 @@ import dev.kord.common.entity.Snowflake
 import dev.kord.rest.route.Position
 import dev.kord.rest.service.RestClient
 import net.perfectdreams.discordinteraktions.common.commands.ApplicationCommandContext
-import net.perfectdreams.discordinteraktions.common.commands.SlashCommandExecutorDeclaration
 import net.perfectdreams.discordinteraktions.common.commands.options.ApplicationCommandOptions
 import net.perfectdreams.discordinteraktions.common.commands.options.SlashCommandArguments
 import net.perfectdreams.loritta.helper.LorittaHelperKord
 
 class ServerMembersExecutor(helper: LorittaHelperKord, val rest: RestClient) : HelperSlashExecutor(helper, PermissionLevel.HELPER) {
-    companion object : SlashCommandExecutorDeclaration(ServerMembersExecutor::class) {
-        override val options = Options
+    inner class Options : ApplicationCommandOptions() {
+        val guildId = string("guild_id", "ID do Servidor")
 
-        object Options : ApplicationCommandOptions() {
-            val guildId = string("guild_id", "ID do Servidor")
-                .register()
-
-            val sortType = string("sort", "Organizar lista por...")
-                .choice("created_at", "Quando a conta foi criada")
-                .choice("joined_at", "Quando a conta entrou no servidor")
-                .register()
+        val sortType = string("sort", "Organizar lista por...") {
+            choice("created_at", "Quando a conta foi criada")
+            choice("joined_at", "Quando a conta entrou no servidor")
         }
     }
+
+    override val options = Options()
 
     override suspend fun executeHelper(context: ApplicationCommandContext, args: SlashCommandArguments) {
         context.deferChannelMessage()

@@ -3,19 +3,16 @@ package net.perfectdreams.loritta.helper.utils.galleryofdreams.commands.add
 import net.perfectdreams.discordinteraktions.common.commands.ApplicationCommandContext
 import net.perfectdreams.discordinteraktions.common.commands.GuildApplicationCommandContext
 import net.perfectdreams.discordinteraktions.common.commands.MessageCommandExecutor
-import net.perfectdreams.discordinteraktions.common.commands.MessageCommandExecutorDeclaration
 import net.perfectdreams.discordinteraktions.common.entities.messages.Message
 import net.perfectdreams.galleryofdreams.client.GalleryOfDreamsClient
 import net.perfectdreams.loritta.helper.LorittaHelperKord
 import net.perfectdreams.loritta.helper.utils.galleryofdreams.commands.GalleryOfDreamsUtils
 
 class AddFanArtToGalleryMessageExecutor(private val m: LorittaHelperKord, val galleryOfDreamsClient: GalleryOfDreamsClient) : MessageCommandExecutor() {
-    companion object : MessageCommandExecutorDeclaration(AddFanArtToGalleryMessageExecutor::class)
-
     override suspend fun execute(context: ApplicationCommandContext, targetMessage: Message) {
         context.deferChannelMessageEphemerally()
 
-        if (context !is GuildApplicationCommandContext || !context.member.roles.any { it in GalleryOfDreamsUtils.ALLOWED_ROLES }) {
+        if (context !is GuildApplicationCommandContext || !context.member.roleIds.any { it in GalleryOfDreamsUtils.ALLOWED_ROLES }) {
             context.sendEphemeralMessage {
                 content = "Você não tem o poder de adicionar fan arts na galeria!"
             }
@@ -37,9 +34,9 @@ class AddFanArtToGalleryMessageExecutor(private val m: LorittaHelperKord, val ga
             if (artist == null) {
                 AddFanArtToNewArtistData(
                     targetMessage.author.id,
-                    targetMessage.author.name,
+                    targetMessage.author.username,
                     // Cleans up the user's name to make it be the user's name, if the result is a empty string we use a "ifEmpty" call to change it to the user's ID
-                    targetMessage.author.name.lowercase().replace(" ", "-").replace(Regex("[^A-Za-z0-9-]"), "").trim()
+                    targetMessage.author.username.lowercase().replace(" ", "-").replace(Regex("[^A-Za-z0-9-]"), "").trim()
                         .ifEmpty { targetMessage.author.id.value.toString() },
                     targetMessage.channelId,
                     targetMessage.id,

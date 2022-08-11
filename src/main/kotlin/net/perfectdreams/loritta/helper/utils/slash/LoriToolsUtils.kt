@@ -2,10 +2,10 @@ package net.perfectdreams.loritta.helper.utils.slash
 
 import dev.kord.common.Color
 import dev.kord.common.entity.Snowflake
+import dev.kord.core.entity.Icon
 import dev.kord.rest.Image
 import dev.kord.rest.builder.message.create.embed
-import net.perfectdreams.discordinteraktions.common.entities.Icon
-import net.perfectdreams.discordinteraktions.common.entities.User
+import dev.kord.core.entity.User
 import net.perfectdreams.discordinteraktions.common.utils.author
 import net.perfectdreams.discordinteraktions.common.utils.field
 import net.perfectdreams.discordinteraktions.common.utils.footer
@@ -32,7 +32,7 @@ object LoriToolsUtils {
             Snowflake(Constants.PORTUGUESE_SADDEST_OF_THE_SADS_CHANNEL_ID)
         ) {
             embed {
-                author("${moderator.name}#${moderator.discriminator} (${moderator.id})", null, moderator.avatar.cdnUrl.toUrl {
+                author("${moderator.username}#${moderator.discriminator} (${moderator.id})", null, moderator.avatar?.cdnUrl?.toUrl {
                     format = Image.Format.PNG
                 })
                 this.title = "$punishedUserId | $title"
@@ -44,8 +44,8 @@ object LoriToolsUtils {
                         "${punishedUser.username}#${punishedUser.discriminator} (${punishedUser.id})",
                         (
                                 punishedUser.avatar?.let {
-                                    Icon.UserAvatar(Snowflake(punishedUserId.value), it)
-                                } ?: Icon.DefaultUserAvatar(punishedUser.discriminator.toInt())
+                                    Icon.UserAvatar(Snowflake(punishedUserId.value), it, helper.interaKTions.kord)
+                                } ?: Icon.DefaultUserAvatar(punishedUser.discriminator.toInt(), helper.interaKTions.kord)
                                 )
                             .cdnUrl
                             .toUrl {

@@ -1,17 +1,14 @@
 package net.perfectdreams.loritta.helper.utils.buttonroles
 
 import dev.kord.common.entity.Snowflake
-import net.perfectdreams.discordinteraktions.common.components.ButtonClickExecutorDeclaration
-import net.perfectdreams.discordinteraktions.common.components.ButtonClickWithDataExecutor
-import net.perfectdreams.discordinteraktions.common.components.ComponentContext
-import net.perfectdreams.discordinteraktions.common.components.GuildComponentContext
-import net.perfectdreams.discordinteraktions.common.entities.User
+import dev.kord.core.entity.User
+import net.perfectdreams.discordinteraktions.common.components.*
 import net.perfectdreams.loritta.helper.LorittaHelperKord
 import net.perfectdreams.loritta.helper.utils.ComponentDataUtils
 import net.perfectdreams.loritta.helper.utils.LorittaLandGuild
 
-class RoleToggleButtonExecutor(val m: LorittaHelperKord) : ButtonClickWithDataExecutor {
-    companion object : ButtonClickExecutorDeclaration(RoleToggleButtonExecutor::class, "role_toggle")
+class RoleToggleButtonExecutor(val m: LorittaHelperKord) : ButtonExecutor {
+    companion object : ButtonExecutorDeclaration("role_toggle")
 
     val guildRolesData = mapOf(
         LorittaLandGuild.LORITTA_COMMUNITY to GuildRolesData(
@@ -24,15 +21,15 @@ class RoleToggleButtonExecutor(val m: LorittaHelperKord) : ButtonClickWithDataEx
         )
     )
 
-    override suspend fun onClick(user: User, context: ComponentContext, data: String) {
+    override suspend fun onClick(user: User, context: ComponentContext) {
         // This can only happen in a guild... right? I hope so.
         if (context is GuildComponentContext) {
-            val roleButtonData = ComponentDataUtils.decode<RoleButtonData>(data)
+            val roleButtonData = ComponentDataUtils.decode<RoleButtonData>(context.data)
             val guildData = guildRolesData[roleButtonData.guild]!!
 
             val roleInformation = roleButtonData.guild.notifications.first { it.roleId == roleButtonData.roleId }
 
-            if (roleButtonData.roleId in context.member.roles) {
+            if (roleButtonData.roleId in context.member.roleIds) {
                 // Remove role
                 m.helperRest.guild.deleteRoleFromGuildMember(
                     guildData.guildId,

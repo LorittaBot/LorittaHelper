@@ -5,21 +5,17 @@ import dev.kord.rest.json.JsonErrorCode
 import dev.kord.rest.request.KtorRequestException
 import dev.kord.rest.service.RestClient
 import net.perfectdreams.discordinteraktions.common.commands.ApplicationCommandContext
-import net.perfectdreams.discordinteraktions.common.commands.SlashCommandExecutorDeclaration
 import net.perfectdreams.discordinteraktions.common.commands.options.ApplicationCommandOptions
 import net.perfectdreams.discordinteraktions.common.commands.options.SlashCommandArguments
 import net.perfectdreams.loritta.helper.LorittaHelperKord
 import net.perfectdreams.sequins.text.StringUtils
 
 class RetrieveMessageExecutor(helper: LorittaHelperKord, val rest: RestClient) : HelperSlashExecutor(helper, PermissionLevel.HELPER) {
-    companion object : SlashCommandExecutorDeclaration(RetrieveMessageExecutor::class) {
-        override val options = Options
-
-        object Options : ApplicationCommandOptions() {
-            val messageUrl = string("message_url", "Link da Mensagem")
-                .register()
-        }
+    inner class Options : ApplicationCommandOptions() {
+        val messageUrl = string("message_url", "Link da Mensagem")
     }
+
+    override val options = Options()
 
     override suspend fun executeHelper(context: ApplicationCommandContext, args: SlashCommandArguments) {
         val messageUrl = args[options.messageUrl]

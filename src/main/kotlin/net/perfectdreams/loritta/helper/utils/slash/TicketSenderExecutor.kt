@@ -7,7 +7,6 @@ import dev.kord.common.entity.Snowflake
 import dev.kord.rest.builder.message.create.actionRow
 import dev.kord.rest.builder.message.create.embed
 import net.perfectdreams.discordinteraktions.common.commands.ApplicationCommandContext
-import net.perfectdreams.discordinteraktions.common.commands.SlashCommandExecutorDeclaration
 import net.perfectdreams.discordinteraktions.common.commands.options.ApplicationCommandOptions
 import net.perfectdreams.discordinteraktions.common.commands.options.SlashCommandArguments
 import net.perfectdreams.discordinteraktions.common.components.interactiveButton
@@ -33,21 +32,18 @@ import net.perfectdreams.loritta.helper.utils.tickets.systems.FirstFanArtTicketS
 import net.perfectdreams.loritta.helper.utils.tickets.systems.HelpDeskTicketSystem
 
 class TicketSenderExecutor(helper: LorittaHelperKord) : HelperSlashExecutor(helper, PermissionLevel.ADMIN) {
-    companion object : SlashCommandExecutorDeclaration(TicketSenderExecutor::class) {
-        object Options : ApplicationCommandOptions() {
-            val channel = channel("channel", "Canal aonde a mensagem será enviada")
-                .register()
+    inner class Options : ApplicationCommandOptions() {
+        val channel = channel("channel", "Canal aonde a mensagem será enviada")
 
-            val type = string("type", "O tipo da mensagem")
-                .choice(TicketUtils.TicketSystemType.HELP_DESK_ENGLISH.name, "Suporte (Inglês)")
-                .choice(TicketUtils.TicketSystemType.HELP_DESK_PORTUGUESE.name, "Suporte (Português)")
-                .choice(TicketUtils.TicketSystemType.FIRST_FAN_ARTS_PORTUGUESE.name, "Primeira Fan Art (Português)")
-                .choice(TicketUtils.TicketSystemType.SPARKLYPOWER_HELP_DESK_PORTUGUESE.name, "SparklyPower Suporte (Português)")
-                .register()
+        val type = string("type", "O tipo da mensagem") {
+            choice(TicketUtils.TicketSystemType.HELP_DESK_ENGLISH.name, "Suporte (Inglês)")
+            choice(TicketUtils.TicketSystemType.HELP_DESK_PORTUGUESE.name, "Suporte (Português)")
+            choice(TicketUtils.TicketSystemType.FIRST_FAN_ARTS_PORTUGUESE.name, "Primeira Fan Art (Português)")
+            choice(TicketUtils.TicketSystemType.SPARKLYPOWER_HELP_DESK_PORTUGUESE.name, "SparklyPower Suporte (Português)")
         }
-
-        override val options = Options
     }
+
+    override val options = Options()
 
     override suspend fun executeHelper(context: ApplicationCommandContext, args: SlashCommandArguments) {
         context.sendEphemeralMessage {

@@ -1,7 +1,6 @@
 package net.perfectdreams.loritta.helper.utils.slash
 
 import net.perfectdreams.discordinteraktions.common.commands.ApplicationCommandContext
-import net.perfectdreams.discordinteraktions.common.commands.SlashCommandExecutorDeclaration
 import net.perfectdreams.discordinteraktions.common.commands.options.ApplicationCommandOptions
 import net.perfectdreams.discordinteraktions.common.commands.options.SlashCommandArguments
 import net.perfectdreams.loritta.helper.LorittaHelperKord
@@ -14,14 +13,11 @@ import org.jetbrains.exposed.sql.transactions.transaction
 import java.time.Instant
 
 class AllTransactionsExecutor(helper: LorittaHelperKord) : HelperSlashExecutor(helper, PermissionLevel.HELPER) {
-    companion object : SlashCommandExecutorDeclaration(AllTransactionsExecutor::class) {
-        override val options = Options
-
-        object Options : ApplicationCommandOptions() {
-            val user = user("user", "Usuário para ver as transações")
-                .register()
-        }
+    inner class Options : ApplicationCommandOptions() {
+        val user = user("user", "Usuário para ver as transações")
     }
+
+    override val options = Options()
 
     override suspend fun executeHelper(context: ApplicationCommandContext, args: SlashCommandArguments) {
         context.deferChannelMessage()

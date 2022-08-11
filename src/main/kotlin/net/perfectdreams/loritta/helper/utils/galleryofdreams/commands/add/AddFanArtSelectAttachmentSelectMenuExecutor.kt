@@ -1,27 +1,26 @@
 package net.perfectdreams.loritta.helper.utils.galleryofdreams.commands.add
 
 import dev.kord.common.entity.Snowflake
+import dev.kord.core.entity.User
 import io.ktor.client.call.*
 import io.ktor.client.request.*
 import io.ktor.http.*
 import net.perfectdreams.discordinteraktions.common.components.ComponentContext
+import net.perfectdreams.discordinteraktions.common.components.SelectMenuExecutor
 import net.perfectdreams.discordinteraktions.common.components.SelectMenuExecutorDeclaration
-import net.perfectdreams.discordinteraktions.common.components.SelectMenuWithDataExecutor
-import net.perfectdreams.discordinteraktions.common.entities.User
 import net.perfectdreams.galleryofdreams.client.GalleryOfDreamsClient
 import net.perfectdreams.galleryofdreams.common.data.api.FanArtExistsResponse
 import net.perfectdreams.loritta.helper.LorittaHelperKord
 import net.perfectdreams.loritta.helper.utils.galleryofdreams.commands.GalleryOfDreamsUtils
 import java.util.*
 
-class AddFanArtSelectAttachmentSelectMenuExecutor(val m: LorittaHelperKord, val galleryOfDreamsClient: GalleryOfDreamsClient) :
-    SelectMenuWithDataExecutor {
+class AddFanArtSelectAttachmentSelectMenuExecutor(val m: LorittaHelperKord, val galleryOfDreamsClient: GalleryOfDreamsClient) : SelectMenuExecutor {
     companion object : SelectMenuExecutorDeclaration(AddFanArtSelectAttachmentSelectMenuExecutor::class, "select_fa_attach")
 
-    override suspend fun onSelect(user: User, context: ComponentContext, data: String, values: List<String>) {
+    override suspend fun onSelect(user: User, context: ComponentContext, values: List<String>) {
         context.deferUpdateMessage()
 
-        val data = GalleryOfDreamsUtils.CACHED_DATA[UUID.fromString(data)] ?: error("Unknown Data")
+        val data = GalleryOfDreamsUtils.CACHED_DATA[UUID.fromString(context.data)] ?: error("Unknown Data")
 
         var selectedAttachmentId: Snowflake? = Snowflake(values.first().toLong())
 

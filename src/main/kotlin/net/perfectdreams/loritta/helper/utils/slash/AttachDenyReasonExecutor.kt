@@ -3,7 +3,6 @@ package net.perfectdreams.loritta.helper.utils.slash
 import net.dv8tion.jda.api.EmbedBuilder
 import net.dv8tion.jda.api.JDA
 import net.perfectdreams.discordinteraktions.common.commands.ApplicationCommandContext
-import net.perfectdreams.discordinteraktions.common.commands.SlashCommandExecutorDeclaration
 import net.perfectdreams.discordinteraktions.common.commands.options.ApplicationCommandOptions
 import net.perfectdreams.discordinteraktions.common.commands.options.SlashCommandArguments
 import net.perfectdreams.loritta.helper.LorittaHelperKord
@@ -13,20 +12,19 @@ import net.perfectdreams.loritta.helper.utils.generateserverreport.GenerateAppea
 import net.perfectdreams.loritta.helper.utils.generateserverreport.GenerateServerReport
 
 class AttachDenyReasonExecutor(helper: LorittaHelperKord, val jda: JDA) : HelperSlashExecutor(helper, PermissionLevel.HELPER) {
-    companion object : SlashCommandExecutorDeclaration(AttachDenyReasonExecutor::class) {
-        override val options = Options
+    inner class Options : ApplicationCommandOptions() {
+        val messageUrl = string("message_url", "Link da Mensagem")
+
+        val reason = string("reason", "O motivo por qual a denúncia está sendo negada")
+    }
+
+    override val options = Options()
+
+    companion object {
         val VALID_CHANNEL_IDS = listOf(
             GenerateAppealsReport.SERVER_APPEALS_CHANNEL_ID,
             GenerateServerReport.SERVER_REPORTS_CHANNEL_ID
         )
-
-        object Options : ApplicationCommandOptions() {
-            val messageUrl = string("message_url", "Link da Mensagem")
-                .register()
-
-            val reason = string("reason", "O motivo por qual a denúncia está sendo negada")
-                .register()
-        }
     }
 
     override suspend fun executeHelper(context: ApplicationCommandContext, args: SlashCommandArguments) {

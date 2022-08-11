@@ -5,10 +5,10 @@ import io.ktor.client.call.*
 import io.ktor.client.request.*
 import io.ktor.http.*
 import kotlinx.datetime.Instant
-import net.perfectdreams.discordinteraktions.common.components.ButtonClickExecutorDeclaration
-import net.perfectdreams.discordinteraktions.common.components.ButtonClickWithDataExecutor
+import net.perfectdreams.discordinteraktions.common.components.ButtonExecutorDeclaration
+import net.perfectdreams.discordinteraktions.common.components.ButtonExecutor
 import net.perfectdreams.discordinteraktions.common.components.ComponentContext
-import net.perfectdreams.discordinteraktions.common.entities.User
+import dev.kord.core.entity.User
 import net.perfectdreams.galleryofdreams.client.GalleryOfDreamsClient
 import net.perfectdreams.galleryofdreams.common.data.DiscordSocialConnection
 import net.perfectdreams.galleryofdreams.common.data.api.CreateArtistWithFanArtRequest
@@ -18,11 +18,11 @@ import net.perfectdreams.loritta.helper.LorittaHelperKord
 import net.perfectdreams.loritta.helper.utils.galleryofdreams.commands.GalleryOfDreamsUtils
 import java.util.*
 
-class AddFanArtToGalleryButtonExecutor(val m: LorittaHelperKord, val galleryOfDreamsClient: GalleryOfDreamsClient) : ButtonClickWithDataExecutor {
-    companion object : ButtonClickExecutorDeclaration(AddFanArtToGalleryButtonExecutor::class, "add_fa_gallery")
+class AddFanArtToGalleryButtonExecutor(val m: LorittaHelperKord, val galleryOfDreamsClient: GalleryOfDreamsClient) : ButtonExecutor {
+    companion object : ButtonExecutorDeclaration(AddFanArtToGalleryButtonExecutor::class, "add_fa_gallery")
 
-    override suspend fun onClick(user: User, context: ComponentContext, data: String) {
-        val addFanArtData = GalleryOfDreamsUtils.CACHED_DATA[UUID.fromString(data)] ?: error("Unknown Data")
+    override suspend fun onClick(user: User, context: ComponentContext) {
+        val addFanArtData = GalleryOfDreamsUtils.CACHED_DATA[UUID.fromString(context.data)] ?: error("Unknown Data")
 
         if (addFanArtData.selectedAttachmentId == null) {
             context.sendEphemeralMessage {

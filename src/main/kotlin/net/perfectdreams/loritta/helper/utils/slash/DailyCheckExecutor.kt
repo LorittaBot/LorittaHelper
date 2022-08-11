@@ -1,7 +1,6 @@
 package net.perfectdreams.loritta.helper.utils.slash
 
 import net.perfectdreams.discordinteraktions.common.commands.ApplicationCommandContext
-import net.perfectdreams.discordinteraktions.common.commands.SlashCommandExecutorDeclaration
 import net.perfectdreams.discordinteraktions.common.commands.options.ApplicationCommandOptions
 import net.perfectdreams.discordinteraktions.common.commands.options.SlashCommandArguments
 import net.perfectdreams.loritta.cinnamon.pudding.tables.Dailies
@@ -13,16 +12,11 @@ import org.jetbrains.exposed.sql.transactions.transaction
 import java.time.Instant
 
 class DailyCheckExecutor(helper: LorittaHelperKord) : HelperSlashExecutor(helper, PermissionLevel.ADMIN) {
-    companion object : SlashCommandExecutorDeclaration(DailyCheckExecutor::class) {
-        override val options = Options
-
-        object Options : ApplicationCommandOptions() {
-            init {
-                // Register 25 different users
-                repeat(25) {
-                    optionalUser("user${it + 1}", "Usuário para ver as transações")
-                        .register()
-                }
+    inner class Options : ApplicationCommandOptions() {
+        init {
+            // Register 25 different users
+            repeat(25) {
+                optionalUser("user${it + 1}", "Usuário para ver as transações")
             }
         }
     }
@@ -31,7 +25,7 @@ class DailyCheckExecutor(helper: LorittaHelperKord) : HelperSlashExecutor(helper
         context.deferChannelMessage()
 
         // Because we did stuff in a... unconventional way, we will get all matched user arguments in a unconventional way: By getting all resolved objects!
-        val users = context.data.resolved?.users?.values ?: run {
+        val users = context.interactionData.resolved?.users?.values ?: run {
             context.sendMessage {
                 content = "Nenhum usuário encontrado!"
             }

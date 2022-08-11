@@ -5,7 +5,6 @@ import dev.kord.common.entity.Snowflake
 import dev.kord.rest.request.KtorRequestException
 import kotlinx.datetime.Clock
 import net.perfectdreams.discordinteraktions.common.commands.ApplicationCommandContext
-import net.perfectdreams.discordinteraktions.common.commands.SlashCommandExecutorDeclaration
 import net.perfectdreams.discordinteraktions.common.commands.options.ApplicationCommandOptions
 import net.perfectdreams.discordinteraktions.common.commands.options.SlashCommandArguments
 import net.perfectdreams.loritta.cinnamon.pudding.tables.BannedUsers
@@ -20,17 +19,13 @@ import org.jetbrains.exposed.sql.transactions.transaction
 import kotlin.time.Duration.Companion.days
 
 class LoriBanExecutor(helper: LorittaHelperKord) : HelperSlashExecutor(helper, PermissionLevel.ADMIN) {
-    companion object : SlashCommandExecutorDeclaration(LoriBanExecutor::class) {
-        override val options = Options
+    inner class Options : ApplicationCommandOptions() {
+        val userId = string("user_id", "ID do usuário que você deseja banir")
 
-        object Options : ApplicationCommandOptions() {
-            val userId = string("user_id", "ID do usuário que você deseja banir")
-                .register()
-
-            val reason = string("reason", "Motivo que irá aparecer no ban")
-                .register()
-        }
+        val reason = string("reason", "Motivo que irá aparecer no ban")
     }
+
+    override val options = Options()
 
     override suspend fun executeHelper(context: ApplicationCommandContext, args: SlashCommandArguments) {
         val userId = args[options.userId].toLongOrNull() ?: run {

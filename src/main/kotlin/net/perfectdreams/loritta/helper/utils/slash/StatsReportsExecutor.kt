@@ -2,7 +2,6 @@ package net.perfectdreams.loritta.helper.utils.slash
 
 import net.perfectdreams.discordinteraktions.common.builder.message.embed
 import net.perfectdreams.discordinteraktions.common.commands.ApplicationCommandContext
-import net.perfectdreams.discordinteraktions.common.commands.SlashCommandExecutorDeclaration
 import net.perfectdreams.discordinteraktions.common.commands.options.ApplicationCommandOptions
 import net.perfectdreams.discordinteraktions.common.commands.options.SlashCommandArguments
 import net.perfectdreams.discordinteraktions.common.utils.footer
@@ -16,19 +15,17 @@ import org.jetbrains.exposed.sql.transactions.transaction
 import java.time.Instant
 
 class StatsReportsExecutor(helper: LorittaHelperKord) : HelperSlashExecutor(helper, PermissionLevel.HELPER) {
-    companion object : SlashCommandExecutorDeclaration(StatsReportsExecutor::class) {
-        override val options = Options
-
-        object Options : ApplicationCommandOptions() {
-            val filter = optionalString("filter", "Filtro de data")
-                .choice("7", "Últimos 7 dias")
-                .choice("14", "Últimos 14 dias")
-                .choice("30", "Últimos 30 dias")
-                .choice("90", "Últimos 90 dias")
-                .choice("365", "Últimos 365 dias")
-                .register()
+    inner class Options : ApplicationCommandOptions() {
+        val filter = optionalString("filter", "Filtro de data") {
+            choice("7", "Últimos 7 dias")
+            choice("14", "Últimos 14 dias")
+            choice("30", "Últimos 30 dias")
+            choice("90", "Últimos 90 dias")
+            choice("365", "Últimos 365 dias")
         }
     }
+
+    override val options = Options()
 
     override suspend fun executeHelper(context: ApplicationCommandContext, args: SlashCommandArguments) {
         val filterDay = args[options.filter]

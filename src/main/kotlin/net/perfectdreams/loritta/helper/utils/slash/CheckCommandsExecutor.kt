@@ -1,7 +1,6 @@
 package net.perfectdreams.loritta.helper.utils.slash
 
 import net.perfectdreams.discordinteraktions.common.commands.ApplicationCommandContext
-import net.perfectdreams.discordinteraktions.common.commands.SlashCommandExecutorDeclaration
 import net.perfectdreams.discordinteraktions.common.commands.options.ApplicationCommandOptions
 import net.perfectdreams.discordinteraktions.common.commands.options.SlashCommandArguments
 import net.perfectdreams.loritta.helper.LorittaHelperKord
@@ -13,14 +12,11 @@ import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.transactions.transaction
 
 class CheckCommandsExecutor(helper: LorittaHelperKord) : HelperSlashExecutor(helper, PermissionLevel.HELPER) {
-    companion object : SlashCommandExecutorDeclaration(CheckCommandsExecutor::class) {
-        override val options = Options
-
-        object Options : ApplicationCommandOptions() {
-            val user = user("user", "Usuário a ser verificado")
-                .register()
-        }
+    inner class Options : ApplicationCommandOptions() {
+        val user = user("user", "Usuário a ser verificado")
     }
+
+    override val options = Options()
 
     override suspend fun executeHelper(context: ApplicationCommandContext, args: SlashCommandArguments) {
         context.deferChannelMessage()

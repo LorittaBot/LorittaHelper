@@ -1,17 +1,17 @@
 package net.perfectdreams.loritta.helper.utils.buttonroles
 
 import dev.kord.common.entity.Snowflake
-import net.perfectdreams.discordinteraktions.common.components.ButtonClickExecutorDeclaration
-import net.perfectdreams.discordinteraktions.common.components.ButtonClickWithDataExecutor
+import dev.kord.core.entity.User
+import net.perfectdreams.discordinteraktions.common.components.ButtonExecutor
+import net.perfectdreams.discordinteraktions.common.components.ButtonExecutorDeclaration
 import net.perfectdreams.discordinteraktions.common.components.ComponentContext
 import net.perfectdreams.discordinteraktions.common.components.GuildComponentContext
-import net.perfectdreams.discordinteraktions.common.entities.User
 import net.perfectdreams.loritta.helper.LorittaHelperKord
 import net.perfectdreams.loritta.helper.utils.ComponentDataUtils
 import net.perfectdreams.loritta.helper.utils.LorittaLandGuild
 
-class RoleColorButtonExecutor(val m: LorittaHelperKord) : ButtonClickWithDataExecutor {
-    companion object : ButtonClickExecutorDeclaration(RoleColorButtonExecutor::class, "role_color")
+class RoleColorButtonExecutor(val m: LorittaHelperKord) : ButtonExecutor {
+    companion object : ButtonExecutorDeclaration("role_color")
 
     val guildRolesData = mapOf(
         LorittaLandGuild.LORITTA_COMMUNITY to GuildRolesData(
@@ -24,13 +24,13 @@ class RoleColorButtonExecutor(val m: LorittaHelperKord) : ButtonClickWithDataExe
         )
     )
 
-    override suspend fun onClick(user: User, context: ComponentContext, data: String) {
+    override suspend fun onClick(user: User, context: ComponentContext) {
         // This can only happen in a guild... right? I hope so.
         if (context is GuildComponentContext) {
-            val roleButtonData = ComponentDataUtils.decode<RoleButtonData>(data)
+            val roleButtonData = ComponentDataUtils.decode<RoleButtonData>(context.data)
             val guildData = guildRolesData[roleButtonData.guild]!!
 
-            if (!context.member.roles.any { it in guildData.allowedRoles }) {
+            if (!context.member.roleIds.any { it in guildData.allowedRoles }) {
                 context.sendEphemeralMessage {
                     content = "Para você pegar uma cor personalizada, você precisa ser ${guildData.allowedRoles.joinToString(" ou ") { "<@&${it.value}>" }}!"
                 }
@@ -39,7 +39,7 @@ class RoleColorButtonExecutor(val m: LorittaHelperKord) : ButtonClickWithDataExe
 
             val roleInformation = roleButtonData.guild.colors.first { it.roleId == roleButtonData.roleId }
 
-            if (roleButtonData.roleId in context.member.roles) {
+            if (roleButtonData.roleId in context.member.roleIds) {
                 // Remove role
                 m.helperRest.guild.deleteRoleFromGuildMember(
                     guildData.guildId,
@@ -61,7 +61,7 @@ class RoleColorButtonExecutor(val m: LorittaHelperKord) : ButtonClickWithDataExe
                     guildData.guildId,
                     user.id,
                 ) {
-                    this.roles = context.member.roles.toMutableSet().apply {
+                    this.roles = context.member.roleIds.toMutableSet().apply {
                         this.removeAll(roleButtonData.guild.colors.map { it.roleId }.toSet())
                         this.add(roleInformation.roleId)
                     }
