@@ -21,6 +21,8 @@ class DailyCheckExecutor(helper: LorittaHelperKord) : HelperSlashExecutor(helper
         }
     }
 
+    override val options = Options()
+
     override suspend fun executeHelper(context: ApplicationCommandContext, args: SlashCommandArguments) {
         context.deferChannelMessage()
 
