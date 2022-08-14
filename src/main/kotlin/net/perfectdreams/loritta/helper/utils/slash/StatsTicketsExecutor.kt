@@ -59,7 +59,7 @@ class StatsTicketsExecutor(helper: LorittaHelperKord) : HelperSlashExecutor(help
                 .innerJoin(StartedSupportSolicitations)
                 .slice(TicketMessagesActivity.userId, resultCount)
                 .select {
-                    TicketMessagesActivity.timestamp greaterEq since
+                    TicketMessagesActivity.timestamp greaterEq since and (StartedSupportSolicitations.systemType eq system)
                 }
                 .groupBy(TicketMessagesActivity.userId)
                 .toList()
@@ -76,7 +76,7 @@ class StatsTicketsExecutor(helper: LorittaHelperKord) : HelperSlashExecutor(help
 
         context.sendMessage {
             content = "Sistema: $system"
-            
+
             embed {
                 title = "Ranking de Pessoas Tagarelas em Tickets Respondidos"
 
