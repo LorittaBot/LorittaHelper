@@ -9,6 +9,7 @@ import net.perfectdreams.loritta.helper.LorittaHelperKord
 import net.perfectdreams.loritta.helper.tables.StartedSupportSolicitations
 import net.perfectdreams.loritta.helper.tables.TicketMessagesActivity
 import net.perfectdreams.loritta.helper.utils.tickets.TicketUtils
+import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.countDistinct
 import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.transactions.transaction
