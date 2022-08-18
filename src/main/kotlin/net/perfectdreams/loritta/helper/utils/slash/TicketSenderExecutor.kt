@@ -6,6 +6,7 @@ import dev.kord.common.entity.DiscordPartialEmoji
 import dev.kord.common.entity.Snowflake
 import dev.kord.rest.builder.message.create.actionRow
 import dev.kord.rest.builder.message.create.embed
+import net.perfectdreams.discordinteraktions.common.builder.message.actionRow
 import net.perfectdreams.discordinteraktions.common.commands.ApplicationCommandContext
 import net.perfectdreams.discordinteraktions.common.commands.options.ApplicationCommandOptions
 import net.perfectdreams.discordinteraktions.common.commands.options.SlashCommandArguments
@@ -112,16 +113,19 @@ Antes de perguntar, verifique se a resposta dela não está no <#${systemInfo.fa
                                 "Como comprar pesadelos?",
                                 HowToBuyPesadelosResponse::class.simpleName!!
                             )
+                        }
+                    }
 
-                            // ===[ SPECIAL CASE ]===
-                            option(
-                                i18nContext.get(
-                                    I18nKeysData.Tickets.Menu.CreateSupportTicket
-                                ),
-                                HelperResponseSelectMenuExecutor.MY_QUESTION_ISNT_HERE_SPECIAL_KEY
-                            ) {
-                                emoji = DiscordPartialEmoji(Snowflake(648695501398605825), "sad_cat18")
-                            }
+                    actionRow {
+                        interactiveButton(
+                            ButtonStyle.Primary,
+                            CreateTicketButtonExecutor,
+                            ComponentDataUtils.encode(
+                                TicketSystemTypeData(systemInfo.systemType)
+                            )
+                        ) {
+                            emoji = DiscordPartialEmoji(name = "➕")
+                            label = i18nContext.get(I18nKeysData.Tickets.CreateTicket)
                         }
                     }
                 }
@@ -343,18 +347,21 @@ Antes de perguntar, verifique se a resposta dela não está no <#${systemInfo.fa
                                         ),
                                         SparklyPowerInfoResponse::class.simpleName!!
                                     )
-
-                                    // ===[ SPECIAL CASE ]===
-                                    option(
-                                        i18nContext.get(
-                                            I18nKeysData.Tickets.Menu.CreateSupportTicket
-                                        ),
-                                        HelperResponseSelectMenuExecutor.MY_QUESTION_ISNT_HERE_SPECIAL_KEY
-                                    ) {
-                                        emoji = DiscordPartialEmoji(Snowflake(648695501398605825), "sad_cat18")
-                                    }
                                 }
                             }
+                        }
+                    }
+
+                    actionRow {
+                        interactiveButton(
+                            ButtonStyle.Primary,
+                            CreateTicketButtonExecutor,
+                            ComponentDataUtils.encode(
+                                TicketSystemTypeData(systemInfo.systemType)
+                            )
+                        ) {
+                            emoji = DiscordPartialEmoji(name = "➕")
+                            label = i18nContext.get(I18nKeysData.Tickets.CreateTicket)
                         }
                     }
                 }
