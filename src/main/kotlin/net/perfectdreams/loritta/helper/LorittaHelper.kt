@@ -68,7 +68,7 @@ class LorittaHelper(val config: LorittaHelperConfig, val fanArtsConfig: FanArtsC
     val executor = Executors.newFixedThreadPool(8)
         .asCoroutineDispatcher()
 
-    val timedTaskExecutor = Executors.newScheduledThreadPool(1)
+    val timedTaskExecutor = Executors.newScheduledThreadPool(4)
     val databases = Databases(this)
     var dailyCatcherManager: DailyCatcherManager? = null
 
@@ -140,12 +140,13 @@ class LorittaHelper(val config: LorittaHelperConfig, val fanArtsConfig: FanArtsC
 
             // Will execute the task every day at 05:00
             // 1440 = 24 hours in minutes
-            timedTaskExecutor.scheduleAtFixedRate(
+            // Disabled daily catcher for now, because the thread gets stuck on the "onlyEcoCommandsCatcher.joinAll()" call
+            /* timedTaskExecutor.scheduleAtFixedRate(
                 DailyCatcherTask(dailyCatcher),
                 whenItShouldBeStarted,
                 1440,
                 TimeUnit.MINUTES
-            )
+            ) */
         }
 
         // Get pending reports
