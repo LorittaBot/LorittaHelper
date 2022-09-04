@@ -168,9 +168,6 @@ class CreateTicketButtonExecutor(val m: LorittaHelperKord) : ButtonExecutor {
                 ThreadModifyBuilder().apply {
                     this.name = threadName
                     this.archived = false
-                    // Before we used locked = false due to a bug in Discord Mobile related to "You don't have permission!", however it seems to have been fixed, so we don't need to keep it unlocked
-                    // Besides, allowing unlock makes people confused, because they click to close the ticket but they can still send messages in the ticket
-                    // Update: We are now using locked again because it is still broken lmao
                     this.locked = false
                     this.invitable = false
                 }.toRequest(),
