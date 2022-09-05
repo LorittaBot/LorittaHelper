@@ -1,15 +1,17 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    kotlin("jvm") version "1.7.0"
-    kotlin("plugin.serialization") version "1.7.0"
+    kotlin("jvm") version "1.7.10"
+    kotlin("plugin.serialization") version "1.7.10"
     id("com.google.cloud.tools.jib") version "3.1.4"
-    id("net.perfectdreams.i18nhelper.plugin") version "0.0.3-SNAPSHOT"
+    id("net.perfectdreams.i18nhelper.plugin") version "0.0.5-SNAPSHOT"
 }
 
-i18nHelper {
+val generateI18nKeys = tasks.register<net.perfectdreams.i18nhelper.plugin.GenerateI18nKeysTask>("generateI18nKeys") {
     generatedPackage.set("net.perfectdreams.loritta.helper.i18n")
-    languageSourceFolder.set("src/main/resources/languages/en/")
+    languageSourceFolder.set(file("src/resources/languages/en/"))
+    languageTargetFolder.set(file("$buildDir/generated/languages"))
+    translationLoadTransform.set { file, map -> map }
 }
 
 group = "net.perfectdreams.loritta.helper"
@@ -57,7 +59,7 @@ dependencies {
     implementation("io.github.netvl.ecoji:ecoji:1.0.0")
 
     // i18nHelper
-    api("net.perfectdreams.i18nhelper.formatters:icu-messageformat-jvm:0.0.3-SNAPSHOT")
+    api("net.perfectdreams.i18nhelper.formatters:icu-messageformat-jvm:0.0.5-SNAPSHOT")
 
     // GalleryOfDreams client
     implementation("net.perfectdreams.galleryofdreams:common:1.0.9")
@@ -82,7 +84,7 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter:5.8.2")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.8.2")
 
-    implementation("io.ktor:ktor-client-cio:2.0.0")
+    implementation("io.ktor:ktor-client-cio:2.1.0")
 
     implementation("org.apache.commons:commons-text:1.9")
 }
@@ -103,7 +105,7 @@ jib {
 }
 
 sourceSets.main {
-    java.srcDir("build/generated/languages")
+    java.srcDir(generateI18nKeys)
 }
 
 tasks.test {
