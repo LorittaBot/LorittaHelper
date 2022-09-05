@@ -69,7 +69,7 @@ class LoriBanExecutor(helper: LorittaHelperKord) : HelperSlashExecutor(helper, P
             }
 
             val bannedUsersIds = currentBanStatuses.map { it[BannedUsers.userId] }
-            val usersThatCanBeBanned = userIds.filter { it in bannedUsersIds }
+            val usersThatCanBeBanned = userIds.filter { it !in bannedUsersIds }
 
             for (userId in usersThatCanBeBanned) {
                 val banId = BannedUsers.insertAndGetId {
