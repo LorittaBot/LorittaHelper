@@ -20,7 +20,7 @@ import kotlin.time.Duration.Companion.days
 
 class LoriBanExecutor(helper: LorittaHelperKord) : HelperSlashExecutor(helper, PermissionLevel.ADMIN) {
     inner class Options : ApplicationCommandOptions() {
-        val userId = string("user_id", "ID do usuário que você deseja banir")
+        val userIds = string("user_ids", "ID do usuário que você deseja banir (pode ser vários)")
 
         val reason = string("reason", "Motivo que irá aparecer no ban")
     }
@@ -28,17 +28,21 @@ class LoriBanExecutor(helper: LorittaHelperKord) : HelperSlashExecutor(helper, P
     override val options = Options()
 
     override suspend fun executeHelper(context: ApplicationCommandContext, args: SlashCommandArguments) {
-        val userId = args[options.userId].toLongOrNull() ?: run {
+        val userIds = args[options.userIds].split(" ").mapNotNull { it.toLongOrNull() }
+
+        if (userIds.isEmpty()) {
             context.sendEphemeralMessage {
                 content = "Você não colocou um ID válido... <:lori_sob:556524143281963008>"
             }
             return
         }
+
         val reason = args[options.reason]
 
-        val result = transaction(helper.databases.lorittaDatabase) {
-            val currentBanStatus = BannedUsers.select {
-                BannedUsers.userId eq userId and
+        val results = mutableListOf<BanResult>()
+        transaction(helper.databases.lorittaDatabase) {
+            val currentBanStatuses = BannedUsers.select {
+                BannedUsers.userId inList userIds and
                         (BannedUsers.valid eq true) and
                         (
                                 BannedUsers.expiresAt.isNull()
@@ -46,61 +50,72 @@ class LoriBanExecutor(helper: LorittaHelperKord) : HelperSlashExecutor(helper, P
                                         (BannedUsers.expiresAt.isNotNull() and (BannedUsers.expiresAt greaterEq System.currentTimeMillis())))
             }
                 .orderBy(BannedUsers.bannedAt, SortOrder.DESC)
-                .limit(1)
-                .firstOrNull()
+                .toList()
 
-            if (currentBanStatus != null)
-                return@transaction UserIsAlreadyBannedResult(
-                    currentBanStatus[BannedUsers.reason],
-                    currentBanStatus[BannedUsers.expiresAt],
-                    currentBanStatus[BannedUsers.bannedBy]
+            for (currentBanStatus in currentBanStatuses) {
+                results.add(
+                    UserIsAlreadyBannedResult(
+                        currentBanStatus[BannedUsers.userId],
+                        currentBanStatus[BannedUsers.reason],
+                        currentBanStatus[BannedUsers.expiresAt],
+                        currentBanStatus[BannedUsers.bannedBy]
+                    )
                 )
-
-            val banId = BannedUsers.insertAndGetId {
-                it[BannedUsers.userId] = userId
-                it[BannedUsers.valid] = true
-                it[BannedUsers.bannedAt] = System.currentTimeMillis()
-                it[BannedUsers.expiresAt] = null // TODO: Implement temp expiration
-                it[BannedUsers.reason] = reason
-                it[BannedUsers.bannedBy] = context.sender.id.value
-                    .toLong()
             }
-            UserBannedResult(banId.value)
+
+            val bannedUsersIds = currentBanStatuses.map { it[BannedUsers.userId] }
+            val usersThatCanBeBanned = userIds.filter { it in bannedUsersIds }
+
+            for (userId in usersThatCanBeBanned) {
+                val banId = BannedUsers.insertAndGetId {
+                    it[BannedUsers.userId] = userId
+                    it[BannedUsers.valid] = true
+                    it[BannedUsers.bannedAt] = System.currentTimeMillis()
+                    it[BannedUsers.expiresAt] = null // TODO: Implement temp expiration
+                    it[BannedUsers.reason] = reason
+                    it[BannedUsers.bannedBy] = context.sender.id.value
+                        .toLong()
+                }
+                results.add(UserBannedResult(banId.value))
+            }
         }
 
-        when (result) {
-            is UserBannedResult -> {
-                context.sendEphemeralMessage {
-                    content = "Usuário $userId (<@$userId>) (ID do ban: ${result.id}) foi banido com sucesso. Obrigada por ter reportado o usuário! <:lori_heart:853052040425766923>"
-                }
-
-                LoriToolsUtils.logToSaddestOfTheSads(
-                    helper,
-                    context.sender,
-                    Snowflake(userId),
-                    "Usuário banido de usar a Loritta",
-                    reason,
-                    Color(237, 66, 69)
-                )
-
-                try {
-                    helper.helperRest.guild.modifyGuildMember(
-                        Snowflake(Constants.COMMUNITY_SERVER_ID),
-                        Snowflake(userId)
-                    ) {
-                        this.communicationDisabledUntil = Clock.System.now()
-                            .plus(28.days)
-
-                        this.reason = "User is Loritta Banned!"
+        for (result in results) {
+            when (result) {
+                is UserBannedResult -> {
+                    context.sendEphemeralMessage {
+                        content = "Usuário ${result.id} (<@${result.id}>) (ID do ban: ${result.id}) foi banido com sucesso. Obrigada por ter reportado o usuário! <:lori_heart:853052040425766923>"
                     }
-                } catch (e: KtorRequestException) {}
-            }
-            is UserIsAlreadyBannedResult -> {
-                context.sendEphemeralMessage {
-                    content = if (result.bannedBy != null) {
-                        "O usuário $userId (<@$userId>) já está banido, bobinho! Ele foi banido pelo motivo `${result.reason}` por <@${result.bannedBy}>"
-                    } else {
-                        "O usuário $userId (<@$userId>) já está banido, bobinho! Ele foi banido pelo motivo `${result.reason}`"
+
+                    LoriToolsUtils.logToSaddestOfTheSads(
+                        helper,
+                        context.sender,
+                        Snowflake(result.id),
+                        "Usuário banido de usar a Loritta",
+                        reason,
+                        Color(237, 66, 69)
+                    )
+
+                    try {
+                        helper.helperRest.guild.modifyGuildMember(
+                            Snowflake(Constants.COMMUNITY_SERVER_ID),
+                            Snowflake(result.id)
+                        ) {
+                            this.communicationDisabledUntil = Clock.System.now()
+                                .plus(28.days)
+
+                            this.reason = "User is Loritta Banned!"
+                        }
+                    } catch (e: KtorRequestException) {
+                    }
+                }
+                is UserIsAlreadyBannedResult -> {
+                    context.sendEphemeralMessage {
+                        content = if (result.bannedBy != null) {
+                            "O usuário ${result.id} (<@${result.id}>) já está banido, bobinho! Ele foi banido pelo motivo `${result.reason}` por <@${result.bannedBy}>"
+                        } else {
+                            "O usuário ${result.id} (<@${result.id}>) já está banido, bobinho! Ele foi banido pelo motivo `${result.reason}`"
+                        }
                     }
                 }
             }
@@ -114,6 +129,7 @@ class LoriBanExecutor(helper: LorittaHelperKord) : HelperSlashExecutor(helper, P
     ) : BanResult()
 
     private class UserIsAlreadyBannedResult(
+        val id: Long,
         val reason: String,
         val expiresAt: Long?,
         val bannedBy: Long?
