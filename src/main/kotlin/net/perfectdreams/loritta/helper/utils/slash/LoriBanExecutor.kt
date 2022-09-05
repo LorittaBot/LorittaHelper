@@ -79,7 +79,7 @@ class LoriBanExecutor(helper: LorittaHelperKord) : HelperSlashExecutor(helper, P
                     it[BannedUsers.bannedBy] = context.sender.id.value
                         .toLong()
                 }
-                results.add(UserBannedResult(banId.value))
+                results.add(UserBannedResult(banId.value, userId))
             }
         }
 
@@ -87,13 +87,13 @@ class LoriBanExecutor(helper: LorittaHelperKord) : HelperSlashExecutor(helper, P
             when (result) {
                 is UserBannedResult -> {
                     context.sendEphemeralMessage {
-                        content = "Usuário ${result.id} (<@${result.id}>) (ID do ban: ${result.id}) foi banido com sucesso. Obrigada por ter reportado o usuário! <:lori_heart:853052040425766923>"
+                        content = "Usuário ${result.userId} (<@${result.userId}>) (ID do ban: ${result.id}) foi banido com sucesso. Obrigada por ter reportado o usuário! <:lori_heart:853052040425766923>"
                     }
 
                     LoriToolsUtils.logToSaddestOfTheSads(
                         helper,
                         context.sender,
-                        Snowflake(result.id),
+                        Snowflake(result.userId),
                         "Usuário banido de usar a Loritta",
                         reason,
                         Color(237, 66, 69)
@@ -102,7 +102,7 @@ class LoriBanExecutor(helper: LorittaHelperKord) : HelperSlashExecutor(helper, P
                     try {
                         helper.helperRest.guild.modifyGuildMember(
                             Snowflake(Constants.COMMUNITY_SERVER_ID),
-                            Snowflake(result.id)
+                            Snowflake(result.userId)
                         ) {
                             this.communicationDisabledUntil = Clock.System.now()
                                 .plus(28.days)
@@ -115,9 +115,9 @@ class LoriBanExecutor(helper: LorittaHelperKord) : HelperSlashExecutor(helper, P
                 is UserIsAlreadyBannedResult -> {
                     context.sendEphemeralMessage {
                         content = if (result.bannedBy != null) {
-                            "O usuário ${result.id} (<@${result.id}>) já está banido, bobinho! Ele foi banido pelo motivo `${result.reason}` por <@${result.bannedBy}>"
+                            "O usuário ${result.userId} (<@${result.userId}>) já está banido, bobinho! Ele foi banido pelo motivo `${result.reason}` por <@${result.bannedBy}>"
                         } else {
-                            "O usuário ${result.id} (<@${result.id}>) já está banido, bobinho! Ele foi banido pelo motivo `${result.reason}`"
+                            "O usuário ${result.userId} (<@${result.userId}>) já está banido, bobinho! Ele foi banido pelo motivo `${result.reason}`"
                         }
                     }
                 }
@@ -128,11 +128,12 @@ class LoriBanExecutor(helper: LorittaHelperKord) : HelperSlashExecutor(helper, P
     private sealed class BanResult
 
     private class UserBannedResult(
-        val id: Long
+        val id: Long,
+        val userId: Long
     ) : BanResult()
 
     private class UserIsAlreadyBannedResult(
-        val id: Long,
+        val userId: Long,
         val reason: String,
         val expiresAt: Long?,
         val bannedBy: Long?
