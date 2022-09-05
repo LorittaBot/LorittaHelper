@@ -28,6 +28,8 @@ class LoriBanExecutor(helper: LorittaHelperKord) : HelperSlashExecutor(helper, P
     override val options = Options()
 
     override suspend fun executeHelper(context: ApplicationCommandContext, args: SlashCommandArguments) {
+        context.deferChannelMessageEphemerally()
+
         val userIds = args[options.userIds]
             .split(" ")
             .mapNotNull { it.toLongOrNull() }
