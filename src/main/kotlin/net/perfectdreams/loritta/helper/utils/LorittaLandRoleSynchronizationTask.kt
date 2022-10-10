@@ -139,7 +139,6 @@ class LorittaLandRoleSynchronizationTask(val m: LorittaHelper, val jda: JDA) : R
         val superDonatorRole = communityGuild.getRoleById(463652112656629760L)
         val megaDonatorRole = communityGuild.getRoleById(534659343656681474L)
         val advertisementRole = communityGuild.getRoleById(619691791041429574L)
-        val inactiveRole = communityGuild.getRoleById(435856512787677214L)
 
         for (payment in payments) {
             if ((payment.expiresAt ?: 0) >= System.currentTimeMillis()) {
@@ -161,9 +160,6 @@ class LorittaLandRoleSynchronizationTask(val m: LorittaHelper, val jda: JDA) : R
 
                 if (!roles.contains(donatorRole))
                     roles.add(donatorRole)
-
-                if (roles.contains(inactiveRole))
-                    roles.remove(inactiveRole)
 
                 if (donated >= 99.99) {
                     if (!roles.contains(megaDonatorRole))
@@ -205,13 +201,6 @@ class LorittaLandRoleSynchronizationTask(val m: LorittaHelper, val jda: JDA) : R
 
                 if (roles.contains(megaDonatorRole))
                     roles.remove(megaDonatorRole)
-
-                if (inactiveDonators.contains(member.user.idLong)) {
-                    if (!roles.contains(inactiveRole)) {
-                        roles.add(inactiveRole)
-                    }
-                } else
-                    roles.remove(inactiveRole)
             }
 
             if (!(roles.containsAll(member.roles) && member.roles.containsAll(roles))) {// Novos cargos foram adicionados
