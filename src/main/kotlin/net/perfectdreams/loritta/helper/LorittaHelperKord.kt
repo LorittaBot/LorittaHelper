@@ -110,6 +110,7 @@ class LorittaHelperKord(
                 register(AttachDenyReasonCommand(this@LorittaHelperKord, jda))
                 register(AllTransactionsCommand(this@LorittaHelperKord))
                 register(DailyCheckCommand(this@LorittaHelperKord))
+                register(DirectDiscordCdnMessageCommand(this@LorittaHelperKord))
 
                 // ===[ BUTTON ROLES ]===
                 register(ButtonRoleSenderCommand(this@LorittaHelperKord))

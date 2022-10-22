@@ -13,19 +13,19 @@ abstract class HelperSlashExecutor(
     val requiredPermissionLevel: PermissionLevel
 ) : SlashCommandExecutor() {
     companion object {
-        private val ADMIN_ROLES = listOf(
+        val ADMIN_ROLES = listOf(
             Snowflake(693606685943660545L), // SparklyPower Coords
             Snowflake(333601725862641664L), // SparklyPower Owners
             Snowflake(351473717194522647),  // Loritta Bodyguards Community
             Snowflake(421325022951637015L), // Loritta Bodyguards Support
         )
 
-        private val HELPER_ROLES = listOf(
+        val HELPER_ROLES = listOf(
             Snowflake(399301696892829706L), // Support Community
             Snowflake(421325387889377291L), // Support BR Server
         )
 
-        private val FAN_ARTS_MANAGER_ROLES = GalleryOfDreamsUtils.ALLOWED_ROLES
+        val FAN_ARTS_MANAGER_ROLES = GalleryOfDreamsUtils.ALLOWED_ROLES
     }
 
     override suspend fun execute(context: ApplicationCommandContext, args: SlashCommandArguments) {
