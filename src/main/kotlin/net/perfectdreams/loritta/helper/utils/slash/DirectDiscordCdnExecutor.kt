@@ -18,17 +18,21 @@ import java.time.Instant
 
 class DirectDiscordCdnExecutor(helper: LorittaHelperKord) : MessageCommandExecutor() {
     override suspend fun execute(context: ApplicationCommandContext, targetMessage: Message) {
-        context.deferChannelMessageEphemerally()
-
         if (context !is GuildApplicationCommandContext || !context.member.roleIds.any { it in HelperSlashExecutor.HELPER_ROLES }) {
             context.sendEphemeralMessage {
-                content = "Você não tem o poder de adicionar fan arts na galeria!"
+                content = "Você não tem o poder de usar isto!"
             }
             return
         }
 
+        val remappedUrls = targetMessage.attachments.map { it.url.replace("cdn.discordapp.com", "txt.lori.fun") }.joinToString("\n")
+
         context.sendEphemeralMessage {
-            content = targetMessage.attachments.map { it.url.replace("cdn.discordapp.com", "txt.lori.fun") }.joinToString("\n")
+            if (remappedUrls.isNotBlank()) {
+                content = targetMessage.attachments.map { it.url.replace("cdn.discordapp.com", "txt.lori.fun") }.joinToString("\n")
+            } else {
+                content = "Nenhum anexo encontrado na mensagem..."
+            }
         }
     }
 }
