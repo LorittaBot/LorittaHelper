@@ -56,7 +56,7 @@ class DailyCheckExecutor(helper: LorittaHelperKord) : HelperSlashExecutor(helper
                 emote
             }
 
-            val userData = users.find { it.id == daily[Dailies.receivedById] }
+            val userData = users.find { it.id.value.toLong() == daily[Dailies.receivedById] }
 
             builder.append("${userEmote} [${whenTheTransactionHappened.format(Constants.PRETTY_DATE_FORMAT)}] ${userData?.tag} (${daily[Dailies.receivedById]})")
             builder.append("\n")
