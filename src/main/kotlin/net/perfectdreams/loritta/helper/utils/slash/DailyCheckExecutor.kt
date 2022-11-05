@@ -34,6 +34,9 @@ class DailyCheckExecutor(helper: LorittaHelperKord) : HelperSlashExecutor(helper
             return
         }
 
+        val emotes = mutableListOf<String>("⬛", "⬜", "🟧", "🟦", "🟥", "🟫", "🟪", "🟩", "🟨", "⚫", "⚪", "🔴", "🔵", "🟤", "🟣", "🟢", "🟡", "🟠", "🧡", "💛", "💚", "💙", "💜", "🖤", "🤍", "🤎")
+        val idToEmotes = mutableMapOf<Long, String>()
+
         val dailies = transaction(helper.databases.lorittaDatabase) {
             Dailies.select {
                 Dailies.receivedById inList users.map { it.id.value.toLong() }
@@ -47,7 +50,15 @@ class DailyCheckExecutor(helper: LorittaHelperKord) : HelperSlashExecutor(helper
             val whenTheTransactionHappened = Instant.ofEpochMilli(daily[Dailies.receivedAt])
                 .atZone(Constants.TIME_ZONE_ID)
 
-            builder.append("[${whenTheTransactionHappened.format(Constants.PRETTY_DATE_FORMAT)}] ${daily[Dailies.receivedById]}")
+            val userEmote = idToEmotes.getOrPut(daily[Dailies.receivedById]) {
+                val emote = emotes.random()
+                emotes.remove(emote)
+                emote
+            }
+
+            val userData = users.find { it.id == daily[Dailies.receivedById] }
+
+            builder.append("${userEmote} [${whenTheTransactionHappened.format(Constants.PRETTY_DATE_FORMAT)}] ${userData?.tag} (${daily[Dailies.receivedById]})")
             builder.append("\n")
             builder.append("- Email: ${daily[Dailies.email]}")
             builder.append("\n")
