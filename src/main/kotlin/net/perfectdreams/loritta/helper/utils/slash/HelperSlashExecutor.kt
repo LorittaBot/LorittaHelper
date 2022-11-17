@@ -23,6 +23,7 @@ abstract class HelperSlashExecutor(
         val HELPER_ROLES = listOf(
             Snowflake(399301696892829706L), // Support Community
             Snowflake(421325387889377291L), // Support BR Server
+            Snowflake(332650495522897920L), // SparklyPower Staff
         )
 
         val FAN_ARTS_MANAGER_ROLES = GalleryOfDreamsUtils.ALLOWED_ROLES
