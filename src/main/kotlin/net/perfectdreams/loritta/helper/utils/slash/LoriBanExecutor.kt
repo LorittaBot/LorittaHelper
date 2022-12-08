@@ -4,17 +4,15 @@ import dev.kord.common.Color
 import dev.kord.common.entity.Snowflake
 import dev.kord.rest.request.KtorRequestException
 import kotlinx.datetime.Clock
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 import net.perfectdreams.discordinteraktions.common.commands.ApplicationCommandContext
 import net.perfectdreams.discordinteraktions.common.commands.options.ApplicationCommandOptions
 import net.perfectdreams.discordinteraktions.common.commands.options.SlashCommandArguments
 import net.perfectdreams.loritta.cinnamon.pudding.tables.BannedUsers
 import net.perfectdreams.loritta.helper.LorittaHelperKord
 import net.perfectdreams.loritta.helper.utils.Constants
-import org.jetbrains.exposed.sql.SortOrder
-import org.jetbrains.exposed.sql.and
-import org.jetbrains.exposed.sql.insertAndGetId
-import org.jetbrains.exposed.sql.or
-import org.jetbrains.exposed.sql.select
+import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.transaction
 import kotlin.time.Duration.Companion.days
 
@@ -82,6 +80,12 @@ class LoriBanExecutor(helper: LorittaHelperKord) : HelperSlashExecutor(helper, P
                         .toLong()
                 }
                 results.add(UserBannedResult(banId.value, userId))
+                exec(
+                    "SELECT pg_notify('loritta_lori_bans', ?)",
+                    listOf(
+                        TextColumnType() to Json.encodeToString(userId)
+                    )
+                )
             }
         }
 
