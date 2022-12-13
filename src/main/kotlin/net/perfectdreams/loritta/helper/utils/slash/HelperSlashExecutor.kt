@@ -14,6 +14,7 @@ abstract class HelperSlashExecutor(
 ) : SlashCommandExecutor() {
     companion object {
         val ADMIN_ROLES = listOf(
+            Snowflake(333602159998271489L), // SparklyPower Admins
             Snowflake(693606685943660545L), // SparklyPower Coords
             Snowflake(333601725862641664L), // SparklyPower Owners
             Snowflake(351473717194522647),  // Loritta Bodyguards Community
