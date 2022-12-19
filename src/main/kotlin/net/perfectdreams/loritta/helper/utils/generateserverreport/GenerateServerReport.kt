@@ -3,12 +3,7 @@ package net.perfectdreams.loritta.helper.utils.generateserverreport
 import kotlinx.coroutines.future.await
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.builtins.ListSerializer
-import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.JsonElement
-import kotlinx.serialization.json.jsonArray
-import kotlinx.serialization.json.jsonObject
-import kotlinx.serialization.json.jsonPrimitive
-import kotlinx.serialization.json.long
+import kotlinx.serialization.json.*
 import mu.KotlinLogging
 import net.dv8tion.jda.api.EmbedBuilder
 import net.dv8tion.jda.api.JDA
@@ -117,6 +112,35 @@ class GenerateServerReport(val m: LorittaHelper) {
                         userThatMadeTheReport,
                         items
                     )
+
+                "Meliante quebrando as regras em servidores da LorittaLand" -> handleBreakingLorittaLandRules(
+                    event.jda,
+                    userThatMadeTheReport,
+                    reportType.answer.string,
+                    items
+                )
+
+
+                "Uso de Múltiplas Contas para Daily" -> handleMultipleDailyAccountsRules(
+                    event.jda,
+                    userThatMadeTheReport,
+                    reportType.answer.string,
+                    items
+                )
+
+                "Evasão de Ban da Loritta" -> handleBanEvasionRules(
+                    event.jda,
+                    userThatMadeTheReport,
+                    reportType.answer.string,
+                    items
+                )
+
+                "Servidor ou Evento de Reward" -> handleGenericRules(
+                    event.jda,
+                    userThatMadeTheReport,
+                    reportType.answer.string,
+                    items
+                )
 
                 "Outros" ->
                     handleOtherRules(event.jda, userThatMadeTheReport, reportType.answer.string, items)
@@ -511,6 +535,194 @@ class GenerateServerReport(val m: LorittaHelper) {
 
             addFinalConsiderations(items)
         }
+
+        return ReportWithUserInfoMessage(
+            embed,
+            userId,
+            createReportedUserEmbed(jda, userId),
+            images = images
+        )
+    }
+
+    private suspend fun handleMultipleDailyAccountsRules(
+        jda: JDA,
+        userThatMadeTheReport: User,
+        reportType: String,
+        items: List<GoogleFormItem>
+    ): ReportMessage {
+        val embed = createBaseEmbed(userThatMadeTheReport, reportType)
+
+        val userId = items.first { it.question == "ID do Usuário" }
+            .answer
+            .string
+            .trim()
+            .toLongOrNull()
+
+        val accountIds = items.first { it.question == "ID das Contas Alternativas" }
+            .answer
+            .string
+            .replace("\n", " ")
+            .split(" ")
+            .filter { it.isNotBlank() }
+            .map { it.trim() }
+
+        val messageLinks = items.first { it.question == "Link da Mensagem" }
+            .answer.string.replace("\n", " ")
+            .split(" ")
+            .filter { it.isNotBlank() }
+            .map { it.trim() }
+
+        val images = items.first { it.question == "Provas (opcional)" }
+            .answer
+            .stringArray
+            .map {
+                it.trim()
+            }
+
+        embed.addField(
+            "ID do Usuário",
+            userId?.toString(),
+            false
+        )
+
+        embed.addField(
+            "IDs das Contas Alternativas",
+            accountIds.joinToString(", "),
+            false
+        )
+
+        embed.addField(
+            "Link da Mensagem",
+            messageLinks.joinToString("\n"),
+            false
+        )
+
+        embed.addFinalConsiderations(items)
+
+        return ReportWithUserInfoMessage(
+            embed,
+            userId,
+            createReportedUserEmbed(jda, userId),
+            images = images
+        )
+    }
+
+    private suspend fun handleBanEvasionRules(
+        jda: JDA,
+        userThatMadeTheReport: User,
+        reportType: String,
+        items: List<GoogleFormItem>
+    ): ReportMessage {
+        val embed = createBaseEmbed(userThatMadeTheReport, reportType)
+
+        val userId = items.first { it.question == "ID do Usuário" }
+            .answer
+            .string
+            .trim()
+            .toLongOrNull()
+
+        val accountIds = items.first { it.question == "ID da Conta Alternativa" }
+            .answer
+            .string
+            .replace("\n", " ")
+            .split(" ")
+            .filter { it.isNotBlank() }
+            .map { it.trim() }
+
+        val messageLinks = items.first { it.question == "Link da Mensagem" }
+            .answer.string.replace("\n", " ")
+            .split(" ")
+            .filter { it.isNotBlank() }
+            .map { it.trim() }
+
+        val images = items.first { it.question == "Provas (opcional)" }
+            .answer
+            .stringArray
+            .map {
+                it.trim()
+            }
+
+        embed.addField(
+            "ID do Usuário",
+            userId?.toString(),
+            false
+        )
+
+        embed.addField(
+            "IDs das Contas Alternativas",
+            accountIds.joinToString(", "),
+            false
+        )
+
+        embed.addField(
+            "Link da Mensagem",
+            messageLinks.joinToString("\n"),
+            false
+        )
+
+        embed.addFinalConsiderations(items)
+
+        return ReportWithUserInfoMessage(
+            embed,
+            userId,
+            createReportedUserEmbed(jda, userId),
+            images = images
+        )
+    }
+
+    private suspend fun handleGenericRules(
+        jda: JDA,
+        userThatMadeTheReport: User,
+        reportType: String,
+        items: List<GoogleFormItem>
+    ): ReportMessage {
+        val embed = createBaseEmbed(userThatMadeTheReport, reportType)
+
+        val userId = items.first { it.question == "ID do Usuário" }
+            .answer
+            .string
+            .trim()
+            .toLongOrNull()
+
+        val images = items.first { it.question == "Imagem da Mensagem de Anúncio/Divulgação" }
+            .answer
+            .stringArray
+            .map {
+                it.trim()
+            }
+
+        items.forEach {
+            val answerAsText = if (it.answer is JsonNull) {
+                embed.addField(
+                    it.question,
+                    "*Não informado*",
+                    false
+                )
+            } else if (it.answer is JsonPrimitive && it.answer.isString) {
+                embed.addField(
+                    it.question,
+                    it.answer.content,
+                    false
+                )
+            } else if (it.answer is JsonArray) {
+                embed.addField(
+                    it.question,
+                    it.answer
+                        .stringArray.joinToString("\n") {
+                            it.trim()
+                        },
+                    false
+                )
+            } else {
+                embed.addField(
+                    it.question,
+                    "*Tipo desconhecido*",
+                    false
+                )
+            }
+        }
+
+        embed.addFinalConsiderations(items)
 
         return ReportWithUserInfoMessage(
             embed,
