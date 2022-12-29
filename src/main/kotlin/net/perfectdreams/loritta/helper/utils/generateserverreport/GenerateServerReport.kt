@@ -572,10 +572,10 @@ class GenerateServerReport(val m: LorittaHelper) {
             .filter { it.isNotBlank() }
             .map { it.trim() }
 
-        val images = items.first { it.question == "Provas (opcional)" }
-            .answer
-            .stringArray
-            .map {
+        val images = items.firstOrNull { it.question == "Provas (opcional)" }
+            ?.answer
+            ?.stringArray
+            ?.map {
                 it.trim()
             }
 
@@ -635,10 +635,10 @@ class GenerateServerReport(val m: LorittaHelper) {
             .filter { it.isNotBlank() }
             .map { it.trim() }
 
-        val images = items.first { it.question == "Provas (opcional)" }
-            .answer
-            .stringArray
-            .map {
+        val images = items.firstOrNull { it.question == "Provas (opcional)" }
+            ?.answer
+            ?.stringArray
+            ?.map {
                 it.trim()
             }
 
