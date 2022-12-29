@@ -65,7 +65,7 @@ class DailyCheckExecutor(helper: LorittaHelperKord) : HelperSlashExecutor(helper
             builder.append("- IP: ${daily[Dailies.ip]}")
             builder.append("\n")
             builder.append("- User-Agent: ${daily[Dailies.userAgent]}")
-            builder.append("\n")
+            builder.append("\n\n")
         }
 
         context.sendMessage {
