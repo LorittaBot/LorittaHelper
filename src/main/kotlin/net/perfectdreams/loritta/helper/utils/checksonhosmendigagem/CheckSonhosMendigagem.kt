@@ -56,7 +56,6 @@ class CheckSonhosMendigagem(val m: LorittaHelper) {
             ),
             LorittaReply(
                 "https://cdn.discordapp.com/attachments/703353259938545744/1062039628124782743/Como_consigo_sonhos.png",
-                null,
                 mentionUser = false
             )
         )

@@ -7,8 +7,8 @@ import java.util.regex.Pattern
 
 class SocialNotificatorResponse : RegExResponse() {
     init {
-        patterns.add(LORI_NAME.toPattern(Pattern.CASE_INSENSITIVE))
-        patterns.add("(n(a|ã)o) (notifica|avisa|posta) ((minha|meu)s? )?((tweet|video|live)s?)".toPattern(Pattern.CASE_INSENSITIVE))
+        patterns.add("($LORI_NAME)?".toPattern(Pattern.CASE_INSENSITIVE))
+        patterns.add("(n([aã])o) (notifica|avisa|posta) ((minha|meu)s? )?((tweet|video|live)s?)".toPattern(Pattern.CASE_INSENSITIVE))
     }
 
     override fun getResponse(message: String) =
