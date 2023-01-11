@@ -17,4 +17,7 @@ object Emotes {
     const val LORI_SUNGLASSES = "<:lori_sunglasses:950114031337865257>"
     const val PANTUFA_GAMING = "<:pantufa_gaming:853048446922784819>"
     const val LORI_RICH = "<:lori_rica:593979718919913474>"
+    const val LORI_PEACE = "<:lori_peace:971612491597635665>"
+    const val LORI_CARD = "<:lori_card:956402937666633769>"
+    const val LORI_SMART = "<:lori_smart:964697508204908554>"
 }
