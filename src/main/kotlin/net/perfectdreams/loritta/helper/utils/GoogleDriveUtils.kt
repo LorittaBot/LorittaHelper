@@ -9,19 +9,16 @@ import kotlinx.serialization.json.jsonArray
 import kotlinx.serialization.json.jsonPrimitive
 
 object GoogleDriveUtils {
-    fun getEmbeddableDirectGoogleDriveUrl(fileId: String) = "https://drive.google.com/uc?export=view&id=$fileId"
-
     suspend fun retrieveImageFromDrive(url: String, httpClient: HttpClient): DriveImage? {
         val request = httpClient.get(url)
 
         if (request.status == HttpStatusCode.OK) {
-            val array = Json.parseToJsonElement(
-                request.bodyAsText(Charsets.UTF_8)
-                    .substringAfter("window.viewerData = ")
-                    .substringBefore("};")
-                    .substringAfter("itemJson: ")
-            ).jsonArray
-            return DriveImage(array[10].jsonPrimitive.content, array[11].jsonPrimitive.content)
+            val driveUrl = request.bodyAsText(Charsets.UTF_8)
+                .substringAfter("<meta property=\"og:image\" content=\"")
+                .substringBefore("\"")
+                .substringBeforeLast("=w")
+
+            return DriveImage(driveUrl, "png")
         }
         return null
     }

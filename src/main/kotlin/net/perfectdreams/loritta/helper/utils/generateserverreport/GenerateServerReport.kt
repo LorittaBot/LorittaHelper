@@ -22,6 +22,7 @@ import net.perfectdreams.loritta.helper.LorittaHelper
 import net.perfectdreams.loritta.helper.listeners.ApproveReportsOnReactionListener
 import net.perfectdreams.loritta.helper.utils.ComponentDataUtils
 import net.perfectdreams.loritta.helper.utils.Constants
+import net.perfectdreams.loritta.helper.utils.GoogleDriveUtils
 import net.perfectdreams.loritta.helper.utils.GoogleDriveUtils.getEmbeddableDirectGoogleDriveUrl
 import net.perfectdreams.loritta.helper.utils.extensions.await
 import java.awt.Color
@@ -164,15 +165,7 @@ class GenerateServerReport(val m: LorittaHelper) {
                 val imageUrl = run {
                     val firstImage = images?.firstOrNull() ?: return@run null
                     return@run runCatching {
-                        val urlString = getEmbeddableDirectGoogleDriveUrl(firstImage)
-                        val connection = URL(urlString)
-                            .openConnection() as HttpURLConnection
-                        connection.instanceFollowRedirects = false
-                        connection.connect()
-                        return@runCatching if (connection.responseCode == 302)
-                            connection.getHeaderField("Location")
-                        else
-                            null
+                        GoogleDriveUtils.retrieveImageFromDrive("https://drive.google.com/file/d/$firstImage/view", LorittaHelper.http)
                     }.getOrNull()
                 }
 
