@@ -79,7 +79,7 @@ class DailyCheckExecutor(helper: LorittaHelperKord) : HelperSlashExecutor(helper
                 builder.append("\n")
                 builder.append("- Available Screen Size: ${daily[BrowserFingerprints.availWidth]}x${daily[BrowserFingerprints.availHeight]}")
                 builder.append("\n")
-                builder.append("- Timezone Offset: ${daily[BrowserFingerprints.availWidth]}x${daily[BrowserFingerprints.timezoneOffset]}")
+                builder.append("- Timezone Offset: ${daily[BrowserFingerprints.timezoneOffset]}")
             }
             builder.append("\n\n")
         }
