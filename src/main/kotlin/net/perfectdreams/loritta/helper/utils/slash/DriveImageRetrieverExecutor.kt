@@ -3,7 +3,6 @@ package net.perfectdreams.loritta.helper.utils.slash
 import net.perfectdreams.discordinteraktions.common.commands.ApplicationCommandContext
 import net.perfectdreams.discordinteraktions.common.commands.options.ApplicationCommandOptions
 import net.perfectdreams.discordinteraktions.common.commands.options.SlashCommandArguments
-import net.perfectdreams.loritta.helper.LorittaHelper
 import net.perfectdreams.loritta.helper.LorittaHelperKord
 import net.perfectdreams.loritta.helper.utils.GoogleDriveUtils
 
@@ -20,10 +19,10 @@ class DriveImageRetrieverExecutor(helper: LorittaHelperKord) : HelperSlashExecut
         if (url.startsWith("https://drive.google.com/file/d/")) {
             context.deferChannelMessage()
 
-            val imageUrl = GoogleDriveUtils.retrieveImageFromDrive(url, LorittaHelper.http)
+            val imageUrl = GoogleDriveUtils.getEmbeddableDirectGoogleDriveUrl(url.removeSuffix("/view").substringAfterLast("/"))
 
             context.sendMessage {
-                content = "(─‿‿─) ${imageUrl?.url}"
+                content = "(─‿‿─) $imageUrl"
             }
         } else {
             context.sendMessage {

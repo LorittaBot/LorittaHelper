@@ -23,6 +23,7 @@ import net.perfectdreams.loritta.helper.listeners.ApproveReportsOnReactionListen
 import net.perfectdreams.loritta.helper.utils.ComponentDataUtils
 import net.perfectdreams.loritta.helper.utils.Constants
 import net.perfectdreams.loritta.helper.utils.GoogleDriveUtils
+import net.perfectdreams.loritta.helper.utils.GoogleDriveUtils.getEmbeddableDirectGoogleDriveUrl
 import net.perfectdreams.loritta.helper.utils.extensions.await
 import java.awt.Color
 import java.net.HttpURLConnection
@@ -219,7 +220,7 @@ class GenerateServerReport(val m: LorittaHelper) {
 
                 runCatching {
                     if (imageUrl != null)
-                        action?.addFile(URL(imageUrl.url).openStream(), "image.png")
+                        action?.addFile(URL(imageUrl).openStream(), "image.png")
                 }.onFailure {
                     logger.debug(it) { "Failed to attach image in message" }
                 }
