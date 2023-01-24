@@ -3,7 +3,8 @@ package net.perfectdreams.loritta.helper.utils.slash
 import net.perfectdreams.discordinteraktions.common.commands.ApplicationCommandContext
 import net.perfectdreams.discordinteraktions.common.commands.options.ApplicationCommandOptions
 import net.perfectdreams.discordinteraktions.common.commands.options.SlashCommandArguments
-import net.perfectdreams.loritta.cinnamon.pudding.tables.Dailies
+import net.perfectdreams.loritta.cinnamon.pudding.tablesrefactorlater.BrowserFingerprints
+import net.perfectdreams.loritta.cinnamon.pudding.tablesrefactorlater.Dailies
 import net.perfectdreams.loritta.helper.LorittaHelperKord
 import net.perfectdreams.loritta.helper.utils.Constants
 import org.jetbrains.exposed.sql.SortOrder
@@ -38,7 +39,7 @@ class DailyCheckExecutor(helper: LorittaHelperKord) : HelperSlashExecutor(helper
         val idToEmotes = mutableMapOf<Long, String>()
 
         val dailies = transaction(helper.databases.lorittaDatabase) {
-            Dailies.select {
+            Dailies.innerJoin(BrowserFingerprints).select {
                 Dailies.receivedById inList users.map { it.id.value.toLong() }
             }.orderBy(Dailies.id, SortOrder.DESC)
                 .toList()
@@ -65,6 +66,21 @@ class DailyCheckExecutor(helper: LorittaHelperKord) : HelperSlashExecutor(helper
             builder.append("- IP: ${daily[Dailies.ip]}")
             builder.append("\n")
             builder.append("- User-Agent: ${daily[Dailies.userAgent]}")
+            val fingerprintData = daily[Dailies.browserFingerprints]
+            if (fingerprintData != null) {
+                builder.append("\n")
+                builder.append("- Client ID: ${daily[BrowserFingerprints.clientId]}")
+                builder.append("\n")
+                builder.append("- Accept: ${daily[BrowserFingerprints.accept]}")
+                builder.append("\n")
+                builder.append("- Content-Language: ${daily[BrowserFingerprints.contentLanguage]}")
+                builder.append("\n")
+                builder.append("- Screen Size: ${daily[BrowserFingerprints.width]}x${daily[BrowserFingerprints.height]}")
+                builder.append("\n")
+                builder.append("- Available Screen Size: ${daily[BrowserFingerprints.availWidth]}x${daily[BrowserFingerprints.availHeight]}")
+                builder.append("\n")
+                builder.append("- Timezone Offset: ${daily[BrowserFingerprints.availWidth]}x${daily[BrowserFingerprints.timezoneOffset]}")
+            }
             builder.append("\n\n")
         }
 
