@@ -6,7 +6,6 @@ import net.perfectdreams.discordinteraktions.common.components.ButtonExecutor
 import net.perfectdreams.discordinteraktions.common.components.ComponentContext
 import dev.kord.core.entity.User
 import net.perfectdreams.discordinteraktions.platforms.kord.entities.messages.KordPublicMessage
-import net.perfectdreams.loritta.helper.LorittaHelper
 import net.perfectdreams.loritta.helper.LorittaHelperKord
 import net.perfectdreams.loritta.helper.utils.GoogleDriveUtils
 
@@ -20,8 +19,7 @@ class ShowFilesExecutor(val m: LorittaHelperKord) : ButtonExecutor {
         context.sendMessage {
             content = imagesField.value
                 .split("\n")
-                .mapNotNull { GoogleDriveUtils.retrieveImageFromDrive(it, LorittaHelper.http)?.url }
-                .joinToString("\n")
+                .joinToString("\n") { GoogleDriveUtils.getEmbeddableDirectGoogleDriveUrl(it.removeSuffix("/view").substringAfterLast("/")) }
         }
     }
 }
