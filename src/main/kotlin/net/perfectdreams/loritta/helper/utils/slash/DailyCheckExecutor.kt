@@ -73,7 +73,7 @@ class DailyCheckExecutor(helper: LorittaHelperKord) : HelperSlashExecutor(helper
                 builder.append("\n")
                 builder.append("- Accept: ${daily[BrowserFingerprints.accept]}")
                 builder.append("\n")
-                builder.append("- Content-Language: ${daily[BrowserFingerprints.contentLanguage]}")
+                builder.append("- Accept-Language: ${daily[BrowserFingerprints.contentLanguage]}")
                 builder.append("\n")
                 builder.append("- Screen Size: ${daily[BrowserFingerprints.width]}x${daily[BrowserFingerprints.height]}")
                 builder.append("\n")
