@@ -12,7 +12,7 @@ object GoogleDriveUtils {
     }
 
     fun getDiscordEmbeddableGoogleDriveUrl(fileId: String): String? {
-        val urlString = getBrowserViewableGoogleDriveUrl(getBrowserViewableGoogleDriveUrl(fileId))
+        val urlString = getBrowserViewableGoogleDriveUrl(fileId)
         val connection = URL(urlString)
             .openConnection() as HttpURLConnection
         connection.instanceFollowRedirects = false
