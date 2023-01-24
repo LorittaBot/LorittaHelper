@@ -1,5 +1,7 @@
 package net.perfectdreams.loritta.helper.utils.slash
 
+import dev.kord.common.entity.DiscordUser
+import dev.kord.common.entity.Snowflake
 import net.perfectdreams.discordinteraktions.common.commands.ApplicationCommandContext
 import net.perfectdreams.discordinteraktions.common.commands.options.ApplicationCommandOptions
 import net.perfectdreams.discordinteraktions.common.commands.options.SlashCommandArguments
@@ -12,12 +14,12 @@ import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.transactions.transaction
 import java.time.Instant
 
-class DailyCheckExecutor(helper: LorittaHelperKord) : HelperSlashExecutor(helper, PermissionLevel.ADMIN) {
+class DailyCheckByIpExecutor(helper: LorittaHelperKord) : HelperSlashExecutor(helper, PermissionLevel.ADMIN) {
     inner class Options : ApplicationCommandOptions() {
         init {
             // Register 25 different users
             repeat(25) {
-                optionalUser("user${it + 1}", "Usuário para ver os dailies")
+                optionalString("ip${it + 1}", "IP para ver os dailies")
             }
         }
     }
@@ -28,7 +30,10 @@ class DailyCheckExecutor(helper: LorittaHelperKord) : HelperSlashExecutor(helper
         context.deferChannelMessage()
 
         // Because we did stuff in a... unconventional way, we will get all matched user arguments in a unconventional way: By getting all resolved objects!
-        val users = context.interactionData.resolved?.users?.values ?: run {
+        val ips = args.types.values.filterIsInstance<String?>()
+            .filterNotNull()
+
+        if (ips.isEmpty()) {
             context.sendMessage {
                 content = "Nenhum usuário encontrado!"
             }
@@ -40,12 +45,14 @@ class DailyCheckExecutor(helper: LorittaHelperKord) : HelperSlashExecutor(helper
 
         val dailies = transaction(helper.databases.lorittaDatabase) {
             Dailies.leftJoin(BrowserFingerprints).select {
-                Dailies.receivedById inList users.map { it.id.value.toLong() }
+                Dailies.ip inList ips
             }.orderBy(Dailies.id, SortOrder.DESC)
                 .toList()
         }
 
         val builder = StringBuilder()
+
+        val cachedUserData = mutableMapOf<Long, DiscordUser>()
 
         for (daily in dailies) {
             val whenTheTransactionHappened = Instant.ofEpochMilli(daily[Dailies.receivedAt])
@@ -57,9 +64,16 @@ class DailyCheckExecutor(helper: LorittaHelperKord) : HelperSlashExecutor(helper
                 emote
             }
 
-            val userData = users.find { it.id.value.toLong() == daily[Dailies.receivedById] }
+            val userId = daily[Dailies.receivedById]
+            val userData = cachedUserData[userId] ?: try {
+                val user = helper.helperRest.user.getUser(Snowflake(userId))
+                cachedUserData[userId] = user
+                user
+            } catch (e: Exception) {
+                null
+            }
 
-            builder.append("${userEmote} [${whenTheTransactionHappened.format(Constants.PRETTY_DATE_FORMAT)}] ${userData?.tag} (${daily[Dailies.receivedById]})")
+            builder.append("${userEmote} [${whenTheTransactionHappened.format(Constants.PRETTY_DATE_FORMAT)}] ${userData?.username}#${userData?.discriminator} (${daily[Dailies.receivedById]})")
             builder.append("\n")
             builder.append("- Email: ${daily[Dailies.email]}")
             builder.append("\n")
