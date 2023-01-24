@@ -39,7 +39,7 @@ class DailyCheckExecutor(helper: LorittaHelperKord) : HelperSlashExecutor(helper
         val idToEmotes = mutableMapOf<Long, String>()
 
         val dailies = transaction(helper.databases.lorittaDatabase) {
-            Dailies.innerJoin(BrowserFingerprints).select {
+            Dailies.leftJoin(BrowserFingerprints).select {
                 Dailies.receivedById inList users.map { it.id.value.toLong() }
             }.orderBy(Dailies.id, SortOrder.DESC)
                 .toList()
