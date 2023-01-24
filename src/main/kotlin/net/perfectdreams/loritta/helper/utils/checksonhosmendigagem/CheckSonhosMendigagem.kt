@@ -35,33 +35,27 @@ class CheckSonhosMendigagem(val m: LorittaHelper) {
 
         fun buildReply(campaignContent: String) = listOf(
             LorittaReply(
-                "**Pare de mendigar sonhos**, isso incomoda as pessoas que estão no chat e, se você continuar, você poderá ser banido do servidor!",
+                "**Pare de mendigar sonhos!** Isso incomoda e atrapalha as pessoas que estão conversando no chat e, se você continuar, você será banido do servidor!",
                 Emotes.LORI_RAGE,
                 mentionUser = true
             ),
             LorittaReply(
-                "**Se você quer sonhos**, pegue a sua recompensa diária usando `+daily`!",
-                Emotes.LORI_SUNGLASSES,
+                "**Está procurando por métodos de como conseguir mais sonhos? Leia a imagem abaixo!**",
+                Emotes.LORI_PEACE,
                 mentionUser = false
             ),
             LorittaReply(
-                "**Você já pegou o daily? Vote em mim usando `+dbl`!** Sabia que você ganha sonhos votando em mim? Você pode votar em mim a cada 12 horas!",
-                Emotes.LORI_THINKING,
-                mentionUser = false
-            ),
-            LorittaReply(
-                "**Ainda não está satisfeito? Então jogue no SparklyPower, o servidor de Minecraft da Loritta!** Você pode transferir o dinheiro que você ganha lá para a Loritta, e vice-versa! `mc.sparklypower.net`",
-                Emotes.PANTUFA_GAMING,
-                mentionUser = false
-            ),
-            LorittaReply(
-                "**Psiu, está querendo mais sonhos? Então compre na minha lojinha!** Nós aceitamos pagamentos via boleto, cartão de crédito e Pix e comprando por lá você me ajuda a ficar online enquanto você se diverte com mais sonhos! Mas não se preocupe, a escolha é sua e você pode continuar a usar a Loritta sem se preocupar em tirar dinheiro do seu bolso. Ficou interessado? Então acesse! <https://loritta.website/user/@me/dashboard/bundles?utm_source=discord&utm_medium=dont-beg-warn&utm_campaign=sonhos-bundles-upsell&utm_content=$campaignContent>",
-                Emotes.LORI_RICH,
+                "**Psiu, está querendo mais sonhos? Então compre na minha lojinha!** Nós aceitamos pagamentos via boleto, cartão de crédito e Pix e comprando por lá você me ajuda a ficar online enquanto você se diverte com mais sonhos! Mas não se preocupe, a escolha é sua e você pode continuar a usar a Loritta sem se preocupar em tirar dinheiro do seu bolso. Ficou interessado? Então acesse! <https://loritta.website/br/user/@me/dashboard/bundles?utm_source=discord&utm_medium=dont-beg-warn&utm_campaign=sonhos-wiki&utm_content=$campaignContent>",
+                Emotes.LORI_CARD,
                 mentionUser = false
             ),
             LorittaReply(
                 "**Aprenda tudo sobre sonhos em:** <https://loritta.website/br/extras/faq-loritta/sonhos?utm_source=discord&utm_medium=dont-beg-warn&utm_campaign=sonhos-wiki&utm_content=$campaignContent>",
-                Emotes.LORI_PAT,
+                Emotes.LORI_SMART,
+                mentionUser = false
+            ),
+            LorittaReply(
+                "https://cdn.discordapp.com/attachments/703353259938545744/1062039628124782743/Como_consigo_sonhos.png",
                 mentionUser = false
             )
         )
