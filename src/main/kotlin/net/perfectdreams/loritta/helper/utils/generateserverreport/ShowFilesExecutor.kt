@@ -13,13 +13,25 @@ class ShowFilesExecutor(val m: LorittaHelperKord) : ButtonExecutor {
     companion object : ButtonExecutorDeclaration(ShowFilesExecutor::class, "show_files")
 
     override suspend fun onClick(user: User, context: ComponentContext) {
+        context.deferChannelMessage()
+
         val m = context.message as KordPublicMessage
         val imagesField = m.data.embeds.first().fields.first { it.name == "Imagens" }
 
-        context.sendMessage {
-            content = imagesField.value
-                .split("\n")
-                .joinToString("\n") { GoogleDriveUtils.getEmbeddableDirectGoogleDriveUrl(it.removeSuffix("/view").substringAfterLast("/")) }
+        val images = imagesField.value.split("\n")
+            .mapNotNull { GoogleDriveUtils.downloadGoogleDriveUrl(it.removeSuffix("/view").substringAfterLast("/")) }
+
+        if (images.isEmpty()) {
+            context.sendMessage {
+                content = "Nenhuma imagem encontrada..."
+            }
+            return
         }
+
+        context.sendMessage {
+            for ((index, image) in images.withIndex()) {
+                addFile("image${index}.png", image.inputStream())
+            }
+         }
     }
 }

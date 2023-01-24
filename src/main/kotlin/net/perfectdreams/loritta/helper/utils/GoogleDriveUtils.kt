@@ -1,30 +1,29 @@
 package net.perfectdreams.loritta.helper.utils
 
-import io.ktor.client.*
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
-import io.ktor.http.*
-import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.jsonArray
-import kotlinx.serialization.json.jsonPrimitive
+import net.perfectdreams.loritta.helper.LorittaHelper
+import java.net.HttpURLConnection
+import java.net.URL
 
 object GoogleDriveUtils {
-    fun getEmbeddableDirectGoogleDriveUrl(fileId: String) = "https://drive.google.com/uc?export=view&id=$fileId"
-
-    suspend fun retrieveImageFromDrive(url: String, httpClient: HttpClient): DriveImage? {
-        val request = httpClient.get(url)
-
-        if (request.status == HttpStatusCode.OK) {
-            val array = Json.parseToJsonElement(
-                request.bodyAsText(Charsets.UTF_8)
-                    .substringAfter("window.viewerData = ")
-                    .substringBefore("};")
-                    .substringAfter("itemJson: ")
-            ).jsonArray
-            return DriveImage(array[10].jsonPrimitive.content, array[11].jsonPrimitive.content)
-        }
-        return null
+    suspend fun downloadGoogleDriveUrl(fileId: String): ByteArray? {
+        return LorittaHelper.http.get(getDiscordEmbeddableGoogleDriveUrl(fileId) ?: return null).readBytes()
     }
+
+    fun getDiscordEmbeddableGoogleDriveUrl(fileId: String): String? {
+        val urlString = getBrowserViewableGoogleDriveUrl(getBrowserViewableGoogleDriveUrl(fileId))
+        val connection = URL(urlString)
+            .openConnection() as HttpURLConnection
+        connection.instanceFollowRedirects = false
+        connection.connect()
+        return if (connection.responseCode == 302 || connection.responseCode == 303)
+            connection.getHeaderField("Location")
+        else
+            null
+    }
+
+    fun getBrowserViewableGoogleDriveUrl(fileId: String) = "https://drive.google.com/uc?export=view&id=$fileId"
 
     data class DriveImage(
         val url: String,

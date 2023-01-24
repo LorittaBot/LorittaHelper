@@ -22,7 +22,7 @@ import net.perfectdreams.loritta.helper.LorittaHelper
 import net.perfectdreams.loritta.helper.listeners.ApproveReportsOnReactionListener
 import net.perfectdreams.loritta.helper.utils.ComponentDataUtils
 import net.perfectdreams.loritta.helper.utils.Constants
-import net.perfectdreams.loritta.helper.utils.GoogleDriveUtils.getEmbeddableDirectGoogleDriveUrl
+import net.perfectdreams.loritta.helper.utils.GoogleDriveUtils
 import net.perfectdreams.loritta.helper.utils.extensions.await
 import java.awt.Color
 import java.net.HttpURLConnection
@@ -153,18 +153,17 @@ class GenerateServerReport(val m: LorittaHelper) {
                 val images = reportMessage.images
                 val embed = reportMessage.reportInfoEmbed
 
-                if (images != null) {
+                if (!images.isNullOrEmpty()) {
                     embed.addField(
                         "Imagens", images
                             .joinToString("\n") { "https://drive.google.com/file/d/$it/view" }, false
                     )
                 }
 
-                // TODO: Do we really need to do this? Discord already embeds the result without the need of us downloading the photo
                 val imageUrl = run {
                     val firstImage = images?.firstOrNull() ?: return@run null
                     return@run runCatching {
-                        val urlString = getEmbeddableDirectGoogleDriveUrl(firstImage)
+                        val urlString = GoogleDriveUtils.getDiscordEmbeddableGoogleDriveUrl(firstImage)
                         val connection = URL(urlString)
                             .openConnection() as HttpURLConnection
                         connection.instanceFollowRedirects = false
@@ -175,9 +174,6 @@ class GenerateServerReport(val m: LorittaHelper) {
                             null
                     }.getOrNull()
                 }
-
-                if (imageUrl != null)
-                    embed.setImage("attachment://image.png")
 
                 val embeds = when (reportMessage) {
                     is DefaultReportMessage -> listOf(embed)

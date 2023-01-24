@@ -19,10 +19,17 @@ class DriveImageRetrieverExecutor(helper: LorittaHelperKord) : HelperSlashExecut
         if (url.startsWith("https://drive.google.com/file/d/")) {
             context.deferChannelMessage()
 
-            val imageUrl = GoogleDriveUtils.getEmbeddableDirectGoogleDriveUrl(url.removeSuffix("/view").substringAfterLast("/"))
+            val imageData = GoogleDriveUtils.downloadGoogleDriveUrl(url.removeSuffix("/view").substringAfterLast("/"))
 
-            context.sendMessage {
-                content = "(─‿‿─) $imageUrl"
+            if (imageData != null) {
+                context.sendMessage {
+                    content = "(─‿‿─)"
+                    addFile("image.png", imageData.inputStream())
+                }
+            } else {
+                context.sendMessage {
+                    content = "Link inválido da imagem do Drive"
+                }
             }
         } else {
             context.sendMessage {
