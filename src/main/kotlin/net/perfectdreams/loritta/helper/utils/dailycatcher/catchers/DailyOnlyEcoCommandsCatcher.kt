@@ -4,7 +4,7 @@ import kotlinx.coroutines.channels.Channel
 import mu.KotlinLogging
 import net.dv8tion.jda.api.EmbedBuilder
 import net.dv8tion.jda.api.JDA
-import net.dv8tion.jda.api.MessageBuilder
+import net.dv8tion.jda.api.utils.messages.MessageCreateBuilder
 import net.perfectdreams.loritta.cinnamon.pudding.tables.Dailies
 import net.perfectdreams.loritta.helper.tables.ExecutedCommandsLog
 import net.perfectdreams.loritta.helper.tables.SonhosTransaction
@@ -267,7 +267,8 @@ class DailyOnlyEcoCommandsCatcher(database: Database) : DailyCatcher<ReportOnlyE
         }
 
         return DailyCatcherMessage(
-            MessageBuilder(reportMessage)
+            MessageCreateBuilder()
+                .setContent(reportMessage)
                 .setEmbeds(
                     embed
                         .appendTransactionsToEmbed(report.transactions, userDailyRewardCache)

@@ -6,6 +6,8 @@ import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.runBlocking
 import mu.KotlinLogging
 import net.dv8tion.jda.api.JDA
+import net.dv8tion.jda.api.entities.emoji.Emoji
+import net.dv8tion.jda.api.utils.messages.MessageCreateData
 import net.perfectdreams.loritta.cinnamon.pudding.tables.BannedUsers
 import net.perfectdreams.loritta.helper.LorittaHelper
 import net.perfectdreams.loritta.helper.utils.Constants
@@ -178,9 +180,9 @@ class DailyCatcherManager(val m: LorittaHelper, val jda: JDA) {
         val message = channel?.sendMessage(reportMessage.message)?.complete()
 
         if (reportMessage.addReactions) {
-            message?.addReaction("sasuke_banido:750509326782824458")
+            message?.addReaction(Emoji.fromCustom("sasuke_banido", 750509326782824458, true))
                     ?.complete()
-            message?.addReaction("error:412585701054611458")
+            message?.addReaction(Emoji.fromCustom("error", 412585701054611458, false))
                     ?.complete()
         }
     }

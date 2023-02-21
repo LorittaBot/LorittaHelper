@@ -1,9 +1,9 @@
 package net.perfectdreams.loritta.helper.listeners
 
-import net.dv8tion.jda.api.MessageBuilder
 import net.dv8tion.jda.api.entities.Message
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent
 import net.dv8tion.jda.api.hooks.ListenerAdapter
+import net.dv8tion.jda.api.utils.messages.MessageCreateBuilder
 import net.perfectdreams.loritta.helper.LorittaHelper
 import net.perfectdreams.loritta.helper.serverresponses.loritta.EnglishResponses
 import net.perfectdreams.loritta.helper.serverresponses.loritta.PortugueseResponses
@@ -87,12 +87,12 @@ class MessageListener(val m: LorittaHelper) : ListenerAdapter() {
 
                 if (responses.isNotEmpty())
                     event.channel.sendMessage(
-                            MessageBuilder()
+                            MessageCreateBuilder()
                                     // We mention roles in some of the messages, so we don't want the mention to actually go off!
-                                    .setAllowedMentions(listOf(Message.MentionType.USER, Message.MentionType.CHANNEL, Message.MentionType.EMOTE))
+                                    .setAllowedMentions(listOf(Message.MentionType.USER, Message.MentionType.CHANNEL, Message.MentionType.EMOJI))
                                     .setContent(responses.joinToString("\n") { it.build(event) })
                                     .build()
-                    ).reference(event.message)
+                    ).setMessageReference(event.message)
                             .queue()
                 return@launch
             }

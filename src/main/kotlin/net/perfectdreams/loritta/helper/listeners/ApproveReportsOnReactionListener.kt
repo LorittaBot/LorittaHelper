@@ -1,6 +1,7 @@
 package net.perfectdreams.loritta.helper.listeners
 
 import mu.KotlinLogging
+import net.dv8tion.jda.api.entities.emoji.Emoji
 import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent
 import net.dv8tion.jda.api.hooks.ListenerAdapter
 import net.perfectdreams.loritta.helper.LorittaHelper
@@ -16,8 +17,8 @@ import java.time.Instant
 class ApproveReportsOnReactionListener(val m: LorittaHelper): ListenerAdapter() {
     companion object {
         private val logger = KotlinLogging.logger {}
-        const val APPROVE_EMOTE = "✅"
-        const val REJECT_EMOTE = "\uD83D\uDEAB"
+        val APPROVE_EMOTE = Emoji.fromUnicode("✅")
+        val REJECT_EMOTE = Emoji.fromUnicode("\uD83D\uDEAB")
         const val THINKING_EMOTE = "\uD83E\uDD14"
     }
 
@@ -29,7 +30,7 @@ class ApproveReportsOnReactionListener(val m: LorittaHelper): ListenerAdapter() 
         if (event.channel.idLong != GenerateServerReport.SERVER_REPORTS_CHANNEL_ID)
             return
 
-        if (event.reactionEmote.name == APPROVE_EMOTE || event.reactionEmote.name == REJECT_EMOTE) {
+        if (event.emoji == APPROVE_EMOTE || event.emoji == REJECT_EMOTE) {
             m.launch {
                 val retrievedMessage = event.retrieveMessage()
                         .await()
@@ -60,7 +61,7 @@ class ApproveReportsOnReactionListener(val m: LorittaHelper): ListenerAdapter() 
                         it[StaffProcessedReports.userId] = event.userIdLong
                         it[StaffProcessedReports.reporterId] = reporterId
                         it[StaffProcessedReports.messageId] = event.messageIdLong
-                        it[StaffProcessedReports.result] = if (event.reactionEmote.name == APPROVE_EMOTE)
+                        it[StaffProcessedReports.result] = if (event.emoji == APPROVE_EMOTE)
                             StaffProcessedReportResult.APPROVED
                         else StaffProcessedReportResult.REJECTED
                     }
@@ -69,7 +70,7 @@ class ApproveReportsOnReactionListener(val m: LorittaHelper): ListenerAdapter() 
                 event.jda.retrieveUserById(reporterId)
                         .queue {
                             it.openPrivateChannel().queue {
-                                if (event.reactionEmote.name == APPROVE_EMOTE) {
+                                if (event.emoji == APPROVE_EMOTE) {
                                     // Approved
                                     it.sendMessage("""A sua denúncia foi aceita pela equipe e os meliantes da denúncia foram punidos! <:lori_feliz:519546310978830355>
                                     |
@@ -78,7 +79,7 @@ class ApproveReportsOnReactionListener(val m: LorittaHelper): ListenerAdapter() 
                                     |https://tenor.com/bqUXw.gif
                                 """.trimMargin())
                                             .queue()
-                                } else if (event.reactionEmote.name == REJECT_EMOTE) {
+                                } else if (event.emoji == REJECT_EMOTE) {
                                     // Rejeted
                                     var rejectReason = "Se você quiser saber o motivo da sua denúncia ter sido rejeitada, é melhor perguntar para a equipe! Eu sou apenas um bot, não sei o motivo... <:lori_flushed:732706868224327702>"
                                     if (firstEmbed.fields.any { it.name == "Resposta da Staff" }) {

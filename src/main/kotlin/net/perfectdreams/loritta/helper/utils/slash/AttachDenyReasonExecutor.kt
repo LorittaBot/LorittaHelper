@@ -86,9 +86,9 @@ class AttachDenyReasonExecutor(helper: LorittaHelperKord, val jda: JDA) : Helper
 
                 for (field in fields) {
                     if (field.name == "Resposta da Staff") {
-                        builder.addField(field.name, reason, field.isInline)
+                        builder.addField(field.name!!, reason, field.isInline)
                     } else {
-                        builder.addField(field.name, field.value, field.isInline)
+                        builder.addField(field.name!!, field.value!!, field.isInline)
                     }
                 }
 

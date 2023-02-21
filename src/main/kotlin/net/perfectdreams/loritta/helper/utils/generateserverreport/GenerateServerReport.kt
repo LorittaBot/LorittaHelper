@@ -7,17 +7,16 @@ import kotlinx.serialization.json.*
 import mu.KotlinLogging
 import net.dv8tion.jda.api.EmbedBuilder
 import net.dv8tion.jda.api.JDA
-import net.dv8tion.jda.api.MessageBuilder
-import net.dv8tion.jda.api.entities.Emoji
 import net.dv8tion.jda.api.entities.User
+import net.dv8tion.jda.api.entities.emoji.Emoji
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent
 import net.dv8tion.jda.api.exceptions.ErrorResponseException
-import net.dv8tion.jda.api.interactions.components.ActionRow
-import net.dv8tion.jda.api.interactions.components.Component
 import net.dv8tion.jda.api.interactions.components.ItemComponent
 import net.dv8tion.jda.api.interactions.components.buttons.Button
 import net.dv8tion.jda.api.interactions.components.buttons.ButtonStyle
-import net.dv8tion.jda.api.requests.restaction.MessageAction
+import net.dv8tion.jda.api.requests.restaction.MessageCreateAction
+import net.dv8tion.jda.api.utils.FileUpload
+import net.dv8tion.jda.api.utils.messages.MessageCreateBuilder
 import net.perfectdreams.loritta.helper.LorittaHelper
 import net.perfectdreams.loritta.helper.listeners.ApproveReportsOnReactionListener
 import net.perfectdreams.loritta.helper.utils.ComponentDataUtils
@@ -211,25 +210,25 @@ class GenerateServerReport(val m: LorittaHelper) {
                 }
 
                 val action = communityGuild.getTextChannelById(SERVER_REPORTS_CHANNEL_ID)?.sendMessage(
-                    MessageBuilder()
+                    MessageCreateBuilder()
                         .setContent("<@&351473717194522647>")
                         .setEmbeds(*embeds.map { it.build() }.toTypedArray())
                         .also {
                             if (components.isNotEmpty())
-                                it.setActionRows(ActionRow.of(components))
+                                it.addActionRow(components)
                         }
                         .build()
                 )
 
                 runCatching {
                     if (imageUrl != null)
-                        action?.addFile(URL(imageUrl).openStream(), "image.png")
+                        action?.addFiles(FileUpload.fromData(URL(imageUrl).openStream(), "image.png"))
                 }.onFailure {
                     logger.debug(it) { "Failed to attach image in message" }
                 }
 
                 if (reportMessage.messageFile != null)
-                    action?.addFile(reportMessage.messageFile, "messages.log")
+                    action?.addFiles(FileUpload.fromData(reportMessage.messageFile, "messages.log"))
 
                 action?.queueAndAddReactions()
             } else {
@@ -252,7 +251,7 @@ class GenerateServerReport(val m: LorittaHelper) {
         } catch (e: Throwable) {
             logger.warn(e) { "Something went wrong while processing the report ${event.message.jumpUrl}!" }
             communityGuild.getTextChannelById(SERVER_REPORTS_CHANNEL_ID)?.sendMessage(
-                MessageBuilder()
+                MessageCreateBuilder()
                     .setContent(
                         "<@&351473717194522647> Alguma coisa deu errada ao processar a denúncia da mensagem ${event.message.jumpUrl} feita por ${userThatMadeTheReport.asMention}... Tente verificar ela manualmente já que eu não fui boa o suficiente... <:lori_sob:556524143281963008>\n\n```\n${e.stackTraceToString()}\n```"
                     )
@@ -391,7 +390,7 @@ class GenerateServerReport(val m: LorittaHelper) {
 
         embed.addField(
             "ID do Usuário",
-            userId?.toString(),
+            userId?.toString()!!,
             false
         )
 
@@ -453,7 +452,7 @@ class GenerateServerReport(val m: LorittaHelper) {
 
         embed.addField(
             "ID do Usuário",
-            userId?.toString(),
+            userId?.toString()!!,
             false
         )
 
@@ -513,7 +512,7 @@ class GenerateServerReport(val m: LorittaHelper) {
         embed.apply {
             addField(
                 "ID do Usuário",
-                userId?.toString(),
+                userId?.toString()!!,
                 false
             )
 
@@ -577,7 +576,7 @@ class GenerateServerReport(val m: LorittaHelper) {
 
         embed.addField(
             "ID do Usuário",
-            userId?.toString(),
+            userId?.toString()!!,
             false
         )
 
@@ -640,7 +639,7 @@ class GenerateServerReport(val m: LorittaHelper) {
 
         embed.addField(
             "ID do Usuário",
-            userId?.toString(),
+            userId?.toString()!!,
             false
         )
 
@@ -839,7 +838,7 @@ class GenerateServerReport(val m: LorittaHelper) {
         }
     }
 
-    private fun MessageAction.queueAndAddReactions() {
+    private fun MessageCreateAction.queueAndAddReactions() {
         this.queue { message ->
             message.addReaction(ApproveReportsOnReactionListener.APPROVE_EMOTE).queue {
                 message.addReaction(ApproveReportsOnReactionListener.REJECT_EMOTE).queue()

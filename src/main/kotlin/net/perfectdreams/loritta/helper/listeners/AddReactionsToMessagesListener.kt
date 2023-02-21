@@ -1,5 +1,6 @@
 package net.perfectdreams.loritta.helper.listeners
 
+import net.dv8tion.jda.api.entities.emoji.Emoji
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent
 import net.dv8tion.jda.api.hooks.ListenerAdapter
 import net.perfectdreams.loritta.helper.LorittaHelper
@@ -26,24 +27,24 @@ class AddReactionsToMessagesListener(val m: LorittaHelper): ListenerAdapter() {
             return
 
         if (event.channel.idLong in ADD_APPROVAL_REACT_CHANNEL_IDS) {
-            event.message.addReaction("\uD83D\uDC4D")
+            event.message.addReaction(Emoji.fromUnicode("\uD83D\uDC4D"))
                     .queue()
 
-            event.message.addReaction("lori_what:626942886361038868")
+            event.message.addReaction(Emoji.fromCustom("lori_what", 626942886361038868L, false))
                     .queue()
         }
 
         if (event.channel.idLong in ADD_FAN_ARTS_REACT_CHANNEL_IDS) {
-            event.message.addReaction("❤")
+            event.message.addReaction(Emoji.fromUnicode("❤"))
                     .queue()
 
-            event.message.addReaction("grand_cat:587347657866084352")
+            event.message.addReaction(Emoji.fromCustom("grand_cat", 587347657866084352L, false))
                     .queue()
 
-            event.message.addReaction("catblush:585608228679712778")
+            event.message.addReaction(Emoji.fromCustom("catblush", 585608228679712778L, false))
                     .queue()
 
-            event.message.addReaction("a:lori_pat:706263175892566097")
+            event.message.addReaction(Emoji.fromCustom("lori_pat", 706263175892566097L, true))
                     .queue()
         }
     }

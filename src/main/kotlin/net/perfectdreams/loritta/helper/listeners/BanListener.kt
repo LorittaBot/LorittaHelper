@@ -60,11 +60,7 @@ class BanListener(val m: LorittaHelper) : ListenerAdapter() {
                     // If the banInfoOnGuild is null, then it means that the user is *not* banned on the server!
                     if (banInfoOnGuild == null) {
                         logger.info { "User ${event.user} is not banned yet in $it! Banning..." }
-                        it.ban(
-                                event.user,
-                                0,
-                                banForReason
-                        ).queue()
+                        it.ban(event.user, 0, TimeUnit.SECONDS).reason(banForReason).queue()
                     }
                 }
             }

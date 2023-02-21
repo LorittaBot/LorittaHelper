@@ -23,7 +23,7 @@ class ApproveAppealsOnReactionListener(val m: LorittaHelper): ListenerAdapter() 
         if (event.channel.idLong != GenerateAppealsReport.SERVER_APPEALS_CHANNEL_ID)
             return
 
-        if (event.reactionEmote.name == APPROVE_EMOTE || event.reactionEmote.name == REJECT_EMOTE) {
+        if (event.emoji.name == APPROVE_EMOTE || event.emoji.name == REJECT_EMOTE) {
             m.launch {
                 val retrievedMessage = event.retrieveMessage()
                         .await()
@@ -51,7 +51,7 @@ class ApproveAppealsOnReactionListener(val m: LorittaHelper): ListenerAdapter() 
                 event.jda.retrieveUserById(reporterId)
                         .queue {
                             it.openPrivateChannel().queue {
-                                if (event.reactionEmote.name == APPROVE_EMOTE) {
+                                if (event.emoji.name == APPROVE_EMOTE) {
                                     // Approved
                                     it.sendMessage("""O seu apelo foi aceito pela equipe e você foi desbanido! <:lori_feliz:519546310978830355>
                                     |
@@ -60,7 +60,7 @@ class ApproveAppealsOnReactionListener(val m: LorittaHelper): ListenerAdapter() 
                                     |https://tenor.com/bqUXw.gif
                                 """.trimMargin())
                                             .queue()
-                                } else if (event.reactionEmote.name == REJECT_EMOTE) {
+                                } else if (event.emoji.name == REJECT_EMOTE) {
                                     // Rejected
                                     it.sendMessage(
                                         buildString {

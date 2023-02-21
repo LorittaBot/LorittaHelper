@@ -1,8 +1,11 @@
 package net.perfectdreams.loritta.helper.listeners
 
 import mu.KotlinLogging
+import net.dv8tion.jda.api.entities.emoji.CustomEmoji
+import net.dv8tion.jda.api.entities.emoji.Emoji
 import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent
 import net.dv8tion.jda.api.hooks.ListenerAdapter
+import net.dv8tion.jda.api.utils.FileUpload
 import net.perfectdreams.loritta.cinnamon.pudding.tables.BannedUsers
 import net.perfectdreams.loritta.helper.LorittaHelper
 import net.perfectdreams.loritta.helper.utils.dailycatcher.DailyCatcherManager
@@ -25,11 +28,15 @@ class BanSuspectedUsersOnReactionListener(val m: LorittaHelper): ListenerAdapter
         if (event.channel.idLong != DailyCatcherManager.SCARLET_POLICE_CHANNEL_ID)
             return
 
-        if (event.reactionEmote.idLong != 750509326782824458L && event.reactionEmote.idLong != 412585701054611458L)
+        val emoji = event.emoji
+        if (emoji !is CustomEmoji)
+            return
+
+        if (emoji.idLong != 750509326782824458L && emoji.idLong != 412585701054611458L)
             return
 
         m.launch {
-            val deleteReport = event.reactionEmote.idLong == 412585701054611458L
+            val deleteReport = emoji.idLong == 412585701054611458L
             val retrievedMessage = event.retrieveMessage()
                 .await()
 
@@ -43,7 +50,7 @@ class BanSuspectedUsersOnReactionListener(val m: LorittaHelper): ListenerAdapter
             }
 
             // If there is a cat police in the message, then it means that the punishment was already done
-            val catPoliceReaction = retrievedMessage.getReactionById(585608392110899200L)
+            val catPoliceReaction = retrievedMessage.getReaction(Emoji.fromCustom("catpolice", 585608392110899200L, false))
             if (catPoliceReaction != null) {
                 logger.info { "Not processing punishment for message ${event.messageId} because there is already a cat police reaction" }
                 return@launch
@@ -58,13 +65,15 @@ class BanSuspectedUsersOnReactionListener(val m: LorittaHelper): ListenerAdapter
 
             val channel = event.jda.getTextChannelById(DailyCatcherManager.SCARLET_POLICE_RESULTS_CHANNEL_ID)
 
-            if (event.reactionEmote.idLong == 412585701054611458L) {
+            if (emoji.idLong == 412585701054611458L) {
                 retrievedMessage.delete().queue()
 
                 channel?.sendMessage("[Rejeitado] Denúncia Escarlate de ${ids.joinToString(", ")} foi rejeitada por ${user.asMention}...")
-                    ?.addFile(
-                        retrievedMessage.contentRaw.toByteArray(Charsets.UTF_8),
-                        "message.txt"
+                    ?.addFiles(
+                        FileUpload.fromData(
+                            retrievedMessage.contentRaw.toByteArray(Charsets.UTF_8),
+                            "message.txt"
+                        )
                     )?.queue()
             } else {
                 for (id in ids) {
@@ -108,7 +117,7 @@ class BanSuspectedUsersOnReactionListener(val m: LorittaHelper): ListenerAdapter
                             ?.queue()
                 }
 
-                retrievedMessage.addReaction("catpolice:585608392110899200")
+                retrievedMessage.addReaction(Emoji.fromCustom("catpolice", 585608392110899200L, false))
                     .queue()
             }
         }

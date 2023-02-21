@@ -4,6 +4,7 @@ import mu.KotlinLogging
 import net.dv8tion.jda.api.JDA
 import net.dv8tion.jda.api.entities.Message
 import net.dv8tion.jda.api.entities.MessageType
+import net.dv8tion.jda.api.entities.emoji.CustomEmoji
 import net.perfectdreams.discordinteraktions.common.commands.ApplicationCommandContext
 import net.perfectdreams.discordinteraktions.common.commands.options.ApplicationCommandOptions
 import net.perfectdreams.discordinteraktions.common.commands.options.SlashCommandArguments
@@ -84,7 +85,7 @@ class PendingReportsExecutor(helper: LorittaHelperKord, val jda: JDA) : HelperSl
             val notApprovedMessagesByLevel = mutableMapOf<MessageTypeLevel, MutableList<Message>>()
 
             notApprovedMessages.forEach {
-                val isPendingAnalysis = it.reactions.any { it.reactionEmote.isEmote() }
+                val isPendingAnalysis = it.reactions.any { it.emoji is CustomEmoji }
                 val messageType = if (isPendingAnalysis) MessageTypeLevel.PENDING else MessageTypeLevel.UNAPPROVED
 
                 val list = notApprovedMessagesByLevel.getOrPut(messageType) {

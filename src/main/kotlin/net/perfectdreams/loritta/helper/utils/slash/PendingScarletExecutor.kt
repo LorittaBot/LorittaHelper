@@ -3,6 +3,7 @@ package net.perfectdreams.loritta.helper.utils.slash
 import mu.KotlinLogging
 import net.dv8tion.jda.api.JDA
 import net.dv8tion.jda.api.entities.Message
+import net.dv8tion.jda.api.entities.emoji.Emoji
 import net.perfectdreams.discordinteraktions.common.commands.ApplicationCommandContext
 import net.perfectdreams.discordinteraktions.common.commands.options.ApplicationCommandOptions
 import net.perfectdreams.discordinteraktions.common.commands.options.ChoiceableCommandOptionBuilder
@@ -65,7 +66,7 @@ class PendingScarletExecutor(helper: LorittaHelperKord, val jda: JDA) : HelperSl
             // Do a filter of the ones that aren't approved yet
             val notApprovedMessages = messages.filter {
                 // Has the "ban" emote but does not have the "catpolice" emote
-                it.getReactionById(750509326782824458L) != null && it.getReactionById(585608392110899200L) == null
+                it.getReaction(Emoji.fromCustom("unknown", 750509326782824458L, false)) != null && it.getReaction(Emoji.fromCustom("catpolice", 585608392110899200L, false)) == null
             }
 
             // Now sort them by sus level

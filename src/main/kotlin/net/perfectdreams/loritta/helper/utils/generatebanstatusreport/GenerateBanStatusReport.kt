@@ -1,6 +1,7 @@
 package net.perfectdreams.loritta.helper.utils.generatebanstatusreport
 
 import mu.KotlinLogging
+import net.dv8tion.jda.api.entities.emoji.Emoji
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent
 import net.perfectdreams.loritta.cinnamon.pudding.tables.BannedUsers
 import net.perfectdreams.loritta.helper.LorittaHelper
@@ -51,7 +52,7 @@ class GenerateBanStatusReport(val m: LorittaHelper) {
                 responseStuff
         ).await()
 
-        message.addReaction("☑️")
+        message.addReaction(Emoji.fromUnicode("☑️"))
                 .await()
     }
 }

@@ -9,6 +9,7 @@ import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 import mu.KotlinLogging
 import net.dv8tion.jda.api.JDA
+import net.dv8tion.jda.api.utils.FileUpload
 import net.perfectdreams.loritta.cinnamon.pudding.tables.Profiles
 import net.perfectdreams.loritta.helper.LorittaHelper
 import net.perfectdreams.sequins.text.StringUtils
@@ -103,11 +104,13 @@ class TopSonhosRankingSender(val m: LorittaHelper, val jda: JDA) {
 
             topSonhosChannel?.sendMessage(
                 "**Top Sonhos @ $day/$month/$year $hour:$minute**\n```\n$linesToBeSent\n```"
-            )?.addFile(
-                result.toByteArray(
-                    Charsets.UTF_8
-                ).inputStream(),
-                "top-sonhos_$day$month${year}_$hour$minute.txt",
+            )?.addFiles(
+                FileUpload.fromData(
+                    result.toByteArray(
+                        Charsets.UTF_8
+                    ).inputStream(),
+                    "top-sonhos_$day$month${year}_$hour$minute.txt"
+                )
             )?.queue()
 
             dataFile.writeText(

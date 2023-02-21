@@ -1,9 +1,9 @@
 package net.perfectdreams.loritta.helper.utils.dontmentionstaff
 
 import com.github.benmanes.caffeine.cache.Caffeine
-import net.dv8tion.jda.api.MessageBuilder
 import net.dv8tion.jda.api.entities.Message
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent
+import net.dv8tion.jda.api.utils.messages.MessageCreateBuilder
 import net.perfectdreams.loritta.api.messages.LorittaReply
 import net.perfectdreams.loritta.helper.utils.extensions.await
 import java.util.concurrent.TimeUnit
@@ -37,7 +37,7 @@ abstract class DontMentionStaff {
             sentMessageAt.put(event.author.idLong, System.currentTimeMillis())
 
             val supportMentioned =
-                event.message.mentionedMembers.filter { it.roles.any { it.idLong == roleId } }
+                event.message.mentions.members.filter { it.roles.any { it.idLong == roleId } }
 
             for (support in supportMentioned) {
                 val lastSentAt = sentMessageAt.getIfPresent(support.idLong)
@@ -47,11 +47,11 @@ abstract class DontMentionStaff {
                     val replies = getResponse()
 
                     event.channel.sendMessage(
-                        MessageBuilder()
+                        MessageCreateBuilder()
                             .setAllowedMentions(listOf(Message.MentionType.USER, Message.MentionType.CHANNEL))
                             .setContent(replies.joinToString("\n", transform = { it.build(event) }))
                             .build()
-                    ).reference(event.message).await()
+                    ).setMessageReference(event.message).await()
                     return
                 }
             }

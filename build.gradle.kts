@@ -31,7 +31,7 @@ dependencies {
     implementation("ch.qos.logback:logback-classic:1.3.0-alpha14")
     implementation("io.github.microutils:kotlin-logging:2.1.21")
 
-    implementation("net.dv8tion:JDA:5.0.0-alpha.11")
+    implementation("net.dv8tion:JDA:5.0.0-beta.3")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.1")
     api("org.jetbrains.kotlinx:kotlinx-coroutines-jdk8:1.6.1")
     implementation("com.github.ben-manes.caffeine:caffeine:3.0.6")

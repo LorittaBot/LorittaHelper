@@ -11,10 +11,12 @@ import kotlinx.serialization.json.jsonPrimitive
 import kotlinx.serialization.json.long
 import mu.KotlinLogging
 import net.dv8tion.jda.api.EmbedBuilder
-import net.dv8tion.jda.api.MessageBuilder
 import net.dv8tion.jda.api.entities.User
+import net.dv8tion.jda.api.entities.emoji.Emoji
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent
-import net.dv8tion.jda.api.requests.restaction.MessageAction
+import net.dv8tion.jda.api.requests.restaction.MessageCreateAction
+import net.dv8tion.jda.api.utils.FileUpload
+import net.dv8tion.jda.api.utils.messages.MessageCreateBuilder
 import net.perfectdreams.loritta.helper.LorittaHelper
 import net.perfectdreams.loritta.helper.listeners.ApproveReportsOnReactionListener
 import net.perfectdreams.loritta.helper.utils.extensions.await
@@ -161,7 +163,7 @@ class GenerateAppealsReport(val m: LorittaHelper) {
                 embed.setImage("attachment://image.png")
 
             val action = communityGuild.getTextChannelById(SERVER_APPEALS_CHANNEL_ID)?.sendMessage(
-                MessageBuilder()
+                MessageCreateBuilder()
                     .setContent("<@&351473717194522647>")
                     .setEmbeds(embed.build())
                     .build()
@@ -169,7 +171,7 @@ class GenerateAppealsReport(val m: LorittaHelper) {
 
             runCatching {
                 if (imageUrl != null)
-                    action?.addFile(URL(imageUrl).openStream(), "image.png")
+                    action?.addFiles(FileUpload.fromData(URL(imageUrl).openStream(), "image.png"))
             }.onFailure {
                 logger.debug(it) { "Failed to attach image in message" }
             }
@@ -192,7 +194,7 @@ class GenerateAppealsReport(val m: LorittaHelper) {
         } catch (e: Throwable) {
             logger.warn(e) { "Something went wrong while processing the report ${event.message.jumpUrl}!" }
             communityGuild.getTextChannelById(SERVER_APPEALS_CHANNEL_ID)?.sendMessage(
-                MessageBuilder()
+                MessageCreateBuilder()
                     .setContent(
                         "<@&351473717194522647> Alguma coisa deu errada ao processar o apelo da mensagem ${event.message.jumpUrl} feita por ${userThatMadeTheReport.asMention}... Tente verificar ela manualmente já que eu não fui boa o suficiente... <:lori_sob:556524143281963008>\n\n```\n${e.stackTraceToString()}\n```"
                     )
@@ -221,7 +223,7 @@ class GenerateAppealsReport(val m: LorittaHelper) {
         .setColor(Color.BLUE)
         .setTimestamp(Instant.now())
 
-    private fun MessageAction.queueAndAddReactions() {
+    private fun MessageCreateAction.queueAndAddReactions() {
         this.queue { message ->
             message.addReaction(ApproveReportsOnReactionListener.APPROVE_EMOTE).queue {
                 message.addReaction(ApproveReportsOnReactionListener.REJECT_EMOTE).queue()

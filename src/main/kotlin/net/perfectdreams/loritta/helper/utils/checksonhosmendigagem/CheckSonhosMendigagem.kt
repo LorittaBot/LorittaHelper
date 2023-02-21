@@ -85,7 +85,7 @@ class CheckSonhosMendigagem(val m: LorittaHelper) {
 
             if (predictedCategory?.category == true && predictedCategory.probability >= 0.95) {
                 event.channel.sendMessage(buildReply("warned-beg").joinToString("\n") { it.build(event.author) })
-                    .reference(event.message)
+                    .setMessageReference(event.message)
                     .queue()
             }
         }
