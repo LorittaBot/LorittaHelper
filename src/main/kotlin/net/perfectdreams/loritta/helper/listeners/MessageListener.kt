@@ -18,8 +18,8 @@ import net.perfectdreams.loritta.helper.utils.generateserverreport.GenerateServe
 
 class MessageListener(val m: LorittaHelper) : ListenerAdapter() {
     private val dontMentionStaffs = listOf(
-            EnglishDontMentionStaff(),
-            PortugueseDontMentionStaff()
+        EnglishDontMentionStaff(),
+        PortugueseDontMentionStaff()
     )
 
     val checkIllegalNitroSell = CheckIllegalNitroSell()
@@ -31,23 +31,17 @@ class MessageListener(val m: LorittaHelper) : ListenerAdapter() {
     override fun onMessageReceived(event: MessageReceivedEvent) {
         // If this check wasn't here, Loritta Helper will reply to a user... then she thinks that it is someone asking
         // something, and the loop goes on...
-        if (event.message.channel.idLong == 790292619769937940L) {
-            println("is ${event.author.idLong} a bot? ${event.author.isBot} ${event.isWebhookMessage} #1")
-            if (event.message.attachments.isNotEmpty()) {
-                println("is ${event.author.idLong} a bot? ${event.author.isBot} ${event.isWebhookMessage} #2")
-                if (event.author.isBot) {
-                    m.launch {
-                        if (event.message.channel.idLong == 790292619769937940L && event.message.attachments.isNotEmpty()) {
-                            if (event.message.contentRaw == "report") {
-                                generateServerReport.onMessageReceived(event)
-                            } else if (event.message.contentRaw == "appeal") {
-                                generateAppealsReport.onMessageReceived(event)
-                            }
-                        }
+        if (event.message.channel.idLong == 790292619769937940L && event.message.attachments.isNotEmpty()) {
+            m.launch {
+                if (event.message.channel.idLong == 790292619769937940L && event.message.attachments.isNotEmpty()) {
+                    if (event.message.contentRaw == "report") {
+                        generateServerReport.onMessageReceived(event)
+                    } else if (event.message.contentRaw == "appeal") {
+                        generateAppealsReport.onMessageReceived(event)
                     }
-                    return
                 }
             }
+            return
         }
 
         m.launch {
@@ -85,21 +79,21 @@ class MessageListener(val m: LorittaHelper) : ListenerAdapter() {
             if (channelResponses != null) {
                 // We remove any lines starting with > (quote) because this sometimes causes responses to something inside a citation, and that looks kinda bad
                 val cleanMessage = event.message.contentRaw.lines()
-                        .dropWhile { it.startsWith(">") }
-                        .joinToString("\n")
+                    .dropWhile { it.startsWith(">") }
+                    .joinToString("\n")
 
                 val responses = channelResponses
-                        .firstOrNull { it.handleResponse(cleanMessage) }?.getResponse(cleanMessage) ?: return@launch
+                    .firstOrNull { it.handleResponse(cleanMessage) }?.getResponse(cleanMessage) ?: return@launch
 
                 if (responses.isNotEmpty())
                     event.channel.sendMessage(
-                            MessageCreateBuilder()
-                                    // We mention roles in some of the messages, so we don't want the mention to actually go off!
-                                    .setAllowedMentions(listOf(Message.MentionType.USER, Message.MentionType.CHANNEL, Message.MentionType.EMOJI))
-                                    .setContent(responses.joinToString("\n") { it.build(event) })
-                                    .build()
+                        MessageCreateBuilder()
+                            // We mention roles in some of the messages, so we don't want the mention to actually go off!
+                            .setAllowedMentions(listOf(Message.MentionType.USER, Message.MentionType.CHANNEL, Message.MentionType.EMOJI))
+                            .setContent(responses.joinToString("\n") { it.build(event) })
+                            .build()
                     ).setMessageReference(event.message)
-                            .queue()
+                        .queue()
                 return@launch
             }
         }

@@ -94,6 +94,7 @@ class LorittaHelper(val config: LorittaHelperConfig, val fanArtsConfig: FanArtsC
         val jda = JDABuilder.createLight(
             config.token,
             GatewayIntent.DIRECT_MESSAGES,
+            GatewayIntent.MESSAGE_CONTENT,
             GatewayIntent.GUILD_MESSAGES,
             GatewayIntent.GUILD_BANS,
             GatewayIntent.GUILD_MEMBERS,
