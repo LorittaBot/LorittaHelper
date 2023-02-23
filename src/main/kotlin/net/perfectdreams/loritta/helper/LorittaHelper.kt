@@ -154,7 +154,7 @@ class LorittaHelper(val config: LorittaHelperConfig, val fanArtsConfig: FanArtsC
         timedTaskExecutor.scheduleAtFixedRate(
             PendingReportsListTask(jda),
             0,
-            15,
+            30,
             TimeUnit.MINUTES
         )
 
