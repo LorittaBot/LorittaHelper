@@ -62,7 +62,7 @@ class StatsReportsExecutor(helper: LorittaHelperKord) : HelperSlashExecutor(help
 
                 description = buildString {
                     for ((index, userStats) in result.sortedByDescending { it.approved + it.rejected }.withIndex()) {
-                        append("**${index + 1}.** <@${userStats.userId}> - ${userStats.approved + userStats.rejected} (${userStats.approved} ${ApproveReportsOnReactionListener.APPROVE_EMOTE} | ${userStats.rejected} ${ApproveReportsOnReactionListener.REJECT_EMOTE}) denúncias processadas")
+                        append("**${index + 1}.** <@${userStats.userId}> - ${userStats.approved + userStats.rejected} (${userStats.approved} ${ApproveReportsOnReactionListener.APPROVE_EMOTE.name} | ${userStats.rejected} ${ApproveReportsOnReactionListener.REJECT_EMOTE.name}) denúncias processadas")
                         append("\n")
                     }
                 }
