@@ -48,10 +48,10 @@ dependencies {
     // Pudding
     api("net.perfectdreams.loritta.cinnamon.pudding:client:0.0.2-20220306.142003-161")
 
-    // Discord InteraKTions
-    // We use the Gateway Kord impl because Gateway JDA is disabled for now, so we will convert the raw gateway events to Kord events
-    implementation("net.perfectdreams.discordinteraktions:common:0.0.17-20220915.223922-13")
-    implementation("net.perfectdreams.discordinteraktions:gateway-kord:0.0.17-20220915.223922-13")
+    // Remove this after everything has been migrated to InteraKTions Unleashed
+    implementation("dev.kord:kord-rest:0.8.x-lori-fork-20221109.172532-14")
+    implementation("dev.kord:kord-gateway:0.8.x-lori-fork-20221109.172532-15")
+    implementation("dev.kord:kord-core:0.8.x-lori-fork-20221109.172532-14")
 
     // Used to serialize state on components
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-protobuf:1.3.2")
