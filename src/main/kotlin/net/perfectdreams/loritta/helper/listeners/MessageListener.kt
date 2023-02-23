@@ -31,19 +31,22 @@ class MessageListener(val m: LorittaHelper) : ListenerAdapter() {
     override fun onMessageReceived(event: MessageReceivedEvent) {
         // If this check wasn't here, Loritta Helper will reply to a user... then she thinks that it is someone asking
         // something, and the loop goes on...
-        if (event.message.channel.idLong == 790292619769937940L && event.message.attachments.isNotEmpty()) {
-            println("is ${event.author.idLong} a bot? ${event.author.isBot} ${event.isWebhookMessage}")
-            if (event.author.isBot) {
-                m.launch {
-                    if (event.message.channel.idLong == 790292619769937940L && event.message.attachments.isNotEmpty()) {
-                        if (event.message.contentRaw == "report") {
-                            generateServerReport.onMessageReceived(event)
-                        } else if (event.message.contentRaw == "appeal") {
-                            generateAppealsReport.onMessageReceived(event)
+        if (event.message.channel.idLong == 790292619769937940L) {
+            println("is ${event.author.idLong} a bot? ${event.author.isBot} ${event.isWebhookMessage} #1")
+            if (event.message.attachments.isNotEmpty()) {
+                println("is ${event.author.idLong} a bot? ${event.author.isBot} ${event.isWebhookMessage} #2")
+                if (event.author.isBot) {
+                    m.launch {
+                        if (event.message.channel.idLong == 790292619769937940L && event.message.attachments.isNotEmpty()) {
+                            if (event.message.contentRaw == "report") {
+                                generateServerReport.onMessageReceived(event)
+                            } else if (event.message.contentRaw == "appeal") {
+                                generateAppealsReport.onMessageReceived(event)
+                            }
                         }
                     }
+                    return
                 }
-                return
             }
         }
 
