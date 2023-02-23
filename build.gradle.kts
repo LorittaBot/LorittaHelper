@@ -38,10 +38,6 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.2")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-hocon:1.3.2")
 
-    // Kord
-    implementation("dev.kord:kord-rest:0.8.x-SNAPSHOT")
-    implementation("dev.kord:kord-gateway:0.8.x-SNAPSHOT")
-
     // Sequins
     implementation("net.perfectdreams.sequins.text:text-utils:1.0.0")
 
