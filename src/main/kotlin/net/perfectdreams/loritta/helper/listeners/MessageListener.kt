@@ -33,12 +33,10 @@ class MessageListener(val m: LorittaHelper) : ListenerAdapter() {
         // something, and the loop goes on...
         if (event.message.channel.idLong == 790292619769937940L && event.message.attachments.isNotEmpty()) {
             m.launch {
-                if (event.message.channel.idLong == 790292619769937940L && event.message.attachments.isNotEmpty()) {
-                    if (event.message.contentRaw == "report") {
-                        generateServerReport.onMessageReceived(event)
-                    } else if (event.message.contentRaw == "appeal") {
-                        generateAppealsReport.onMessageReceived(event)
-                    }
+                if (event.message.contentRaw == "report") {
+                    generateServerReport.onMessageReceived(event)
+                } else if (event.message.contentRaw == "appeal") {
+                    generateAppealsReport.onMessageReceived(event)
                 }
             }
             return
