@@ -24,7 +24,7 @@ class PendingReportsListTask(val jda: JDA) : Runnable {
                 return
 
             val channel = jda.getTextChannelById(GenerateServerReport.SERVER_REPORTS_CHANNEL_ID) ?: return
-            val staffChannel = jda.getTextChannelById(Constants.PORTUGUESE_REPORTS_WARNINGS_CHANNEL_ID) ?: return
+            val staffChannel = jda.getThreadChannelById(Constants.PORTUGUESE_REPORTS_WARNINGS_CHANNEL_ID) ?: return
 
             val history = channel.history
             var dayOfTheLastMessageInTheChannel: Int? = null
