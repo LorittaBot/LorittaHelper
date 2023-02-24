@@ -42,6 +42,10 @@ class MessageListener(val m: LorittaHelper) : ListenerAdapter() {
             return
         }
 
+        // Ignore messages sent by bots
+        if (event.author.isBot)
+            return
+
         m.launch {
             checkSonhosBraggers.onMessageReceived(event)
         }
