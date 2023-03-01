@@ -5,6 +5,7 @@ import net.perfectdreams.discordinteraktions.common.commands.slashCommand
 import net.perfectdreams.loritta.helper.LorittaHelperKord
 import net.perfectdreams.loritta.helper.utils.slash.LoriBanExecutor
 import net.perfectdreams.loritta.helper.utils.slash.LoriBanRenameExecutor
+import net.perfectdreams.loritta.helper.utils.slash.LoriEconomyStateExecutor
 import net.perfectdreams.loritta.helper.utils.slash.LoriUnbanExecutor
 
 class LoriToolsCommand(val helper: LorittaHelperKord) : SlashCommandDeclarationWrapper {
@@ -22,6 +23,10 @@ class LoriToolsCommand(val helper: LorittaHelperKord) : SlashCommandDeclarationW
 
         subcommand("loribanrename", "Altera o motivo do ban de um usuário") {
             executor = LoriBanRenameExecutor(helper)
+        }
+
+        subcommand("economy", "Altera o estado da economia da Loritta") {
+            executor = LoriEconomyStateExecutor(helper)
         }
     }
 }
