@@ -20,7 +20,7 @@ class DailyCheckCommand(val helper: LorittaHelperKord) : SlashCommandDeclaration
             executor = DailyCheckByIpExecutor(helper)
         }
 
-        subcommand("ips", "Pega todos os dailies de vários Loritta Client IDs") {
+        subcommand("loriclientid", "Pega todos os dailies de vários Loritta Client IDs") {
             executor = DailyCheckByLorittaClientIdExecutor(helper)
         }
     }
