@@ -32,8 +32,8 @@ class DailyCheckByLorittaClientIdExecutor(helper: LorittaHelperKord) : HelperSla
 
         // Because we did stuff in a... unconventional way, we will get all matched user arguments in a unconventional way: By getting all resolved objects!
         val clientIds = args.types.values.filterIsInstance<String?>()
-            .map { UUID.fromString(it) }
             .filterNotNull()
+            .map { UUID.fromString(it) }
 
         if (clientIds.isEmpty()) {
             context.sendMessage {
