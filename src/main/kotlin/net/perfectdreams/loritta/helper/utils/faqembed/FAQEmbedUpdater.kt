@@ -57,14 +57,23 @@ abstract class FAQEmbedUpdater(val m: LorittaHelper, val jda: JDA) {
                         .setColor(Color(114, 137, 218))
 
                     otherMessages.forEach {
-                        val match = regex.find(it.contentRaw)
+                        var newText: String? = null
 
-                        if (match != null) {
-                            val emoji = match.groupValues[1].trim()
-                            val text = match.groupValues[2].trim()
+                        val embed = it.embeds.firstOrNull()
+                        if (embed != null) {
+                            newText = embed.title
+                        } else {
+                            val match = regex.find(it.contentRaw)
 
-                            val newText = "$emoji **|** [$text](${it.jumpUrl})\n"
+                            if (match != null) {
+                                val emoji = match.groupValues[1].trim()
+                                val text = match.groupValues[2].trim()
 
+                                newText = "$emoji **|** [$text](${it.jumpUrl})\n"
+                            }
+                        }
+
+                        if (newText != null) {
                             if (newText.length + activeEmbed.descriptionBuilder.length >= MessageEmbed.TEXT_MAX_LENGTH) {
                                 embeds.add(activeEmbed.build())
                                 activeEmbed = EmbedBuilder()
