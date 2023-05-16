@@ -12,14 +12,7 @@ import net.dv8tion.jda.api.entities.Activity
 import net.dv8tion.jda.api.requests.GatewayIntent
 import net.dv8tion.jda.api.utils.MemberCachePolicy
 import net.perfectdreams.loritta.cinnamon.pudding.utils.exposed.createOrUpdatePostgreSQLEnum
-import net.perfectdreams.loritta.helper.listeners.AddReactionsToMessagesListener
-import net.perfectdreams.loritta.helper.listeners.ApproveAppealsOnReactionListener
-import net.perfectdreams.loritta.helper.listeners.ApproveReportsOnReactionListener
-import net.perfectdreams.loritta.helper.listeners.BanListener
-import net.perfectdreams.loritta.helper.listeners.BanSuspectedUsersOnReactionListener
-import net.perfectdreams.loritta.helper.listeners.CheckLoriBannedUsersListener
-import net.perfectdreams.loritta.helper.listeners.MessageListener
-import net.perfectdreams.loritta.helper.listeners.PrivateMessageListener
+import net.perfectdreams.loritta.helper.listeners.*
 import net.perfectdreams.loritta.helper.network.Databases
 import net.perfectdreams.loritta.helper.tables.SelectedResponsesLog
 import net.perfectdreams.loritta.helper.tables.StaffProcessedReports
@@ -107,7 +100,8 @@ class LorittaHelper(val config: LorittaHelperConfig, val fanArtsConfig: FanArtsC
                 PrivateMessageListener(this),
                 ApproveReportsOnReactionListener(this),
                 AddReactionsToMessagesListener(this),
-                ApproveAppealsOnReactionListener(this)
+                ApproveAppealsOnReactionListener(this),
+                CreateSparklyThreadsListener()
             )
             .setMemberCachePolicy(
                 MemberCachePolicy.ALL
