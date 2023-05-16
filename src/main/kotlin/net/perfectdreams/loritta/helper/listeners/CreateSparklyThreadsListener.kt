@@ -20,7 +20,9 @@ class CreateSparklyThreadsListener : ListenerAdapter() {
                 val thread = txtChannel.createThreadChannel("Denúncia criada por ${event.user.name}")
                     .await()
                 thread.addThreadMember(event.user).await()
-                thread.sendMessage("<@&332650495522897920>").await()
+                thread.sendMessage("<:pantufa_hi:997662575779139615> Olá ${event.user.asMention}, criei esse canal para a sua denúncia e já vou marcar a <@&332650495522897920> pra você!\n" +
+                        "<:pantufa_smart:997671151587299348> Certifique-se de dizer tudo o que for necessário, incluindo o nickname do meliante e as provas!\n" +
+                        "Espero que consiga a ajuda necessária <a:pantufa_pickaxe:997671670468853770>").await()
 
                 event.reply("Thread para a sua denúncia foi criada com sucesso!")
                     .setEphemeral(true)
