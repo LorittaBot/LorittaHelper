@@ -30,7 +30,7 @@ class CreateSparklyThreadsListener : ListenerAdapter() {
                         "Espero que consiga a ajuda necessária <a:pantufa_pickaxe:997671670468853770>")
                     .await()
 
-                event.reply("Thread para a sua denúncia foi criada com sucesso!")
+                event.reply("Thread para a sua denúncia foi criada com sucesso! Link do canal: ${thread.asMention}")
                     .setEphemeral(true)
                     .await()
             }
