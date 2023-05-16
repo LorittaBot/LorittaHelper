@@ -21,6 +21,10 @@ class CreateSparklyThreadsListener : ListenerAdapter() {
                     .await()
                 thread.addThreadMember(event.user).await()
                 thread.sendMessage("<@&332650495522897920>").await()
+
+                event.reply("Thread para a sua denúncia foi criada com sucesso!")
+                    .setEphemeral(true)
+                    .await()
             }
             return
         }
