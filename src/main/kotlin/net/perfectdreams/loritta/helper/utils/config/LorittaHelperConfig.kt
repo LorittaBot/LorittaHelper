@@ -9,7 +9,8 @@ class LorittaHelperConfig(
     val githubToken: String,
     val secretKey: String,
     val lorittaDatabase: DatabaseConfig? = null,
-    val helperDatabase: DatabaseConfig? = null
+    val helperDatabase: DatabaseConfig? = null,
+    val pantufaUrl: String? = null
 ) {
     @Serializable
     class DatabaseConfig constructor(

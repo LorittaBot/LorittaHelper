@@ -3,20 +3,34 @@ package net.perfectdreams.loritta.helper.utils.slash
 import dev.kord.common.Color
 import dev.kord.common.entity.Snowflake
 import dev.kord.rest.request.KtorRequestException
+import io.ktor.client.request.*
+import io.ktor.client.statement.*
+import io.ktor.http.*
+import io.ktor.http.content.*
 import kotlinx.datetime.Clock
+import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
+import mu.KotlinLogging
 import net.perfectdreams.discordinteraktions.common.commands.ApplicationCommandContext
 import net.perfectdreams.discordinteraktions.common.commands.options.ApplicationCommandOptions
 import net.perfectdreams.discordinteraktions.common.commands.options.SlashCommandArguments
 import net.perfectdreams.loritta.cinnamon.pudding.tables.BannedUsers
 import net.perfectdreams.loritta.helper.LorittaHelperKord
 import net.perfectdreams.loritta.helper.utils.Constants
+import net.perfectdreams.pantufa.rpc.BanSparklyPowerPlayerLorittaBannedRequest
+import net.perfectdreams.pantufa.rpc.BanSparklyPowerPlayerLorittaBannedResponse
+import net.perfectdreams.pantufa.rpc.PantufaRPCRequest
+import net.perfectdreams.pantufa.rpc.PantufaRPCResponse
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.transaction
 import kotlin.time.Duration.Companion.days
 
 class LoriBanExecutor(helper: LorittaHelperKord) : HelperSlashExecutor(helper, PermissionLevel.ADMIN) {
+    companion object {
+        private val logger = KotlinLogging.logger {}
+    }
+
     inner class Options : ApplicationCommandOptions() {
         val userIds = string("user_ids", "ID do usuário que você deseja banir (pode ser vários)")
 
@@ -79,21 +93,54 @@ class LoriBanExecutor(helper: LorittaHelperKord) : HelperSlashExecutor(helper, P
                     it[BannedUsers.bannedBy] = context.sender.id.value
                         .toLong()
                 }
-                results.add(UserBannedResult(banId.value, userId))
-                exec(
-                    "SELECT pg_notify('loritta_lori_bans', ?)",
-                    listOf(
-                        TextColumnType() to Json.encodeToString(userId)
+                results.add(UserBannedResult(banId.value, userId, reason))
+            }
+        }
+
+        // Get all banned users and relay them to SparklyPower
+        val sparklyResults = mutableMapOf<UserBannedResult, BanSparklyPowerPlayerLorittaBannedResponse>()
+        val pantufaUrl = helper.config.pantufaUrl
+
+        if (pantufaUrl != null) {
+            try {
+                for (result in results.filterIsInstance<UserBannedResult>()) {
+                    val response = Json.decodeFromString<PantufaRPCResponse>(
+                        LorittaHelperKord.http.post(pantufaUrl.removeSuffix("/") + "/rpc") {
+                            setBody(
+                                TextContent(
+                                    Json.encodeToString<PantufaRPCRequest>(
+                                        BanSparklyPowerPlayerLorittaBannedRequest(
+                                            result.userId,
+                                            result.reason
+                                        )
+                                    ),
+                                    ContentType.Application.Json
+                                )
+                            )
+                        }.bodyAsText()
                     )
-                )
+
+                    if (response is BanSparklyPowerPlayerLorittaBannedResponse)
+                        sparklyResults[result] = response
+                }
+            } catch (e: Exception) {
+                // If an exception is thrown
+                logger.warn(e) { "Something went wrong while relaying bans to SparklyPower" }
             }
         }
 
         for (result in results) {
             when (result) {
                 is UserBannedResult -> {
+                    val sparklyResult = sparklyResults[result]
+
                     context.sendEphemeralMessage {
-                        content = "Usuário ${result.userId} (<@${result.userId}>) (ID do ban: ${result.id}) foi banido com sucesso. Obrigada por ter reportado o usuário! <:lori_heart:853052040425766923>"
+                        content = buildString {
+                            appendLine("Usuário ${result.userId} (<@${result.userId}>) (ID do ban: ${result.id}) foi banido com sucesso. Obrigada por ter reportado o usuário! <:lori_heart:853052040425766923>")
+                            if (sparklyResult is BanSparklyPowerPlayerLorittaBannedResponse.Success) {
+                                appendLine("Player ${sparklyResult.userName} foi banido do SparklyPower!")
+                            }
+                        }
                     }
 
                     LoriToolsUtils.logToSaddestOfTheSads(
@@ -135,7 +182,8 @@ class LoriBanExecutor(helper: LorittaHelperKord) : HelperSlashExecutor(helper, P
 
     private class UserBannedResult(
         val id: Long,
-        val userId: Long
+        val userId: Long,
+        val reason: String
     ) : BanResult()
 
     private class UserIsAlreadyBannedResult(
