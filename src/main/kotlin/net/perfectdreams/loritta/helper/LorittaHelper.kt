@@ -152,11 +152,6 @@ class LorittaHelper(val config: LorittaHelperConfig, val fanArtsConfig: FanArtsC
             TimeUnit.MINUTES
         )
 
-        if (config.lorittaDatabase != null) {
-            dailyShopWinners = DailyShopWinners(this, jda)
-            dailyShopWinners?.start()
-        }
-
         FAQEmbedUpdaterPortuguese(this, jda).start()
         FAQEmbedUpdaterEnglish(this, jda).start()
         FAQEmbedUpdaterSparklyPower(this, jda).start()

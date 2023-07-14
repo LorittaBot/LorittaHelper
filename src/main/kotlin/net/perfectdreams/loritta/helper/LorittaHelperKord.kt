@@ -99,8 +99,6 @@ class LorittaHelperKord(
 
             // Register Commands
             with(interaKTions.manager) {
-                register(BroadcastDailyShopWinnersCommand(this@LorittaHelperKord))
-
                 register(CheckCommandsCommand(this@LorittaHelperKord))
 
                 register(DailyCatcherCheckCommand(this@LorittaHelperKord))
