@@ -1,8 +1,8 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    kotlin("jvm") version "1.7.10"
-    kotlin("plugin.serialization") version "1.7.10"
+    kotlin("jvm") version "1.8.21"
+    kotlin("plugin.serialization") version "1.8.21"
     id("com.google.cloud.tools.jib") version "3.1.4"
     id("net.perfectdreams.i18nhelper.plugin") version "0.0.5-SNAPSHOT"
 }
@@ -43,7 +43,8 @@ dependencies {
     implementation("net.perfectdreams.sequins.text:text-utils:1.0.0")
 
     // Pudding
-    api("net.perfectdreams.loritta.cinnamon.pudding:client:0.0.2-20220306.142003-161")
+    api("net.perfectdreams.loritta.cinnamon.pudding:client:0.0.2-SNAPSHOT")
+    implementation("net.perfectdreams.loritta:loritta-serializable-commons-jvm:2023-20230809.170349-3")
 
     // Remove this after everything has been migrated to InteraKTions Unleashed
     implementation("dev.kord:kord-rest:0.8.x-lori-fork-20221109.172532-14")
@@ -72,11 +73,12 @@ dependencies {
     // Database
     implementation("org.postgresql:postgresql:42.3.3")
     implementation("com.zaxxer:HikariCP:5.0.1")
-    implementation("org.jetbrains.exposed:exposed-core:0.37.3")
-    implementation("org.jetbrains.exposed:exposed-dao:0.37.3")
-    implementation("org.jetbrains.exposed:exposed-jdbc:0.37.3")
-    implementation("net.perfectdreams.exposedpowerutils:postgres-power-utils:1.0.0")
-    implementation("net.perfectdreams.exposedpowerutils:postgres-java-time:1.0.0")
+    implementation("org.jetbrains.exposed:exposed-core:0.41.1")
+    implementation("org.jetbrains.exposed:exposed-dao:0.41.1")
+    implementation("org.jetbrains.exposed:exposed-jdbc:0.41.1")
+    implementation("net.perfectdreams.exposedpowerutils:postgres-power-utils:1.2.1")
+    implementation("net.perfectdreams.exposedpowerutils:postgres-java-time:1.2.1")
+    api("net.perfectdreams.exposedpowerutils:exposed-power-utils:1.2.1")
 
     testImplementation("org.junit.jupiter:junit-jupiter:5.8.2")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.8.2")

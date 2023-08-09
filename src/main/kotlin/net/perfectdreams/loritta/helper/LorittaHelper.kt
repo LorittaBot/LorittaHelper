@@ -2,17 +2,22 @@ package net.perfectdreams.loritta.helper
 
 import dev.kord.rest.service.RestClient
 import io.ktor.client.*
+import io.ktor.client.request.*
+import io.ktor.client.statement.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.asCoroutineDispatcher
 import kotlinx.coroutines.launch
+import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 import mu.KotlinLogging
 import net.dv8tion.jda.api.JDA
 import net.dv8tion.jda.api.JDABuilder
 import net.dv8tion.jda.api.entities.Activity
 import net.dv8tion.jda.api.requests.GatewayIntent
 import net.dv8tion.jda.api.utils.MemberCachePolicy
-import net.perfectdreams.loritta.cinnamon.pudding.utils.exposed.createOrUpdatePostgreSQLEnum
+import net.perfectdreams.exposedpowerutils.sql.createOrUpdatePostgreSQLEnum
 import net.perfectdreams.loritta.helper.interactions.commands.vanilla.LoriToolsCommand
 import net.perfectdreams.loritta.helper.listeners.*
 import net.perfectdreams.loritta.helper.network.Databases
@@ -39,6 +44,8 @@ import net.perfectdreams.loritta.helper.utils.topsonhos.TopSonhosRankingSender
 import net.perfectdreams.loritta.morenitta.interactions.InteractionsListener
 import net.perfectdreams.loritta.morenitta.interactions.InteractivityManager
 import net.perfectdreams.loritta.morenitta.interactions.commands.UnleashedCommandManager
+import net.perfectdreams.loritta.serializable.dashboard.requests.LorittaDashboardRPCRequest
+import net.perfectdreams.loritta.serializable.dashboard.responses.LorittaDashboardRPCResponse
 import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.transactions.transaction
 import java.time.LocalDateTime
@@ -187,5 +194,14 @@ class LorittaHelper(val config: LorittaHelperConfig, val fanArtsConfig: FanArtsC
 
     fun launch(block: suspend CoroutineScope.() -> Unit) = GlobalScope.launch(executor) {
         block.invoke(this)
+    }
+
+    suspend inline fun <reified T : LorittaDashboardRPCResponse> makeLorittaRPCRequest(rpc: LorittaDashboardRPCRequest): T {
+        return Json.decodeFromString<T>(
+            http.post("${config.lorittaApi.url.removeSuffix("/")}/api/v1/rpc") {
+                header("Authorization", config.lorittaApi.token)
+                setBody(Json.encodeToString<LorittaDashboardRPCRequest>(rpc))
+            }.bodyAsText()
+        )
     }
 }

@@ -40,7 +40,7 @@ class DailyOnlyEcoCommandsCatcher(database: Database) : DailyCatcher<ReportOnlyE
     }
 
     override suspend fun catch(channel: Channel<ReportOnlyEcoCatcher>) {
-        val dailies = transaction(Connection.TRANSACTION_READ_UNCOMMITTED, 5, database) {
+        val dailies = transaction(Connection.TRANSACTION_READ_UNCOMMITTED, 5, db = database) {
             Dailies.select {
                 Dailies.receivedAt greaterEq DailyCatcherManager.yesterdayAtMidnight() and (Dailies.receivedAt lessEq DailyCatcherManager.yesterdayBeforeDaySwitch())
             }.toList()
@@ -52,7 +52,7 @@ class DailyOnlyEcoCommandsCatcher(database: Database) : DailyCatcher<ReportOnlyE
         for ((chunkedIndex, chunkedDaily) in dailies.chunked(CHUNKED_EXECUTED_COMMAND_LOGS_COUNT).withIndex()) {
             logger.info { "Doing bulk command stats... Current index: $chunkedIndex" }
             val start = System.currentTimeMillis()
-            val commands = transaction(Connection.TRANSACTION_READ_UNCOMMITTED, 5, database) {
+            val commands = transaction(Connection.TRANSACTION_READ_UNCOMMITTED, 5, db = database) {
                 ExecutedCommandsLog.slice(ExecutedCommandsLog.command, ExecutedCommandsLog.userId, commandCountField)
                     .select {
                         ExecutedCommandsLog.sentAt greaterEq DailyCatcherManager.fourteenDaysAgo() and (

@@ -6,30 +6,42 @@ import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
 import io.ktor.http.content.*
+import kotlinx.datetime.toKotlinInstant
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
+import mu.KotlinLogging
+import net.dv8tion.jda.api.entities.Activity
+import net.dv8tion.jda.api.entities.UserSnowflake
 import net.perfectdreams.loritta.cinnamon.pudding.tables.BannedUsers
 import net.perfectdreams.loritta.helper.LorittaHelper
 import net.perfectdreams.loritta.helper.LorittaHelperKord
-import net.perfectdreams.loritta.helper.utils.Constants
-import mu.KotlinLogging
-import net.dv8tion.jda.api.entities.UserSnowflake
 import net.perfectdreams.loritta.helper.tables.EconomyState
+import net.perfectdreams.loritta.helper.utils.Constants
 import net.perfectdreams.loritta.helper.utils.extensions.await
 import net.perfectdreams.loritta.helper.utils.slash.LoriToolsUtils
 import net.perfectdreams.loritta.helper.utils.slash.PermissionLevel
 import net.perfectdreams.loritta.morenitta.interactions.commands.*
 import net.perfectdreams.loritta.morenitta.interactions.commands.options.ApplicationCommandOptions
+import net.perfectdreams.loritta.morenitta.interactions.styled
+import net.perfectdreams.loritta.serializable.dashboard.requests.LorittaDashboardRPCRequest
+import net.perfectdreams.loritta.serializable.dashboard.responses.LorittaDashboardRPCResponse
 import net.perfectdreams.pantufa.rpc.BanSparklyPowerPlayerLorittaBannedRequest
 import net.perfectdreams.pantufa.rpc.BanSparklyPowerPlayerLorittaBannedResponse
 import net.perfectdreams.pantufa.rpc.PantufaRPCRequest
 import net.perfectdreams.pantufa.rpc.PantufaRPCResponse
 import org.jetbrains.exposed.sql.*
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.transactions.transaction
 import java.awt.Color
+import java.time.DateTimeException
 import java.time.Duration
+import java.time.LocalDateTime
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
+import java.time.format.DateTimeParseException
 import java.util.*
+
 
 class LoriToolsCommand(val helper: LorittaHelper) : SlashCommandDeclarationWrapper {
     override fun command() = slashCommand("loritools", "Ferramentas de administração relacionadas a Loritta") {
@@ -47,6 +59,10 @@ class LoriToolsCommand(val helper: LorittaHelper) : SlashCommandDeclarationWrapp
 
         subcommand("economy", "Altera o estado da economia da Loritta") {
             executor = LoriEconomyStateExecutor(helper)
+        }
+
+        subcommand("status", "Altera o status da Loritta") {
+            executor = LoriStatusExecutor(helper)
         }
     }
 
@@ -334,7 +350,7 @@ class LoriToolsCommand(val helper: LorittaHelper) : SlashCommandDeclarationWrapp
             }
 
             when (result) {
-                is LoriBanRenameExecutor.UserBanRenamedResult -> {
+                is UserBanRenamedResult -> {
                     context.reply(true) {
                         content = "Motivo do ban foi alterado! <:lori_heart:853052040425766923>"
                     }
@@ -348,7 +364,7 @@ class LoriToolsCommand(val helper: LorittaHelper) : SlashCommandDeclarationWrapp
                         Color(214, 0, 255)
                     )
                 }
-                is LoriBanRenameExecutor.UserIsNotBannedResult -> {
+                is UserIsNotBannedResult -> {
                     context.reply(true) {
                         content = "O usuário $userId (<@$userId>) não está banido, então não dá para alterar o motivo do ban dele!"
                     }
@@ -397,11 +413,76 @@ class LoriToolsCommand(val helper: LorittaHelper) : SlashCommandDeclarationWrapp
                 }
             }
         }
+    }
 
-        private sealed class BanRenameResult
+    class LoriStatusExecutor(helper: LorittaHelper) : HelperExecutor(helper, PermissionLevel.ADMIN) {
+        companion object {
+            // Define the format of the input string
+            private val formatter = DateTimeFormatter.ofPattern("HH:mm dd/MM/yyyy")
+            private var zoneId = ZoneId.of("America/Sao_Paulo")
+        }
 
-        private object UserIsNotBannedResult : BanRenameResult()
+        inner class Options : ApplicationCommandOptions() {
+            val text = string("text", "Texto do novo status")
+            val type = string("type", "Tipo do novo status") {
+                Activity.ActivityType.values().forEach {
+                    choice(it.name, it.name)
+                }
+            }
+            val priority = long("priority", "Prioridade do status, de menor para maior (por padrão é melhor deixar 0, e 1 para substituir um status já existente)")
+            val startsAt = string("starts_at", "Quando o status ficará visível (horário GMT-3)")
+            val endsAt = string("ends_at", "Quando o status deixará de ser visível (horário GMT-3)")
+            val streamUrl = optionalString("stream_url", "URL da Stream, caso o tipo seja STREAMING")
+        }
 
-        private object UserBanRenamedResult : BanRenameResult()
+        override val options = Options()
+
+        override suspend fun executeHelper(context: ApplicationCommandContext, args: SlashCommandArguments) {
+            context.deferChannelMessage(false)
+
+            val text = args[options.text]
+            val type = args[options.type]
+            val priority = args[options.priority].toInt()
+            val startsAt = args[options.startsAt]
+            val endsAt = args[options.endsAt]
+            val streamUrl = args[options.streamUrl]
+
+            // Parse the string into a LocalDateTime object
+            val startsAtLocalDateTime = try {
+                LocalDateTime.parse(startsAt, formatter)
+            } catch (e: DateTimeParseException) {
+                context.reply(false) {
+                    styled("Não foi possível parsear a data que você passou...")
+                }
+                return
+            }
+
+            // Convert LocalDateTime to Instant using UTC (or desired) time zone offset
+            val startsAtInstant = startsAtLocalDateTime.toInstant(zoneId.rules.getOffset(startsAtLocalDateTime))
+
+            // Parse the string into a LocalDateTime object
+            val endsAtLocalDateTime = try {
+                LocalDateTime.parse(startsAt, formatter)
+            } catch (e: DateTimeParseException) {
+                context.reply(false) {
+                    styled("Não foi possível parsear a data que você passou...")
+                }
+                return
+            }
+
+            // Convert LocalDateTime to Instant using UTC (or desired) time zone offset
+            val endsAtInstant = endsAtLocalDateTime.toInstant(zoneId.rules.getOffset(endsAtLocalDateTime))
+
+            context.loritta.makeLorittaRPCRequest<LorittaDashboardRPCResponse.UpdateLorittaActivityResponse>(
+                LorittaDashboardRPCRequest.UpdateLorittaActivityRequest(
+                    text,
+                    type,
+                    priority,
+                    startsAtInstant.toKotlinInstant(),
+                    endsAtInstant.toKotlinInstant(),
+                    streamUrl
+                )
+            )
+        }
     }
 }
