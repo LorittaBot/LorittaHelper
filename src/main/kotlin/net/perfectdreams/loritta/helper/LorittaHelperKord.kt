@@ -162,23 +162,20 @@ class LorittaHelperKord(
                 val guild = jda.getGuildById(it)
 
                 guild?.updateCommands {
-                    val commands = interaKTions.manager.applicationCommandsDeclarations.map { helper.commandManager.convertInteraKTionsDeclarationToJDA(it) }
-                        helper.commandManager.slashCommands.map { helper.commandManager.convertDeclarationToJDA(it) } +
-                                helper.commandManager.userCommands.map {
-                                    helper.commandManager.convertDeclarationToJDA(
-                                        it
-                                    )
-                                } +
-                                helper.commandManager.messageCommands.map {
-                                    helper.commandManager.convertDeclarationToJDA(
-                                        it
-                                    )
-                                }
+                    val commands = interaKTions.manager.applicationCommandsDeclarations.map { helper.commandManager.convertInteraKTionsDeclarationToJDA(it) } + helper.commandManager.slashCommands.map { helper.commandManager.convertDeclarationToJDA(it) } +
+                            helper.commandManager.userCommands.map {
+                                helper.commandManager.convertDeclarationToJDA(
+                                    it
+                                )
+                            } +
+                            helper.commandManager.messageCommands.map {
+                                helper.commandManager.convertDeclarationToJDA(
+                                    it
+                                )
+                            }
                     addCommands(commands)
                 }?.await()
             }
-
-            helper.commandManager
 
             TicketListener(this@LorittaHelperKord).installAutoReplyToMessagesInTicketListener(gateway)
             AutoCloseTicketWhenMemberLeavesGuildListener(this@LorittaHelperKord).installAutoCloseTicketWhenMemberLeavesGuildListener(
