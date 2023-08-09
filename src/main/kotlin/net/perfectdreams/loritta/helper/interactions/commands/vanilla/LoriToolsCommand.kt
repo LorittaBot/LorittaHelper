@@ -462,7 +462,7 @@ class LoriToolsCommand(val helper: LorittaHelper) : SlashCommandDeclarationWrapp
 
             // Parse the string into a LocalDateTime object
             val endsAtLocalDateTime = try {
-                LocalDateTime.parse(startsAt, formatter)
+                LocalDateTime.parse(endsAt, formatter)
             } catch (e: DateTimeParseException) {
                 context.reply(false) {
                     styled("Não foi possível parsear a data que você passou...")
