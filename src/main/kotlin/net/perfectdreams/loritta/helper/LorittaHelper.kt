@@ -36,6 +36,7 @@ import net.perfectdreams.loritta.helper.utils.faqembed.FAQEmbedUpdaterStaffFAQ
 import net.perfectdreams.loritta.helper.utils.generateserverreport.PendingReportsListTask
 import net.perfectdreams.loritta.helper.utils.tickets.TicketUtils
 import net.perfectdreams.loritta.helper.utils.topsonhos.TopSonhosRankingSender
+import net.perfectdreams.loritta.morenitta.interactions.InteractionsListener
 import net.perfectdreams.loritta.morenitta.interactions.InteractivityManager
 import net.perfectdreams.loritta.morenitta.interactions.commands.UnleashedCommandManager
 import org.jetbrains.exposed.sql.SchemaUtils
@@ -103,6 +104,7 @@ class LorittaHelper(val config: LorittaHelperConfig, val fanArtsConfig: FanArtsC
             GatewayIntent.GUILD_MESSAGE_REACTIONS
         )
             .addEventListeners(
+                InteractionsListener(this),
                 MessageListener(this),
                 BanListener(this),
                 CheckLoriBannedUsersListener(this),
