@@ -116,13 +116,13 @@ class LorittaHelper(val config: LorittaHelperConfig, val fanArtsConfig: FanArtsC
                 MemberCachePolicy.ALL
             )
             .setRawEventsEnabled(true)
-            .setActivity(Activity.playing("https://youtu.be/CNPdO5TZ1DQ"))
+            .setActivity(Activity.customStatus("https://youtu.be/CNPdO5TZ1DQ"))
             .build()
             .awaitReady()
         this.jda = jda
 
         commandManager.register(LoriToolsCommand(this))
-        
+
         if (config.lorittaDatabase != null) {
             val dailyCatcher = DailyCatcherManager(this, jda)
 
