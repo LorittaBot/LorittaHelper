@@ -473,7 +473,7 @@ class LoriToolsCommand(val helper: LorittaHelper) : SlashCommandDeclarationWrapp
             // Convert LocalDateTime to Instant using UTC (or desired) time zone offset
             val endsAtInstant = endsAtLocalDateTime.toInstant(zoneId.rules.getOffset(endsAtLocalDateTime))
 
-            context.loritta.makeLorittaRPCRequest<LorittaDashboardRPCResponse.UpdateLorittaActivityResponse>(
+            val response = context.loritta.makeLorittaRPCRequest<LorittaDashboardRPCResponse.UpdateLorittaActivityResponse>(
                 LorittaDashboardRPCRequest.UpdateLorittaActivityRequest(
                     text,
                     type,
@@ -483,6 +483,19 @@ class LoriToolsCommand(val helper: LorittaHelper) : SlashCommandDeclarationWrapp
                     streamUrl
                 )
             )
+
+            when (response) {
+                is LorittaDashboardRPCResponse.UpdateLorittaActivityResponse.Success -> {
+                    context.reply(false) {
+                        content = "Status inserido na lista de status da Loritta!"
+                    }
+                }
+                is LorittaDashboardRPCResponse.UpdateLorittaActivityResponse.Unauthorized -> {
+                    context.reply(false) {
+                        content = "Não autorizado, tem certeza que o token da API está correto?"
+                    }
+                }
+            }
         }
     }
 }
