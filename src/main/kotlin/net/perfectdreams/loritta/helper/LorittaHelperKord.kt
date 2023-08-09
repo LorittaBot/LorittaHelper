@@ -177,6 +177,8 @@ class LorittaHelperKord(
                 }?.await()
             }
 
+            gateway.installDiscordInteraKTions(interaKTions)
+
             TicketListener(this@LorittaHelperKord).installAutoReplyToMessagesInTicketListener(gateway)
             AutoCloseTicketWhenMemberLeavesGuildListener(this@LorittaHelperKord).installAutoCloseTicketWhenMemberLeavesGuildListener(
                 gateway

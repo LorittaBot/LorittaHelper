@@ -44,7 +44,7 @@ dependencies {
 
     // Pudding
     api("net.perfectdreams.loritta.cinnamon.pudding:client:0.0.2-SNAPSHOT")
-    implementation("net.perfectdreams.loritta:loritta-serializable-commons-jvm:2023-20230809.170349-3")
+    implementation("net.perfectdreams.loritta:loritta-serializable-commons-jvm:2023-20230809.225634-4")
 
     // Remove this after everything has been migrated to InteraKTions Unleashed
     implementation("dev.kord:kord-rest:0.8.x-lori-fork-20221109.172532-14")
