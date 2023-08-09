@@ -2,6 +2,8 @@ package net.perfectdreams.loritta.helper
 
 import dev.kord.common.entity.Snowflake
 import dev.kord.gateway.*
+import dev.minn.jda.ktx.coroutines.await
+import dev.minn.jda.ktx.interactions.commands.updateCommands
 import io.ktor.client.*
 import io.ktor.client.plugins.*
 import kotlinx.coroutines.runBlocking
@@ -132,9 +134,6 @@ class LorittaHelperKord(
                 // ===[ STATS ]===
                 register(StatsCommand(this@LorittaHelperKord))
 
-                // ===[ LORI TOOLS ]===
-                register(LoriToolsCommand(this@LorittaHelperKord))
-
                 if (galleryOfDreamsClient != null) {
                     // ===[ FAN ARTS ]===
                     register(GalleryOfDreamsSlashCommand(this@LorittaHelperKord, galleryOfDreamsClient))
@@ -159,11 +158,27 @@ class LorittaHelperKord(
                 }
             }
 
-            interaKTions.updateAllCommandsInGuild(Snowflake(297732013006389252L))
-            interaKTions.updateAllCommandsInGuild(Snowflake(420626099257475072L))
-            interaKTions.updateAllCommandsInGuild(Snowflake(320248230917046282L))
+            listOf(297732013006389252L, 420626099257475072L, 320248230917046282L).forEach {
+                val guild = jda.getGuildById(it)
 
-            gateway.installDiscordInteraKTions(interaKTions)
+                guild?.updateCommands {
+                    val commands =
+                        helper.commandManager.slashCommands.map { helper.commandManager.convertDeclarationToJDA(it) } +
+                                helper.commandManager.userCommands.map {
+                                    helper.commandManager.convertDeclarationToJDA(
+                                        it
+                                    )
+                                } +
+                                helper.commandManager.messageCommands.map {
+                                    helper.commandManager.convertDeclarationToJDA(
+                                        it
+                                    )
+                                }
+                    addCommands(commands)
+                }?.await()
+            }
+
+            helper.commandManager
 
             TicketListener(this@LorittaHelperKord).installAutoReplyToMessagesInTicketListener(gateway)
             AutoCloseTicketWhenMemberLeavesGuildListener(this@LorittaHelperKord).installAutoCloseTicketWhenMemberLeavesGuildListener(

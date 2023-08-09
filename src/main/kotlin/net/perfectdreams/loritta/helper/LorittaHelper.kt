@@ -7,11 +7,13 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.asCoroutineDispatcher
 import kotlinx.coroutines.launch
 import mu.KotlinLogging
+import net.dv8tion.jda.api.JDA
 import net.dv8tion.jda.api.JDABuilder
 import net.dv8tion.jda.api.entities.Activity
 import net.dv8tion.jda.api.requests.GatewayIntent
 import net.dv8tion.jda.api.utils.MemberCachePolicy
 import net.perfectdreams.loritta.cinnamon.pudding.utils.exposed.createOrUpdatePostgreSQLEnum
+import net.perfectdreams.loritta.helper.interactions.commands.vanilla.LoriToolsCommand
 import net.perfectdreams.loritta.helper.listeners.*
 import net.perfectdreams.loritta.helper.network.Databases
 import net.perfectdreams.loritta.helper.tables.SelectedResponsesLog
@@ -34,6 +36,8 @@ import net.perfectdreams.loritta.helper.utils.faqembed.FAQEmbedUpdaterStaffFAQ
 import net.perfectdreams.loritta.helper.utils.generateserverreport.PendingReportsListTask
 import net.perfectdreams.loritta.helper.utils.tickets.TicketUtils
 import net.perfectdreams.loritta.helper.utils.topsonhos.TopSonhosRankingSender
+import net.perfectdreams.loritta.morenitta.interactions.InteractivityManager
+import net.perfectdreams.loritta.morenitta.interactions.commands.UnleashedCommandManager
 import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.transactions.transaction
 import java.time.LocalDateTime
@@ -55,6 +59,8 @@ class LorittaHelper(val config: LorittaHelperConfig, val fanArtsConfig: FanArtsC
         private val logger = KotlinLogging.logger {}
     }
 
+    lateinit var jda: JDA
+
     // We only need one single thread because <3 coroutines
     // As long we don't do any blocking tasks inside of the executor, Loritta Helper will work fiiiine
     // and will be very lightweight!
@@ -69,6 +75,9 @@ class LorittaHelper(val config: LorittaHelperConfig, val fanArtsConfig: FanArtsC
 
     val helperRest = RestClient(config.token)
     val lorittaRest = lorittaConfig?.token?.let { RestClient(it) }
+
+    val commandManager = UnleashedCommandManager(this)
+    val interactivityManager = InteractivityManager()
 
     fun start() {
         transaction(databases.helperDatabase) {
@@ -110,7 +119,10 @@ class LorittaHelper(val config: LorittaHelperConfig, val fanArtsConfig: FanArtsC
             .setActivity(Activity.playing("https://youtu.be/CNPdO5TZ1DQ"))
             .build()
             .awaitReady()
+        this.jda = jda
 
+        commandManager.register(LoriToolsCommand(this))
+        
         if (config.lorittaDatabase != null) {
             val dailyCatcher = DailyCatcherManager(this, jda)
 

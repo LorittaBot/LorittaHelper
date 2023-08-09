@@ -20,4 +20,17 @@ object Emotes {
     const val LORI_PEACE = "<:lori_peace:971612491597635665>"
     const val LORI_CARD = "<:lori_card:956402937666633769>"
     const val LORI_SMART = "<:lori_smart:964697508204908554>"
+
+    const val DefaultStyledPrefix = "\uD83D\uDD39"
+    const val LoriRage = "<:lori_rage:950114905091096586>"
+    const val LoriSleeping = "<:lori_zz:964701978091470919>"
+    const val LoriSob = "<:lori_sob:950109140880080956>"
+    const val LoriHanglooseLookingRight = "<:lori_hangloose:982764105918205952>"
+    const val PowerHanglooseLookingLeft = "<:power_hangloose:982766819511242804>"
+    const val PowerHanglooseLookingRight = "<:power_hangloose_right:1008059744717635624>"
+    const val PantufaHanglooseLookingLeft = "<:pantufa_hangloose:982762886105534565>"
+    const val PantufaHanglooseLookingRight = "<:pantufa_hangloose_right:1008059742356250759>"
+    const val GabiHanglooseLookingRight = "<:gabi_hangloose:982764945236176919>"
+
+    const val Sonhos2 = "<:sonhos_45b3b35d:1018949420886278256>"
 }

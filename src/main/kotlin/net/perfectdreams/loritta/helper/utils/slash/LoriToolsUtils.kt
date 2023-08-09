@@ -1,58 +1,45 @@
 package net.perfectdreams.loritta.helper.utils.slash
 
-import dev.kord.common.Color
-import dev.kord.common.entity.Snowflake
-import dev.kord.core.entity.Icon
-import dev.kord.rest.Image
-import dev.kord.rest.builder.message.create.embed
-import dev.kord.core.entity.User
-import net.perfectdreams.discordinteraktions.common.utils.author
-import net.perfectdreams.discordinteraktions.common.utils.field
-import net.perfectdreams.discordinteraktions.common.utils.footer
-import net.perfectdreams.loritta.helper.LorittaHelperKord
+import dev.minn.jda.ktx.messages.MessageCreate
+import net.dv8tion.jda.api.entities.User
+import net.perfectdreams.loritta.helper.LorittaHelper
 import net.perfectdreams.loritta.helper.utils.Constants
+import net.perfectdreams.loritta.helper.utils.extensions.await
+import java.awt.Color
 
 object LoriToolsUtils {
     suspend fun logToSaddestOfTheSads(
-        helper: LorittaHelperKord,
+        helper: LorittaHelper,
         moderator: User,
-        punishedUserId: Snowflake,
+        punishedUserId: Long,
         title: String,
         reason: String,
         color: Color
     ) {
         val punishedUser = try {
-            helper.helperRest.user.getUser(punishedUserId)
+            helper.jda.retrieveUserById(punishedUserId).await()
         } catch (e: Exception) {
             // May trigger an exception if the user does not exist
             null
         }
 
-        helper.helperRest.channel.createMessage(
-            Snowflake(Constants.PORTUGUESE_SADDEST_OF_THE_SADS_CHANNEL_ID)
-        ) {
-            embed {
-                author("${moderator.username}#${moderator.discriminator} (${moderator.id})", null, moderator.avatar?.cdnUrl?.toUrl {
-                    format = Image.Format.PNG
-                })
-                this.title = "$punishedUserId | $title"
-                field("Motivo", reason, true)
-                this.color = color
+        val channel = helper.jda.getTextChannelById(Constants.PORTUGUESE_SADDEST_OF_THE_SADS_CHANNEL_ID) ?: return
 
-                if (punishedUser != null)
-                    footer(
-                        "${punishedUser.username}#${punishedUser.discriminator} (${punishedUser.id})",
-                        (
-                                punishedUser.avatar?.let {
-                                    Icon.UserAvatar(Snowflake(punishedUserId.value), it, helper.interaKTions.kord)
-                                } ?: Icon.DefaultUserAvatar(punishedUser.discriminator.toInt(), helper.interaKTions.kord)
-                                )
-                            .cdnUrl
-                            .toUrl {
-                                format = Image.Format.PNG
-                            }
-                    )
+        channel.sendMessage(
+            MessageCreate {
+                embed {
+                    author("${moderator.name}#${moderator.discriminator} (${moderator.id})", null, moderator.avatarUrl)
+                    this.title = "$punishedUserId | $title"
+                    field("Motivo", reason, true)
+                    this.color = color.rgb
+
+                    if (punishedUser != null)
+                        footer(
+                            "${punishedUser.name}#${punishedUser.discriminator} (${punishedUser.id})",
+                            punishedUser.avatarUrl
+                        )
+                }
             }
-        }
+        ).await()
     }
 }
