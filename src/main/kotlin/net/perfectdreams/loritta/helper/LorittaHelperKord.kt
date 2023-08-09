@@ -162,7 +162,7 @@ class LorittaHelperKord(
                 val guild = jda.getGuildById(it)
 
                 guild?.updateCommands {
-                    val commands =
+                    val commands = interaKTions.manager.applicationCommandsDeclarations.map { helper.commandManager.convertInteraKTionsDeclarationToJDA(it) }
                         helper.commandManager.slashCommands.map { helper.commandManager.convertDeclarationToJDA(it) } +
                                 helper.commandManager.userCommands.map {
                                     helper.commandManager.convertDeclarationToJDA(
