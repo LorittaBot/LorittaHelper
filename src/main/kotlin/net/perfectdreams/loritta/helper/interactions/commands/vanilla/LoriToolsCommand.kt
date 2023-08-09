@@ -429,7 +429,7 @@ class LoriToolsCommand(val helper: LorittaHelper) : SlashCommandDeclarationWrapp
                     choice(it.name, it.name)
                 }
             }
-            val priority = long("priority", "Prioridade do status, de menor para maior (por padrão é melhor deixar 0, e 1 para substituir um status já existente)")
+            val priority = long("priority", "Prioridade do status, de menor para maior (padrão: 0, 1 para substituir)")
             val startsAt = string("starts_at", "Quando o status ficará visível (horário GMT-3)")
             val endsAt = string("ends_at", "Quando o status deixará de ser visível (horário GMT-3)")
             val streamUrl = optionalString("stream_url", "URL da Stream, caso o tipo seja STREAMING")
