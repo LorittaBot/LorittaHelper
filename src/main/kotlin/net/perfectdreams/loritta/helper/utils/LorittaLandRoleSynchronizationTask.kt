@@ -1,5 +1,6 @@
 package net.perfectdreams.loritta.helper.utils
 
+import com.github.benmanes.caffeine.cache.Caffeine
 import io.ktor.client.call.*
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
@@ -24,6 +25,8 @@ import net.perfectdreams.loritta.helper.utils.buttonroles.LorittaCommunityRoleBu
 import net.perfectdreams.loritta.helper.utils.extensions.await
 import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.transactions.transaction
+import java.util.*
+import java.util.concurrent.TimeUnit
 import kotlin.math.ceil
 
 class LorittaLandRoleSynchronizationTask(val m: LorittaHelper, val jda: JDA) : Runnable {
@@ -57,6 +60,13 @@ class LorittaLandRoleSynchronizationTask(val m: LorittaHelper, val jda: JDA) : R
 
         private val logger = KotlinLogging.logger {}
     }
+
+    private val userNotInCommunityServerCache = Collections.newSetFromMap(
+        Caffeine.newBuilder()
+            .expireAfterWrite(1, TimeUnit.DAYS)
+            .build<Long, Boolean>()
+            .asMap()
+    )
 
     override fun run() {
         logger.info { "Synchronizing roles..." }
@@ -244,6 +254,11 @@ class LorittaLandRoleSynchronizationTask(val m: LorittaHelper, val jda: JDA) : R
             // First we will give the members
             for (userId in validIllustratorIds) {
                 try {
+                    if (userNotInCommunityServerCache.contains(userId)) {
+                        logger.info { "Skipping $userId because it is in the \"not in community server\" cache..." }
+                        continue
+                    }
+
                     val member = communityGuild.retrieveMemberById(userId)
                         .await()
 
@@ -256,12 +271,17 @@ class LorittaLandRoleSynchronizationTask(val m: LorittaHelper, val jda: JDA) : R
                             .await()
                     }
                 } catch (e: ErrorResponseException) {
-                    if (e.errorResponse == ErrorResponse.UNKNOWN_MEMBER)
-                        logger.warn { "Member $userId is not in Loritta's community server!" }
-                    else if (e.errorResponse == ErrorResponse.UNKNOWN_USER)
-                        logger.warn { "User $userId does not exist!" }
-                    else
-                        logger.warn(e) { "Exception while retrieving $userId" }
+                    when (e.errorResponse) {
+                        ErrorResponse.UNKNOWN_MEMBER -> {
+                            userNotInCommunityServerCache.add(userId)
+                            logger.warn { "Member $userId is not in Loritta's community server!" }
+                        }
+                        ErrorResponse.UNKNOWN_USER -> {
+                            userNotInCommunityServerCache.add(userId)
+                            logger.warn { "User $userId does not exist!" }
+                        }
+                        else -> logger.warn(e) { "Exception while retrieving $userId" }
+                    }
                 }
             }
 
