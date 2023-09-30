@@ -28,7 +28,7 @@ class DailyCheckByLorittaClientIdExecutor(helper: LorittaHelperKord) : HelperSla
     override val options = Options()
 
     override suspend fun executeHelper(context: ApplicationCommandContext, args: SlashCommandArguments) {
-        context.deferChannelMessage()
+        context.deferChannelMessageEphemerally()
 
         // Because we did stuff in a... unconventional way, we will get all matched user arguments in a unconventional way: By getting all resolved objects!
         val clientIds = args.types.values.filterIsInstance<String?>()
@@ -36,7 +36,7 @@ class DailyCheckByLorittaClientIdExecutor(helper: LorittaHelperKord) : HelperSla
             .map { UUID.fromString(it) }
 
         if (clientIds.isEmpty()) {
-            context.sendMessage {
+            context.sendEphemeralMessage {
                 content = "Nenhum usuário encontrado!"
             }
             return
@@ -100,7 +100,7 @@ class DailyCheckByLorittaClientIdExecutor(helper: LorittaHelperKord) : HelperSla
             builder.append("\n\n")
         }
 
-        context.sendMessage {
+        context.sendEphemeralMessage {
             addFile("dailies.txt", builder.toString().toByteArray(Charsets.UTF_8).inputStream())
         }
     }

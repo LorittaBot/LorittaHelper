@@ -25,11 +25,11 @@ class DailyCheckExecutor(helper: LorittaHelperKord) : HelperSlashExecutor(helper
     override val options = Options()
 
     override suspend fun executeHelper(context: ApplicationCommandContext, args: SlashCommandArguments) {
-        context.deferChannelMessage()
+        context.deferChannelMessageEphemerally()
 
         // Because we did stuff in a... unconventional way, we will get all matched user arguments in a unconventional way: By getting all resolved objects!
         val users = context.interactionData.resolved?.users?.values ?: run {
-            context.sendMessage {
+            context.sendEphemeralMessage {
                 content = "Nenhum usuário encontrado!"
             }
             return
@@ -84,7 +84,7 @@ class DailyCheckExecutor(helper: LorittaHelperKord) : HelperSlashExecutor(helper
             builder.append("\n\n")
         }
 
-        context.sendMessage {
+        context.sendEphemeralMessage {
             addFile("dailies.txt", builder.toString().toByteArray(Charsets.UTF_8).inputStream())
         }
     }
