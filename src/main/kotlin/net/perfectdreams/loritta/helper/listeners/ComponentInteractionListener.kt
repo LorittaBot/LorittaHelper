@@ -158,7 +158,7 @@ class ComponentInteractionListener(val m: LorittaHelper) : ListenerAdapter() {
                     MessageCreate {
                         systemInfo.ticketCreatedMessage.invoke(this, event.user, language)
                     }
-                )
+                ).await()
 
                 hook.editOriginal(
                     language.get(
