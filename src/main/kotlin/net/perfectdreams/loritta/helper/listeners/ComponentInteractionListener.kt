@@ -110,7 +110,7 @@ class ComponentInteractionListener(val m: LorittaHelper) : ListenerAdapter() {
                 if (alreadyCreatedUserTicketData == null) {
                     // If it is STILL null, we will create a thread!
                     ticketThreadId = event.channel.asThreadContainer()
-                        .createThreadChannel(threadName)
+                        .createThreadChannel(threadName, true)
                         .setAutoArchiveDuration(systemInfo.archiveDuration)
                         .setInvitable(false)
                         .reason("Ticket created for ${event.user.idLong}")
