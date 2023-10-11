@@ -191,7 +191,7 @@ class ComponentInteractionListener(val m: LorittaHelper) : ListenerAdapter() {
 
     override fun onStringSelectInteraction(event: StringSelectInteractionEvent) {
         m.launch {
-            val systemInfo = m.ticketUtils.systems[event.idLong]!!
+            val systemInfo = m.ticketUtils.systems[event.channel.idLong]!!
             if (systemInfo !is HelpDeskTicketSystem)
                 return@launch
             val channelResponses = systemInfo.channelResponses
