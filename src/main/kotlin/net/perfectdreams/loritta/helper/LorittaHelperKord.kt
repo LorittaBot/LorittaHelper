@@ -17,7 +17,6 @@ import net.perfectdreams.loritta.helper.utils.buttonroles.RoleColorButtonExecuto
 import net.perfectdreams.loritta.helper.utils.buttonroles.RoleCoolBadgeButtonExecutor
 import net.perfectdreams.loritta.helper.utils.buttonroles.RoleToggleButtonExecutor
 import net.perfectdreams.loritta.helper.utils.cache.ChannelsCache
-import net.perfectdreams.loritta.helper.utils.checksonhosmendigagem.CheckSequenciaTimeoutListener
 import net.perfectdreams.loritta.helper.utils.checksonhosmendigagem.CheckSonhosMendigagemTimeoutListener
 import net.perfectdreams.loritta.helper.utils.config.FanArtsConfig
 import net.perfectdreams.loritta.helper.utils.config.LorittaConfig
@@ -31,7 +30,6 @@ import net.perfectdreams.loritta.helper.utils.galleryofdreams.commands.patch.Pat
 import net.perfectdreams.loritta.helper.utils.galleryofdreams.commands.patch.PatchFanArtSelectBadgesSelectMenuExecutor
 import net.perfectdreams.loritta.helper.utils.generateserverreport.ShowFilesExecutor
 import net.perfectdreams.loritta.helper.utils.generateserverreport.ShowUserIdExecutor
-import net.perfectdreams.loritta.helper.utils.loribantimeout.LorittaBanTimeoutListener
 import net.perfectdreams.loritta.helper.utils.slash.declarations.*
 import net.perfectdreams.loritta.helper.utils.tickets.*
 
@@ -186,8 +184,6 @@ class LorittaHelperKord(
             CheckSonhosMendigagemTimeoutListener(this@LorittaHelperKord).installCheckSonhosMendigagemTimeoutListener(
                 gateway
             )
-            CheckSequenciaTimeoutListener(this@LorittaHelperKord).installCheckSequenciaTimeoutListener(gateway)
-            LorittaBanTimeoutListener(this@LorittaHelperKord).installLorittaBanTimeout(gateway)
 
             gateway.start(config.token) {
                 intents = Intents {

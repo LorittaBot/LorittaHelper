@@ -119,7 +119,8 @@ class LorittaHelper(val config: LorittaHelperConfig, val fanArtsConfig: FanArtsC
                 ApproveReportsOnReactionListener(this),
                 AddReactionsToMessagesListener(this),
                 ApproveAppealsOnReactionListener(this),
-                CreateSparklyThreadsListener()
+                CreateSparklyThreadsListener(),
+                LorittaBanTimeoutListener(this)
             )
             .setMemberCachePolicy(
                 MemberCachePolicy.ALL
