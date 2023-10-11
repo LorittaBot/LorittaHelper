@@ -125,7 +125,7 @@ class ComponentInteractionListener(val m: LorittaHelper) : ListenerAdapter() {
                     // Hack hack hack
                     event.channel.asThreadContainer().retrieveArchivedPrivateThreadChannels()
                         .skipTo(ticketThreadId - 1)
-                        .limit(1)
+                        .limit(2) // Limit must be greater or equal to 2, so let's query two thread channels I guess... that's kinda hacky tho
                         .await()
                         .firstOrNull { it.idLong == ticketThreadId }
                 } ?: error("Couldn't find thread channel!")
