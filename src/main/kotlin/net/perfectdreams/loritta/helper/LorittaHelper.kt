@@ -87,7 +87,7 @@ class LorittaHelper(val config: LorittaHelperConfig, val fanArtsConfig: FanArtsC
 
     val commandManager = UnleashedCommandManager(this)
     val interactivityManager = InteractivityManager()
-    val ticketUtils = TicketUtils(this)
+    lateinit var ticketUtils: TicketUtils
     val languageManager = LanguageManager(
         LorittaHelperKord::class,
         "en",
@@ -142,7 +142,8 @@ class LorittaHelper(val config: LorittaHelperConfig, val fanArtsConfig: FanArtsC
             .awaitReady()
 
         this.jda = jda
-
+        ticketUtils = TicketUtils(this)
+        
         runBlocking {
             for (system in ticketUtils.systems.values) {
                 val type = system.systemType
