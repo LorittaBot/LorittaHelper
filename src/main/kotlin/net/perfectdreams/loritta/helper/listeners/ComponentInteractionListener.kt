@@ -229,7 +229,7 @@ class ComponentInteractionListener(val m: LorittaHelper) : ListenerAdapter() {
                                 ).withEmoji(Emoji.fromUnicode("➕"))
                             )
                         }
-                    ).await()
+                    ).setEphemeral(true).await()
                 } else {
                     event.interaction.reply(
                         MessageCreate {
@@ -265,7 +265,7 @@ class ComponentInteractionListener(val m: LorittaHelper) : ListenerAdapter() {
                                 ).withEmoji(Emoji.fromUnicode("➕"))
                             )
                         }
-                    ).await()
+                    ).setEphemeral(true).await()
                 }
             } else {
                 val response = channelResponses.first { it::class.simpleName == firstValue }
