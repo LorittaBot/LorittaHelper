@@ -22,12 +22,12 @@ class TicketUtils(val m: LorittaHelperKord) {
             m.helperRest,
             TicketSystemType.HELP_DESK_PORTUGUESE,
             LanguageName.PORTUGUESE,
-            Snowflake(Constants.SUPPORT_SERVER_ID),
-            Snowflake(891834050073997383),
+            Snowflake(Constants.COMMUNITY_SERVER_ID),
+            Snowflake(1077726822160142386L ),
             PortugueseResponses.responses,
-            Snowflake(761337893951635458),
-            Snowflake(752294116708319324),
-            Snowflake(421325387889377291)
+            Snowflake(574308431029207060L),
+            Snowflake(610094449737072660L),
+            Snowflake(399301696892829706L)
         ),
 
         // English Help Desk Channel
