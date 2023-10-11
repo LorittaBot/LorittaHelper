@@ -1,73 +1,67 @@
 package net.perfectdreams.loritta.helper.utils.tickets
 
-import dev.kord.common.entity.Snowflake
-import dev.kord.rest.json.request.ListThreadsByTimestampRequest
-import dev.kord.rest.service.RestClient
-import kotlinx.datetime.Instant
+import dev.minn.jda.ktx.generics.getChannel
+import net.dv8tion.jda.api.JDA
+import net.dv8tion.jda.api.entities.channel.concrete.TextChannel
+import net.perfectdreams.loritta.helper.utils.extensions.await
 
 class TicketsCache(
-    val guildId: Snowflake,
-    val channelId: Snowflake,
-    private val rest: RestClient
+    val jda: JDA,
+    val guildId: Long,
+    val channelId: Long
 ) {
-    val tickets = mutableMapOf<Snowflake, DiscordThreadTicketData>()
+    val tickets = mutableMapOf<Long, DiscordThreadTicketData>()
 
     // We cache tickets so tickets can be created faster, because if we have too many archived tickets, when a user that never created a ticket before tries
     // opening a ticket, it takes a looong time (1+ minute) just to create it, which is kinda bad for UX
     suspend fun populateCache() {
+        val guild = jda.getGuildById(guildId)!!
+        val channel = guild.getChannel<TextChannel>(channelId)!!
+
         // Populate cache with the active threads
-        rest.guild.listActiveThreads(guildId)
-            .threads
+        guild
+            .retrieveActiveThreads()
+            .await()
             .forEach {
-                val name = it.name.value ?: return@forEach
+                val name = it.name
                 if (!name.contains("(") && !name.contains(")"))
                     return@forEach
 
                 val onlyTheId = name.substringAfterLast("(").substringBeforeLast(")")
-                val idAsULong = onlyTheId.toULongOrNull() ?: return@forEach
-                val userIdAsSnowflake = Snowflake(idAsULong)
+                val userIdAsLong = onlyTheId.toLongOrNull() ?: return@forEach
 
-                tickets[userIdAsSnowflake] = DiscordThreadTicketData(it.id)
+                tickets[userIdAsLong] = DiscordThreadTicketData(it.idLong)
             }
+
 
         // Populate cache with the inactive threads
-        var searchedAll = false
-        var lastInstant: Instant? = null
+        val paginationAction = channel.retrieveArchivedPrivateThreadChannels()
+            // Increase limit from 5 (Discord Default) to 100
+            .limit(100)
+        var currentLastKey = paginationAction.lastKey
 
-        while (!searchedAll) {
-            val result = rest.channel.listPrivateArchivedThreads(
-                channelId,
-                ListThreadsByTimestampRequest(
-                    before = lastInstant,
-                    limit = 100 // Increase limit from 5 (Discord Default) to 100
-                )
-            )
+        while (true) {
+            val threads = paginationAction.await()
 
-            result
-                .threads
-                .forEach {
-                    val name = it.name.value ?: return@forEach
-                    if (!name.contains("(") && !name.contains(")"))
-                        return@forEach
+            threads.forEach {
+                val name = it.name ?: return@forEach
+                if (!name.contains("(") && !name.contains(")"))
+                    return@forEach
 
-                    val onlyTheId = name.substringAfterLast("(").substringBeforeLast(")")
-                    val idAsULong = onlyTheId.toULongOrNull() ?: return@forEach
-                    val userIdAsSnowflake = Snowflake(idAsULong)
+                val onlyTheId = name.substringAfterLast("(").substringBeforeLast(")")
+                val userIdAsLong = onlyTheId.toLongOrNull() ?: return@forEach
 
-                    tickets[userIdAsSnowflake] = DiscordThreadTicketData(it.id)
-                }
-
-            searchedAll = result.threads.isEmpty()
-            if (!searchedAll) {
-                // Gets the minimum archive timestamp of the thread, because Discord seems to sort them by archival timestamp
-                lastInstant = result.threads.mapNotNull {
-                    it.threadMetadata.value?.archiveTimestamp
-                }.minOrNull()
+                tickets[userIdAsLong] = DiscordThreadTicketData(it.idLong)
             }
+
+            if (paginationAction.lastKey == currentLastKey)
+                break
+
+            currentLastKey = paginationAction.lastKey
         }
     }
 
     data class DiscordThreadTicketData(
-        val id: Snowflake
+        val id: Long
     )
 }

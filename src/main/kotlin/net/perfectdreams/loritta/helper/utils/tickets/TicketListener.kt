@@ -1,18 +1,18 @@
 package net.perfectdreams.loritta.helper.utils.tickets
 
-import dev.kord.common.entity.ButtonStyle
-import dev.kord.common.entity.ChannelType
-import dev.kord.common.entity.DiscordPartialEmoji
-import dev.kord.common.entity.Snowflake
-import dev.kord.common.entity.optional.value
-import dev.kord.gateway.Gateway
-import dev.kord.gateway.MessageCreate
-import dev.kord.gateway.on
-import dev.kord.rest.builder.message.create.actionRow
-import dev.kord.rest.builder.message.create.allowedMentions
+import dev.minn.jda.ktx.coroutines.await
+import dev.minn.jda.ktx.generics.getChannel
+import dev.minn.jda.ktx.messages.MessageCreate
+import net.dv8tion.jda.api.entities.Message
+import net.dv8tion.jda.api.entities.channel.concrete.ThreadChannel
+import net.dv8tion.jda.api.entities.emoji.Emoji
+import net.dv8tion.jda.api.events.message.MessageReceivedEvent
+import net.dv8tion.jda.api.interactions.components.ActionRow
+import net.dv8tion.jda.api.interactions.components.buttons.Button
+import net.dv8tion.jda.api.interactions.components.buttons.ButtonStyle
 import net.perfectdreams.discordinteraktions.common.components.interactiveButton
 import net.perfectdreams.loritta.api.messages.LorittaReply
-import net.perfectdreams.loritta.helper.LorittaHelperKord
+import net.perfectdreams.loritta.helper.LorittaHelper
 import net.perfectdreams.loritta.helper.i18n.I18nKeysData
 import net.perfectdreams.loritta.helper.tables.StartedSupportSolicitations
 import net.perfectdreams.loritta.helper.tables.TicketMessagesActivity
@@ -23,35 +23,36 @@ import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.transactions.transaction
 import java.time.Instant
+import java.util.*
 
-class TicketListener(private val helper: LorittaHelperKord) {
-    fun installAutoReplyToMessagesInTicketListener(gateway: Gateway) = gateway.on<MessageCreate> {
-        if (this.message.author.bot.discordBoolean)
-            return@on
+class TicketListener(private val helper: LorittaHelper) {
+    suspend fun onMessageReceived(event: MessageReceivedEvent) {
+        if (event.message.author.isBot)
+            return
 
-        val channelId = this.message.channelId
-        val channel = helper.channelsCache.getChannel(channelId)
-        if (channel.type != ChannelType.PrivateThread)
-            return@on
+        val channelId = event.message.channel.idLong
+        val channel = helper.jda.getChannel<ThreadChannel>(channelId) ?: return
+        if (channel.isPublic)
+            return
 
-        val parentChannelId = channel.parentId.value ?: return@on
+        val parentChannel = channel.parentChannel
 
-        val systemInfo = helper.ticketUtils.systems[parentChannelId]!!
+        val systemInfo = helper.ticketUtils.systems[parentChannel.idLong]!!
         if (systemInfo !is HelpDeskTicketSystem)
-            return@on
+            return
 
         // Track user message
         transaction(helper.databases.helperDatabase) {
             val startedSupportSolicitation = StartedSupportSolicitations.select {
-                StartedSupportSolicitations.threadId eq this@on.message.channelId.value.toLong()
+                StartedSupportSolicitations.threadId eq event.channel.idLong
             }.orderBy(StartedSupportSolicitations.startedAt, SortOrder.DESC)
                 .limit(1)
                 .firstOrNull()
 
             if (startedSupportSolicitation != null) {
                 TicketMessagesActivity.insert {
-                    it[TicketMessagesActivity.userId] = this@on.message.author.id.value.toLong()
-                    it[TicketMessagesActivity.messageId] = this@on.message.id.value.toLong()
+                    it[TicketMessagesActivity.userId] = event.message.author.idLong
+                    it[TicketMessagesActivity.messageId] = event.message.idLong
                     it[TicketMessagesActivity.timestamp] = Instant.now()
                     it[TicketMessagesActivity.supportSolicitationId] = startedSupportSolicitation[StartedSupportSolicitations.id]
                 }
@@ -62,46 +63,40 @@ class TicketListener(private val helper: LorittaHelperKord) {
         val i18nContext = systemInfo.getI18nContext(helper.languageManager)
 
         // We remove any lines starting with > (quote) because this sometimes causes responses to something inside a citation, and that looks kinda bad
-        val cleanMessage = this.message.content.lines()
+        val cleanMessage = event.message.contentRaw.lines()
             .dropWhile { it.startsWith(">") }
             .joinToString("\n")
 
         val responses = channelResponses
-            .firstOrNull { it.handleResponse(cleanMessage) }?.getResponse(cleanMessage) ?: return@on
+            .firstOrNull { it.handleResponse(cleanMessage) }?.getResponse(cleanMessage) ?: return
 
         if (responses.isNotEmpty())
-            helper.helperRest.channel.createMessage(
-                channelId
-            ) {
-                // We mention roles in some messages, so we don't want the mention to actually go off!
-                allowedMentions {}
+            channel.sendMessage(
+                MessageCreate {
+                    val pleaseCloseTheTicketReply = LorittaReply(
+                        i18nContext.get(I18nKeysData.Tickets.AutoResponseSolved),
+                        "<:lori_nice:726845783344939028>",
+                        mentionUser = false
+                    )
 
-                val pleaseCloseTheTicketReply = LorittaReply(
-                    i18nContext.get(I18nKeysData.Tickets.AutoResponseSolved),
-                    "<:lori_nice:726845783344939028>",
-                    mentionUser = false
-                )
+                    content = (responses + pleaseCloseTheTicketReply)
+                        .joinToString("\n")
+                        { it.build(event.author) }
 
-                content = (responses + pleaseCloseTheTicketReply)
-                    .joinToString("\n")
-                    { it.build(this@on.message.author) }
+                    allowedMentionTypes = EnumSet.of(
+                        Message.MentionType.EMOJI,
+                        Message.MentionType.CHANNEL,
+                        Message.MentionType.SLASH_COMMAND,
+                    )
 
-                messageReference = this@on.message.id
-                failIfNotExists = false
-
-                actionRow {
-                    interactiveButton(
-                        ButtonStyle.Primary,
-                        CloseTicketButtonExecutor,
-                        ComponentDataUtils.encode(
-                            TicketSystemTypeData(systemInfo.systemType)
-                        )
-                    ) {
-                        label = i18nContext.get(I18nKeysData.Tickets.CloseTicket)
-
-                        emoji = DiscordPartialEmoji(Snowflake(726845783344939028), "lori_nice")
-                    }
+                    actionRow(
+                        Button.of(
+                            ButtonStyle.PRIMARY,
+                            "close_ticket:${ComponentDataUtils.encode(TicketSystemTypeData(systemInfo.systemType))}",
+                            i18nContext.get(I18nKeysData.Tickets.CloseTicket)
+                        ).withEmoji(Emoji.fromCustom("lori_nice", 726845783344939028L, false)),
+                    )
                 }
-            }
+            ).setMessageReference(event.messageIdLong).failOnInvalidReply(false).await()
     }
 }

@@ -4,10 +4,7 @@ import dev.kord.rest.service.RestClient
 import io.ktor.client.*
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.asCoroutineDispatcher
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
@@ -18,13 +15,16 @@ import net.dv8tion.jda.api.entities.Activity
 import net.dv8tion.jda.api.requests.GatewayIntent
 import net.dv8tion.jda.api.utils.MemberCachePolicy
 import net.perfectdreams.exposedpowerutils.sql.createOrUpdatePostgreSQLEnum
+import net.perfectdreams.loritta.helper.interactions.commands.vanilla.CloseTicketCommand
 import net.perfectdreams.loritta.helper.interactions.commands.vanilla.LoriToolsCommand
+import net.perfectdreams.loritta.helper.interactions.commands.vanilla.TicketUtilsCommand
 import net.perfectdreams.loritta.helper.listeners.*
 import net.perfectdreams.loritta.helper.network.Databases
 import net.perfectdreams.loritta.helper.tables.SelectedResponsesLog
 import net.perfectdreams.loritta.helper.tables.StaffProcessedReports
 import net.perfectdreams.loritta.helper.tables.StartedSupportSolicitations
 import net.perfectdreams.loritta.helper.tables.TicketMessagesActivity
+import net.perfectdreams.loritta.helper.utils.LanguageManager
 import net.perfectdreams.loritta.helper.utils.LorittaLandRoleSynchronizationTask
 import net.perfectdreams.loritta.helper.utils.StaffProcessedReportResult
 import net.perfectdreams.loritta.helper.utils.checkbannedusers.LorittaBannedRoleTask
@@ -40,6 +40,7 @@ import net.perfectdreams.loritta.helper.utils.faqembed.FAQEmbedUpdaterSparklyPow
 import net.perfectdreams.loritta.helper.utils.faqembed.FAQEmbedUpdaterStaffFAQ
 import net.perfectdreams.loritta.helper.utils.generateserverreport.PendingReportsListTask
 import net.perfectdreams.loritta.helper.utils.tickets.TicketUtils
+import net.perfectdreams.loritta.helper.utils.tickets.TicketsCache
 import net.perfectdreams.loritta.helper.utils.topsonhos.TopSonhosRankingSender
 import net.perfectdreams.loritta.morenitta.interactions.InteractionsListener
 import net.perfectdreams.loritta.morenitta.interactions.InteractivityManager
@@ -86,8 +87,16 @@ class LorittaHelper(val config: LorittaHelperConfig, val fanArtsConfig: FanArtsC
 
     val commandManager = UnleashedCommandManager(this)
     val interactivityManager = InteractivityManager()
+    val ticketUtils = TicketUtils(this)
+    val languageManager = LanguageManager(
+        LorittaHelperKord::class,
+        "en",
+        "/languages/"
+    )
 
     fun start() {
+        languageManager.loadLanguagesAndContexts()
+
         transaction(databases.helperDatabase) {
             createOrUpdatePostgreSQLEnum(TicketUtils.TicketSystemType.values())
             createOrUpdatePostgreSQLEnum(StaffProcessedReportResult.values())
@@ -120,7 +129,9 @@ class LorittaHelper(val config: LorittaHelperConfig, val fanArtsConfig: FanArtsC
                 AddReactionsToMessagesListener(this),
                 ApproveAppealsOnReactionListener(this),
                 CreateSparklyThreadsListener(),
-                LorittaBanTimeoutListener(this)
+                LorittaBanTimeoutListener(this),
+                ComponentInteractionListener(this),
+                AutoCloseTicketWhenMemberLeavesListener(this),
             )
             .setMemberCachePolicy(
                 MemberCachePolicy.ALL
@@ -129,9 +140,22 @@ class LorittaHelper(val config: LorittaHelperConfig, val fanArtsConfig: FanArtsC
             .setActivity(Activity.customStatus("https://youtu.be/CNPdO5TZ1DQ"))
             .build()
             .awaitReady()
+
         this.jda = jda
 
+        runBlocking {
+            for (system in ticketUtils.systems.values) {
+                val type = system.systemType
+                val cache = system.cache
+                logger.info { "Populating ${type}'s ticket cache..." }
+                cache.populateCache()
+                logger.info { "Now tracking ${cache.tickets.size} tickets!" }
+            }
+        }
+
         commandManager.register(LoriToolsCommand(this))
+        commandManager.register(TicketUtilsCommand(this))
+        commandManager.register(CloseTicketCommand(this))
 
         if (config.lorittaDatabase != null) {
             val dailyCatcher = DailyCatcherManager(this, jda)

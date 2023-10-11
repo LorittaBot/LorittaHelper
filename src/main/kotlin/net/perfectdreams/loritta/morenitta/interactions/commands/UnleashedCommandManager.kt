@@ -174,6 +174,16 @@ class UnleashedCommandManager(val loritta: LorittaHelper) {
                             )
                         )
                     }
+
+                    is ChannelDiscordOptionReference -> {
+                        return listOf(
+                            Option<Channel>(
+                                interaKTionsOption.name,
+                                description,
+                                interaKTionsOption.required
+                            )
+                        )
+                    }
                 }
             }
         }

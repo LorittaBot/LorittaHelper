@@ -16,7 +16,6 @@ import net.perfectdreams.loritta.helper.utils.LanguageManager
 import net.perfectdreams.loritta.helper.utils.buttonroles.RoleColorButtonExecutor
 import net.perfectdreams.loritta.helper.utils.buttonroles.RoleCoolBadgeButtonExecutor
 import net.perfectdreams.loritta.helper.utils.buttonroles.RoleToggleButtonExecutor
-import net.perfectdreams.loritta.helper.utils.cache.ChannelsCache
 import net.perfectdreams.loritta.helper.utils.config.FanArtsConfig
 import net.perfectdreams.loritta.helper.utils.config.LorittaConfig
 import net.perfectdreams.loritta.helper.utils.config.LorittaHelperConfig
@@ -56,13 +55,7 @@ class LorittaHelperKord(
     val databases = helper.databases
     val dailyCatcherManager = helper.dailyCatcherManager
     val dailyShopWinners = helper.dailyShopWinners
-    val languageManager = LanguageManager(
-        LorittaHelperKord::class,
-        "en",
-        "/languages/"
-    )
-    val ticketUtils = TicketUtils(this)
-    val channelsCache = ChannelsCache(helperRest)
+    val languageManager = helper.languageManager
 
     val galleryOfDreamsClient = fanArtsConfig?.let {
         GalleryOfDreamsClient(
@@ -85,17 +78,8 @@ class LorittaHelperKord(
     @OptIn(PrivilegedIntent::class)
     fun start() {
         val gateway = DefaultGateway()
-        languageManager.loadLanguagesAndContexts()
 
         runBlocking {
-            for (system in ticketUtils.systems.values) {
-                val type = system.systemType
-                val cache = system.cache
-                logger.info { "Populating ${type}'s ticket cache..." }
-                cache.populateCache()
-                logger.info { "Now tracking ${cache.tickets.size} tickets!" }
-            }
-
             // Register Commands
             with(interaKTions.manager) {
                 register(CheckCommandsCommand(this@LorittaHelperKord))
@@ -116,12 +100,6 @@ class LorittaHelperKord(
                 register(RoleColorButtonExecutor(this@LorittaHelperKord))
 
                 // ===[ TICKETS ]===
-                register(TicketSenderCommand(this@LorittaHelperKord))
-                register(CloseTicketCommand(this@LorittaHelperKord))
-                register(TicketUtilsCommand(this@LorittaHelperKord))
-                register(CreateTicketButtonExecutor(this@LorittaHelperKord))
-                register(CloseTicketButtonExecutor(this@LorittaHelperKord))
-                register(HelperResponseSelectMenuExecutor(this@LorittaHelperKord))
                 register(DriveImageRetrieverCommand(this@LorittaHelperKord))
 
                 // ===[ REPORTS ]===
@@ -175,11 +153,6 @@ class LorittaHelperKord(
             }
 
             gateway.installDiscordInteraKTions(interaKTions)
-
-            TicketListener(this@LorittaHelperKord).installAutoReplyToMessagesInTicketListener(gateway)
-            AutoCloseTicketWhenMemberLeavesGuildListener(this@LorittaHelperKord).installAutoCloseTicketWhenMemberLeavesGuildListener(
-                gateway
-            )
 
             gateway.start(config.token) {
                 intents = Intents {

@@ -1,29 +1,28 @@
 package net.perfectdreams.loritta.helper.utils.tickets.systems
 
-import dev.kord.common.entity.ArchiveDuration
-import dev.kord.common.entity.Snowflake
-import dev.kord.core.entity.User
-import dev.kord.rest.builder.message.create.UserMessageCreateBuilder
-import dev.kord.rest.service.RestClient
+import dev.minn.jda.ktx.messages.InlineMessage
+import net.dv8tion.jda.api.JDA
+import net.dv8tion.jda.api.entities.User
+import net.dv8tion.jda.api.entities.channel.concrete.ThreadChannel.AutoArchiveDuration
 import net.perfectdreams.i18nhelper.core.I18nContext
 import net.perfectdreams.loritta.helper.utils.LanguageManager
 import net.perfectdreams.loritta.helper.utils.tickets.TicketUtils
 import net.perfectdreams.loritta.helper.utils.tickets.TicketsCache
 
 sealed class TicketSystem(
-    val rest: RestClient,
+    val jda: JDA,
     val systemType: TicketUtils.TicketSystemType,
     val language: TicketUtils.LanguageName,
-    val guildId: Snowflake,
-    val channelId: Snowflake,
-    val archiveDuration: ArchiveDuration
+    val guildId: Long,
+    val channelId: Long,
+    val archiveDuration: AutoArchiveDuration
 ) {
-    abstract val ticketCreatedMessage: UserMessageCreateBuilder.(User, I18nContext) -> Unit
+    abstract val ticketCreatedMessage: InlineMessage<*>.(User, I18nContext) -> Unit
 
     val cache = TicketsCache(
+        jda,
         guildId,
-        channelId,
-        rest
+        channelId
     )
 
     fun getI18nContext(languageManager: LanguageManager) = when (language) {

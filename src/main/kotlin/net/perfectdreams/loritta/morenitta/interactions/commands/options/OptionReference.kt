@@ -72,3 +72,11 @@ data class UserAndMember(
     val user: User,
     val member: Member?
 )
+
+class ChannelDiscordOptionReference<T>(name: String, description: String, required: Boolean) : DiscordOptionReference<T>(name, description, required) {
+    override fun get(option: OptionMapping): T {
+        val channel = option.asChannel
+
+        return channel as T
+    }
+}

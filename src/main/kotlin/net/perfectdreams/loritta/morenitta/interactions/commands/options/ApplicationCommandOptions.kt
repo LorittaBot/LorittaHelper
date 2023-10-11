@@ -1,5 +1,6 @@
 package net.perfectdreams.loritta.morenitta.interactions.commands.options
 
+import net.dv8tion.jda.api.entities.channel.Channel
 import net.perfectdreams.i18nhelper.core.keydata.StringI18nData
 
 open class ApplicationCommandOptions {
@@ -35,5 +36,11 @@ open class ApplicationCommandOptions {
         .also { registeredOptions.add(it) }
 
     fun optionalUser(name: String, description: String) = UserDiscordOptionReference<UserAndMember?>(name, description, false)
+        .also { registeredOptions.add(it) }
+
+    fun channel(name: String, description: String) = UserDiscordOptionReference<Channel>(name, description, true)
+        .also { registeredOptions.add(it) }
+
+    fun optionalChannel(name: String, description: String) = UserDiscordOptionReference<Channel?>(name, description, false)
         .also { registeredOptions.add(it) }
 }

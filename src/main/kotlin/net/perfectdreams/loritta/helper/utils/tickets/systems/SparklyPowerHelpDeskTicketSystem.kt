@@ -1,26 +1,25 @@
 package net.perfectdreams.loritta.helper.utils.tickets.systems
 
-import dev.kord.common.entity.Snowflake
-import dev.kord.core.entity.User
-import dev.kord.rest.builder.message.create.UserMessageCreateBuilder
-import dev.kord.rest.service.RestClient
+import dev.minn.jda.ktx.messages.InlineMessage
+import net.dv8tion.jda.api.JDA
+import net.dv8tion.jda.api.entities.User
 import net.perfectdreams.i18nhelper.core.I18nContext
 import net.perfectdreams.loritta.api.messages.LorittaReply
 import net.perfectdreams.loritta.helper.serverresponses.LorittaResponse
 import net.perfectdreams.loritta.helper.utils.tickets.TicketUtils
 
 class SparklyPowerHelpDeskTicketSystem(
-    rest: RestClient,
+    jda: JDA,
     systemType: TicketUtils.TicketSystemType,
     language: TicketUtils.LanguageName,
-    guildId: Snowflake,
-    channelId: Snowflake,
+    guildId: Long,
+    channelId: Long,
     channelResponses: List<LorittaResponse>,
-    faqChannelId: Snowflake,
-    statusChannelId: Snowflake,
-    supportRoleId: Snowflake
-) : HelpDeskTicketSystem(rest, systemType, language, guildId, channelId, channelResponses, faqChannelId, statusChannelId, supportRoleId) {
-    override val ticketCreatedMessage: UserMessageCreateBuilder.(User, I18nContext) -> Unit = { sender, language ->
+    faqChannelId: Long,
+    statusChannelId: Long,
+    supportRoleId: Long
+) : HelpDeskTicketSystem(jda, systemType, language, guildId, channelId, channelResponses, faqChannelId, statusChannelId, supportRoleId) {
+    override val ticketCreatedMessage: InlineMessage<*>.(User, I18nContext) -> Unit = { sender, language ->
         content = (
                 listOf(
                     LorittaReply(

@@ -15,6 +15,7 @@ import net.perfectdreams.loritta.helper.utils.dontmentionstaff.PortugueseDontMen
 import net.perfectdreams.loritta.helper.utils.generatebanstatusreport.GenerateBanStatusReport
 import net.perfectdreams.loritta.helper.utils.generateserverreport.GenerateAppealsReport
 import net.perfectdreams.loritta.helper.utils.generateserverreport.GenerateServerReport
+import net.perfectdreams.loritta.helper.utils.tickets.TicketListener
 
 class MessageListener(val m: LorittaHelper) : ListenerAdapter() {
     private val dontMentionStaffs = listOf(
@@ -27,47 +28,42 @@ class MessageListener(val m: LorittaHelper) : ListenerAdapter() {
     val generateServerReport = GenerateServerReport(m)
     val generateAppealsReport = GenerateAppealsReport(m)
     val checkSonhosBraggers = CheckSonhosMendigagem(m)
+    val tickets = TicketListener(m)
 
     override fun onMessageReceived(event: MessageReceivedEvent) {
-        // If this check wasn't here, Loritta Helper will reply to a user... then she thinks that it is someone asking
-        // something, and the loop goes on...
-        if (event.message.channel.idLong == 790292619769937940L && event.message.attachments.isNotEmpty()) {
-            m.launch {
-                if (event.message.contentRaw == "report") {
-                    generateServerReport.onMessageReceived(event)
-                } else if (event.message.contentRaw == "appeal") {
-                    generateAppealsReport.onMessageReceived(event)
+        m.launch {
+            // If this check wasn't here, Loritta Helper will reply to a user... then she thinks that it is someone asking
+            // something, and the loop goes on...
+            if (event.message.channel.idLong == 790292619769937940L && event.message.attachments.isNotEmpty()) {
+                m.launch {
+                    if (event.message.contentRaw == "report") {
+                        generateServerReport.onMessageReceived(event)
+                    } else if (event.message.contentRaw == "appeal") {
+                        generateAppealsReport.onMessageReceived(event)
+                    }
                 }
+                return@launch
             }
-            return
-        }
 
-        // Ignore messages sent by bots
-        if (event.author.isBot)
-            return
+            tickets.onMessageReceived(event)
 
-        m.launch {
+            // Ignore messages sent by bots
+            if (event.author.isBot)
+                return@launch
+
             checkSonhosBraggers.onMessageReceived(event)
-        }
 
-        // We launch in a separate task because we want both responses (automatic responses + don't mention staff) to go off, if they
-        // are triggered in the same message
-        m.launch {
+            // We launch in a separate task because we want both responses (automatic responses + don't mention staff) to go off, if they
+            // are triggered in the same message
             dontMentionStaffs.forEach {
                 it.onMessageReceived(event)
             }
-        }
 
-        m.launch {
             if (event.message.channel.idLong == 781878469427986452L)
                 generateBanStatusReport.onMessageReceived(event)
-        }
 
-        m.launch {
             checkIllegalNitroSell.onMessageReceived(event)
-        }
 
-        m.launch {
             val channelResponses = when (event.message.channel.idLong) {
                 Constants.PORTUGUESE_SUPPORT_CHANNEL_ID, 547119872568459284L /* open bar */ -> {
                     PortugueseResponses.responses
