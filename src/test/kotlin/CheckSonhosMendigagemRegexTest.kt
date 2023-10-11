@@ -1,4 +1,4 @@
-import net.perfectdreams.loritta.helper.utils.checksonhosmendigagem.CheckSonhosMendigagemTimeoutListener
+import net.perfectdreams.loritta.helper.utils.checksonhosmendigagem.CheckSonhosMendigagem
 import org.junit.jupiter.api.Test
 
 class CheckSonhosMendigagemRegexTest {
@@ -51,7 +51,7 @@ class CheckSonhosMendigagemRegexTest {
         messageLoop@for (message in mendigagemMessages) {
             println("Testing $message")
 
-            for ((name, regex) in CheckSonhosMendigagemTimeoutListener.regexes) {
+            for ((name, regex) in CheckSonhosMendigagem.regexes) {
                 println("Testing RegEx \"$name\": $regex")
                 if (regex.matches(message))
                     continue@messageLoop
@@ -63,7 +63,7 @@ class CheckSonhosMendigagemRegexTest {
         messageLoop@for (message in stuffThatShouldntBeBlocked) {
             println("Testing $message")
 
-            for ((name, regex) in CheckSonhosMendigagemTimeoutListener.regexes) {
+            for ((name, regex) in CheckSonhosMendigagem.regexes) {
                 println("Testing RegEx \"$name\": $regex")
                 if (regex.matches(message))
                     throw IllegalArgumentException("RegEx was matched for \"$message\", but it shouldn't!")
