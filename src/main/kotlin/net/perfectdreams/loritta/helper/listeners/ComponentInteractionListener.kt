@@ -17,6 +17,7 @@ import net.perfectdreams.loritta.helper.tables.SelectedResponsesLog
 import net.perfectdreams.loritta.helper.tables.StartedSupportSolicitations
 import net.perfectdreams.loritta.helper.utils.ComponentDataUtils
 import net.perfectdreams.loritta.helper.utils.extensions.await
+import net.perfectdreams.loritta.helper.utils.tickets.FakePrivateThreadChannel
 import net.perfectdreams.loritta.helper.utils.tickets.TicketSystemTypeData
 import net.perfectdreams.loritta.helper.utils.tickets.TicketUtils
 import net.perfectdreams.loritta.helper.utils.tickets.TicketsCache
@@ -122,14 +123,10 @@ class ComponentInteractionListener(val m: LorittaHelper) : ListenerAdapter() {
                     ticketThreadId!!
 
                     val threadChannel = event.channel.asThreadContainer().threadChannels
-                        .firstOrNull { it.idLong == ticketThreadId } ?: run {
-                        // Hack hack hack
-                        event.channel.asThreadContainer().retrieveArchivedPrivateThreadChannels()
-                            .skipTo(ticketThreadId - 1)
-                            .limit(2) // Limit must be greater or equal to 2, so let's query two thread channels I guess... that's kinda hacky tho
-                            .await()
-                            .firstOrNull { it.idLong == ticketThreadId }
-                    } ?: error("Couldn't find thread channel!")
+                        .firstOrNull { it.idLong == ticketThreadId } ?: FakePrivateThreadChannel(
+                        ticketThreadId,
+                        event.guild!!
+                    )
 
                     // Update thread metadata and name juuuust to be sure
                     threadChannel
@@ -179,17 +176,17 @@ class ComponentInteractionListener(val m: LorittaHelper) : ListenerAdapter() {
 
             m.launch {
                 try {
-                val hook = event.interaction.reply(language.get(I18nKeysData.Tickets.ClosingYourTicket))
-                    .setEphemeral(true)
-                    .await()
+                    val hook = event.interaction.reply(language.get(I18nKeysData.Tickets.ClosingYourTicket))
+                        .setEphemeral(true)
+                        .await()
 
-                hook.sendMessage(language.get(I18nKeysData.Tickets.TicketClosed(event.user.asMention)))
-                    .setEphemeral(false)
-                    .await()
+                    hook.sendMessage(language.get(I18nKeysData.Tickets.TicketClosed(event.user.asMention)))
+                        .setEphemeral(false)
+                        .await()
 
-                channel.manager.setArchived(true)
-                    .reason("Archival request via button by ${event.user.name} (${event.user.idLong})")
-                    .await()
+                    channel.manager.setArchived(true)
+                        .reason("Archival request via button by ${event.user.name} (${event.user.idLong})")
+                        .await()
                 } catch (e: Exception) {
                     logger.warn(e) { "Something went wrong while trying to close a ticket!" }
                 }
