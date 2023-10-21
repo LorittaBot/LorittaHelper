@@ -40,6 +40,8 @@ class ComponentInteractionListener(val m: LorittaHelper) : ListenerAdapter() {
         .asMap()
 
     override fun onButtonInteraction(event: ButtonInteractionEvent) {
+        logger.info { "${event.user.idLong} - ${event.channel.idLong}: ${event.componentId}" }
+
         val (id, data) = event.componentId.split(":")
 
         if (id == "create_ticket") {
