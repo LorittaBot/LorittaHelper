@@ -40,7 +40,7 @@ class ComponentInteractionListener(val m: LorittaHelper) : ListenerAdapter() {
         .asMap()
 
     override fun onButtonInteraction(event: ButtonInteractionEvent) {
-        logger.info { "${event.user.idLong} - ${event.channel.idLong}: ${event.componentId}" }
+        logger.info { "Button Interaction ${event.user.idLong} - ${event.channel.idLong}: ${event.componentId}" }
 
         val (id, data) = event.componentId.split(":")
 
@@ -197,6 +197,8 @@ class ComponentInteractionListener(val m: LorittaHelper) : ListenerAdapter() {
     }
 
     override fun onStringSelectInteraction(event: StringSelectInteractionEvent) {
+        logger.info { "Select Menu Interaction ${event.user.idLong} - ${event.channel.idLong}: ${event.componentId}" }
+
         m.launch {
             try {
                 val systemInfo = m.ticketUtils.systems[event.channel.idLong]!!
