@@ -28,7 +28,7 @@ repositories {
 
 dependencies {
     implementation(kotlin("stdlib"))
-    implementation("ch.qos.logback:logback-classic:1.3.0-alpha14")
+    implementation("ch.qos.logback:logback-classic:1.4.11")
     implementation("io.github.microutils:kotlin-logging:2.1.21")
 
     implementation("com.github.LorittaBot:DeviousJDA:19d95ed662")
@@ -86,6 +86,8 @@ dependencies {
     implementation("io.ktor:ktor-client-cio:2.1.0")
 
     implementation("org.apache.commons:commons-text:1.9")
+
+    implementation("com.github.luben:zstd-jni:1.5.5-6")
 }
 
 jib {
