@@ -8,7 +8,6 @@ import ch.qos.logback.core.spi.ContextAwareBase
 import ch.qos.logback.core.status.ErrorStatus
 import ch.qos.logback.core.status.WarnStatus
 import ch.qos.logback.core.util.FileUtil
-import com.github.luben.zstd.Zstd
 import com.github.luben.zstd.ZstdOutputStream
 import java.io.BufferedInputStream
 import java.io.File
@@ -19,7 +18,6 @@ import java.time.LocalDateTime
 import java.time.ZoneId
 import java.util.*
 import java.util.concurrent.Future
-import java.util.zip.GZIPOutputStream
 
 
 /**
@@ -118,7 +116,6 @@ class MojangStyleFileAppenderAndRollover<E> : FileAppender<E>() {
                 val fileName = "${date.year}-${date.monthValue.toString().padStart(2, '0')}-${date.dayOfMonth.toString().padStart(2, '0')}.$index"
 
                 val newCompressedFile = File("$archivedLogsFilePrefix$fileName$archivedLogsFileExtension")
-                println(newCompressedFile)
                 if (!newCompressedFile.exists()) {
                     compressedFile = newCompressedFile
                     break
@@ -157,8 +154,6 @@ class MojangStyleFileAppenderAndRollover<E> : FileAppender<E>() {
 
                 else -> error("Invalid compressor $compressor")
             }
-
-
         } catch (e: Exception) {
             e.printStackTrace()
         }

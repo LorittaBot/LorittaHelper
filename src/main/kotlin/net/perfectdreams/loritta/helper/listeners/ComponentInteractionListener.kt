@@ -125,10 +125,11 @@ class ComponentInteractionListener(val m: LorittaHelper) : ListenerAdapter() {
                     ticketThreadId!!
 
                     val threadChannel = event.channel.asThreadContainer().threadChannels
-                        .firstOrNull { it.idLong == ticketThreadId } ?: FakePrivateThreadChannel(
-                        ticketThreadId,
-                        event.guild!!
-                    )
+                        .firstOrNull { it.idLong == ticketThreadId }
+                        ?: FakePrivateThreadChannel(
+                            ticketThreadId,
+                            event.guild!!
+                        ).setParentChannel(event.channel.asThreadContainer())
 
                     // Update thread metadata and name juuuust to be sure
                     threadChannel

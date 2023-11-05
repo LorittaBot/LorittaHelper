@@ -8,4 +8,7 @@ import net.dv8tion.jda.internal.entities.channel.concrete.ThreadChannelImpl
 /**
  * A fake private thread channel used to avoid querying the archived threads just to reopen them
  */
-class FakePrivateThreadChannel(id: Long, guild: Guild) : ThreadChannelImpl(id, guild as GuildImpl, ChannelType.GUILD_PRIVATE_THREAD)
+class FakePrivateThreadChannel(
+    id: Long,
+    guild: Guild
+) : ThreadChannelImpl(id, guild as GuildImpl, ChannelType.GUILD_PRIVATE_THREAD)
