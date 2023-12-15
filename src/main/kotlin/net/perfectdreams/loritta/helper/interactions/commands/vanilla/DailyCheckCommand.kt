@@ -108,9 +108,12 @@ class DailyCheckCommand(val helper: LorittaHelper) : SlashCommandDeclarationWrap
 
             context.reply(true) {
                 content = buildString {
-                    appendLine("**Resumo do Loritta Client IDs:**")
-                    for (matchedSameClientId in matchedSameClientIds) {
-                        appendLine("- **${matchedSameClientId.key}:** ${matchedSameClientId.value.joinToString()}")
+                    val moreThanOneUsersMatches = matchedSameClientIds.filter { it.value.size > 1 }
+                    if (moreThanOneUsersMatches.isNotEmpty()) {
+                        appendLine("**Loritta Client IDs com múltiplos users:**")
+                        for (matchedSameClientId in moreThanOneUsersMatches) {
+                            appendLine("- **${matchedSameClientId.key}:** ${matchedSameClientId.value.joinToString()}")
+                        }
                     }
                 }
 
@@ -213,9 +216,12 @@ class DailyCheckCommand(val helper: LorittaHelper) : SlashCommandDeclarationWrap
                     for (userId in foundIds) {
                         appendLine("- $userId")
                     }
-                    appendLine("**Resumo do Loritta Client IDs:**")
-                    for (matchedSameClientId in matchedSameClientIds) {
-                        appendLine("- **${matchedSameClientId.key}:** ${matchedSameClientId.value.joinToString()}")
+                    val moreThanOneUsersMatches = matchedSameClientIds.filter { it.value.size > 1 }
+                    if (moreThanOneUsersMatches.isNotEmpty()) {
+                        appendLine("**Loritta Client IDs com múltiplos users:**")
+                        for (matchedSameClientId in moreThanOneUsersMatches) {
+                            appendLine("- **${matchedSameClientId.key}:** ${matchedSameClientId.value.joinToString()}")
+                        }
                     }
                 }
 
@@ -319,9 +325,12 @@ class DailyCheckCommand(val helper: LorittaHelper) : SlashCommandDeclarationWrap
                     for (userId in foundIds) {
                         appendLine("- $userId")
                     }
-                    appendLine("**Resumo do Loritta Client IDs:**")
-                    for (matchedSameClientId in matchedSameClientIds) {
-                        appendLine("- **${matchedSameClientId.key}:** ${matchedSameClientId.value.joinToString()}")
+                    val moreThanOneUsersMatches = matchedSameClientIds.filter { it.value.size > 1 }
+                    if (moreThanOneUsersMatches.isNotEmpty()) {
+                        appendLine("**Loritta Client IDs com múltiplos users:**")
+                        for (matchedSameClientId in moreThanOneUsersMatches) {
+                            appendLine("- **${matchedSameClientId.key}:** ${matchedSameClientId.value.joinToString()}")
+                        }
                     }
                 }
 
