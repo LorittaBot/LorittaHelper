@@ -16,6 +16,7 @@ import net.dv8tion.jda.api.requests.GatewayIntent
 import net.dv8tion.jda.api.utils.MemberCachePolicy
 import net.perfectdreams.exposedpowerutils.sql.createOrUpdatePostgreSQLEnum
 import net.perfectdreams.loritta.helper.interactions.commands.vanilla.CloseTicketCommand
+import net.perfectdreams.loritta.helper.interactions.commands.vanilla.DailyCheckCommand
 import net.perfectdreams.loritta.helper.interactions.commands.vanilla.LoriToolsCommand
 import net.perfectdreams.loritta.helper.interactions.commands.vanilla.TicketUtilsCommand
 import net.perfectdreams.loritta.helper.listeners.*
@@ -157,6 +158,7 @@ class LorittaHelper(val config: LorittaHelperConfig, val fanArtsConfig: FanArtsC
         commandManager.register(LoriToolsCommand(this))
         commandManager.register(TicketUtilsCommand(this))
         commandManager.register(CloseTicketCommand(this))
+        commandManager.register(DailyCheckCommand(this))
 
         if (config.lorittaDatabase != null) {
             val dailyCatcher = DailyCatcherManager(this, jda)
