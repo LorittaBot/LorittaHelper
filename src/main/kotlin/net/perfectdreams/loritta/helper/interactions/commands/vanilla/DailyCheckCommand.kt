@@ -57,7 +57,7 @@ class DailyCheckCommand(val helper: LorittaHelper) : SlashCommandDeclarationWrap
 
             val emotes = mutableListOf<String>("⬛", "⬜", "🟧", "🟦", "🟥", "🟫", "🟪", "🟩", "🟨", "⚫", "⚪", "🔴", "🔵", "🟤", "🟣", "🟢", "🟡", "🟠", "🧡", "💛", "💚", "💙", "💜", "🖤", "🤍", "🤎")
             val idToEmotes = mutableMapOf<Long, String>()
-            val matchedSameClientIds = mutableMapOf<UUID, MutableList<Long>>()
+            val matchedSameClientIds = mutableMapOf<UUID, MutableSet<Long>>()
 
             val dailies = transaction(helper.databases.lorittaDatabase) {
                 Dailies.leftJoin(BrowserFingerprints).select {
@@ -101,7 +101,7 @@ class DailyCheckCommand(val helper: LorittaHelper) : SlashCommandDeclarationWrap
                     builder.append("- Available Screen Size: ${daily[BrowserFingerprints.availWidth]}x${daily[BrowserFingerprints.availHeight]}")
                     builder.append("\n")
                     builder.append("- Timezone Offset: ${daily[BrowserFingerprints.timezoneOffset]}")
-                    matchedSameClientIds.getOrPut(daily[BrowserFingerprints.clientId]) { mutableListOf() }.add(daily[Dailies.receivedById])
+                    matchedSameClientIds.getOrPut(daily[BrowserFingerprints.clientId]) { mutableSetOf() }.add(daily[Dailies.receivedById])
                 }
                 builder.append("\n\n")
             }
@@ -159,7 +159,7 @@ class DailyCheckCommand(val helper: LorittaHelper) : SlashCommandDeclarationWrap
             val cachedUserData = mutableMapOf<Long, User>()
 
             val foundIds = mutableSetOf<Long>()
-            val matchedSameClientIds = mutableMapOf<UUID, MutableList<Long>>()
+            val matchedSameClientIds = mutableMapOf<UUID, MutableSet<Long>>()
 
             for (daily in dailies) {
                 val whenTheTransactionHappened = Instant.ofEpochMilli(daily[Dailies.receivedAt])
@@ -201,7 +201,7 @@ class DailyCheckCommand(val helper: LorittaHelper) : SlashCommandDeclarationWrap
                     builder.append("- Available Screen Size: ${daily[BrowserFingerprints.availWidth]}x${daily[BrowserFingerprints.availHeight]}")
                     builder.append("\n")
                     builder.append("- Timezone Offset: ${daily[BrowserFingerprints.timezoneOffset]}")
-                    matchedSameClientIds.getOrPut(daily[BrowserFingerprints.clientId]) { mutableListOf() }.add(daily[Dailies.receivedById])
+                    matchedSameClientIds.getOrPut(daily[BrowserFingerprints.clientId]) { mutableSetOf() }.add(daily[Dailies.receivedById])
                 }
                 builder.append("\n\n")
                 foundIds.add(userId)
@@ -265,7 +265,7 @@ class DailyCheckCommand(val helper: LorittaHelper) : SlashCommandDeclarationWrap
             val cachedUserData = mutableMapOf<Long, User>()
 
             val foundIds = mutableSetOf<Long>()
-            val matchedSameClientIds = mutableMapOf<UUID, MutableList<Long>>()
+            val matchedSameClientIds = mutableMapOf<UUID, MutableSet<Long>>()
 
             for (daily in dailies) {
                 val whenTheTransactionHappened = Instant.ofEpochMilli(daily[Dailies.receivedAt])
@@ -307,7 +307,7 @@ class DailyCheckCommand(val helper: LorittaHelper) : SlashCommandDeclarationWrap
                     builder.append("- Available Screen Size: ${daily[BrowserFingerprints.availWidth]}x${daily[BrowserFingerprints.availHeight]}")
                     builder.append("\n")
                     builder.append("- Timezone Offset: ${daily[BrowserFingerprints.timezoneOffset]}")
-                    matchedSameClientIds.getOrPut(daily[BrowserFingerprints.clientId]) { mutableListOf() }.add(daily[Dailies.receivedById])
+                    matchedSameClientIds.getOrPut(daily[BrowserFingerprints.clientId]) { mutableSetOf() }.add(daily[Dailies.receivedById])
                 }
                 builder.append("\n\n")
                 foundIds.add(userId)
