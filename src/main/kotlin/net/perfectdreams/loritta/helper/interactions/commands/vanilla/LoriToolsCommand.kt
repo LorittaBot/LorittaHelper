@@ -141,8 +141,9 @@ class LoriToolsCommand(val helper: LorittaHelper) : SlashCommandDeclarationWrapp
             val pantufaUrl = helper.config.pantufaUrl
 
             if (pantufaUrl != null) {
-                try {
-                    for (result in results.filterIsInstance<LoriBanExecutor.UserBannedResult>()) {
+
+                for (result in results.filterIsInstance<LoriBanExecutor.UserBannedResult>()) {
+                    try {
                         val response = Json.decodeFromString<PantufaRPCResponse>(
                             LorittaHelperKord.http.post(pantufaUrl.removeSuffix("/") + "/rpc") {
                                 setBody(
@@ -161,10 +162,10 @@ class LoriToolsCommand(val helper: LorittaHelper) : SlashCommandDeclarationWrapp
 
                         if (response is BanSparklyPowerPlayerLorittaBannedResponse)
                             sparklyResults[result] = response
+                    } catch (e: Exception) {
+                        // If an exception is thrown
+                        logger.warn(e) { "Something went wrong while relaying user ${result.userId} ban to SparklyPower" }
                     }
-                } catch (e: Exception) {
-                    // If an exception is thrown
-                    logger.warn(e) { "Something went wrong while relaying bans to SparklyPower" }
                 }
             }
 
