@@ -29,5 +29,6 @@ sealed interface BanSparklyPowerPlayerLorittaBannedResponse : PantufaRPCResponse
         val userName: String
     ) : BanSparklyPowerPlayerLorittaBannedResponse
 
+    @Serializable
     object NotFound : BanSparklyPowerPlayerLorittaBannedResponse
 }
