@@ -3,6 +3,7 @@ package net.perfectdreams.loritta.helper.interactions.commands.vanilla
 import dev.minn.jda.ktx.coroutines.await
 import net.dv8tion.jda.api.entities.User
 import net.dv8tion.jda.api.utils.FileUpload
+import net.perfectdreams.loritta.cinnamon.pudding.tables.BannedUsers
 import net.perfectdreams.loritta.cinnamon.pudding.tablesrefactorlater.BrowserFingerprints
 import net.perfectdreams.loritta.cinnamon.pudding.tablesrefactorlater.Dailies
 import net.perfectdreams.loritta.helper.LorittaHelper
@@ -210,11 +211,20 @@ class DailyCheckCommand(val helper: LorittaHelper) : SlashCommandDeclarationWrap
                 foundIds.add(userId)
             }
 
+            val banStates = transaction(helper.databases.lorittaDatabase) {
+                BannedUsers.select {
+                    BannedUsers.userId inList foundIds
+                }.toList()
+            }
+
             context.reply(true) {
                 content = buildString {
                     appendLine("**IDs encontrados:**")
                     for (userId in foundIds) {
                         appendLine("- $userId")
+                        if (banStates.any { userId == it[BannedUsers.userId] }) {
+                            append(" [BANIDO]")
+                        }
                     }
                     val moreThanOneUsersMatches = matchedSameClientIds.filter { it.value.size > 1 }
                     if (moreThanOneUsersMatches.isNotEmpty()) {
@@ -319,11 +329,20 @@ class DailyCheckCommand(val helper: LorittaHelper) : SlashCommandDeclarationWrap
                 foundIds.add(userId)
             }
 
+            val banStates = transaction(helper.databases.lorittaDatabase) {
+                BannedUsers.select {
+                    BannedUsers.userId inList foundIds
+                }.toList()
+            }
+
             context.reply(true) {
                 content = buildString {
                     appendLine("**IDs encontrados:**")
                     for (userId in foundIds) {
                         appendLine("- $userId")
+                        if (banStates.any { userId == it[BannedUsers.userId] }) {
+                            append(" [BANIDO]")
+                        }
                     }
                     val moreThanOneUsersMatches = matchedSameClientIds.filter { it.value.size > 1 }
                     if (moreThanOneUsersMatches.isNotEmpty()) {
