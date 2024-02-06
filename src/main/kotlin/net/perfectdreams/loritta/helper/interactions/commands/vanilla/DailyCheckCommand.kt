@@ -221,10 +221,12 @@ class DailyCheckCommand(val helper: LorittaHelper) : SlashCommandDeclarationWrap
                 content = buildString {
                     appendLine("**IDs encontrados:**")
                     for (userId in foundIds) {
-                        appendLine("- $userId")
+                        append("- ")
+                        append(userId)
                         if (banStates.any { userId == it[BannedUsers.userId] }) {
                             append(" [BANIDO]")
                         }
+                        appendLine()
                     }
                     val moreThanOneUsersMatches = matchedSameClientIds.filter { it.value.size > 1 }
                     if (moreThanOneUsersMatches.isNotEmpty()) {
@@ -339,10 +341,12 @@ class DailyCheckCommand(val helper: LorittaHelper) : SlashCommandDeclarationWrap
                 content = buildString {
                     appendLine("**IDs encontrados:**")
                     for (userId in foundIds) {
-                        appendLine("- $userId")
+                        append("- ")
+                        append(userId)
                         if (banStates.any { userId == it[BannedUsers.userId] }) {
                             append(" [BANIDO]")
                         }
+                        appendLine()
                     }
                     val moreThanOneUsersMatches = matchedSameClientIds.filter { it.value.size > 1 }
                     if (moreThanOneUsersMatches.isNotEmpty()) {
