@@ -24,7 +24,7 @@ class TicketUtils(val m: LorittaHelper) {
             Constants.COMMUNITY_SERVER_ID,
             1077726822160142386L,
             PortugueseResponses.responses,
-            574308431029207060L,
+            1191767752894062632L,
             610094449737072660L,
             399301696892829706L
         ),
