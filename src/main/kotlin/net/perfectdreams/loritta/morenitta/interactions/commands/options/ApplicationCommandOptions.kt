@@ -38,9 +38,9 @@ open class ApplicationCommandOptions {
     fun optionalUser(name: String, description: String) = UserDiscordOptionReference<UserAndMember?>(name, description, false)
         .also { registeredOptions.add(it) }
 
-    fun channel(name: String, description: String) = UserDiscordOptionReference<Channel>(name, description, true)
+    fun channel(name: String, description: String) = ChannelDiscordOptionReference<Channel>(name, description, true)
         .also { registeredOptions.add(it) }
 
-    fun optionalChannel(name: String, description: String) = UserDiscordOptionReference<Channel?>(name, description, false)
+    fun optionalChannel(name: String, description: String) = ChannelDiscordOptionReference<Channel?>(name, description, false)
         .also { registeredOptions.add(it) }
 }
