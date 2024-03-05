@@ -18,4 +18,4 @@ sealed class HelpDeskTicketSystem(
     val faqChannelId: Long,
     val statusChannelId: Long,
     val supportRoleId: Long
-) : TicketSystem(jda, systemType, language, guildId, channelId, ThreadChannel.AutoArchiveDuration.TIME_24_HOURS)
+) : TicketSystem(jda, systemType, language, guildId, channelId, ThreadChannel.AutoArchiveDuration.TIME_3_DAYS)
