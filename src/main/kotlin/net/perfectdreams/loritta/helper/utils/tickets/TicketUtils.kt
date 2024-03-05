@@ -10,7 +10,7 @@ import net.perfectdreams.loritta.helper.utils.tickets.systems.LorittaHelpDeskTic
 import net.perfectdreams.loritta.helper.utils.tickets.systems.SparklyPowerHelpDeskTicketSystem
 
 class TicketUtils(val m: LorittaHelper) {
-    private val PORTUGUESE_HELP_DESK_CHANNEL_ID = 1214690015620108338L
+    private val PORTUGUESE_HELP_DESK_CHANNEL_ID = 1077726822160142386L
     private val ENGLISH_HELP_DESK_CHANNEL_ID = 891834950159044658L
     private val FIRST_FAN_ART_CHANNEL_ID = 938247721775661086L
     private val SPARKLYPOWER_HELP_DESK_CHANNEL_ID = 994664055933517925L
@@ -22,7 +22,7 @@ class TicketUtils(val m: LorittaHelper) {
             TicketSystemType.HELP_DESK_PORTUGUESE,
             LanguageName.PORTUGUESE,
             Constants.COMMUNITY_SERVER_ID,
-            1214690015620108338L,
+            1077726822160142386L,
             PortugueseResponses.responses,
             1191767752894062632L,
             610094449737072660L,
