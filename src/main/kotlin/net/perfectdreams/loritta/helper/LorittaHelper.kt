@@ -208,7 +208,7 @@ class LorittaHelper(val config: LorittaHelperConfig, val fanArtsConfig: FanArtsC
         timedTaskExecutor.scheduleWithFixedDelay(LorittaLandRoleSynchronizationTask(this, jda), 0, 15, TimeUnit.SECONDS)
         timedTaskExecutor.scheduleWithFixedDelay(LorittaBannedRoleTask(this, jda), 0, 15, TimeUnit.SECONDS)
 
-        // This is a hack!!
+        // This is a hack!! TODO: Need to refactor to use JDA only
         LorittaHelperKord(
             config,
             fanArtsConfig,
