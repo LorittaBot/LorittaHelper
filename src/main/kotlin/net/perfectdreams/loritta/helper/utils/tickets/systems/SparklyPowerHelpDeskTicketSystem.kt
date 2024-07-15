@@ -28,7 +28,7 @@ class SparklyPowerHelpDeskTicketSystem(
                         mentionUser = true
                     ),
                     LorittaReply(
-                        "Faça sua pergunta de uma forma simples e objetiva, se você precisar, anexe imagens. Para que a <@&$supportRoleId> possa te ajudar com mais eficiência.",
+                        "Faça sua pergunta de uma forma simples e objetiva, se você precisar, anexe imagens. Para que a <@&$supportRoleId> e <@&1262475261706899688> possa te ajudar com mais eficiência.",
                         "<:pantufa_ameno:854811058992447530>",
                         mentionUser = false
                     ),
