@@ -2,6 +2,7 @@ package net.perfectdreams.loritta.helper.listeners
 
 import com.github.benmanes.caffeine.cache.Caffeine
 import dev.minn.jda.ktx.messages.MessageCreate
+import kotlinx.coroutines.sync.withLock
 import mu.KotlinLogging
 import net.dv8tion.jda.api.entities.channel.concrete.ThreadChannel
 import net.dv8tion.jda.api.entities.emoji.Emoji
@@ -100,7 +101,7 @@ class ComponentInteractionListener(val m: LorittaHelper) : ListenerAdapter() {
                     hook.editOriginal(language.get(I18nKeysData.Tickets.CreatingATicket)).await()
 
                     val cachedTickets = m.ticketUtils.getSystemBySystemType(ticketSystemTypeData.systemType).cache
-                    val alreadyCreatedUserTicketData = cachedTickets.tickets[event.user.idLong]
+                    val alreadyCreatedUserTicketData = cachedTickets.mutex.withLock { cachedTickets.tickets[event.user.idLong] }
                     var ticketThreadId = alreadyCreatedUserTicketData?.id
 
                     // Max username size = 32
