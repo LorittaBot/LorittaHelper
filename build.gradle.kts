@@ -1,8 +1,8 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    kotlin("jvm") version "1.8.21"
-    kotlin("plugin.serialization") version "1.8.21"
+    kotlin("jvm") version "2.0.0"
+    kotlin("plugin.serialization") version "2.0.0"
     id("com.google.cloud.tools.jib") version "3.1.4"
     id("net.perfectdreams.i18nhelper.plugin") version "0.0.5-SNAPSHOT"
 }
@@ -115,9 +115,4 @@ tasks.test {
     testLogging {
         showStandardStreams = true
     }
-}
-
-tasks.withType<KotlinCompile> {
-    kotlinOptions.jvmTarget = "17"
-    kotlinOptions.javaParameters = true
 }
