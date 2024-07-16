@@ -4,6 +4,12 @@ package net.perfectdreams.loritta.helper.serverresponses.sparklypower
  * Class holding a list containing all Loritta Helper's automatic responses (Portuguese)
  */
 object SparklyPowerResponses {
+    val sparklyNaiveBayes = SparklyNaiveBayes()
+
+    init {
+        sparklyNaiveBayes.setup()
+    }
+
     val responses = listOf(
         ServerInformationResponse(),
         HowToBuyPesadelosResponse(),
@@ -12,6 +18,9 @@ object SparklyPowerResponses {
         HowToRegisterResponse(),
         HowToResetPasswordResponse(),
         HowToTransferSonhosResponse(),
-        HowToVoteResponse()
+        HowToVoteResponse(),
+
+        HowToBuyPesadelosNaiveBayesResponse(sparklyNaiveBayes),
+        HowToBuyPesadelosNaiveBayesResponse(sparklyNaiveBayes)
     ).sortedByDescending { it.priority }
 }
