@@ -20,7 +20,6 @@ object SparklyPowerResponses {
         HowToTransferSonhosResponse(),
         HowToVoteResponse(),
 
-        HowToBuyPesadelosNaiveBayesResponse(sparklyNaiveBayes),
         HowToBuyPesadelosNaiveBayesResponse(sparklyNaiveBayes)
     ).sortedByDescending { it.priority }
 }

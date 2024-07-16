@@ -25,5 +25,16 @@ interface LorittaResponse {
      *
      * @return a list (can be empty) of [LorittaReply] of this response
      */
-    fun getResponse(message: String): List<LorittaReply>
+    fun getResponse(message: String): List<LorittaReply> {
+        return emptyList()
+    }
+
+    /**
+     * Gets all the [LorittaReply] messages of this response
+     *
+     * @return a list (can be empty) of [LorittaReply] of this response
+     */
+    fun getSupportResponse(message: String): AutomatedSupportResponse {
+        return AutomatedSupportResponse(getResponse(message), true)
+    }
 }

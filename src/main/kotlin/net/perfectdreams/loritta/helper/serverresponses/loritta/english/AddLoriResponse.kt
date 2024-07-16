@@ -1,6 +1,7 @@
 package net.perfectdreams.loritta.helper.serverresponses.loritta.english
 
 import net.perfectdreams.loritta.api.messages.LorittaReply
+import net.perfectdreams.loritta.helper.serverresponses.AutomatedSupportResponse
 import net.perfectdreams.loritta.helper.serverresponses.RegExResponse
 import net.perfectdreams.loritta.helper.utils.Emotes
 import java.util.regex.Pattern
@@ -18,11 +19,14 @@ class AddLoriResponse : RegExResponse() {
         patterns.add(LORI_NAME.toPattern(Pattern.CASE_INSENSITIVE))
     }
 
-    override fun getResponse(message: String) =
-        listOf(
-            LorittaReply(
-                "Adding me to your server is easy! Just click here and select the server you want to add me ^-^ <https://loritta.website/dashboard>",
-                Emotes.LORI_PAC
-            )
+    override fun getSupportResponse(message: String) =
+        AutomatedSupportResponse(
+            listOf(
+                LorittaReply(
+                    "Adding me to your server is easy! Just click here and select the server you want to add me ^-^ <https://loritta.website/dashboard>",
+                    Emotes.LORI_PAC
+                )
+            ),
+            true
         )
 }

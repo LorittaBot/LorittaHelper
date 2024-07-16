@@ -67,7 +67,10 @@ class SparklyNaiveBayes {
         .replace(Regex("\\beh\\b", RegexOption.IGNORE_CASE), "é")
         .replace(Regex("\\badissiona\\b", RegexOption.IGNORE_CASE), "adiciona")
         .replace(Regex("\\badissiono\\b", RegexOption.IGNORE_CASE), "adiciono")
-
+        .replace(Regex("\\bcm\\b", RegexOption.IGNORE_CASE), "como")
+        .replace(Regex("\\bcnsg\\b", RegexOption.IGNORE_CASE), "consigo")
+        .replace(Regex("\\bptg\\b", RegexOption.IGNORE_CASE), "protege")
+        .replace(Regex("\\btern\\b", RegexOption.IGNORE_CASE), "terreno")
 
     fun normalizeNaiveBayesInput(source: String) = source
         .normalize()

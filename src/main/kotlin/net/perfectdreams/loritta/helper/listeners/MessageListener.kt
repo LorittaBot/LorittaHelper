@@ -80,9 +80,10 @@ class MessageListener(val m: LorittaHelper) : ListenerAdapter() {
                     .dropWhile { it.startsWith(">") }
                     .joinToString("\n")
 
-                val responses = channelResponses
-                    .firstOrNull { it.handleResponse(cleanMessage) }?.getResponse(cleanMessage) ?: return@launch
+                val automatedSupportResponse = channelResponses
+                    .firstOrNull { it.handleResponse(cleanMessage) }?.getSupportResponse(cleanMessage) ?: return@launch
 
+                val responses = automatedSupportResponse.replies
                 if (responses.isNotEmpty())
                     event.channel.sendMessage(
                         MessageCreateBuilder()

@@ -1,6 +1,7 @@
 package net.perfectdreams.loritta.helper.serverresponses.loritta.english
 
 import net.perfectdreams.loritta.api.messages.LorittaReply
+import net.perfectdreams.loritta.helper.serverresponses.AutomatedSupportResponse
 import net.perfectdreams.loritta.helper.serverresponses.RegExResponse
 import net.perfectdreams.loritta.helper.utils.Emotes
 import java.util.regex.Pattern
@@ -17,11 +18,14 @@ class BadgeResponse : RegExResponse() {
         patterns.add("\\?".toPattern(Pattern.CASE_INSENSITIVE))
     }
 
-    override fun getResponse(message: String) =
-        listOf(
-            LorittaReply(
-                "Read more about badges and how you can acquire them in <#761337709720633392>",
-                Emotes.LORI_OWO
-            )
+    override fun getSupportResponse(message: String) =
+        AutomatedSupportResponse(
+            listOf(
+                LorittaReply(
+                    "Read more about badges and how you can acquire them in <#761337709720633392>",
+                    Emotes.LORI_OWO
+                )
+            ),
+            true
         )
 }

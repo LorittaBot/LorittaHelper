@@ -284,7 +284,8 @@ class ComponentInteractionListener(val m: LorittaHelper) : ListenerAdapter() {
 
                     // Workaround because the LorittaResponse requires a content (it is only used for the "HelpMeResponse")
                     // So let's just use "button" as the content because it doesn't matter
-                    val replies = response.getResponse("button")
+                    val automatedSupportResponse = response.getSupportResponse("button")
+                    val replies = automatedSupportResponse.replies
 
                     event.interaction.reply(replies.joinToString("\n") { it.build(event.user) })
                         .setEphemeral(true)

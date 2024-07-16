@@ -7,10 +7,8 @@ import net.dv8tion.jda.api.entities.Message
 import net.dv8tion.jda.api.entities.channel.concrete.ThreadChannel
 import net.dv8tion.jda.api.entities.emoji.Emoji
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent
-import net.dv8tion.jda.api.interactions.components.ActionRow
 import net.dv8tion.jda.api.interactions.components.buttons.Button
 import net.dv8tion.jda.api.interactions.components.buttons.ButtonStyle
-import net.perfectdreams.discordinteraktions.common.components.interactiveButton
 import net.perfectdreams.loritta.api.messages.LorittaReply
 import net.perfectdreams.loritta.helper.LorittaHelper
 import net.perfectdreams.loritta.helper.i18n.I18nKeysData
@@ -67,35 +65,52 @@ class TicketListener(private val helper: LorittaHelper) {
             .dropWhile { it.startsWith(">") }
             .joinToString("\n")
 
-        val responses = channelResponses
-            .firstOrNull { it.handleResponse(cleanMessage) }?.getResponse(cleanMessage) ?: return
+        val automatedSupportResponse = channelResponses
+            .firstOrNull { it.handleResponse(cleanMessage) }?.getSupportResponse(cleanMessage) ?: return
+        val responses = automatedSupportResponse.replies
 
         if (responses.isNotEmpty())
             channel.sendMessage(
                 MessageCreate {
-                    val pleaseCloseTheTicketReply = LorittaReply(
-                        i18nContext.get(I18nKeysData.Tickets.AutoResponseSolved),
-                        "<:lori_nice:726845783344939028>",
-                        mentionUser = false
-                    )
+                    if (!automatedSupportResponse.includeCloseTicketCallToAction) {
+                        content = buildString {
+                            for (response in responses) {
+                                appendLine(response.build(event.author))
+                            }
 
-                    content = (responses + pleaseCloseTheTicketReply)
-                        .joinToString("\n")
-                        { it.build(event.author) }
+                            appendLine("-# Resposta automática, se ela resolveu a sua dúvida, então feche o ticket com `/closeticket`!")
+                        }
 
-                    allowedMentionTypes = EnumSet.of(
-                        Message.MentionType.EMOJI,
-                        Message.MentionType.CHANNEL,
-                        Message.MentionType.SLASH_COMMAND,
-                    )
+                        allowedMentionTypes = EnumSet.of(
+                            Message.MentionType.EMOJI,
+                            Message.MentionType.CHANNEL,
+                            Message.MentionType.SLASH_COMMAND,
+                        )
+                    } else {
+                        val pleaseCloseTheTicketReply = LorittaReply(
+                            i18nContext.get(I18nKeysData.Tickets.AutoResponseSolved),
+                            "<:lori_nice:726845783344939028>",
+                            mentionUser = false
+                        )
 
-                    actionRow(
-                        Button.of(
-                            ButtonStyle.PRIMARY,
-                            "close_ticket:${ComponentDataUtils.encode(TicketSystemTypeData(systemInfo.systemType))}",
-                            i18nContext.get(I18nKeysData.Tickets.CloseTicket)
-                        ).withEmoji(Emoji.fromCustom("lori_nice", 726845783344939028L, false)),
-                    )
+                        content = (responses + pleaseCloseTheTicketReply)
+                            .joinToString("\n")
+                            { it.build(event.author) }
+
+                        allowedMentionTypes = EnumSet.of(
+                            Message.MentionType.EMOJI,
+                            Message.MentionType.CHANNEL,
+                            Message.MentionType.SLASH_COMMAND,
+                        )
+
+                        actionRow(
+                            Button.of(
+                                ButtonStyle.PRIMARY,
+                                "close_ticket:${ComponentDataUtils.encode(TicketSystemTypeData(systemInfo.systemType))}",
+                                i18nContext.get(I18nKeysData.Tickets.CloseTicket)
+                            ).withEmoji(Emoji.fromCustom("lori_nice", 726845783344939028L, false)),
+                        )
+                    }
                 }
             ).setMessageReference(event.messageIdLong).failOnInvalidReply(false).await()
     }
