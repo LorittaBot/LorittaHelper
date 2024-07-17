@@ -6,6 +6,7 @@ import net.dv8tion.jda.api.utils.FileUpload
 import net.perfectdreams.loritta.cinnamon.pudding.tables.BannedUsers
 import net.perfectdreams.loritta.cinnamon.pudding.tablesrefactorlater.BrowserFingerprints
 import net.perfectdreams.loritta.cinnamon.pudding.tablesrefactorlater.Dailies
+import net.perfectdreams.loritta.common.utils.text.TextUtils.shortenWithEllipsis
 import net.perfectdreams.loritta.helper.LorittaHelper
 import net.perfectdreams.loritta.helper.utils.Constants
 import net.perfectdreams.loritta.morenitta.interactions.commands.*
@@ -142,7 +143,7 @@ class DailyCheckCommand(val helper: LorittaHelper) : SlashCommandDeclarationWrap
             }
 
             context.reply(true) {
-                content = buildString {
+                val messageContent = buildString {
                     val moreThanOneUsersMatches = matchedSameClientIds.filter { it.value.size > 1 }
                     if (moreThanOneUsersMatches.isNotEmpty()) {
                         appendLine("**Loritta Client IDs com múltiplos users:**")
@@ -150,6 +151,12 @@ class DailyCheckCommand(val helper: LorittaHelper) : SlashCommandDeclarationWrap
                             appendLine("- **${matchedSameClientId.key}:** ${matchedSameClientId.value.joinToString()}")
                         }
                     }
+                }
+
+                if (messageContent.length > 2_000) {
+                    this.content = "*mensagem grande demais*"
+                } else {
+                    this.content = messageContent
                 }
 
                 files += FileUpload.fromData(builder.toString().toByteArray(Charsets.UTF_8).inputStream(), "dailies.txt")
@@ -255,7 +262,7 @@ class DailyCheckCommand(val helper: LorittaHelper) : SlashCommandDeclarationWrap
             }
 
             context.reply(true) {
-                content = buildString {
+                val messageContent = buildString {
                     appendLine("**IDs encontrados:**")
                     for (userId in foundIds) {
                         append("- ")
@@ -272,6 +279,12 @@ class DailyCheckCommand(val helper: LorittaHelper) : SlashCommandDeclarationWrap
                             appendLine("- **${matchedSameClientId.key}:** ${matchedSameClientId.value.joinToString()}")
                         }
                     }
+                }
+
+                if (messageContent.length > 2_000) {
+                    this.content = "*mensagem grande demais*"
+                } else {
+                    this.content = messageContent
                 }
 
                 files += FileUpload.fromData(builder.toString().toByteArray(Charsets.UTF_8).inputStream(), "dailies.txt")
@@ -329,7 +342,7 @@ class DailyCheckCommand(val helper: LorittaHelper) : SlashCommandDeclarationWrap
                 val userEmote = idToEmotes.getOrPut(daily[Dailies.receivedById]) {
                     if (emotes.isEmpty())
                         return@getOrPut " " // Not enough emotes, bail out
-                    
+
                     val emote = emotes.random()
                     emotes.remove(emote)
                     emote
@@ -378,7 +391,7 @@ class DailyCheckCommand(val helper: LorittaHelper) : SlashCommandDeclarationWrap
             }
 
             context.reply(true) {
-                content = buildString {
+                val messageContent = buildString {
                     appendLine("**IDs encontrados:**")
                     for (userId in foundIds) {
                         append("- ")
@@ -395,6 +408,12 @@ class DailyCheckCommand(val helper: LorittaHelper) : SlashCommandDeclarationWrap
                             appendLine("- **${matchedSameClientId.key}:** ${matchedSameClientId.value.joinToString()}")
                         }
                     }
+                }
+
+                if (messageContent.length > 2_000) {
+                    this.content = "*mensagem grande demais*"
+                } else {
+                    this.content = messageContent
                 }
 
                 files += FileUpload.fromData(builder.toString().toByteArray(Charsets.UTF_8).inputStream(), "dailies.txt")
