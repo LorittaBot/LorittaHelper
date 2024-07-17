@@ -18,6 +18,36 @@ import java.time.Instant
 import java.util.*
 
 class DailyCheckCommand(val helper: LorittaHelper) : SlashCommandDeclarationWrapper {
+    companion object {
+        private val EMOTES = listOf(
+            "⬛",
+            "⬜",
+            "🟧",
+            "🟦",
+            "🟥",
+            "🟫",
+            "🟪",
+            "🟩",
+            "🟨",
+            "⚫",
+            "⚪",
+            "🔴",
+            "🔵",
+            "🟤",
+            "🟣",
+            "🟢",
+            "🟡",
+            "🟠",
+            "🧡",
+            "💛",
+            "💚",
+            "💙",
+            "💜",
+            "🖤",
+            "🤍",
+            "🤎"
+        )
+    }
     override fun command() = slashCommand("dailycheck", "Pega todos os dailies de vários usuários") {
         subcommand("users", "Pega todos os dailies de vários usuários") {
             executor = DailyCheckExecutor()
@@ -57,7 +87,7 @@ class DailyCheckCommand(val helper: LorittaHelper) : SlashCommandDeclarationWrap
                 return
             }
 
-            val emotes = mutableListOf<String>("⬛", "⬜", "🟧", "🟦", "🟥", "🟫", "🟪", "🟩", "🟨", "⚫", "⚪", "🔴", "🔵", "🟤", "🟣", "🟢", "🟡", "🟠", "🧡", "💛", "💚", "💙", "💜", "🖤", "🤍", "🤎")
+            val emotes = EMOTES.toMutableList()
             val idToEmotes = mutableMapOf<Long, String>()
             val matchedSameClientIds = mutableMapOf<UUID, MutableSet<Long>>()
 
@@ -75,6 +105,9 @@ class DailyCheckCommand(val helper: LorittaHelper) : SlashCommandDeclarationWrap
                     .atZone(Constants.TIME_ZONE_ID)
 
                 val userEmote = idToEmotes.getOrPut(daily[Dailies.receivedById]) {
+                    if (emotes.isEmpty())
+                        return@getOrPut " " // Not enough emotes, bail out
+
                     val emote = emotes.random()
                     emotes.remove(emote)
                     emote
@@ -149,7 +182,7 @@ class DailyCheckCommand(val helper: LorittaHelper) : SlashCommandDeclarationWrap
                 return
             }
 
-            val emotes = mutableListOf<String>("⬛", "⬜", "🟧", "🟦", "🟥", "🟫", "🟪", "🟩", "🟨", "⚫", "⚪", "🔴", "🔵", "🟤", "🟣", "🟢", "🟡", "🟠", "🧡", "💛", "💚", "💙", "💜", "🖤", "🤍", "🤎")
+            val emotes = EMOTES.toMutableList()
             val idToEmotes = mutableMapOf<Long, String>()
 
             val dailies = transaction(helper.databases.lorittaDatabase) {
@@ -171,6 +204,9 @@ class DailyCheckCommand(val helper: LorittaHelper) : SlashCommandDeclarationWrap
                     .atZone(Constants.TIME_ZONE_ID)
 
                 val userEmote = idToEmotes.getOrPut(daily[Dailies.receivedById]) {
+                    if (emotes.isEmpty())
+                        return@getOrPut " " // Not enough emotes, bail out
+
                     val emote = emotes.random()
                     emotes.remove(emote)
                     emote
@@ -269,7 +305,7 @@ class DailyCheckCommand(val helper: LorittaHelper) : SlashCommandDeclarationWrap
                 return
             }
 
-            val emotes = mutableListOf<String>("⬛", "⬜", "🟧", "🟦", "🟥", "🟫", "🟪", "🟩", "🟨", "⚫", "⚪", "🔴", "🔵", "🟤", "🟣", "🟢", "🟡", "🟠", "🧡", "💛", "💚", "💙", "💜", "🖤", "🤍", "🤎")
+            val emotes = EMOTES.toMutableList()
             val idToEmotes = mutableMapOf<Long, String>()
 
             val dailies = transaction(helper.databases.lorittaDatabase) {
@@ -291,6 +327,9 @@ class DailyCheckCommand(val helper: LorittaHelper) : SlashCommandDeclarationWrap
                     .atZone(Constants.TIME_ZONE_ID)
 
                 val userEmote = idToEmotes.getOrPut(daily[Dailies.receivedById]) {
+                    if (emotes.isEmpty())
+                        return@getOrPut " " // Not enough emotes, bail out
+                    
                     val emote = emotes.random()
                     emotes.remove(emote)
                     emote
