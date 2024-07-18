@@ -18,8 +18,6 @@ object SparklyPowerResponses {
         HowToRegisterResponse(),
         HowToResetPasswordResponse(),
         HowToTransferSonhosResponse(),
-        HowToVoteResponse(),
-
-        HowToBuyPesadelosNaiveBayesResponse(sparklyNaiveBayes)
+        HowToVoteResponse()
     ).sortedByDescending { it.priority }
 }
