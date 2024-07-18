@@ -157,6 +157,7 @@ class LorittaHelper(val config: LorittaHelperConfig, val fanArtsConfig: FanArtsC
         commandManager.register(CloseTicketCommand(this))
         commandManager.register(DailyCheckCommand(this))
         commandManager.register(TicketSenderCommand(this))
+        commandManager.register(ReportMessageSenderCommand(this))
 
         if (config.lorittaDatabase != null) {
             val dailyCatcher = DailyCatcherManager(this, jda)
