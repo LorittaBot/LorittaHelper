@@ -55,7 +55,7 @@ class ReportMessageSenderCommand(val helper: LorittaHelper) : SlashCommandDeclar
 
                         field(
                             "~~                                     ~~",
-                            "<:nd:908743835285344276> Alguma dúvida? Mencione o cargo <@&399301696892829706> com a sua pergunta ou abra um ticket no [Servidor de Suporte](https://discord.gg/loritta)!",
+                            "<:nd:908743835285344276> Alguma dúvida? Mencione o cargo <@&399301696892829706> com a sua pergunta ou abra um ticket no <#1077726822160142386>!",
                             false
                         )
 
