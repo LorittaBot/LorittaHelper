@@ -17,12 +17,24 @@ import net.dv8tion.jda.api.interactions.components.buttons.ButtonStyle
 import net.dv8tion.jda.api.requests.restaction.MessageCreateAction
 import net.dv8tion.jda.api.utils.FileUpload
 import net.dv8tion.jda.api.utils.messages.MessageCreateBuilder
+import net.perfectdreams.loritta.cinnamon.pudding.tables.BannedUsers
+import net.perfectdreams.loritta.cinnamon.pudding.utils.exposed.selectFirstOrNull
 import net.perfectdreams.loritta.helper.LorittaHelper
 import net.perfectdreams.loritta.helper.listeners.ApproveReportsOnReactionListener
 import net.perfectdreams.loritta.helper.utils.ComponentDataUtils
 import net.perfectdreams.loritta.helper.utils.Constants
 import net.perfectdreams.loritta.helper.utils.GoogleDriveUtils
 import net.perfectdreams.loritta.helper.utils.extensions.await
+import net.perfectdreams.loritta.helper.utils.extensions.getBannedState
+import org.jetbrains.exposed.sql.SortOrder
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.greaterEq
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.isNotNull
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.isNull
+import org.jetbrains.exposed.sql.and
+import org.jetbrains.exposed.sql.or
+import org.jetbrains.exposed.sql.select
+import org.jetbrains.exposed.sql.transactions.transaction
 import java.awt.Color
 import java.net.HttpURLConnection
 import java.net.URL
@@ -270,6 +282,32 @@ class GenerateServerReport(val m: LorittaHelper) {
         }
     }
 
+    private fun getFancyUserId(
+        userId: Long
+    ): String {
+        val userBanned = transaction(m.databases.lorittaDatabase) {
+            BannedUsers.select {
+                BannedUsers.userId eq userId and
+                        (BannedUsers.valid eq true) and
+                        (
+                                BannedUsers.expiresAt.isNull()
+                                        or
+                                        (
+                                                BannedUsers.expiresAt.isNotNull() and
+                                                        (BannedUsers.expiresAt greaterEq System.currentTimeMillis()))
+                                )
+            }
+                .orderBy(BannedUsers.bannedAt, SortOrder.DESC)
+                .firstOrNull()
+        }
+
+        if (userBanned !== null) {
+            return "$userId ⚒\uFE0F"
+        }
+
+        return userId.toString()
+    }
+
     private suspend fun handleLoriSwearingRules(
         jda: JDA,
         userThatMadeTheReport: User,
@@ -390,7 +428,7 @@ class GenerateServerReport(val m: LorittaHelper) {
 
         embed.addField(
             "ID do Usuário",
-            userId?.toString()!!,
+            getFancyUserId(userId!!),
             false
         )
 
@@ -512,7 +550,7 @@ class GenerateServerReport(val m: LorittaHelper) {
         embed.apply {
             addField(
                 "ID do Usuário",
-                userId?.toString()!!,
+                getFancyUserId(userId!!),
                 false
             )
 
@@ -576,13 +614,16 @@ class GenerateServerReport(val m: LorittaHelper) {
 
         embed.addField(
             "ID do Usuário",
-            userId?.toString()!!,
+            getFancyUserId(userId!!),
             false
         )
 
         embed.addField(
             "IDs das Contas Alternativas",
-            accountIds.joinToString(", "),
+            accountIds
+                .mapNotNull { it.toLongOrNull() }
+                .map { getFancyUserId(it) }
+                .joinToString(", "),
             false
         )
 
@@ -639,13 +680,16 @@ class GenerateServerReport(val m: LorittaHelper) {
 
         embed.addField(
             "ID do Usuário",
-            userId?.toString()!!,
+            getFancyUserId(userId!!),
             false
         )
 
         embed.addField(
             "IDs das Contas Alternativas",
-            accountIds.joinToString(", "),
+            accountIds
+                .mapNotNull { it.toLongOrNull() }
+                .map { getFancyUserId(it) }
+                .joinToString(", "),
             false
         )
 
