@@ -25,6 +25,15 @@ import net.perfectdreams.loritta.helper.utils.ComponentDataUtils
 import net.perfectdreams.loritta.helper.utils.Constants
 import net.perfectdreams.loritta.helper.utils.GoogleDriveUtils
 import net.perfectdreams.loritta.helper.utils.extensions.await
+import net.perfectdreams.loritta.helper.utils.extensions.getBannedState
+import org.jetbrains.exposed.sql.SortOrder
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.greaterEq
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.isNotNull
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.isNull
+import org.jetbrains.exposed.sql.and
+import org.jetbrains.exposed.sql.or
+import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.transactions.transaction
 import java.awt.Color
 import java.net.HttpURLConnection
@@ -273,13 +282,23 @@ class GenerateServerReport(val m: LorittaHelper) {
         }
     }
 
-    private fun checkIfUserIsLorittaBanned(
+    private fun getFancyUserId(
         userId: Long
     ): String {
         val userBanned = transaction(m.databases.lorittaDatabase) {
-           BannedUsers.selectFirstOrNull {
-                BannedUsers.userId eq userId
-           }
+            BannedUsers.select {
+                BannedUsers.userId eq userId and
+                        (BannedUsers.valid eq true) and
+                        (
+                                BannedUsers.expiresAt.isNull()
+                                        or
+                                        (
+                                                BannedUsers.expiresAt.isNotNull() and
+                                                        (BannedUsers.expiresAt greaterEq System.currentTimeMillis()))
+                                )
+            }
+                .orderBy(BannedUsers.bannedAt, SortOrder.DESC)
+                .firstOrNull()
         }
 
         if (userBanned !== null) {
@@ -409,7 +428,7 @@ class GenerateServerReport(val m: LorittaHelper) {
 
         embed.addField(
             "ID do Usuário",
-            checkIfUserIsLorittaBanned(userId!!),
+            getFancyUserId(userId!!),
             false
         )
 
@@ -531,7 +550,7 @@ class GenerateServerReport(val m: LorittaHelper) {
         embed.apply {
             addField(
                 "ID do Usuário",
-                checkIfUserIsLorittaBanned(userId!!),
+                getFancyUserId(userId!!),
                 false
             )
 
@@ -595,7 +614,7 @@ class GenerateServerReport(val m: LorittaHelper) {
 
         embed.addField(
             "ID do Usuário",
-            checkIfUserIsLorittaBanned(userId!!),
+            getFancyUserId(userId!!),
             false
         )
 
@@ -603,7 +622,7 @@ class GenerateServerReport(val m: LorittaHelper) {
             "IDs das Contas Alternativas",
             accountIds
                 .mapNotNull { it.toLongOrNull() }
-                .map { checkIfUserIsLorittaBanned(it) }
+                .map { getFancyUserId(it) }
                 .joinToString(", "),
             false
         )
@@ -661,7 +680,7 @@ class GenerateServerReport(val m: LorittaHelper) {
 
         embed.addField(
             "ID do Usuário",
-            checkIfUserIsLorittaBanned(userId!!),
+            getFancyUserId(userId!!),
             false
         )
 
@@ -669,7 +688,7 @@ class GenerateServerReport(val m: LorittaHelper) {
             "IDs das Contas Alternativas",
             accountIds
                 .mapNotNull { it.toLongOrNull() }
-                .map { checkIfUserIsLorittaBanned(it) }
+                .map { getFancyUserId(it) }
                 .joinToString(", "),
             false
         )
