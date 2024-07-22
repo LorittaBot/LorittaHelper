@@ -17,12 +17,15 @@ import net.dv8tion.jda.api.interactions.components.buttons.ButtonStyle
 import net.dv8tion.jda.api.requests.restaction.MessageCreateAction
 import net.dv8tion.jda.api.utils.FileUpload
 import net.dv8tion.jda.api.utils.messages.MessageCreateBuilder
+import net.perfectdreams.loritta.cinnamon.pudding.tables.BannedUsers
+import net.perfectdreams.loritta.cinnamon.pudding.utils.exposed.selectFirstOrNull
 import net.perfectdreams.loritta.helper.LorittaHelper
 import net.perfectdreams.loritta.helper.listeners.ApproveReportsOnReactionListener
 import net.perfectdreams.loritta.helper.utils.ComponentDataUtils
 import net.perfectdreams.loritta.helper.utils.Constants
 import net.perfectdreams.loritta.helper.utils.GoogleDriveUtils
 import net.perfectdreams.loritta.helper.utils.extensions.await
+import org.jetbrains.exposed.sql.transactions.transaction
 import java.awt.Color
 import java.net.HttpURLConnection
 import java.net.URL
@@ -270,6 +273,22 @@ class GenerateServerReport(val m: LorittaHelper) {
         }
     }
 
+    private fun checkIfUserIsLorittaBanned(
+        userId: Long
+    ): String {
+        val userBanned = transaction(m.databases.lorittaDatabase) {
+           BannedUsers.selectFirstOrNull {
+                BannedUsers.userId eq userId
+           }
+        }
+
+        if (userBanned !== null) {
+            return "$userId ⚒\uFE0F"
+        }
+
+        return userId.toString()
+    }
+
     private suspend fun handleLoriSwearingRules(
         jda: JDA,
         userThatMadeTheReport: User,
@@ -390,7 +409,7 @@ class GenerateServerReport(val m: LorittaHelper) {
 
         embed.addField(
             "ID do Usuário",
-            userId?.toString()!!,
+            checkIfUserIsLorittaBanned(userId!!),
             false
         )
 
@@ -512,7 +531,7 @@ class GenerateServerReport(val m: LorittaHelper) {
         embed.apply {
             addField(
                 "ID do Usuário",
-                userId?.toString()!!,
+                checkIfUserIsLorittaBanned(userId!!),
                 false
             )
 
@@ -576,13 +595,16 @@ class GenerateServerReport(val m: LorittaHelper) {
 
         embed.addField(
             "ID do Usuário",
-            userId?.toString()!!,
+            checkIfUserIsLorittaBanned(userId!!),
             false
         )
 
         embed.addField(
             "IDs das Contas Alternativas",
-            accountIds.joinToString(", "),
+            accountIds
+                .mapNotNull { it.toLongOrNull() }
+                .map { checkIfUserIsLorittaBanned(it) }
+                .joinToString(", "),
             false
         )
 
@@ -639,13 +661,16 @@ class GenerateServerReport(val m: LorittaHelper) {
 
         embed.addField(
             "ID do Usuário",
-            userId?.toString()!!,
+            checkIfUserIsLorittaBanned(userId!!),
             false
         )
 
         embed.addField(
             "IDs das Contas Alternativas",
-            accountIds.joinToString(", "),
+            accountIds
+                .mapNotNull { it.toLongOrNull() }
+                .map { checkIfUserIsLorittaBanned(it) }
+                .joinToString(", "),
             false
         )
 
