@@ -12,7 +12,9 @@ import net.perfectdreams.loritta.helper.utils.Constants
 import net.perfectdreams.loritta.morenitta.interactions.commands.*
 import net.perfectdreams.loritta.morenitta.interactions.commands.options.ApplicationCommandOptions
 import org.jetbrains.exposed.sql.SortOrder
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.isNull
 import org.jetbrains.exposed.sql.and
+import org.jetbrains.exposed.sql.or
 import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.transactions.transaction
 import java.time.Instant
@@ -257,7 +259,7 @@ class DailyCheckCommand(val helper: LorittaHelper) : SlashCommandDeclarationWrap
 
             val banStates = transaction(helper.databases.lorittaDatabase) {
                 BannedUsers.select {
-                    BannedUsers.userId inList foundIds and (BannedUsers.valid eq true)
+                    BannedUsers.userId inList foundIds and (BannedUsers.valid eq true) and (BannedUsers.expiresAt.isNull() or (BannedUsers.expiresAt.isNotNull() and (BannedUsers.expiresAt greaterEq System.currentTimeMillis())))
                 }.toList()
             }
 
@@ -386,7 +388,7 @@ class DailyCheckCommand(val helper: LorittaHelper) : SlashCommandDeclarationWrap
 
             val banStates = transaction(helper.databases.lorittaDatabase) {
                 BannedUsers.select {
-                    BannedUsers.userId inList foundIds and (BannedUsers.valid eq true)
+                    BannedUsers.userId inList foundIds and (BannedUsers.valid eq true) and (BannedUsers.expiresAt.isNull() or (BannedUsers.expiresAt.isNotNull() and (BannedUsers.expiresAt greaterEq System.currentTimeMillis())))
                 }.toList()
             }
 
