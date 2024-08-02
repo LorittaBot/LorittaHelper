@@ -7,7 +7,6 @@ import net.dv8tion.jda.api.utils.messages.MessageCreateBuilder
 import net.perfectdreams.loritta.helper.LorittaHelper
 import net.perfectdreams.loritta.helper.serverresponses.loritta.EnglishResponses
 import net.perfectdreams.loritta.helper.serverresponses.loritta.PortugueseResponses
-import net.perfectdreams.loritta.helper.utils.Constants
 import net.perfectdreams.loritta.helper.utils.checkillegalnitrosell.CheckIllegalNitroSell
 import net.perfectdreams.loritta.helper.utils.checksonhosmendigagem.CheckSonhosMendigagem
 import net.perfectdreams.loritta.helper.utils.dontmentionstaff.EnglishDontMentionStaff
@@ -19,9 +18,11 @@ import net.perfectdreams.loritta.helper.utils.tickets.TicketListener
 
 class MessageListener(val m: LorittaHelper) : ListenerAdapter() {
     private val dontMentionStaffs = listOf(
-        EnglishDontMentionStaff(),
-        PortugueseDontMentionStaff()
+        EnglishDontMentionStaff(m.config),
+        PortugueseDontMentionStaff(m.config)
     )
+    private val community = m.config.guilds.community
+    private val english = m.config.guilds.english
 
     val checkIllegalNitroSell = CheckIllegalNitroSell()
     val generateBanStatusReport = GenerateBanStatusReport(m)
@@ -34,7 +35,7 @@ class MessageListener(val m: LorittaHelper) : ListenerAdapter() {
         m.launch {
             // If this check wasn't here, Loritta Helper will reply to a user... then she thinks that it is someone asking
             // something, and the loop goes on...
-            if (event.message.channel.idLong == 790292619769937940L && event.message.attachments.isNotEmpty()) {
+            if (event.message.channel.idLong == community.channels.reportsRelay && event.message.attachments.isNotEmpty()) {
                 m.launch {
                     if (event.message.contentRaw == "report") {
                         generateServerReport.onMessageReceived(event)
@@ -59,17 +60,20 @@ class MessageListener(val m: LorittaHelper) : ListenerAdapter() {
                 it.onMessageReceived(event)
             }
 
-            if (event.message.channel.idLong == 781878469427986452L)
+            if (event.message.channel.idLong == community.channels.sadCatsTribunal)
                 generateBanStatusReport.onMessageReceived(event)
 
             checkIllegalNitroSell.onMessageReceived(event)
 
+            val englishResponses = EnglishResponses(m.config)
+            val portugueseResponses = PortugueseResponses(m.config)
+
             val channelResponses = when (event.message.channel.idLong) {
-                Constants.PORTUGUESE_SUPPORT_CHANNEL_ID, 547119872568459284L /* open bar */ -> {
-                    PortugueseResponses.responses
+                english.channels.oldPortugueseSupport, community.channels.openBar /* open bar */ -> {
+                    portugueseResponses.responses
                 }
-                Constants.ENGLISH_SUPPORT_CHANNEL_ID, 422103894462824468L /* support server staff channel */ -> {
-                    EnglishResponses.responses
+                english.channels.oldEnglishSupport, english.channels.staff /* support server staff channel */ -> {
+                    englishResponses.responses
                 }
                 else -> null
             }

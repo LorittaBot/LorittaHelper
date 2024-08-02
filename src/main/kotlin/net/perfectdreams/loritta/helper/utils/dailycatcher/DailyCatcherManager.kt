@@ -7,10 +7,8 @@ import kotlinx.coroutines.runBlocking
 import mu.KotlinLogging
 import net.dv8tion.jda.api.JDA
 import net.dv8tion.jda.api.entities.emoji.Emoji
-import net.dv8tion.jda.api.utils.messages.MessageCreateData
 import net.perfectdreams.loritta.cinnamon.pudding.tables.BannedUsers
 import net.perfectdreams.loritta.helper.LorittaHelper
-import net.perfectdreams.loritta.helper.utils.Constants
 import net.perfectdreams.loritta.helper.utils.dailycatcher.catchers.DailyOnlyEcoCommandsCatcher
 import net.perfectdreams.loritta.helper.utils.dailycatcher.reports.ReportOnlyEcoCatcher
 import org.jetbrains.exposed.sql.and
@@ -103,6 +101,8 @@ class DailyCatcherManager(val m: LorittaHelper, val jda: JDA) {
         }
     }
 
+    private val community = m.config.guilds.community
+
     // ===[ CATCHERS ]===
     val dailyOnlyEcoCommandsCatcher = DailyOnlyEcoCommandsCatcher(m.databases.lorittaDatabase)
 
@@ -117,7 +117,7 @@ class DailyCatcherManager(val m: LorittaHelper, val jda: JDA) {
                     .toSet()
         }
 
-        val portugueseStaffChannel = jda.getTextChannelById(Constants.PORTUGUESE_STAFF_CHANNEL_ID)
+        val portugueseStaffChannel = jda.getTextChannelById(community.channels.staff)
         portugueseStaffChannel?.sendMessage("Buscando contas fakes... <a:among_us_vent:759519990150856794>")
                 ?.complete()
 
@@ -158,7 +158,7 @@ class DailyCatcherManager(val m: LorittaHelper, val jda: JDA) {
 
             val notifyStaff = maxLevel >= SuspiciousLevel.VERY_SUS.level
             if (notifyStaff)
-                message += "<@&351473717194522647> "
+                message += "<@&${community.roles.loriBodyguards}> "
 
             val reportsByType = sentReports.groupBy { it }.entries
                     .sortedByDescending { it.key.level }

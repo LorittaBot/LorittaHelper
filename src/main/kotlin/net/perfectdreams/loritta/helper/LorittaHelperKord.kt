@@ -35,7 +35,6 @@ import net.perfectdreams.loritta.helper.utils.tickets.*
 class LorittaHelperKord(
     val config: LorittaHelperConfig,
     val fanArtsConfig: FanArtsConfig?,
-    val lorittaConfig: LorittaConfig?,
     private val helper: LorittaHelper,
     private val jda: JDA
 ) {
@@ -48,7 +47,7 @@ class LorittaHelperKord(
         private val logger = KotlinLogging.logger {}
     }
 
-    val interaKTions = DiscordInteraKTions(config.token, Snowflake(config.applicationId))
+    val interaKTions = DiscordInteraKTions(config.helper.token, Snowflake(config.helper.clientId))
 
     val helperRest = helper.helperRest
     val lorittaRest = helper.lorittaRest
@@ -153,7 +152,7 @@ class LorittaHelperKord(
 
             gateway.installDiscordInteraKTions(interaKTions)
 
-            gateway.start(config.token) {
+            gateway.start(config.helper.token) {
                 intents = Intents {
                     +Intent.GuildMessages
                     +Intent.GuildMembers

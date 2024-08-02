@@ -22,12 +22,15 @@ class ApproveReportsOnReactionListener(val m: LorittaHelper): ListenerAdapter() 
         const val THINKING_EMOTE = "\uD83E\uDD14"
     }
 
+    private val community = m.config.guilds.community
+    private val SERVER_REPORTS_CHANNEL_ID = community.channels.serverReports
+
     override fun onMessageReactionAdd(event: MessageReactionAddEvent) {
         val user = event.user ?: return
         if (user.isBot)
             return
 
-        if (event.channel.idLong != GenerateServerReport.SERVER_REPORTS_CHANNEL_ID)
+        if (event.channel.idLong != SERVER_REPORTS_CHANNEL_ID)
             return
 
         if (event.emoji == APPROVE_EMOTE || event.emoji == REJECT_EMOTE) {

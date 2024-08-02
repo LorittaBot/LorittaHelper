@@ -1,5 +1,6 @@
 package net.perfectdreams.loritta.helper.serverresponses.loritta
 
+import net.perfectdreams.loritta.helper.LorittaHelper
 import net.perfectdreams.loritta.helper.serverresponses.loritta.english.AddEmotesOnMessageResponse
 import net.perfectdreams.loritta.helper.serverresponses.loritta.english.AddLoriResponse
 import net.perfectdreams.loritta.helper.serverresponses.loritta.english.AnnouncementsResponse
@@ -41,11 +42,12 @@ import net.perfectdreams.loritta.helper.serverresponses.loritta.english.Transfer
 import net.perfectdreams.loritta.helper.serverresponses.loritta.english.ValorShipResponse
 import net.perfectdreams.loritta.helper.serverresponses.loritta.english.VotarResponse
 import net.perfectdreams.loritta.helper.serverresponses.loritta.english.WhoIsVieirinhaResponse
+import net.perfectdreams.loritta.helper.utils.config.LorittaHelperConfig
 
 /**
  * Class holding a list containing all Loritta Helper's automatic responses (English)
  */
-object EnglishResponses {
+class EnglishResponses(config: LorittaHelperConfig) {
     val responses = listOf(
         AddEmotesOnMessageResponse(),
         AddLoriResponse(),
@@ -59,7 +61,7 @@ object EnglishResponses {
         DJLorittaResponse(),
         EmbedsArbitraryResponse(),
         EmbedsResponse(),
-        HelpMeResponse(),
+        HelpMeResponse(config),
         HowToUseCommandsResponse(),
         JoinLeaveResponse(),
         LanguageResponse(),
@@ -81,7 +83,7 @@ object EnglishResponses {
         SparklyPowerInfoResponse(),
         StarboardResponse(),
         SugestoesResponse(),
-        ThirdPartyBotsResponse(),
+        ThirdPartyBotsResponse(config),
         TransferGarticosResponse(),
         ValorShipResponse(),
         VotarResponse(),

@@ -5,7 +5,6 @@ import io.ktor.client.*
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import kotlinx.coroutines.*
-import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import mu.KotlinLogging
@@ -27,10 +26,8 @@ import net.perfectdreams.loritta.helper.utils.LorittaLandRoleSynchronizationTask
 import net.perfectdreams.loritta.helper.utils.StaffProcessedReportResult
 import net.perfectdreams.loritta.helper.utils.checkbannedusers.LorittaBannedRoleTask
 import net.perfectdreams.loritta.helper.utils.config.FanArtsConfig
-import net.perfectdreams.loritta.helper.utils.config.LorittaConfig
 import net.perfectdreams.loritta.helper.utils.config.LorittaHelperConfig
 import net.perfectdreams.loritta.helper.utils.dailycatcher.DailyCatcherManager
-import net.perfectdreams.loritta.helper.utils.dailycatcher.DailyCatcherTask
 import net.perfectdreams.loritta.helper.utils.dailyshopwinners.DailyShopWinners
 import net.perfectdreams.loritta.helper.utils.faqembed.FAQEmbedUpdaterEnglish
 import net.perfectdreams.loritta.helper.utils.faqembed.FAQEmbedUpdaterPortuguese
@@ -38,7 +35,6 @@ import net.perfectdreams.loritta.helper.utils.faqembed.FAQEmbedUpdaterSparklyPow
 import net.perfectdreams.loritta.helper.utils.faqembed.FAQEmbedUpdaterStaffFAQ
 import net.perfectdreams.loritta.helper.utils.generateserverreport.PendingReportsListTask
 import net.perfectdreams.loritta.helper.utils.tickets.TicketUtils
-import net.perfectdreams.loritta.helper.utils.tickets.TicketsCache
 import net.perfectdreams.loritta.helper.utils.topsonhos.TopSonhosRankingSender
 import net.perfectdreams.loritta.morenitta.interactions.InteractionsListener
 import net.perfectdreams.loritta.morenitta.interactions.InteractivityManager
@@ -56,7 +52,7 @@ import java.util.concurrent.TimeUnit
  * An instance of Loritta Helper, that is initialized at [LorittaHelperLauncher]
  * With an custom [LorittaHelperConfig]
  */
-class LorittaHelper(val config: LorittaHelperConfig, val fanArtsConfig: FanArtsConfig?, val lorittaConfig: LorittaConfig?) {
+class LorittaHelper(val config: LorittaHelperConfig, val fanArtsConfig: FanArtsConfig?) {
     companion object {
         val http = HttpClient {
             expectSuccess = false
@@ -67,30 +63,28 @@ class LorittaHelper(val config: LorittaHelperConfig, val fanArtsConfig: FanArtsC
     }
 
     lateinit var jda: JDA
+    lateinit var ticketUtils: TicketUtils
 
     // We only need one single thread because <3 coroutines
-    // As long we don't do any blocking tasks inside of the executor, Loritta Helper will work fiiiine
+    // As long we don't do any blocking tasks inside the executor, Loritta Helper will work fiiiine
     // and will be very lightweight!
     val executor = Executors.newFixedThreadPool(8)
         .asCoroutineDispatcher()
 
     val timedTaskExecutor = Executors.newScheduledThreadPool(4)
     val databases = Databases(this)
-    var dailyCatcherManager: DailyCatcherManager? = null
-
-    var dailyShopWinners: DailyShopWinners? = null
-
-    val helperRest = RestClient(config.token)
-    val lorittaRest = lorittaConfig?.token?.let { RestClient(it) }
-
+    val helperRest = RestClient(config.helper.token)
+    val lorittaRest = config.loritta.token.let { RestClient(it) }
     val commandManager = UnleashedCommandManager(this)
     val interactivityManager = InteractivityManager()
-    lateinit var ticketUtils: TicketUtils
     val languageManager = LanguageManager(
         LorittaHelperKord::class,
         "en",
         "/languages/"
     )
+
+    var dailyCatcherManager: DailyCatcherManager? = null
+    var dailyShopWinners: DailyShopWinners? = null
 
     fun start() {
         languageManager.loadLanguagesAndContexts()
@@ -109,7 +103,7 @@ class LorittaHelper(val config: LorittaHelperConfig, val fanArtsConfig: FanArtsC
 
         // We only care about specific intents
         val jda = JDABuilder.createLight(
-            config.token,
+            config.helper.token,
             GatewayIntent.DIRECT_MESSAGES,
             GatewayIntent.MESSAGE_CONTENT,
             GatewayIntent.GUILD_MESSAGES,
@@ -159,7 +153,7 @@ class LorittaHelper(val config: LorittaHelperConfig, val fanArtsConfig: FanArtsC
         commandManager.register(TicketSenderCommand(this))
         commandManager.register(ReportMessageSenderCommand(this))
 
-        if (config.lorittaDatabase != null) {
+        if (config.loritta.database != null) {
             val dailyCatcher = DailyCatcherManager(this, jda)
 
             jda.addEventListener(BanSuspectedUsersOnReactionListener(this))
@@ -194,7 +188,7 @@ class LorittaHelper(val config: LorittaHelperConfig, val fanArtsConfig: FanArtsC
 
         // Get pending reports
         timedTaskExecutor.scheduleAtFixedRate(
-            PendingReportsListTask(jda),
+            PendingReportsListTask(this, jda),
             0,
             30,
             TimeUnit.MINUTES
@@ -206,14 +200,16 @@ class LorittaHelper(val config: LorittaHelperConfig, val fanArtsConfig: FanArtsC
         FAQEmbedUpdaterStaffFAQ(this, jda).start()
         TopSonhosRankingSender(this, jda).start()
 
-        timedTaskExecutor.scheduleWithFixedDelay(LorittaLandRoleSynchronizationTask(this, jda), 0, 15, TimeUnit.SECONDS)
-        timedTaskExecutor.scheduleWithFixedDelay(LorittaBannedRoleTask(this, jda), 0, 15, TimeUnit.SECONDS)
+        if (config.tasks.roleSynchronization.enabled)
+            timedTaskExecutor.scheduleWithFixedDelay(LorittaLandRoleSynchronizationTask(this, jda), 0, 15, TimeUnit.SECONDS)
+
+        if (config.tasks.lorittaBannedRole.enabled)
+            timedTaskExecutor.scheduleWithFixedDelay(LorittaBannedRoleTask(this, jda), 0, 15, TimeUnit.SECONDS)
 
         // This is a hack!! TODO: Need to refactor to use JDA only
         LorittaHelperKord(
             config,
             fanArtsConfig,
-            lorittaConfig,
             this,
             jda
         ).start()
@@ -225,8 +221,8 @@ class LorittaHelper(val config: LorittaHelperConfig, val fanArtsConfig: FanArtsC
 
     suspend inline fun <reified T : LorittaDashboardRPCResponse> makeLorittaRPCRequest(rpc: LorittaDashboardRPCRequest): T {
         return Json.decodeFromString<T>(
-            http.post("${config.lorittaApi.url.removeSuffix("/")}/api/v1/rpc") {
-                header("Authorization", config.lorittaApi.token)
+            http.post("${config.loritta.api.url.removeSuffix("/")}/api/v1/rpc") {
+                header("Authorization", config.loritta.api.token)
                 setBody(Json.encodeToString<LorittaDashboardRPCRequest>(rpc))
             }.bodyAsText()
         )

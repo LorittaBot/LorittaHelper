@@ -7,26 +7,26 @@ import org.jetbrains.exposed.sql.Database
 
 class Databases(val m: LorittaHelper) {
     val lorittaDatabase by lazy {
-        if (m.config.lorittaDatabase == null)
+        if (m.config.loritta.database == null)
             throw RuntimeException("Accessing Loritta Database, but database is not configured!")
 
         val hikariConfig = HikariConfig()
-        hikariConfig.jdbcUrl = "jdbc:postgresql://${m.config.lorittaDatabase.address}/${m.config.lorittaDatabase.databaseName}"
-        hikariConfig.username = m.config.lorittaDatabase.username
-        hikariConfig.password = m.config.lorittaDatabase.password
+        hikariConfig.jdbcUrl = "jdbc:postgresql://${m.config.loritta.database.address}/${m.config.loritta.database.databaseName}"
+        hikariConfig.username = m.config.loritta.database.username
+        hikariConfig.password = m.config.loritta.database.password
 
         val ds = HikariDataSource(hikariConfig)
         Database.connect(ds)
     }
 
     val helperDatabase by lazy {
-        if (m.config.helperDatabase == null)
+        if (m.config.helper.database == null)
             throw RuntimeException("Accessing Helper Database, but database is not configured!")
 
         val hikariConfig = HikariConfig()
-        hikariConfig.jdbcUrl = "jdbc:postgresql://${m.config.helperDatabase.address}/${m.config.helperDatabase.databaseName}"
-        hikariConfig.username = m.config.helperDatabase.username
-        hikariConfig.password = m.config.helperDatabase.password
+        hikariConfig.jdbcUrl = "jdbc:postgresql://${m.config.helper.database.address}/${m.config.helper.database.databaseName}"
+        hikariConfig.username = m.config.helper.database.username
+        hikariConfig.password = m.config.helper.database.password
 
         val ds = HikariDataSource(hikariConfig)
         Database.connect(ds)

@@ -20,12 +20,10 @@ class AttachDenyReasonExecutor(helper: LorittaHelperKord, val jda: JDA) : Helper
 
     override val options = Options()
 
-    companion object {
-        val VALID_CHANNEL_IDS = listOf(
-            GenerateAppealsReport.SERVER_APPEALS_CHANNEL_ID,
-            GenerateServerReport.SERVER_REPORTS_CHANNEL_ID
-        )
-    }
+    val VALID_CHANNEL_IDS = listOf(
+        helper.config.guilds.community.channels.appeals,
+        helper.config.guilds.community.channels.serverReports
+    )
 
     override suspend fun executeHelper(context: ApplicationCommandContext, args: SlashCommandArguments) {
         val messageUrl = args[options.messageUrl]

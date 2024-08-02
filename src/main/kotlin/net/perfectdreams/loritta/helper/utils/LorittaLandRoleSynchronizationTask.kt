@@ -1,12 +1,10 @@
 package net.perfectdreams.loritta.helper.utils
 
 import com.github.benmanes.caffeine.cache.Caffeine
-import io.ktor.client.call.*
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
 import kotlinx.coroutines.runBlocking
-import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 import mu.KotlinLogging
 import net.dv8tion.jda.api.JDA
@@ -31,26 +29,6 @@ import kotlin.math.ceil
 
 class LorittaLandRoleSynchronizationTask(val m: LorittaHelper, val jda: JDA) : Runnable {
     companion object {
-        private val roleRemap = mutableListOf(
-            316363779518627842L to 420630427837923328L, // Deusas Supremas
-            505144985591480333L to 762374506173431809L, // beep & boops
-            351473717194522647L to 421325022951637015L, // Moderators
-            399301696892829706L to 421325387889377291L, // Suporte -> Portuguese
-            399301696892829706L to 761586798971322370L, // Suporte -> English
-            653207389729849374L to 762377821884121148L, // Blue colors
-            653207676075114496L to 762377837264240640L,
-            653207713119076362L to 762377848807227432L,
-            653207737798230037L to 762377857149829163L,
-            653207795084165121L to 762377866368254053L,
-            653207830261923840L to 762377874891603979L,
-            653207858707562497L to 762377883339325460L,
-            341343754336337921L to 467750037812936704L, // Desenhistas
-            385579854336360449L to 467750852610752561L, // Tradutores
-            364201981016801281L to 420640526711390208L, // Doador
-            463652112656629760L to 568506127977938977L, // Super Doador
-            534659343656681474L to 568505810825642029L, // Magnata
-        )
-
         private val roleFieldComparators = listOf(
             RoleColorComparator(),
             RolePermissionsComparator(),
@@ -60,6 +38,14 @@ class LorittaLandRoleSynchronizationTask(val m: LorittaHelper, val jda: JDA) : R
 
         private val logger = KotlinLogging.logger {}
     }
+
+    private val rolesRemap = m.config.tasks.roleSynchronization.rolesRemap.map {
+        it.key.toLong() to it.value
+    }.toList()
+
+    private val community = m.config.guilds.community
+    private val sparklyPower = m.config.guilds.sparklyPower
+    private val english = m.config.guilds.english
 
     private val userNotInCommunityServerCache = Collections.newSetFromMap(
         Caffeine.newBuilder()
@@ -72,19 +58,19 @@ class LorittaLandRoleSynchronizationTask(val m: LorittaHelper, val jda: JDA) : R
         logger.info { "Synchronizing roles..." }
 
         try {
-            val communityGuild = jda.getGuildById(297732013006389252L)
+            val communityGuild = jda.getGuildById(community.id)
             if (communityGuild != null)
                 logger.info { "Community Guild Members: ${communityGuild.members.size}" }
             else
                 logger.warn { "Community Guild is missing..." }
 
-            val supportGuild = jda.getGuildById(420626099257475072L)
+            val supportGuild = jda.getGuildById(english.id)
             if (supportGuild != null)
                 logger.info { "Support Guild Members: ${supportGuild.members.size}" }
             else
                 logger.warn { "Support Guild is missing..." }
 
-            val sparklyGuild = jda.getGuildById(320248230917046282L)
+            val sparklyGuild = jda.getGuildById(sparklyPower.id)
             if (sparklyGuild != null)
                 logger.info { "Sparkly Guild Members: ${sparklyGuild.members.size}" }
             else
@@ -100,7 +86,7 @@ class LorittaLandRoleSynchronizationTask(val m: LorittaHelper, val jda: JDA) : R
 
             if (communityGuild != null && supportGuild != null) {
                 logger.info { "Synchronizing roles between Community Guild and Support Guild..." }
-                for ((communityRoleId, supportRoleId) in roleRemap) {
+                for ((communityRoleId, supportRoleId) in rolesRemap) {
                     val communityRole = communityGuild.getRoleById(communityRoleId) ?: continue
                     val supportRole = supportGuild.getRoleById(supportRoleId) ?: continue
 
@@ -145,10 +131,10 @@ class LorittaLandRoleSynchronizationTask(val m: LorittaHelper, val jda: JDA) : R
         val donatorsPlusFirstDate = mutableMapOf<Long, Long>()
         val inactiveDonators = mutableSetOf<Long>()
 
-        val donatorRole = communityGuild.getRoleById(364201981016801281L)
-        val superDonatorRole = communityGuild.getRoleById(463652112656629760L)
-        val megaDonatorRole = communityGuild.getRoleById(534659343656681474L)
-        val advertisementRole = communityGuild.getRoleById(619691791041429574L)
+        val donatorRole = communityGuild.getRoleById(community.roles.donator)
+        val superDonatorRole = communityGuild.getRoleById(community.roles.superDonator)
+        val megaDonatorRole = communityGuild.getRoleById(community.roles.megaDonator)
+        val advertisementRole = communityGuild.getRoleById(community.roles.advertisement)
 
         for (payment in payments) {
             if ((payment.expiresAt ?: 0) >= System.currentTimeMillis()) {
@@ -197,7 +183,7 @@ class LorittaLandRoleSynchronizationTask(val m: LorittaHelper, val jda: JDA) : R
 
                 // Remove custom badges if the user is not Level 10
                 val coolBadgesFilter = roles.filter { userRole -> LorittaCommunityRoleButtons.coolBadges.any { it.roleId.value.toLong() == userRole.idLong } }
-                if (!member.roles.any { it.idLong == 655132411566358548L })
+                if (!member.roles.any { it.idLong == community.roles.level10 })
                     roles.removeAll(coolBadgesFilter)
 
                 if (roles.contains(advertisementRole))
@@ -226,7 +212,7 @@ class LorittaLandRoleSynchronizationTask(val m: LorittaHelper, val jda: JDA) : R
         // Apply fan artists roles
         logger.info { "Applying fan artists roles in the community server..." }
 
-        val drawingRole = communityGuild.getRoleById(341343754336337921L)
+        val drawingRole = communityGuild.getRoleById(community.roles.drawing)
 
         if (drawingRole == null) {
             logger.warn { "Artist role in the community server does not exist!" }

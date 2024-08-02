@@ -10,25 +10,15 @@ import net.perfectdreams.loritta.helper.utils.extensions.isLorittaBanned
 
 class LorittaBannedRoleTask(val m: LorittaHelper, val jda: JDA) : Runnable {
     companion object {
-        val lorittaGuilds = listOf(
-            // Support server
-            LorittaGuild(
-                420626099257475072L,
-                781591507849052200L,
-                785226414474395670L,
-                listOf(781583967837093928, 785226629550702623)
-            )
-        )
-
         val logger = KotlinLogging.logger {}
     }
 
     override fun run() {
         try {
-            for (lorittaGuild in lorittaGuilds) {
-                val guild = jda.getGuildById(lorittaGuild.guildId) ?: continue
-                val bannedRole = guild.getRoleById(lorittaGuild.lorittaBannedRole)
-                val tempBanRole = guild.getRoleById(lorittaGuild.lorittaTempBannedRole)
+            for (lorittaGuild in m.config.tasks.lorittaBannedRole.guilds) {
+                val guild = jda.getGuildById(lorittaGuild.id) ?: continue
+                val bannedRole = guild.getRoleById(lorittaGuild.bannedRoleId)
+                val tempBanRole = guild.getRoleById(lorittaGuild.tempBannedRoleId)
 
                 if (bannedRole != null && tempBanRole != null) {
                     checkBannedMembers(guild, bannedRole, tempBanRole)
@@ -40,7 +30,7 @@ class LorittaBannedRoleTask(val m: LorittaHelper, val jda: JDA) : Runnable {
         }
     }
 
-    // Checks banned members and remove the banned role if they not banned anymore
+    // Checks banned members and remove the banned role if they are not banned anymore
     private fun checkBannedMembers(guild: Guild, permBanRole: Role, tempBanRole: Role) {
         logger.info { "Checking members with loritta-banned role in ${guild.id} guild" }
 
@@ -84,10 +74,3 @@ class LorittaBannedRoleTask(val m: LorittaHelper, val jda: JDA) : Runnable {
         }
     }
 }
-
-class LorittaGuild(
-    val guildId: Long,
-    val lorittaBannedRole: Long,
-    val lorittaTempBannedRole: Long,
-    val allowedChannels: List<Long>? = null
-)

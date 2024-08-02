@@ -20,8 +20,8 @@ class PendingReportsExecutor(helper: LorittaHelperKord, val jda: JDA) : HelperSl
 
     inner class Options : ApplicationCommandOptions() {
         val channel = optionalString("channel", "Em qual canal deverá ser filtrado os reports pendentes") {
-            choice("Canal de Denúncias", "${GenerateServerReport.SERVER_REPORTS_CHANNEL_ID}")
-            choice("Canal de Apelos", "${GenerateAppealsReport.SERVER_APPEALS_CHANNEL_ID}")
+            choice("Canal de Denúncias", "${helper.config.guilds.community.channels.serverReports}")
+            choice("Canal de Apelos", "${helper.config.guilds.community.channels.appeals}")
         }
     }
 
@@ -30,7 +30,7 @@ class PendingReportsExecutor(helper: LorittaHelperKord, val jda: JDA) : HelperSl
     override suspend fun executeHelper(context: ApplicationCommandContext, args: SlashCommandArguments) {
         context.deferChannelMessage()
 
-        val channelId = args[options.channel] ?: "${GenerateServerReport.SERVER_REPORTS_CHANNEL_ID}"
+        val channelId = args[options.channel] ?: "${helper.config.guilds.community.channels.serverReports}"
         val channel = jda.getTextChannelById(channelId) ?: return
 
         try {
