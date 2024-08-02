@@ -11,7 +11,7 @@ import net.perfectdreams.loritta.helper.utils.checkbannedusers.LorittaBannedRole
 import net.perfectdreams.loritta.helper.utils.extensions.getBannedState
 
 class CheckLoriBannedUsersListener(val m: LorittaHelper): ListenerAdapter() {
-    private val lorittaGuilds = LorittaBannedRoleTask.lorittaGuilds
+    private val lorittaGuilds = m.config.tasks.lorittaBannedRole.guilds
 
 
     override fun onMessageReceived(event: MessageReceivedEvent) {
@@ -22,11 +22,11 @@ class CheckLoriBannedUsersListener(val m: LorittaHelper): ListenerAdapter() {
         super.onGuildMemberJoin(event)
 
         m.launch {
-            val lorittaGuild = lorittaGuilds.find { it.guildId == event.guild.idLong }
+            val lorittaGuild = lorittaGuilds.find { it.id == event.guild.idLong }
 
             if (lorittaGuild != null) {
-                val bannedRole = event.guild.getRoleById(lorittaGuild.lorittaBannedRole)
-                val tempBannedRole = event.guild.getRoleById(lorittaGuild.lorittaTempBannedRole)
+                val bannedRole = event.guild.getRoleById(lorittaGuild.bannedRole)
+                val tempBannedRole = event.guild.getRoleById(lorittaGuild.tempBannedRole)
 
                 if (bannedRole != null && tempBannedRole != null)
                     giveBannedRoleIfPossible(event.member, event.guild, bannedRole, tempBannedRole)
@@ -40,14 +40,14 @@ class CheckLoriBannedUsersListener(val m: LorittaHelper): ListenerAdapter() {
         m.launch {
             // Check if the member is banned from using Loritta
             for (lorittaGuild in lorittaGuilds) {
-                if (guild.idLong == lorittaGuild.guildId) {
+                if (guild.idLong == lorittaGuild.id) {
                     val allowedChannels = lorittaGuild.allowedChannels
 
                     if (allowedChannels != null && allowedChannels.contains(channel.idLong))
                         return@launch
 
-                    val bannedRole = guild.getRoleById(lorittaGuild.lorittaBannedRole)
-                    val tempBannedRole = guild.getRoleById(lorittaGuild.lorittaTempBannedRole)
+                    val bannedRole = guild.getRoleById(lorittaGuild.bannedRole)
+                    val tempBannedRole = guild.getRoleById(lorittaGuild.tempBannedRole)
 
                     if (message.member != null && bannedRole != null && tempBannedRole != null) {
                         if (giveBannedRoleIfPossible(member, guild, bannedRole, tempBannedRole)) {

@@ -115,12 +115,27 @@ data class LorittaHelperConfig(
 
     @Serializable
     data class TaskHolderConfig(
-        val roleSynchronization: RoleSynchronizationConfig
+        val roleSynchronization: RoleSynchronizationConfig,
+        val lorittaBannedRole: LorittaBannedRoleConfig
     ) {
         @Serializable
         data class RoleSynchronizationConfig(
             val enabled: Boolean,
             val rolesRemap: Map<String, Long>
         )
+
+        @Serializable
+        data class LorittaBannedRoleConfig(
+            val enabled: Boolean,
+            val guilds: List<LorittaGuildConfig>
+        ) {
+            @Serializable
+            data class LorittaGuildConfig(
+                val id: Long,
+                val bannedRole: Long,
+                val tempBannedRole: Long,
+                val allowedChannels: List<Long>
+            )
+        }
     }
 }

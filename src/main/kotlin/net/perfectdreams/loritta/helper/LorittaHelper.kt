@@ -61,6 +61,7 @@ class LorittaHelper(val config: LorittaHelperConfig, val fanArtsConfig: FanArtsC
         }
 
         private val logger = KotlinLogging.logger {}
+        lateinit var instance: LorittaHelper
     }
 
     lateinit var jda: JDA
@@ -204,7 +205,8 @@ class LorittaHelper(val config: LorittaHelperConfig, val fanArtsConfig: FanArtsC
         if (config.tasks.roleSynchronization.enabled)
             timedTaskExecutor.scheduleWithFixedDelay(LorittaLandRoleSynchronizationTask(this, jda), 0, 15, TimeUnit.SECONDS)
 
-        timedTaskExecutor.scheduleWithFixedDelay(LorittaBannedRoleTask(this, jda), 0, 15, TimeUnit.SECONDS)
+        if (config.tasks.lorittaBannedRole.enabled)
+            timedTaskExecutor.scheduleWithFixedDelay(LorittaBannedRoleTask(this, jda), 0, 15, TimeUnit.SECONDS)
 
         // This is a hack!! TODO: Need to refactor to use JDA only
         LorittaHelperKord(
@@ -213,6 +215,8 @@ class LorittaHelper(val config: LorittaHelperConfig, val fanArtsConfig: FanArtsC
             this,
             jda
         ).start()
+
+        instance = this
     }
 
     fun launch(block: suspend CoroutineScope.() -> Unit) = GlobalScope.launch(executor) {
