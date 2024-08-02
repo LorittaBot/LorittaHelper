@@ -4,14 +4,15 @@ import net.perfectdreams.loritta.api.messages.LorittaReply
 import net.perfectdreams.loritta.helper.LorittaHelper
 import net.perfectdreams.loritta.helper.serverresponses.RegExResponse
 import net.perfectdreams.loritta.helper.utils.Emotes
+import net.perfectdreams.loritta.helper.utils.config.LorittaHelperConfig
 import java.util.regex.Pattern
 
 /**
  * Response when people don`t know how to solve
  * a problem and need help with anything, telling them to mention the support
  */
-class HelpMeResponse : RegExResponse() {
-    private val english = LorittaHelper.config.guilds.english
+class HelpMeResponse(val config: LorittaHelperConfig) : RegExResponse() {
+    private val english = config.guilds.english
 
     override val priority: Int
         get() = -1000

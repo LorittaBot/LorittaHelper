@@ -9,9 +9,12 @@ import net.perfectdreams.loritta.helper.utils.tickets.systems.LorittaHelpDeskTic
 import net.perfectdreams.loritta.helper.utils.tickets.systems.SparklyPowerHelpDeskTicketSystem
 
 class TicketUtils(val m: LorittaHelper) {
-    private val community = m.helperConfig.guilds.community
-    private val english = m.helperConfig.guilds.english
-    private val sparklyPower = m.helperConfig.guilds.sparklyPower
+    private val community = m.config.guilds.community
+    private val english = m.config.guilds.english
+    private val sparklyPower = m.config.guilds.sparklyPower
+
+    private val portugueseResponses = PortugueseResponses(m.config)
+    private val englishResponses = EnglishResponses(m.config)
 
     val systems = mapOf(
         // Portuguese Help Desk Channel
@@ -21,7 +24,7 @@ class TicketUtils(val m: LorittaHelper) {
             LanguageName.PORTUGUESE,
             community.id,
             community.channels.support,
-            PortugueseResponses.responses,
+            portugueseResponses.responses,
             community.channels.faq,
             community.channels.status,
             community.roles.support
@@ -34,7 +37,7 @@ class TicketUtils(val m: LorittaHelper) {
             LanguageName.ENGLISH,
             english.id,
             english.channels.support,
-            EnglishResponses.responses,
+            englishResponses.responses,
             english.channels.faq,
             english.channels.status,
             english.roles.englishSupport

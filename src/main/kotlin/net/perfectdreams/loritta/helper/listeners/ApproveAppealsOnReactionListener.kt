@@ -15,12 +15,15 @@ class ApproveAppealsOnReactionListener(val m: LorittaHelper): ListenerAdapter() 
         const val REJECT_EMOTE = "\uD83D\uDEAB"
     }
 
+    private val community = m.config.guilds.community
+    private val SERVER_APPEALS_CHANNEL_ID = community.channels.appeals
+
     override fun onMessageReactionAdd(event: MessageReactionAddEvent) {
         val user = event.user ?: return
         if (user.isBot)
             return
 
-        if (event.channel.idLong != GenerateAppealsReport.SERVER_APPEALS_CHANNEL_ID)
+        if (event.channel.idLong != SERVER_APPEALS_CHANNEL_ID)
             return
 
         if (event.emoji.name == APPROVE_EMOTE || event.emoji.name == REJECT_EMOTE) {

@@ -27,7 +27,7 @@ class PrivateMessageListener(val m: LorittaHelper) : ListenerAdapter() {
                 put("time", System.currentTimeMillis())
             }
 
-            val encryptedInformation = EncryptionUtils.encryptMessage(m.helperConfig.secretKey, json.toString())
+            val encryptedInformation = EncryptionUtils.encryptMessage(m.config.secretKey, json.toString())
 
             event.channel.sendMessage(
                 """**Então... você está afim de fazer um apelo de ban na Loritta? Então você veio ao lugar certo! <:lorota_jubinha:500766283965661184>**

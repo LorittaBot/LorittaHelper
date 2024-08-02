@@ -85,7 +85,8 @@ data class LorittaHelperConfig(
                 val saddestOfTheSads: Long,
                 val openBar: Long,
                 val sadCatsTribunal: Long,
-                val reportsRelay: Long
+                val reportsRelay: Long,
+                val appeals: Long
             )
 
             @Serializable
@@ -146,8 +147,8 @@ data class LorittaHelperConfig(
             @Serializable
             data class LorittaGuildConfig(
                 val id: Long,
-                val bannedRole: Long,
-                val tempBannedRole: Long,
+                val bannedRoleId: Long,
+                val tempBannedRoleId: Long,
                 val allowedChannels: List<Long>?
             )
         }

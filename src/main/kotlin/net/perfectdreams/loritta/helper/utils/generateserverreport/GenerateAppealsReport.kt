@@ -25,9 +25,8 @@ import java.net.URL
 import java.time.Instant
 
 class GenerateAppealsReport(val m: LorittaHelper) {
-    companion object {
-        const val SERVER_APPEALS_CHANNEL_ID = 781872670781866054L
-    }
+    val community = m.config.guilds.community
+    val SERVER_APPEALS_CHANNEL_ID = community.channels.appeals
 
     private val logger = KotlinLogging.logger {}
 
@@ -55,7 +54,7 @@ class GenerateAppealsReport(val m: LorittaHelper) {
         // Parse Helper Code
         val payload = try {
             Json.parseToJsonElement(
-                EncryptionUtils.decryptMessage(m.helperConfig.secretKey, helperCode)
+                EncryptionUtils.decryptMessage(m.config.secretKey, helperCode)
             ).jsonObject
         } catch (e: Exception) {
             logger.warn(e) { "Exception while decrypting code $helperCode" }

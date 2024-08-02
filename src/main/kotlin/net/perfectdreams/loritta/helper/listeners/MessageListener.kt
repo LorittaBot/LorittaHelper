@@ -18,11 +18,11 @@ import net.perfectdreams.loritta.helper.utils.tickets.TicketListener
 
 class MessageListener(val m: LorittaHelper) : ListenerAdapter() {
     private val dontMentionStaffs = listOf(
-        EnglishDontMentionStaff(),
-        PortugueseDontMentionStaff()
+        EnglishDontMentionStaff(m.config),
+        PortugueseDontMentionStaff(m.config)
     )
-    private val community = m.helperConfig.guilds.community
-    private val english = m.helperConfig.guilds.english
+    private val community = m.config.guilds.community
+    private val english = m.config.guilds.english
 
     val checkIllegalNitroSell = CheckIllegalNitroSell()
     val generateBanStatusReport = GenerateBanStatusReport(m)
@@ -65,12 +65,15 @@ class MessageListener(val m: LorittaHelper) : ListenerAdapter() {
 
             checkIllegalNitroSell.onMessageReceived(event)
 
+            val englishResponses = EnglishResponses(m.config)
+            val portugueseResponses = PortugueseResponses(m.config)
+
             val channelResponses = when (event.message.channel.idLong) {
                 english.channels.oldPortugueseSupport, community.channels.openBar /* open bar */ -> {
-                    PortugueseResponses.responses
+                    portugueseResponses.responses
                 }
                 english.channels.oldEnglishSupport, english.channels.staff /* support server staff channel */ -> {
-                    EnglishResponses.responses
+                    englishResponses.responses
                 }
                 else -> null
             }

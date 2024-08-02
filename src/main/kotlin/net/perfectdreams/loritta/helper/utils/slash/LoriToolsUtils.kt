@@ -15,7 +15,7 @@ object LoriToolsUtils {
         reason: String,
         color: Color
     ) {
-        val community = helper.helperConfig.guilds.community
+        val community = helper.config.guilds.community
 
         val punishedUser = try {
             helper.jda.retrieveUserById(punishedUserId).await()

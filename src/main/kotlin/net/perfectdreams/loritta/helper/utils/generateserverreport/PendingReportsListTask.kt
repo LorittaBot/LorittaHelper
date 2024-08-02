@@ -9,12 +9,13 @@ import net.perfectdreams.loritta.helper.listeners.ApproveReportsOnReactionListen
 import java.time.Instant
 import java.time.ZoneId
 
-class PendingReportsListTask(val jda: JDA) : Runnable {
+class PendingReportsListTask(val m: LorittaHelper, val jda: JDA) : Runnable {
     companion object {
         private val logger = KotlinLogging.logger {}
     }
 
-    private val community = LorittaHelper.config.guilds.community
+    private val community = m.config.guilds.community
+    private val SERVER_REPORTS_CHANNEL_ID = community.channels.serverReports
 
     override fun run() {
         val now = Instant.now()
@@ -25,7 +26,7 @@ class PendingReportsListTask(val jda: JDA) : Runnable {
             if (now.hour in 0..9)
                 return
 
-            val channel = jda.getTextChannelById(GenerateServerReport.SERVER_REPORTS_CHANNEL_ID) ?: return
+            val channel = jda.getTextChannelById(SERVER_REPORTS_CHANNEL_ID) ?: return
             val staffChannel = jda.getThreadChannelById(community.channels.reportWarnings) ?: return
 
             val history = channel.history

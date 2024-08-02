@@ -2,9 +2,10 @@ package net.perfectdreams.loritta.helper.utils.dontmentionstaff
 
 import net.perfectdreams.loritta.api.messages.LorittaReply
 import net.perfectdreams.loritta.helper.LorittaHelper
+import net.perfectdreams.loritta.helper.utils.config.LorittaHelperConfig
 
-class EnglishDontMentionStaff : DontMentionStaff() {
-    private val english = LorittaHelper.config.guilds.english
+class EnglishDontMentionStaff(val config: LorittaHelperConfig) : DontMentionStaff() {
+    private val english = config.guilds.english
 
     override val roleId = english.roles.englishSupport
     override val channelId = english.channels.oldEnglishSupport

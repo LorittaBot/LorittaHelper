@@ -101,7 +101,7 @@ class DailyCatcherManager(val m: LorittaHelper, val jda: JDA) {
         }
     }
 
-    private val community = m.helperConfig.guilds.community
+    private val community = m.config.guilds.community
 
     // ===[ CATCHERS ]===
     val dailyOnlyEcoCommandsCatcher = DailyOnlyEcoCommandsCatcher(m.databases.lorittaDatabase)

@@ -135,7 +135,7 @@ class LoriToolsCommand(val helper: LorittaHelper) : SlashCommandDeclarationWrapp
 
             // Get all banned users and relay them to SparklyPower
             val sparklyResults = mutableMapOf<LoriBanExecutor.UserBannedResult, BanSparklyPowerPlayerLorittaBannedResponse>()
-            val pantufaUrl = helper.helperConfig.pantufaUrl
+            val pantufaUrl = helper.config.pantufaUrl
 
             if (pantufaUrl != null) {
 
@@ -190,7 +190,7 @@ class LoriToolsCommand(val helper: LorittaHelper) : SlashCommandDeclarationWrapp
                         )
 
                         try {
-                            val guild = helper.jda.getGuildById(helper.helperConfig.guilds.community.id)
+                            val guild = helper.jda.getGuildById(helper.config.guilds.community.id)
                             guild?.timeoutFor(UserSnowflake.fromId(result.userId), Duration.ofDays(28))
                                 ?.reason("User is Loritta Banned!")
                                 ?.await()
@@ -285,7 +285,7 @@ class LoriToolsCommand(val helper: LorittaHelper) : SlashCommandDeclarationWrapp
 
                     try {
                         helper.helperRest.guild.modifyGuildMember(
-                            Snowflake(helper.helperConfig.guilds.community.id),
+                            Snowflake(helper.config.guilds.community.id),
                             Snowflake(userId)
                         ) {
                             this.communicationDisabledUntil = null

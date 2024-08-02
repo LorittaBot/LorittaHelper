@@ -5,5 +5,5 @@ import net.perfectdreams.loritta.helper.LorittaHelper
 
 class FAQEmbedUpdaterStaffFAQ(m: LorittaHelper, jda: JDA) : FAQEmbedUpdater(m, jda) {
     override val title = "FAQ da Staff"
-    override val channelId = m.helperConfig.guilds.community.channels.staffFaq
+    override val channelId = m.config.guilds.community.channels.staffFaq
 }

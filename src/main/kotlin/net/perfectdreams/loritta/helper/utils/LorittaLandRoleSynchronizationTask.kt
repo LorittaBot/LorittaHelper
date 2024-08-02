@@ -39,13 +39,13 @@ class LorittaLandRoleSynchronizationTask(val m: LorittaHelper, val jda: JDA) : R
         private val logger = KotlinLogging.logger {}
     }
 
-    private val rolesRemap = m.helperConfig.tasks.roleSynchronization.rolesRemap.map {
+    private val rolesRemap = m.config.tasks.roleSynchronization.rolesRemap.map {
         it.key.toLong() to it.value
     }.toList()
 
-    private val community = m.helperConfig.guilds.community
-    private val sparklyPower = m.helperConfig.guilds.sparklyPower
-    private val english = m.helperConfig.guilds.english
+    private val community = m.config.guilds.community
+    private val sparklyPower = m.config.guilds.sparklyPower
+    private val english = m.config.guilds.english
 
     private val userNotInCommunityServerCache = Collections.newSetFromMap(
         Caffeine.newBuilder()

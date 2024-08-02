@@ -15,10 +15,10 @@ class LorittaBannedRoleTask(val m: LorittaHelper, val jda: JDA) : Runnable {
 
     override fun run() {
         try {
-            for (lorittaGuild in m.helperConfig.tasks.lorittaBannedRole.guilds) {
+            for (lorittaGuild in m.config.tasks.lorittaBannedRole.guilds) {
                 val guild = jda.getGuildById(lorittaGuild.id) ?: continue
-                val bannedRole = guild.getRoleById(lorittaGuild.bannedRole)
-                val tempBanRole = guild.getRoleById(lorittaGuild.tempBannedRole)
+                val bannedRole = guild.getRoleById(lorittaGuild.bannedRoleId)
+                val tempBanRole = guild.getRoleById(lorittaGuild.tempBannedRoleId)
 
                 if (bannedRole != null && tempBanRole != null) {
                     checkBannedMembers(guild, bannedRole, tempBanRole)
