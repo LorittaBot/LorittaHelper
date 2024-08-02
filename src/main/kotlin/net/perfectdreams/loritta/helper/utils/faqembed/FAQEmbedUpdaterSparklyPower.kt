@@ -5,5 +5,5 @@ import net.perfectdreams.loritta.helper.LorittaHelper
 
 class FAQEmbedUpdaterSparklyPower(m: LorittaHelper, jda: JDA) : FAQEmbedUpdater(m, jda) {
     override val title = "Perguntas Frequentes"
-    override val channelId = 760262410098442270L
+    override val channelId = m.helperConfig.guilds.sparklyPower.channels.faq
 }

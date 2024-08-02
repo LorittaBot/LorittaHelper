@@ -4,15 +4,14 @@ import net.perfectdreams.loritta.helper.LorittaHelper
 import net.perfectdreams.loritta.helper.serverresponses.loritta.EnglishResponses
 import net.perfectdreams.loritta.helper.serverresponses.loritta.PortugueseResponses
 import net.perfectdreams.loritta.helper.serverresponses.sparklypower.SparklyPowerResponses
-import net.perfectdreams.loritta.helper.utils.Constants
 import net.perfectdreams.loritta.helper.utils.tickets.systems.FirstFanArtTicketSystem
 import net.perfectdreams.loritta.helper.utils.tickets.systems.LorittaHelpDeskTicketSystem
 import net.perfectdreams.loritta.helper.utils.tickets.systems.SparklyPowerHelpDeskTicketSystem
 
 class TicketUtils(val m: LorittaHelper) {
-    private val community = m.config.guilds.community
-    private val english = m.config.guilds.english
-    private val sparklyPower = m.config.guilds.sparklyPower
+    private val community = m.helperConfig.guilds.community
+    private val english = m.helperConfig.guilds.english
+    private val sparklyPower = m.helperConfig.guilds.sparklyPower
 
     val systems = mapOf(
         // Portuguese Help Desk Channel

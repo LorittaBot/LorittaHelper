@@ -5,7 +5,6 @@ import io.ktor.client.*
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import kotlinx.coroutines.*
-import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import mu.KotlinLogging
@@ -53,7 +52,7 @@ import java.util.concurrent.TimeUnit
  * An instance of Loritta Helper, that is initialized at [LorittaHelperLauncher]
  * With an custom [LorittaHelperConfig]
  */
-class LorittaHelper(val config: LorittaHelperConfig, val fanArtsConfig: FanArtsConfig?) {
+class LorittaHelper(val helperConfig: LorittaHelperConfig, val fanArtsConfig: FanArtsConfig?) {
     companion object {
         val http = HttpClient {
             expectSuccess = false
@@ -61,11 +60,15 @@ class LorittaHelper(val config: LorittaHelperConfig, val fanArtsConfig: FanArtsC
         }
 
         private val logger = KotlinLogging.logger {}
-        lateinit var instance: LorittaHelper
+        lateinit var config: LorittaHelperConfig
     }
 
     lateinit var jda: JDA
     lateinit var ticketUtils: TicketUtils
+
+    init {
+        config = helperConfig
+    }
 
     // We only need one single thread because <3 coroutines
     // As long we don't do any blocking tasks inside the executor, Loritta Helper will work fiiiine
@@ -75,8 +78,8 @@ class LorittaHelper(val config: LorittaHelperConfig, val fanArtsConfig: FanArtsC
 
     val timedTaskExecutor = Executors.newScheduledThreadPool(4)
     val databases = Databases(this)
-    val helperRest = RestClient(config.helper.token)
-    val lorittaRest = config.loritta.token.let { RestClient(it) }
+    val helperRest = RestClient(helperConfig.helper.token)
+    val lorittaRest = helperConfig.loritta.token.let { RestClient(it) }
     val commandManager = UnleashedCommandManager(this)
     val interactivityManager = InteractivityManager()
     val languageManager = LanguageManager(
@@ -105,7 +108,7 @@ class LorittaHelper(val config: LorittaHelperConfig, val fanArtsConfig: FanArtsC
 
         // We only care about specific intents
         val jda = JDABuilder.createLight(
-            config.helper.token,
+            helperConfig.helper.token,
             GatewayIntent.DIRECT_MESSAGES,
             GatewayIntent.MESSAGE_CONTENT,
             GatewayIntent.GUILD_MESSAGES,
@@ -155,7 +158,7 @@ class LorittaHelper(val config: LorittaHelperConfig, val fanArtsConfig: FanArtsC
         commandManager.register(TicketSenderCommand(this))
         commandManager.register(ReportMessageSenderCommand(this))
 
-        if (config.loritta.database != null) {
+        if (helperConfig.loritta.database != null) {
             val dailyCatcher = DailyCatcherManager(this, jda)
 
             jda.addEventListener(BanSuspectedUsersOnReactionListener(this))
@@ -202,21 +205,19 @@ class LorittaHelper(val config: LorittaHelperConfig, val fanArtsConfig: FanArtsC
         FAQEmbedUpdaterStaffFAQ(this, jda).start()
         TopSonhosRankingSender(this, jda).start()
 
-        if (config.tasks.roleSynchronization.enabled)
+        if (helperConfig.tasks.roleSynchronization.enabled)
             timedTaskExecutor.scheduleWithFixedDelay(LorittaLandRoleSynchronizationTask(this, jda), 0, 15, TimeUnit.SECONDS)
 
-        if (config.tasks.lorittaBannedRole.enabled)
+        if (helperConfig.tasks.lorittaBannedRole.enabled)
             timedTaskExecutor.scheduleWithFixedDelay(LorittaBannedRoleTask(this, jda), 0, 15, TimeUnit.SECONDS)
 
         // This is a hack!! TODO: Need to refactor to use JDA only
         LorittaHelperKord(
-            config,
+            helperConfig,
             fanArtsConfig,
             this,
             jda
         ).start()
-
-        instance = this
     }
 
     fun launch(block: suspend CoroutineScope.() -> Unit) = GlobalScope.launch(executor) {
@@ -225,8 +226,8 @@ class LorittaHelper(val config: LorittaHelperConfig, val fanArtsConfig: FanArtsC
 
     suspend inline fun <reified T : LorittaDashboardRPCResponse> makeLorittaRPCRequest(rpc: LorittaDashboardRPCRequest): T {
         return Json.decodeFromString<T>(
-            http.post("${config.loritta.api.url.removeSuffix("/")}/api/v1/rpc") {
-                header("Authorization", config.loritta.api.token)
+            http.post("${helperConfig.loritta.api.url.removeSuffix("/")}/api/v1/rpc") {
+                header("Authorization", helperConfig.loritta.api.token)
                 setBody(Json.encodeToString<LorittaDashboardRPCRequest>(rpc))
             }.bodyAsText()
         )

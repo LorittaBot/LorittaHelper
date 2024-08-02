@@ -7,7 +7,6 @@ import io.ktor.client.statement.*
 import io.ktor.http.*
 import io.ktor.http.content.*
 import kotlinx.datetime.toKotlinInstant
-import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import mu.KotlinLogging
@@ -17,7 +16,6 @@ import net.perfectdreams.loritta.cinnamon.pudding.tables.BannedUsers
 import net.perfectdreams.loritta.helper.LorittaHelper
 import net.perfectdreams.loritta.helper.LorittaHelperKord
 import net.perfectdreams.loritta.helper.tables.EconomyState
-import net.perfectdreams.loritta.helper.utils.Constants
 import net.perfectdreams.loritta.helper.utils.extensions.await
 import net.perfectdreams.loritta.helper.utils.slash.LoriToolsUtils
 import net.perfectdreams.loritta.helper.utils.slash.PermissionLevel
@@ -34,7 +32,6 @@ import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.transactions.transaction
 import java.awt.Color
-import java.time.DateTimeException
 import java.time.Duration
 import java.time.LocalDateTime
 import java.time.ZoneId
@@ -138,7 +135,7 @@ class LoriToolsCommand(val helper: LorittaHelper) : SlashCommandDeclarationWrapp
 
             // Get all banned users and relay them to SparklyPower
             val sparklyResults = mutableMapOf<LoriBanExecutor.UserBannedResult, BanSparklyPowerPlayerLorittaBannedResponse>()
-            val pantufaUrl = helper.config.pantufaUrl
+            val pantufaUrl = helper.helperConfig.pantufaUrl
 
             if (pantufaUrl != null) {
 
@@ -193,7 +190,7 @@ class LoriToolsCommand(val helper: LorittaHelper) : SlashCommandDeclarationWrapp
                         )
 
                         try {
-                            val guild = helper.jda.getGuildById(Constants.COMMUNITY_SERVER_ID)
+                            val guild = helper.jda.getGuildById(helper.helperConfig.guilds.community.id)
                             guild?.timeoutFor(UserSnowflake.fromId(result.userId), Duration.ofDays(28))
                                 ?.reason("User is Loritta Banned!")
                                 ?.await()
@@ -288,7 +285,7 @@ class LoriToolsCommand(val helper: LorittaHelper) : SlashCommandDeclarationWrapp
 
                     try {
                         helper.helperRest.guild.modifyGuildMember(
-                            Snowflake(Constants.COMMUNITY_SERVER_ID),
+                            Snowflake(helper.helperConfig.guilds.community.id),
                             Snowflake(userId)
                         ) {
                             this.communicationDisabledUntil = null

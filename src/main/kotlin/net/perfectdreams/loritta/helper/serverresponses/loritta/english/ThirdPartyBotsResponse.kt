@@ -1,8 +1,8 @@
 package net.perfectdreams.loritta.helper.serverresponses.loritta.english
 
 import net.perfectdreams.loritta.api.messages.LorittaReply
+import net.perfectdreams.loritta.helper.LorittaHelper
 import net.perfectdreams.loritta.helper.serverresponses.RegExResponse
-import net.perfectdreams.loritta.helper.utils.Constants.OTHER_BOTS_CHANNEL_ID
 import net.perfectdreams.loritta.helper.utils.Emotes
 import java.util.regex.Pattern
 
@@ -11,6 +11,7 @@ import java.util.regex.Pattern
  * so to keep things clean, we recommend you to go to the bot's support server
  */
 class ThirdPartyBotsResponse: RegExResponse() {
+    private val english = LorittaHelper.config.guilds.english
 
     init {
         patterns.add("how|ẁhat|why|get|help|use|add".toPattern(Pattern.CASE_INSENSITIVE))
@@ -19,7 +20,7 @@ class ThirdPartyBotsResponse: RegExResponse() {
 
     override fun getResponse(message: String): List<LorittaReply> = listOf(
         LorittaReply(
-            message = "It looks like you want help with other bots, hm... We don't offer support for other bots here, if you need help, check if that bot's support server is listed in <#${OTHER_BOTS_CHANNEL_ID}> and ask for help there!",
+            message = "It looks like you want help with other bots, hm... We don't offer support for other bots here, if you need help, check if that bot's support server is listed in <#${english.channels.otherBots}> and ask for help there!",
             prefix = Emotes.LORI_COFFEE
         )
     )

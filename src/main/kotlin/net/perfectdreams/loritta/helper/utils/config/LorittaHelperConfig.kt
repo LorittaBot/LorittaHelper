@@ -77,12 +77,21 @@ data class LorittaHelperConfig(
                 val faq: Long,
                 val status: Long,
                 val firstFanArt: Long,
-                val firstFanArtRules: Long
+                val firstFanArtRules: Long,
+                val staff: Long,
+                val staffFaq: Long,
+                val serverReports: Long,
+                val reportWarnings: Long,
+                val saddestOfTheSads: Long,
+                val openBar: Long,
+                val sadCatsTribunal: Long,
+                val reportsRelay: Long
             )
 
             @Serializable
             data class CommunityRolesConfig(
                 val support: Long,
+                val loriBodyguards: Long,
                 val donator: Long,
                 val superDonator: Long,
                 val megaDonator: Long,
@@ -103,12 +112,17 @@ data class LorittaHelperConfig(
             data class EnglishChannelsConfig(
                 val support: Long,
                 val status: Long,
-                val faq: Long
+                val faq: Long,
+                val oldPortugueseSupport: Long,
+                val oldEnglishSupport: Long,
+                val otherBots: Long,
+                val staff: Long
             )
 
             @Serializable
             data class EnglishRolesConfig(
-                val englishSupport: Long
+                val englishSupport: Long,
+                val portugueseSupport: Long
             )
         }
     }
@@ -134,7 +148,7 @@ data class LorittaHelperConfig(
                 val id: Long,
                 val bannedRole: Long,
                 val tempBannedRole: Long,
-                val allowedChannels: List<Long>
+                val allowedChannels: List<Long>?
             )
         }
     }

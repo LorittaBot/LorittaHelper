@@ -3,7 +3,6 @@ package net.perfectdreams.loritta.helper.utils.slash
 import dev.minn.jda.ktx.messages.MessageCreate
 import net.dv8tion.jda.api.entities.User
 import net.perfectdreams.loritta.helper.LorittaHelper
-import net.perfectdreams.loritta.helper.utils.Constants
 import net.perfectdreams.loritta.helper.utils.extensions.await
 import java.awt.Color
 
@@ -16,6 +15,8 @@ object LoriToolsUtils {
         reason: String,
         color: Color
     ) {
+        val community = helper.helperConfig.guilds.community
+
         val punishedUser = try {
             helper.jda.retrieveUserById(punishedUserId).await()
         } catch (e: Exception) {
@@ -23,7 +24,7 @@ object LoriToolsUtils {
             null
         }
 
-        val channel = helper.jda.getTextChannelById(Constants.PORTUGUESE_SADDEST_OF_THE_SADS_CHANNEL_ID) ?: return
+        val channel = helper.jda.getTextChannelById(community.channels.saddestOfTheSads) ?: return
 
         channel.sendMessage(
             MessageCreate {

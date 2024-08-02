@@ -4,8 +4,8 @@ import mu.KotlinLogging
 import net.dv8tion.jda.api.JDA
 import net.dv8tion.jda.api.entities.Message
 import net.dv8tion.jda.api.entities.MessageType
+import net.perfectdreams.loritta.helper.LorittaHelper
 import net.perfectdreams.loritta.helper.listeners.ApproveReportsOnReactionListener
-import net.perfectdreams.loritta.helper.utils.Constants
 import java.time.Instant
 import java.time.ZoneId
 
@@ -13,6 +13,8 @@ class PendingReportsListTask(val jda: JDA) : Runnable {
     companion object {
         private val logger = KotlinLogging.logger {}
     }
+
+    private val community = LorittaHelper.config.guilds.community
 
     override fun run() {
         val now = Instant.now()
@@ -24,7 +26,7 @@ class PendingReportsListTask(val jda: JDA) : Runnable {
                 return
 
             val channel = jda.getTextChannelById(GenerateServerReport.SERVER_REPORTS_CHANNEL_ID) ?: return
-            val staffChannel = jda.getThreadChannelById(Constants.PORTUGUESE_REPORTS_WARNINGS_CHANNEL_ID) ?: return
+            val staffChannel = jda.getThreadChannelById(community.channels.reportWarnings) ?: return
 
             val history = channel.history
             var dayOfTheLastMessageInTheChannel: Int? = null
@@ -72,7 +74,7 @@ class PendingReportsListTask(val jda: JDA) : Runnable {
 
             if (messagesThatDoesNotHaveAnyReactions.isNotEmpty())
                 staffChannel.sendMessage(
-                    """<a:walter_contra_bonoro:729116259446161448> **ATENÇÃO <@&351473717194522647>**
+                    """<a:walter_contra_bonoro:729116259446161448> **ATENÇÃO <@&${community.roles.loriBodyguards}>**
                     |<a:uniao:703352880320479272> Existem ${messagesThatDoesNotHaveAnyReactions.size} denúncias que ainda precisam ser vistas!
                     |<a:wumpus_keyboard:682249824133054529> **Lembre-se:** ${ApproveReportsOnReactionListener.APPROVE_EMOTE.name} aceita a denúncia e ${ApproveReportsOnReactionListener.REJECT_EMOTE.name} rejeita a denúncia (Mas as punições ainda precisam ser dadas manualmente!). Qualquer outra reação pode ser utilizada para ignorar os avisos de denúncia pendente!
                     |

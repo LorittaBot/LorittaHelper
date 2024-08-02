@@ -18,19 +18,13 @@ import net.dv8tion.jda.api.requests.restaction.MessageCreateAction
 import net.dv8tion.jda.api.utils.FileUpload
 import net.dv8tion.jda.api.utils.messages.MessageCreateBuilder
 import net.perfectdreams.loritta.cinnamon.pudding.tables.BannedUsers
-import net.perfectdreams.loritta.cinnamon.pudding.utils.exposed.selectFirstOrNull
 import net.perfectdreams.loritta.helper.LorittaHelper
 import net.perfectdreams.loritta.helper.listeners.ApproveReportsOnReactionListener
 import net.perfectdreams.loritta.helper.utils.ComponentDataUtils
 import net.perfectdreams.loritta.helper.utils.Constants
 import net.perfectdreams.loritta.helper.utils.GoogleDriveUtils
 import net.perfectdreams.loritta.helper.utils.extensions.await
-import net.perfectdreams.loritta.helper.utils.extensions.getBannedState
 import org.jetbrains.exposed.sql.SortOrder
-import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
-import org.jetbrains.exposed.sql.SqlExpressionBuilder.greaterEq
-import org.jetbrains.exposed.sql.SqlExpressionBuilder.isNotNull
-import org.jetbrains.exposed.sql.SqlExpressionBuilder.isNull
 import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.or
 import org.jetbrains.exposed.sql.select
@@ -42,7 +36,8 @@ import java.time.Instant
 
 class GenerateServerReport(val m: LorittaHelper) {
     companion object {
-        const val SERVER_REPORTS_CHANNEL_ID = 790308357713559582L
+        private val community = LorittaHelper.config.guilds.community
+        val SERVER_REPORTS_CHANNEL_ID = community.channels.serverReports
     }
 
     private val logger = KotlinLogging.logger {}
@@ -71,7 +66,7 @@ class GenerateServerReport(val m: LorittaHelper) {
         // Parse Helper Code
         val payload = try {
             Json.parseToJsonElement(
-                EncryptionUtils.decryptMessage(m.config.secretKey, helperCode)
+                EncryptionUtils.decryptMessage(m.helperConfig.secretKey, helperCode)
             ).jsonObject
         } catch (e: Exception) {
             logger.warn(e) { "Exception while decrypting code $helperCode" }
@@ -80,7 +75,7 @@ class GenerateServerReport(val m: LorittaHelper) {
 
         val userId = payload["user"]!!.jsonPrimitive.long
         val userThatMadeTheReport = event.jda.retrieveUserById(userId).await()
-        val communityGuild = event.jda.getGuildById(297732013006389252L) ?: return
+        val communityGuild = event.jda.getGuildById(community.id) ?: return
 
         try {
             // We don't check this yet
@@ -223,7 +218,7 @@ class GenerateServerReport(val m: LorittaHelper) {
 
                 val action = communityGuild.getTextChannelById(SERVER_REPORTS_CHANNEL_ID)?.sendMessage(
                     MessageCreateBuilder()
-                        .setContent("<@&351473717194522647>")
+                        .setContent("<@&${community.roles.loriBodyguards}>")
                         .setEmbeds(*embeds.map { it.build() }.toTypedArray())
                         .also {
                             if (components.isNotEmpty())
@@ -265,7 +260,7 @@ class GenerateServerReport(val m: LorittaHelper) {
             communityGuild.getTextChannelById(SERVER_REPORTS_CHANNEL_ID)?.sendMessage(
                 MessageCreateBuilder()
                     .setContent(
-                        "<@&351473717194522647> Alguma coisa deu errada ao processar a denúncia da mensagem ${event.message.jumpUrl} feita por ${userThatMadeTheReport.asMention}... Tente verificar ela manualmente já que eu não fui boa o suficiente... <:lori_sob:556524143281963008>\n\n```\n${e.stackTraceToString()}\n```"
+                        "<@&${community.roles.loriBodyguards}> Alguma coisa deu errada ao processar a denúncia da mensagem ${event.message.jumpUrl} feita por ${userThatMadeTheReport.asMention}... Tente verificar ela manualmente já que eu não fui boa o suficiente... <:lori_sob:556524143281963008>\n\n```\n${e.stackTraceToString()}\n```"
                     )
                     .build()
             )?.queue()

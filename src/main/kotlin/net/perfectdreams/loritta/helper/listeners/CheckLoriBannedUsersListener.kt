@@ -7,11 +7,10 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent
 import net.dv8tion.jda.api.hooks.ListenerAdapter
 import net.perfectdreams.loritta.cinnamon.pudding.tables.BannedUsers
 import net.perfectdreams.loritta.helper.LorittaHelper
-import net.perfectdreams.loritta.helper.utils.checkbannedusers.LorittaBannedRoleTask
 import net.perfectdreams.loritta.helper.utils.extensions.getBannedState
 
 class CheckLoriBannedUsersListener(val m: LorittaHelper): ListenerAdapter() {
-    private val lorittaGuilds = m.config.tasks.lorittaBannedRole.guilds
+    private val lorittaGuilds = m.helperConfig.tasks.lorittaBannedRole.guilds
 
 
     override fun onMessageReceived(event: MessageReceivedEvent) {

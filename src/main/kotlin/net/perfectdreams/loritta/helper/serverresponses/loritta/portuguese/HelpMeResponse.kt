@@ -1,8 +1,8 @@
 package net.perfectdreams.loritta.helper.serverresponses.loritta.portuguese
 
 import net.perfectdreams.loritta.api.messages.LorittaReply
+import net.perfectdreams.loritta.helper.LorittaHelper
 import net.perfectdreams.loritta.helper.serverresponses.RegExResponse
-import net.perfectdreams.loritta.helper.utils.Constants
 import net.perfectdreams.loritta.helper.utils.Emotes
 import java.util.regex.Pattern
 
@@ -11,6 +11,8 @@ import java.util.regex.Pattern
  * a problem and need help with anything, telling them to mention the support
  */
 class HelpMeResponse : RegExResponse() {
+    private val english = LorittaHelper.config.guilds.english
+
     override val priority: Int
         get() = -1000
 
@@ -21,10 +23,10 @@ class HelpMeResponse : RegExResponse() {
     }
 
     override fun getResponse(message: String) =
-            if (!message.contains(Constants.PORTUGUESE_LORITTA_SUPPORT_ROLE_ID.toString())) {
+            if (!message.contains(english.roles.portugueseSupport.toString())) {
                 listOf(
                         LorittaReply(
-                                "Psiu! Se você está com uma dúvida, escreva a sua dúvida no chat e marque o cargo do <@&${Constants.PORTUGUESE_LORITTA_SUPPORT_ROLE_ID}>!",
+                                "Psiu! Se você está com uma dúvida, escreva a sua dúvida no chat e marque o cargo do <@&${english.roles.portugueseSupport}>!",
                                 Emotes.LORI_PAT
                         )
                 )
