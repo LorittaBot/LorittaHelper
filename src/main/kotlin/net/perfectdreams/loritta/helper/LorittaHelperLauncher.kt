@@ -23,7 +23,6 @@ object LorittaHelperLauncher {
 
                 copyFromJar("/helper.conf", "./helper.conf")
                 copyFromJar("/fan_arts.conf", "./fan_arts.conf")
-                copyFromJar("/loritta.conf", "./loritta.conf")
 
                 println("Please fill the helper.conf file with the necessary information!")
                 println("Retrieved fan_arts.conf and loritta.conf files from resources as well!")
@@ -33,24 +32,13 @@ object LorittaHelperLauncher {
             }
 
         val fanArtsConfig = loadConfigOrNull<FanArtsConfig>("./fan_arts.conf")
-        val lorittaConfig = loadConfigOrNull<LorittaConfig>("./loritta.conf")
 
         // Getting config of
         // Initializing Loritta Helper
         LorittaHelper(
             config,
-            fanArtsConfig,
-            lorittaConfig
+            fanArtsConfig
         ).start()
-    }
-
-    inline fun <reified T> loadConfig(path: String): T {
-        // Getting Loritta Helper config file
-        val lightbendConfig = ConfigFactory.parseFile(File(path))
-            .resolve()
-
-        // Parsing HOCON config
-        return Hocon.decodeFromConfig(lightbendConfig)
     }
 
     inline fun <reified T> loadConfigOrNull(path: String): T? {

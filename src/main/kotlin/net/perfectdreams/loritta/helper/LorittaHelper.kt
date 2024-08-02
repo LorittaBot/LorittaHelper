@@ -56,7 +56,7 @@ import java.util.concurrent.TimeUnit
  * An instance of Loritta Helper, that is initialized at [LorittaHelperLauncher]
  * With an custom [LorittaHelperConfig]
  */
-class LorittaHelper(val config: LorittaHelperConfig, val fanArtsConfig: FanArtsConfig?, val lorittaConfig: LorittaConfig?) {
+class LorittaHelper(val config: LorittaHelperConfig, val fanArtsConfig: FanArtsConfig?) {
     companion object {
         val http = HttpClient {
             expectSuccess = false
@@ -67,6 +67,7 @@ class LorittaHelper(val config: LorittaHelperConfig, val fanArtsConfig: FanArtsC
     }
 
     lateinit var jda: JDA
+    lateinit var ticketUtils: TicketUtils
 
     // We only need one single thread because <3 coroutines
     // As long we don't do any blocking tasks inside the executor, Loritta Helper will work fiiiine
@@ -76,21 +77,18 @@ class LorittaHelper(val config: LorittaHelperConfig, val fanArtsConfig: FanArtsC
 
     val timedTaskExecutor = Executors.newScheduledThreadPool(4)
     val databases = Databases(this)
-    var dailyCatcherManager: DailyCatcherManager? = null
-
-    var dailyShopWinners: DailyShopWinners? = null
-
-    val helperRest = RestClient(config.token)
-    val lorittaRest = lorittaConfig?.token?.let { RestClient(it) }
-
+    val helperRest = RestClient(config.helper.token)
+    val lorittaRest = config.loritta.token.let { RestClient(it) }
     val commandManager = UnleashedCommandManager(this)
     val interactivityManager = InteractivityManager()
-    lateinit var ticketUtils: TicketUtils
     val languageManager = LanguageManager(
         LorittaHelperKord::class,
         "en",
         "/languages/"
     )
+
+    var dailyCatcherManager: DailyCatcherManager? = null
+    var dailyShopWinners: DailyShopWinners? = null
 
     fun start() {
         languageManager.loadLanguagesAndContexts()
@@ -109,7 +107,7 @@ class LorittaHelper(val config: LorittaHelperConfig, val fanArtsConfig: FanArtsC
 
         // We only care about specific intents
         val jda = JDABuilder.createLight(
-            config.token,
+            config.helper.token,
             GatewayIntent.DIRECT_MESSAGES,
             GatewayIntent.MESSAGE_CONTENT,
             GatewayIntent.GUILD_MESSAGES,
@@ -159,7 +157,7 @@ class LorittaHelper(val config: LorittaHelperConfig, val fanArtsConfig: FanArtsC
         commandManager.register(TicketSenderCommand(this))
         commandManager.register(ReportMessageSenderCommand(this))
 
-        if (config.lorittaDatabase != null) {
+        if (config.loritta.database != null) {
             val dailyCatcher = DailyCatcherManager(this, jda)
 
             jda.addEventListener(BanSuspectedUsersOnReactionListener(this))
@@ -213,7 +211,6 @@ class LorittaHelper(val config: LorittaHelperConfig, val fanArtsConfig: FanArtsC
         LorittaHelperKord(
             config,
             fanArtsConfig,
-            lorittaConfig,
             this,
             jda
         ).start()
@@ -225,8 +222,8 @@ class LorittaHelper(val config: LorittaHelperConfig, val fanArtsConfig: FanArtsC
 
     suspend inline fun <reified T : LorittaDashboardRPCResponse> makeLorittaRPCRequest(rpc: LorittaDashboardRPCRequest): T {
         return Json.decodeFromString<T>(
-            http.post("${config.lorittaApi.url.removeSuffix("/")}/api/v1/rpc") {
-                header("Authorization", config.lorittaApi.token)
+            http.post("${config.loritta.api.url.removeSuffix("/")}/api/v1/rpc") {
+                header("Authorization", config.loritta.api.token)
                 setBody(Json.encodeToString<LorittaDashboardRPCRequest>(rpc))
             }.bodyAsText()
         )
