@@ -7,6 +7,7 @@ data class LorittaHelperConfig(
     val helper: InnerHelperConfig,
     val loritta: InnerLorittaConfig,
     val guilds: GuildHolderConfig,
+    val tasks: TaskHolderConfig,
     val secretKey: String,
     val pantufaUrl: String? = null
 ) {
@@ -82,7 +83,13 @@ data class LorittaHelperConfig(
             @Serializable
             data class CommunityRolesConfig(
                 val support: Long,
-                val firstFanArtManager: Long
+                val donator: Long,
+                val superDonator: Long,
+                val megaDonator: Long,
+                val advertisement: Long,
+                val firstFanArtManager: Long,
+                val level10: Long,
+                val drawing: Long
             )
         }
 
@@ -104,5 +111,16 @@ data class LorittaHelperConfig(
                 val englishSupport: Long
             )
         }
+    }
+
+    @Serializable
+    data class TaskHolderConfig(
+        val roleSynchronization: RoleSynchronizationConfig
+    ) {
+        @Serializable
+        data class RoleSynchronizationConfig(
+            val enabled: Boolean,
+            val rolesRemap: Map<String, Long>
+        )
     }
 }

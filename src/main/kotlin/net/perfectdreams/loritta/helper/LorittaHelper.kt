@@ -27,10 +27,8 @@ import net.perfectdreams.loritta.helper.utils.LorittaLandRoleSynchronizationTask
 import net.perfectdreams.loritta.helper.utils.StaffProcessedReportResult
 import net.perfectdreams.loritta.helper.utils.checkbannedusers.LorittaBannedRoleTask
 import net.perfectdreams.loritta.helper.utils.config.FanArtsConfig
-import net.perfectdreams.loritta.helper.utils.config.LorittaConfig
 import net.perfectdreams.loritta.helper.utils.config.LorittaHelperConfig
 import net.perfectdreams.loritta.helper.utils.dailycatcher.DailyCatcherManager
-import net.perfectdreams.loritta.helper.utils.dailycatcher.DailyCatcherTask
 import net.perfectdreams.loritta.helper.utils.dailyshopwinners.DailyShopWinners
 import net.perfectdreams.loritta.helper.utils.faqembed.FAQEmbedUpdaterEnglish
 import net.perfectdreams.loritta.helper.utils.faqembed.FAQEmbedUpdaterPortuguese
@@ -38,7 +36,6 @@ import net.perfectdreams.loritta.helper.utils.faqembed.FAQEmbedUpdaterSparklyPow
 import net.perfectdreams.loritta.helper.utils.faqembed.FAQEmbedUpdaterStaffFAQ
 import net.perfectdreams.loritta.helper.utils.generateserverreport.PendingReportsListTask
 import net.perfectdreams.loritta.helper.utils.tickets.TicketUtils
-import net.perfectdreams.loritta.helper.utils.tickets.TicketsCache
 import net.perfectdreams.loritta.helper.utils.topsonhos.TopSonhosRankingSender
 import net.perfectdreams.loritta.morenitta.interactions.InteractionsListener
 import net.perfectdreams.loritta.morenitta.interactions.InteractivityManager
@@ -204,7 +201,9 @@ class LorittaHelper(val config: LorittaHelperConfig, val fanArtsConfig: FanArtsC
         FAQEmbedUpdaterStaffFAQ(this, jda).start()
         TopSonhosRankingSender(this, jda).start()
 
-        timedTaskExecutor.scheduleWithFixedDelay(LorittaLandRoleSynchronizationTask(this, jda), 0, 15, TimeUnit.SECONDS)
+        if (config.tasks.roleSynchronization.enabled)
+            timedTaskExecutor.scheduleWithFixedDelay(LorittaLandRoleSynchronizationTask(this, jda), 0, 15, TimeUnit.SECONDS)
+
         timedTaskExecutor.scheduleWithFixedDelay(LorittaBannedRoleTask(this, jda), 0, 15, TimeUnit.SECONDS)
 
         // This is a hack!! TODO: Need to refactor to use JDA only
