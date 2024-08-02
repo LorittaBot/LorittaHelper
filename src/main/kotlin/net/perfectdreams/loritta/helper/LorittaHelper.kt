@@ -69,7 +69,7 @@ class LorittaHelper(val config: LorittaHelperConfig, val fanArtsConfig: FanArtsC
     lateinit var jda: JDA
 
     // We only need one single thread because <3 coroutines
-    // As long we don't do any blocking tasks inside of the executor, Loritta Helper will work fiiiine
+    // As long we don't do any blocking tasks inside the executor, Loritta Helper will work fiiiine
     // and will be very lightweight!
     val executor = Executors.newFixedThreadPool(8)
         .asCoroutineDispatcher()

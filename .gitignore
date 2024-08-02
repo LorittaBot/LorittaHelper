@@ -10,7 +10,11 @@ local.properties
 .loadpath
 .recommenders
 
+# Configuration files (ignore while selfhosting)
+fan_arts.conf
 helper.conf
+loritta.conf
+
 lib/
 
 # External tool builders
@@ -123,3 +127,8 @@ com_crashlytics_export_strings.xml
 crashlytics.properties
 crashlytics-build.properties
 fabric.properties
+
+# Don't ignore the configuration file in resources
+!/src/main/resources/helper.conf
+!/src/main/resources/fan_arts.conf
+!/src/main/resources/loritta.conf
