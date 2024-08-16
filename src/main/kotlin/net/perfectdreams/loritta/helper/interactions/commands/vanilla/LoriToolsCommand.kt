@@ -49,6 +49,10 @@ class LoriToolsCommand(val helper: LorittaHelper) : SlashCommandDeclarationWrapp
             executor = LoriBanExecutor(helper)
         }
 
+        subcommand("loribanpredefined", "Bane alguém de usar a Loritta com motivos pré-definidos") {
+            executor = LoriBanPredefinedExecutor(helper)
+        }
+
         subcommand("loriunban", "Desbane alguém de usar a Loritta") {
             executor = LoriUnbanExecutor(helper)
         }
@@ -66,37 +70,17 @@ class LoriToolsCommand(val helper: LorittaHelper) : SlashCommandDeclarationWrapp
         }
     }
 
-    class LoriBanExecutor(helper: LorittaHelper) : HelperExecutor(helper, PermissionLevel.ADMIN) {
-        companion object {
-            private val logger = KotlinLogging.logger {}
-        }
+    companion object {
+        private val logger = KotlinLogging.logger {}
 
-        inner class Options : ApplicationCommandOptions() {
-            val userIds = string("user_ids", "ID do usuário que você deseja banir (pode ser vários)")
-
-            val reason = string("reason", "Motivo que irá aparecer no ban")
-        }
-
-        override val options = Options()
-
-        override suspend fun executeHelper(context: ApplicationCommandContext, args: SlashCommandArguments) {
-            context.deferChannelMessage(true)
-
-            val userIds = args[options.userIds]
-                .split(" ")
-                .mapNotNull { it.toLongOrNull() }
-                .toSet()
-
-            if (userIds.isEmpty()) {
-                context.reply(true) {
-                    content = "Você não colocou um ID válido... <:lori_sob:556524143281963008>"
-                }
-                return
-            }
-
-            val reason = args[options.reason]
-
-            val results = mutableListOf<LoriBanExecutor.BanResult>()
+        suspend fun banUser(
+            helper: LorittaHelper,
+            context: ApplicationCommandContext,
+            userIds: Set<Long>,
+            reason: String,
+            expiresAt: Long?
+        ) {
+            val results = mutableListOf<BanResult>()
             transaction(helper.databases.lorittaDatabase) {
                 val currentBanStatuses = BannedUsers.select {
                     BannedUsers.userId inList userIds and
@@ -111,7 +95,7 @@ class LoriToolsCommand(val helper: LorittaHelper) : SlashCommandDeclarationWrapp
 
                 for (currentBanStatus in currentBanStatuses) {
                     results.add(
-                        LoriBanExecutor.UserIsAlreadyBannedResult(
+                        UserIsAlreadyBannedResult(
                             currentBanStatus[BannedUsers.userId],
                             currentBanStatus[BannedUsers.reason],
                             currentBanStatus[BannedUsers.expiresAt],
@@ -128,21 +112,20 @@ class LoriToolsCommand(val helper: LorittaHelper) : SlashCommandDeclarationWrapp
                         it[BannedUsers.userId] = userId
                         it[valid] = true
                         it[bannedAt] = System.currentTimeMillis()
-                        it[expiresAt] = null // TODO: Implement temp expiration
+                        it[BannedUsers.expiresAt] = expiresAt
                         it[BannedUsers.reason] = reason
                         it[bannedBy] = context.user.idLong
                     }
-                    results.add(LoriBanExecutor.UserBannedResult(banId.value, userId, reason))
+                    results.add(UserBannedResult(banId.value, userId, reason))
                 }
             }
 
             // Get all banned users and relay them to SparklyPower
-            val sparklyResults = mutableMapOf<LoriBanExecutor.UserBannedResult, BanSparklyPowerPlayerLorittaBannedResponse>()
+            val sparklyResults = mutableMapOf<UserBannedResult, BanSparklyPowerPlayerLorittaBannedResponse>()
             val pantufaUrl = helper.config.pantufaUrl
 
             if (pantufaUrl != null) {
-
-                for (result in results.filterIsInstance<LoriBanExecutor.UserBannedResult>()) {
+                for (result in results.filterIsInstance<UserBannedResult>()) {
                     try {
                         val response = Json.decodeFromString<PantufaRPCResponse>(
                             LorittaHelperKord.http.post(pantufaUrl.removeSuffix("/") + "/rpc") {
@@ -227,6 +210,95 @@ class LoriToolsCommand(val helper: LorittaHelper) : SlashCommandDeclarationWrapp
             val expiresAt: Long?,
             val bannedBy: Long?
         ) : BanResult()
+    }
+
+    class LoriBanExecutor(helper: LorittaHelper) : HelperExecutor(helper, PermissionLevel.ADMIN) {
+        inner class Options : ApplicationCommandOptions() {
+            val userIds = string("user_ids", "ID do usuário que você deseja banir (pode ser vários)")
+
+            val reason = string("reason", "Motivo que irá aparecer no ban")
+        }
+
+        override val options = Options()
+
+        override suspend fun executeHelper(context: ApplicationCommandContext, args: SlashCommandArguments) {
+            context.deferChannelMessage(true)
+
+            val userIds = args[options.userIds]
+                .split(" ")
+                .mapNotNull { it.toLongOrNull() }
+                .toSet()
+
+            if (userIds.isEmpty()) {
+                context.reply(true) {
+                    content = "Você não colocou um ID válido... <:lori_sob:556524143281963008>"
+                }
+                return
+            }
+
+            val reason = args[options.reason]
+
+            banUser(
+                helper,
+                context,
+                userIds,
+                reason,
+                null
+            )
+        }
+    }
+
+    class LoriBanPredefinedExecutor(helper: LorittaHelper) : HelperExecutor(helper, PermissionLevel.ADMIN) {
+        inner class Options : ApplicationCommandOptions() {
+            val userIds = string("user_ids", "ID do usuário que você deseja banir (pode ser vários)")
+            val predefinedReason = string("predefined_reason", "Motivo de ban pré-definido") {
+                for (predefinedReason in PredefinedBanReason.entries) {
+                    val choiceName = buildString {
+                        append(predefinedReason.fancyName + " (${predefinedReason.duration.toDays()} dias)")
+                    }
+                    choice(choiceName, predefinedReason.name)
+                }
+            }
+            val reason = optionalString("reason", "Motivo adicionado que irá aparecer no final do motivo")
+        }
+
+        override val options = Options()
+
+        override suspend fun executeHelper(context: ApplicationCommandContext, args: SlashCommandArguments) {
+            context.deferChannelMessage(true)
+
+            val userIds = args[options.userIds]
+                .split(" ")
+                .mapNotNull { it.toLongOrNull() }
+                .toSet()
+
+            if (userIds.isEmpty()) {
+                context.reply(true) {
+                    content = "Você não colocou um ID válido... <:lori_sob:556524143281963008>"
+                }
+                return
+            }
+
+            val predefinedReason = PredefinedBanReason.valueOf(args[options.predefinedReason])
+            val banReason = predefinedReason.banReason
+            val additionalReason = args[options.reason]
+
+            val reason = buildString {
+                append(banReason)
+                if (additionalReason != null) {
+                    append(" ")
+                    append(additionalReason)
+                }
+            }
+
+            banUser(
+                helper,
+                context,
+                userIds,
+                reason,
+                System.currentTimeMillis() + predefinedReason.duration.toMillis()
+            )
+        }
     }
 
     class LoriUnbanExecutor(helper: LorittaHelper) : HelperExecutor(helper, PermissionLevel.ADMIN) {
@@ -498,5 +570,33 @@ class LoriToolsCommand(val helper: LorittaHelper) : SlashCommandDeclarationWrapp
                 }
             }
         }
+    }
+
+    enum class PredefinedBanReason(val fancyName: String, val banReason: String, val duration: Duration) {
+        ASKING_TO_BE_BANNED(
+            "Pedir para ser banido",
+            "Pedir para ser banido de usar a Loritta",
+            Duration.ofDays(30)
+        ),
+        INSULT_LORITTA(
+            "Ofender a Loritta em servidores da DreamLand",
+            "Ofender/Xingar a Loritta em servidores da DreamLand",
+            Duration.ofDays(60)
+        ),
+        DAILY_ALT_ACCOUNTS(
+            "Usar múltiplas contas para farmar no daily",
+            "Criar Alt Accounts (Contas Fakes/Contas Secundárias) para farmar sonhos no daily, será que os avisos no website não foram suficientes para você? ¯\\_(ツ)_/¯",
+            Duration.ofDays(270)
+        ),
+        REAL_LIFE_TRADING_BUY(
+            "Comercialização de sonhos (Compra)",
+            "Comercialização de produtos com valor monetário real por sonhos (Compra)",
+            Duration.ofDays(180)
+        ),
+        REAL_LIFE_TRADING_SELL(
+            "Comercialização de sonhos (Venda)",
+            "Comercialização de produtos com valor monetário real por sonhos (Venda)",
+            Duration.ofDays(540)
+        )
     }
 }
