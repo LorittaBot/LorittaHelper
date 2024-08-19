@@ -21,7 +21,7 @@ class TicketsCache(
     suspend fun populateCache() {
         mutex.withLock {
             val guild = jda.getGuildById(guildId)!!
-            val channel = guild.getChannel<TextChannel>(channelId)!!
+            val channel = guild.getTextChannelById(channelId)!!
 
             // Populate cache with the active threads
             guild

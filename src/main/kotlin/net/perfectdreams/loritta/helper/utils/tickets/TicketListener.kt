@@ -29,7 +29,7 @@ class TicketListener(private val helper: LorittaHelper) {
             return
 
         val channelId = event.message.channel.idLong
-        val channel = helper.jda.getChannel<ThreadChannel>(channelId) ?: return
+        val channel = helper.jda.getThreadChannelById(channelId) ?: return
         if (channel.isPublic)
             return
 
