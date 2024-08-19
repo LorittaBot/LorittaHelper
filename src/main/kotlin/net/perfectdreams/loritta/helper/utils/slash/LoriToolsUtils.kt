@@ -2,6 +2,7 @@ package net.perfectdreams.loritta.helper.utils.slash
 
 import dev.minn.jda.ktx.messages.MessageCreate
 import net.dv8tion.jda.api.entities.User
+import net.dv8tion.jda.api.utils.TimeFormat
 import net.perfectdreams.loritta.helper.LorittaHelper
 import net.perfectdreams.loritta.helper.utils.Constants
 import net.perfectdreams.loritta.helper.utils.extensions.await
@@ -13,6 +14,7 @@ object LoriToolsUtils {
         moderator: User,
         punishedUserId: Long,
         title: String,
+        expiresAt: Long?,
         reason: String,
         color: Color
     ) {
@@ -32,6 +34,10 @@ object LoriToolsUtils {
                     this.title = "$punishedUserId | $title"
                     field("Motivo", reason, true)
                     this.color = color.rgb
+
+                    if (expiresAt != null) {
+                        field("Expira em", TimeFormat.DATE_TIME_LONG.format(expiresAt), true)
+                    }
 
                     if (punishedUser != null)
                         footer(

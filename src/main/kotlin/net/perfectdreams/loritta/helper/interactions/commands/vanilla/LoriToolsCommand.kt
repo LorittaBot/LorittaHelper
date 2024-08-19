@@ -171,6 +171,7 @@ class LoriToolsCommand(val helper: LorittaHelper) : SlashCommandDeclarationWrapp
                             context.user,
                             result.userId,
                             "Usuário banido de usar a Loritta",
+                            expiresAt,
                             reason,
                             Color(237, 66, 69)
                         )
@@ -354,6 +355,7 @@ class LoriToolsCommand(val helper: LorittaHelper) : SlashCommandDeclarationWrapp
                         context.user,
                         userId,
                         "Usuário desbanido de usar a Loritta",
+                        null,
                         reason,
                         Color(88, 101, 242)
                     )
@@ -433,6 +435,7 @@ class LoriToolsCommand(val helper: LorittaHelper) : SlashCommandDeclarationWrapp
                         context.user,
                         userId,
                         "Motivo do Ban Alterado",
+                        null,
                         reason,
                         Color(214, 0, 255)
                     )
