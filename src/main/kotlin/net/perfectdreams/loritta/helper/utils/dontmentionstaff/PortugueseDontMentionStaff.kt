@@ -1,11 +1,13 @@
 package net.perfectdreams.loritta.helper.utils.dontmentionstaff
 
 import net.perfectdreams.loritta.api.messages.LorittaReply
-import net.perfectdreams.loritta.helper.utils.Constants
+import net.perfectdreams.loritta.helper.utils.config.LorittaHelperConfig
 
-class PortugueseDontMentionStaff : DontMentionStaff() {
-    override val roleId = Constants.PORTUGUESE_LORITTA_SUPPORT_ROLE_ID
-    override val channelId = Constants.PORTUGUESE_SUPPORT_CHANNEL_ID
+class PortugueseDontMentionStaff(val config: LorittaHelperConfig) : DontMentionStaff() {
+    private val english = config.guilds.english
+
+    override val roleId = english.roles.portugueseSupport
+    override val channelId = english.channels.oldPortugueseSupport
 
     override fun getResponse() = listOf(
         LorittaReply(

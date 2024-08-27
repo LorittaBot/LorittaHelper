@@ -2,6 +2,7 @@ package net.perfectdreams.loritta.helper.serverresponses.loritta.portuguese
 
 import net.perfectdreams.loritta.api.messages.LorittaReply
 import net.perfectdreams.loritta.helper.serverresponses.QuickAnswerResponse
+import net.perfectdreams.loritta.helper.utils.config.LorittaHelperConfig
 
 class CanIExchangeSonhosForSomethingElseResponse : QuickAnswerResponse() {
     override fun getResponse(message: String) =

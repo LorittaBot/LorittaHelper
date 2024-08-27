@@ -1,11 +1,13 @@
 package net.perfectdreams.loritta.helper.serverresponses.loritta
 
+import net.perfectdreams.loritta.helper.LorittaHelper
 import net.perfectdreams.loritta.helper.serverresponses.loritta.portuguese.*
+import net.perfectdreams.loritta.helper.utils.config.LorittaHelperConfig
 
 /**
  * Class holding a list containing all Loritta Helper's automatic responses (Portuguese)
  */
-object PortugueseResponses {
+class PortugueseResponses(config: LorittaHelperConfig) {
     val responses = listOf(
         AddEmotesOnMessageResponse(),
         AddLoriResponse(),
@@ -19,7 +21,7 @@ object PortugueseResponses {
         DJLorittaResponse(),
         EmbedsArbitraryResponse(),
         EmbedsResponse(),
-        HelpMeResponse(),
+        HelpMeResponse(config),
         HowToUseCommandsResponse(),
         JoinLeaveResponse(),
         LanguageResponse(),
@@ -41,7 +43,7 @@ object PortugueseResponses {
         SparklyPowerInfoResponse(),
         StarboardResponse(),
         SugestoesResponse(),
-        ThirdPartyBotsResponse(),
+        ThirdPartyBotsResponse(config),
         TransferGarticosResponse(),
         ValorShipResponse(),
         VotarResponse(),

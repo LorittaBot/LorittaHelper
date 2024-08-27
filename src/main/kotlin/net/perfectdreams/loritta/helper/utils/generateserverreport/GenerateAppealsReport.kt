@@ -12,7 +12,6 @@ import kotlinx.serialization.json.long
 import mu.KotlinLogging
 import net.dv8tion.jda.api.EmbedBuilder
 import net.dv8tion.jda.api.entities.User
-import net.dv8tion.jda.api.entities.emoji.Emoji
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent
 import net.dv8tion.jda.api.requests.restaction.MessageCreateAction
 import net.dv8tion.jda.api.utils.FileUpload
@@ -26,9 +25,8 @@ import java.net.URL
 import java.time.Instant
 
 class GenerateAppealsReport(val m: LorittaHelper) {
-    companion object {
-        const val SERVER_APPEALS_CHANNEL_ID = 781872670781866054L
-    }
+    val community = m.config.guilds.community
+    val SERVER_APPEALS_CHANNEL_ID = community.channels.appeals
 
     private val logger = KotlinLogging.logger {}
 

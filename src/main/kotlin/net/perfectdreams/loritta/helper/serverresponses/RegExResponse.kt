@@ -1,5 +1,6 @@
 package net.perfectdreams.loritta.helper.serverresponses
 
+import net.perfectdreams.loritta.helper.LorittaHelper
 import java.util.regex.Pattern
 
 /**
