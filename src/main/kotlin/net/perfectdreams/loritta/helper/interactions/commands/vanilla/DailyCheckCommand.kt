@@ -67,12 +67,7 @@ class DailyCheckCommand(val helper: LorittaHelper) : SlashCommandDeclarationWrap
 
     inner class DailyCheckExecutor : LorittaSlashCommandExecutor() {
         inner class Options : ApplicationCommandOptions() {
-            init {
-                // Register 25 different users
-                repeat(25) {
-                    optionalUser("user${it + 1}", "Usuário para ver os dailies")
-                }
-            }
+            val userIds = string("user_ids", "ID do usuário que você deseja ver os dailies (pode ser vários)")
         }
 
         override val options = Options()
@@ -81,9 +76,12 @@ class DailyCheckCommand(val helper: LorittaHelper) : SlashCommandDeclarationWrap
             context.deferChannelMessage(true)
 
             // Because we did stuff in a... unconventional way, we will get all matched user arguments in a unconventional way: By getting all resolved objects!
-            val users = context.event.options.map { it.asUser }
+            val usersIds = args[options.userIds]
+                .split(" ")
+                .mapNotNull { it.toLongOrNull() }
+                .toSet()
 
-            if (users.isEmpty()) {
+            if (usersIds.isEmpty()) {
                 context.reply(true) {
                     content = "Nenhum usuário encontrado!"
                 }
@@ -96,12 +94,13 @@ class DailyCheckCommand(val helper: LorittaHelper) : SlashCommandDeclarationWrap
 
             val dailies = transaction(helper.databases.lorittaDatabase) {
                 Dailies.leftJoin(BrowserFingerprints).select {
-                    Dailies.receivedById inList users.map { it.idLong }
+                    Dailies.receivedById inList usersIds
                 }.orderBy(Dailies.id, SortOrder.DESC)
                     .toList()
             }
 
             val builder = StringBuilder()
+            val cachedUserData = mutableMapOf<Long, User>()
 
             for (daily in dailies) {
                 val whenTheTransactionHappened = Instant.ofEpochMilli(daily[Dailies.receivedAt])
@@ -116,7 +115,14 @@ class DailyCheckCommand(val helper: LorittaHelper) : SlashCommandDeclarationWrap
                     emote
                 }
 
-                val userData = users.find { it.idLong == daily[Dailies.receivedById] }
+                val userId = daily[Dailies.receivedById]
+                val userData = cachedUserData[userId] ?: try {
+                    val user = context.event.jda.retrieveUserById(userId).await()
+                    cachedUserData[userId] = user
+                    user
+                } catch (e: Exception) {
+                    null
+                }
 
                 builder.append("${userEmote} [${whenTheTransactionHappened.format(Constants.PRETTY_DATE_FORMAT)}] ${userData?.name} [${userData?.globalName}] (${daily[Dailies.receivedById]})")
                 builder.append("\n")
