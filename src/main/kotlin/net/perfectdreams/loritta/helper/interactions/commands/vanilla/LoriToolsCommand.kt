@@ -301,9 +301,9 @@ class LoriToolsCommand(val helper: LorittaHelper) : SlashCommandDeclarationWrapp
 
     class LoriUnbanExecutor(helper: LorittaHelper) : HelperExecutor(helper, PermissionLevel.ADMIN) {
         inner class Options : ApplicationCommandOptions() {
-            val userId = string("user_ids", "ID do usuário que você deseja desbanir")
+            val userIds = string("user_ids", "ID do usuário que você deseja desbanir (pode ser vários)")
 
-            val reason = string("reason", "Motivo que irá aparecer no ban")
+            val reason = string("reason", "Motivo que irá aparecer no unban")
         }
 
         override val options = Options()
@@ -311,7 +311,12 @@ class LoriToolsCommand(val helper: LorittaHelper) : SlashCommandDeclarationWrapp
         override suspend fun executeHelper(context: ApplicationCommandContext, args: SlashCommandArguments) {
             context.deferChannelMessage(true)
 
-            val userId = args[options.userId].toLongOrNull() ?: run {
+            val userIds = args[options.userIds]
+                .split(" ")
+                .mapNotNull { it.toLongOrNull() }
+                .toSet()
+
+            if (userIds.isEmpty()) {
                 context.reply(true) {
                     content = "Você não colocou um ID válido... <:lori_sob:556524143281963008>"
                 }
@@ -320,10 +325,11 @@ class LoriToolsCommand(val helper: LorittaHelper) : SlashCommandDeclarationWrapp
 
             val reason = args[options.reason]
 
-            val result = transaction(helper.databases.lorittaDatabase) {
+            val results = mutableListOf<UnbanResult>()
+            transaction(helper.databases.lorittaDatabase) {
                 // Checks if the user has any valid bans
-                BannedUsers.select {
-                    BannedUsers.userId eq userId and
+                val currentBanStatuses = BannedUsers.select {
+                    BannedUsers.userId inList userIds and
                             (BannedUsers.valid eq true) and
                             (
                                     BannedUsers.expiresAt.isNull()
@@ -331,46 +337,59 @@ class LoriToolsCommand(val helper: LorittaHelper) : SlashCommandDeclarationWrapp
                                             (BannedUsers.expiresAt.isNotNull() and (BannedUsers.expiresAt greaterEq System.currentTimeMillis())))
                 }
                     .orderBy(BannedUsers.bannedAt, SortOrder.DESC)
-                    .limit(1)
-                    .firstOrNull() ?: return@transaction LoriUnbanExecutor.UserIsNotBannedResult
+                    .toList()
 
-                val banId = BannedUsers.update({ BannedUsers.userId eq userId }) {
-                    it[BannedUsers.valid] = false
+                val bannedUsersIds = currentBanStatuses.map { it[BannedUsers.userId] }
+                val nonBannedUsers = userIds.filter { it !in bannedUsersIds }
+
+                for (userId in nonBannedUsers) {
+                    results.add(UserIsNotBannedResult(userId))
                 }
 
-                UserUnbannedResult
-            }
-
-            when (result) {
-                is UserUnbannedResult -> {
-                    context.reply(true) {
-                        content = "Usuário $userId (<@$userId>) foi desbanido com sucesso. Obrigada por ter corrigido a cagada de alguém... eu acho né... <:lori_coffee:727631176432484473>"
+                for (userId in bannedUsersIds) {
+                    val banId = BannedUsers.update({ BannedUsers.userId eq userId }) {
+                        it[BannedUsers.valid] = false
                     }
 
-                    LoriToolsUtils.logToSaddestOfTheSads(
-                        helper,
-                        context.user,
-                        userId,
-                        "Usuário desbanido de usar a Loritta",
-                        null,
-                        reason,
-                        Color(88, 101, 242)
-                    )
-
-                    try {
-                        helper.helperRest.guild.modifyGuildMember(
-                            Snowflake(helper.config.guilds.community.id),
-                            Snowflake(userId)
-                        ) {
-                            this.communicationDisabledUntil = null
-
-                            this.reason = "User was Loritta Unbanned!"
-                        }
-                    } catch (e: KtorRequestException) {} // Maybe they aren't on the server
+                    results.add(UserUnbannedResult(userId, reason))
                 }
-                is UserIsNotBannedResult -> {
-                    context.reply(true) {
-                        content = "O usuário $userId (<@$userId>) não está banido, bobão!"
+            }
+
+            for (result in results) {
+                when (result) {
+                    is UserUnbannedResult -> {
+                        context.reply(true) {
+                            content =
+                                "Usuário ${result.userId} (<@${result.userId}) foi desbanido com sucesso. Obrigada por ter corrigido a cagada de alguém... eu acho né... <:lori_coffee:727631176432484473>"
+                        }
+
+                        LoriToolsUtils.logToSaddestOfTheSads(
+                            helper,
+                            context.user,
+                            result.userId,
+                            "Usuário desbanido de usar a Loritta",
+                            null,
+                            result.reason,
+                            Color(88, 101, 242)
+                        )
+
+                        try {
+                            helper.helperRest.guild.modifyGuildMember(
+                                Snowflake(helper.config.guilds.community.id),
+                                Snowflake(result.userId)
+                            ) {
+                                this.communicationDisabledUntil = null
+
+                                this.reason = "User was Loritta Unbanned!"
+                            }
+                        } catch (e: KtorRequestException) {
+                        } // Maybe they aren't on the server
+                    }
+
+                    is UserIsNotBannedResult -> {
+                        context.reply(true) {
+                            content = "O usuário ${result.userId} (<@${result.userId}>) não está banido, bobão!"
+                        }
                     }
                 }
             }
@@ -378,9 +397,14 @@ class LoriToolsCommand(val helper: LorittaHelper) : SlashCommandDeclarationWrapp
 
         private sealed class UnbanResult
 
-        private object UserUnbannedResult : UnbanResult()
+        private class UserUnbannedResult(
+            val userId: Long,
+            val reason: String,
+        ) : UnbanResult()
 
-        private object UserIsNotBannedResult : UnbanResult()
+        private class UserIsNotBannedResult(
+            val userId: Long,
+        ) : UnbanResult()
     }
 
     class LoriBanRenameExecutor(helper: LorittaHelper) : HelperExecutor(helper, PermissionLevel.ADMIN) {
