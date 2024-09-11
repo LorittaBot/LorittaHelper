@@ -360,7 +360,7 @@ class LoriToolsCommand(val helper: LorittaHelper) : SlashCommandDeclarationWrapp
                     is UserUnbannedResult -> {
                         context.reply(true) {
                             content =
-                                "Usuário ${result.userId} (<@${result.userId}) foi desbanido com sucesso. Obrigada por ter corrigido a cagada de alguém... eu acho né... <:lori_coffee:727631176432484473>"
+                                "Usuário ${result.userId} (<@${result.userId}>) foi desbanido com sucesso. Obrigada por ter corrigido a cagada de alguém... eu acho né... <:lori_coffee:727631176432484473>"
                         }
 
                         LoriToolsUtils.logToSaddestOfTheSads(
