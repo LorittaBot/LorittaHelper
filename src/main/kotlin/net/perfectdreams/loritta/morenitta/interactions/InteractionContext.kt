@@ -2,8 +2,10 @@ package net.perfectdreams.loritta.morenitta.interactions
 
 import dev.minn.jda.ktx.coroutines.await
 import dev.minn.jda.ktx.messages.InlineMessage
+import dev.minn.jda.ktx.messages.MessageCreate
 import net.dv8tion.jda.api.entities.Guild
 import net.dv8tion.jda.api.entities.Member
+import net.dv8tion.jda.api.entities.Message
 import net.dv8tion.jda.api.interactions.InteractionHook
 import net.dv8tion.jda.api.interactions.callbacks.IReplyCallback
 import net.dv8tion.jda.api.utils.messages.MessageCreateBuilder
@@ -61,6 +63,14 @@ abstract class InteractionContext(
             wasInitiallyDeferredEphemerally = ephemeral
             InteractionMessage.InitialInteractionMessage(hook)
         }
+    }
+
+    suspend fun sendMessage(channelId: Long, block: suspend InlineMessage<*>.() -> Unit): Message? {
+        val builtMessage = MessageCreate {
+            block()
+        }
+
+        return this.loritta.jda.getTextChannelById(channelId)?.sendMessage(builtMessage)?.await()
     }
 
     suspend inline fun chunkedReply(ephemeral: Boolean, builder: ChunkedMessageBuilder.() -> Unit = {}) {

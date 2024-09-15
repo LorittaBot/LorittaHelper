@@ -132,3 +132,5 @@ fabric.properties
 !/src/main/resources/helper.conf
 !/src/main/resources/fan_arts.conf
 !/src/main/resources/loritta.conf
+
+top_sonhos.json
