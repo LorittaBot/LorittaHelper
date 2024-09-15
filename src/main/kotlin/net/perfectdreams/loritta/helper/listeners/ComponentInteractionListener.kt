@@ -133,16 +133,17 @@ class ComponentInteractionListener(val m: LorittaHelper) : ListenerAdapter() {
             // add role
             val role = event.guild!!.getRoleById(data)
 
-            val availableRoles = guild.colors
+            val availableRoles = guild.colors.map { event.guild!!.getRoleById(it.roleId.value.toLong()) }
 
-            val rolesToRemove = availableRoles.map { it.roleId }
+            // Remove other available roles that the user may have.
+            val rolesToBeRemoved = event.member!!.roles.filter { it in availableRoles }
 
-            // remove other roles that the user may have
-            val rolesToBeOverwritten = event.member!!.roles.filter { it.idLong in rolesToRemove.map { it.value.toLong() } }.toMutableSet()
+            rolesToBeRemoved.forEach {
+                event.guild!!.removeRoleFromMember(event.member!!, it).queue()
+            }
 
-            rolesToBeOverwritten.add(role)
-
-            event.guild!!.modifyMemberRoles(event.member!!, rolesToBeOverwritten).queue()
+            // Add the role that the member clicked on.
+            event.guild!!.addRoleToMember(event.member!!, role!!).queue()
 
             val builtMessage = MessageCreate {
                 val kordMessage = InteractionOrFollowupMessageCreateBuilder(true)
@@ -201,16 +202,16 @@ class ComponentInteractionListener(val m: LorittaHelper) : ListenerAdapter() {
             // add role
             val role = event.guild!!.getRoleById(data)
 
-            val availableRoles = guild.coolBadges
+            val availableRoles = guild.coolBadges.map { event.guild!!.getRoleById(it.roleId.value.toLong()) }
 
-            val rolesToRemove = availableRoles.map { it.roleId }
+            // Remove other available roles that the user may have
+            val rolesToBeRemoved = event.member!!.roles.filter { it in availableRoles }
 
-            // remove other roles that the user may have
-            val rolesToBeOverwritten = event.member!!.roles.filter { it.idLong in rolesToRemove.map { it.value.toLong() } }.toMutableSet()
+            rolesToBeRemoved.forEach {
+                event.guild!!.removeRoleFromMember(event.member!!, it).queue()
+            }
 
-            rolesToBeOverwritten.add(role)
-
-            event.guild!!.modifyMemberRoles(event.member!!, rolesToBeOverwritten).queue()
+            event.guild!!.addRoleToMember(event.member!!, role!!).queue()
 
             val builtMessage = MessageCreate {
                 val kordMessage = InteractionOrFollowupMessageCreateBuilder(true)
