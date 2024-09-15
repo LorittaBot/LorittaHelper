@@ -185,7 +185,7 @@ class ComponentInteractionListener(val m: LorittaHelper) : ListenerAdapter() {
             // remove role
             val role = event.guild!!.getRoleById(data)
 
-            event.member!!.roles.remove(role)
+            event.guild!!.removeRoleFromMember(event.member!!, role!!).queue()
 
             val builtMessage = MessageCreate {
                 val kordMessage = InteractionOrFollowupMessageCreateBuilder(true)
@@ -236,8 +236,6 @@ class ComponentInteractionListener(val m: LorittaHelper) : ListenerAdapter() {
             val role = event.guild!!.getRoleById(data)
 
             event.guild!!.removeRoleFromMember(event.member!!, role!!).queue()
-
-            event.member!!.roles.remove(role)
 
             val builtMessage = MessageCreate {
                 val kordMessage = InteractionOrFollowupMessageCreateBuilder(true)
