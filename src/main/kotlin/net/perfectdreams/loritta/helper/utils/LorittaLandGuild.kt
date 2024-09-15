@@ -18,5 +18,11 @@ enum class LorittaLandGuild(
         SparklyPowerRoleButtons.colors,
         SparklyPowerRoleButtons.coolBadges,
         SparklyPowerRoleButtons.notifications
-    )
+    );
+
+    companion object {
+        fun fromId(id: String): LorittaLandGuild {
+            return entries.first { it.name == id }
+        }
+    }
 }
