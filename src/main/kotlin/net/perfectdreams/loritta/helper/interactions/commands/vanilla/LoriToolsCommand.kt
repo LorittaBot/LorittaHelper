@@ -217,7 +217,7 @@ class LoriToolsCommand(val helper: LorittaHelper) : SlashCommandDeclarationWrapp
 
             val reason = string("reason", "Motivo que irá aparecer no ban")
 
-            val duration = optionalString("user_ids", "Por enquanto tempo o usuário está banido")
+            val duration = optionalString("duration", "Por enquanto tempo o usuário está banido")
         }
 
         override val options = Options()
