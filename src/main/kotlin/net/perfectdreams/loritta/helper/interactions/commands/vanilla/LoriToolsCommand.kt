@@ -416,7 +416,7 @@ class LoriToolsCommand(val helper: LorittaHelper) : SlashCommandDeclarationWrapp
 
     class LoriBanRenameExecutor(helper: LorittaHelper) : HelperExecutor(helper, PermissionLevel.ADMIN) {
         inner class Options : ApplicationCommandOptions() {
-            val userId = string("user_ids", "ID do usuário que você deseja desbanir")
+            val userIds = string("user_ids", "ID do usuário que você deseja renomear (pode ser vários)")
 
             val reason = string("reason", "Motivo que irá aparecer no ban")
         }
@@ -424,17 +424,25 @@ class LoriToolsCommand(val helper: LorittaHelper) : SlashCommandDeclarationWrapp
         override val options = Options()
 
         override suspend fun executeHelper(context: ApplicationCommandContext, args: SlashCommandArguments) {
-            val userId = args[options.userId].toLongOrNull() ?: run {
+            val userIds = args[options.userIds]
+                .split(" ")
+                .mapNotNull { it.toLongOrNull() }
+                .toSet()
+
+            if (userIds.isEmpty()) {
                 context.reply(true) {
                     content = "Você não colocou um ID válido... <:lori_sob:556524143281963008>"
                 }
                 return
             }
+
             val reason = args[options.reason]
 
-            val result = transaction(helper.databases.lorittaDatabase) {
-                val currentBanStatus = BannedUsers.select {
-                    BannedUsers.userId eq userId and
+            val results = transaction(helper.databases.lorittaDatabase) {
+                val results = mutableListOf<BanRenameResult>()
+
+                val currentBansStatus = BannedUsers.select {
+                    BannedUsers.userId inList userIds and
                             (BannedUsers.valid eq true) and
                             (
                                     BannedUsers.expiresAt.isNull()
@@ -442,35 +450,52 @@ class LoriToolsCommand(val helper: LorittaHelper) : SlashCommandDeclarationWrapp
                                             (BannedUsers.expiresAt.isNotNull() and (BannedUsers.expiresAt greaterEq System.currentTimeMillis())))
                 }
                     .orderBy(BannedUsers.bannedAt, SortOrder.DESC)
-                    .limit(1)
-                    .firstOrNull() ?: return@transaction LoriBanRenameExecutor.UserIsNotBannedResult
+                    .toList()
 
-                BannedUsers.update({ BannedUsers.id eq currentBanStatus[BannedUsers.id] }) {
-                    it[BannedUsers.reason] = reason
+                val banStatusIdsToBeUpdated = mutableListOf<Long>()
+
+                for (userId in userIds) {
+                    val banStatus = currentBansStatus.firstOrNull { it[BannedUsers.userId] == userId }
+                    if (banStatus != null) {
+                        banStatusIdsToBeUpdated.add(banStatus[BannedUsers.id].value)
+                        results.add(UserBanRenamedResult(banStatus[BannedUsers.userId]))
+                    } else {
+                        results.add(UserIsNotBannedResult(userId))
+                    }
                 }
 
-                return@transaction LoriBanRenameExecutor.UserBanRenamedResult
+                if (banStatusIdsToBeUpdated.isNotEmpty()) {
+                    BannedUsers.update({ BannedUsers.id inList banStatusIdsToBeUpdated }) {
+                        it[BannedUsers.reason] = reason
+                    }
+                }
+
+                results
             }
 
-            when (result) {
-                is UserBanRenamedResult -> {
-                    context.reply(true) {
-                        content = "Motivo do ban foi alterado! <:lori_heart:853052040425766923>"
+            for (result in results) {
+                when (result) {
+                    is UserBanRenamedResult -> {
+                        context.reply(true) {
+                            content = "Motivo do ban de ${result.userId} (<@${result.userId}>) foi alterado! <:lori_heart:853052040425766923>"
+                        }
+
+                        LoriToolsUtils.logToSaddestOfTheSads(
+                            helper,
+                            context.user,
+                            result.userId,
+                            "Motivo do Ban Alterado",
+                            null,
+                            reason,
+                            Color(214, 0, 255)
+                        )
                     }
 
-                    LoriToolsUtils.logToSaddestOfTheSads(
-                        helper,
-                        context.user,
-                        userId,
-                        "Motivo do Ban Alterado",
-                        null,
-                        reason,
-                        Color(214, 0, 255)
-                    )
-                }
-                is UserIsNotBannedResult -> {
-                    context.reply(true) {
-                        content = "O usuário $userId (<@$userId>) não está banido, então não dá para alterar o motivo do ban dele!"
+                    is UserIsNotBannedResult -> {
+                        context.reply(true) {
+                            content =
+                                "O usuário ${result.userId} (<@${result.userId}>) não está banido, então não dá para alterar o motivo do ban dele!"
+                        }
                     }
                 }
             }
@@ -478,9 +503,9 @@ class LoriToolsCommand(val helper: LorittaHelper) : SlashCommandDeclarationWrapp
 
         private sealed class BanRenameResult
 
-        private object UserIsNotBannedResult : BanRenameResult()
+        private data class UserIsNotBannedResult(val userId: Long) : BanRenameResult()
 
-        private object UserBanRenamedResult : BanRenameResult()
+        private data class UserBanRenamedResult(val userId: Long) : BanRenameResult()
     }
 
     class LoriEconomyStateExecutor(helper: LorittaHelper) : HelperExecutor(helper, PermissionLevel.ADMIN) {
