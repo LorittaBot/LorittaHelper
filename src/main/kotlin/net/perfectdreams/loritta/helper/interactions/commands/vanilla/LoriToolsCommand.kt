@@ -16,6 +16,7 @@ import net.perfectdreams.loritta.cinnamon.pudding.tables.BannedUsers
 import net.perfectdreams.loritta.helper.LorittaHelper
 import net.perfectdreams.loritta.helper.LorittaHelperKord
 import net.perfectdreams.loritta.helper.tables.EconomyState
+import net.perfectdreams.loritta.helper.utils.TimeUtils
 import net.perfectdreams.loritta.helper.utils.extensions.await
 import net.perfectdreams.loritta.helper.utils.slash.LoriToolsUtils
 import net.perfectdreams.loritta.helper.utils.slash.PermissionLevel
@@ -215,6 +216,8 @@ class LoriToolsCommand(val helper: LorittaHelper) : SlashCommandDeclarationWrapp
             val userIds = string("user_ids", "ID do usuário que você deseja banir (pode ser vários)")
 
             val reason = string("reason", "Motivo que irá aparecer no ban")
+
+            val duration = optionalString("user_ids", "Por enquanto tempo o usuário está banido")
         }
 
         override val options = Options()
@@ -235,13 +238,17 @@ class LoriToolsCommand(val helper: LorittaHelper) : SlashCommandDeclarationWrapp
             }
 
             val reason = args[options.reason]
+            val durationAsString = args[options.duration]
+            val duration = if (durationAsString != null) {
+               TimeUtils.convertToMillisRelativeToNow(durationAsString)
+            } else null
 
             banUser(
                 helper,
                 context,
                 userIds,
                 reason,
-                null
+                duration
             )
         }
     }
