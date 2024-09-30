@@ -226,6 +226,7 @@ class LoriToolsCommand(val helper: LorittaHelper) : SlashCommandDeclarationWrapp
             context.deferChannelMessage(true)
 
             val userIds = args[options.userIds]
+                .replace(",", "")
                 .split(" ")
                 .mapNotNull { it.toLongOrNull() }
                 .toSet()
@@ -273,6 +274,7 @@ class LoriToolsCommand(val helper: LorittaHelper) : SlashCommandDeclarationWrapp
             context.deferChannelMessage(true)
 
             val userIds = args[options.userIds]
+                .replace(",", "")
                 .split(" ")
                 .mapNotNull { it.toLongOrNull() }
                 .toSet()
@@ -319,6 +321,7 @@ class LoriToolsCommand(val helper: LorittaHelper) : SlashCommandDeclarationWrapp
             context.deferChannelMessage(true)
 
             val userIds = args[options.userIds]
+                .replace(",", "")
                 .split(" ")
                 .mapNotNull { it.toLongOrNull() }
                 .toSet()
@@ -425,6 +428,7 @@ class LoriToolsCommand(val helper: LorittaHelper) : SlashCommandDeclarationWrapp
 
         override suspend fun executeHelper(context: ApplicationCommandContext, args: SlashCommandArguments) {
             val userIds = args[options.userIds]
+                .replace(",", "")
                 .split(" ")
                 .mapNotNull { it.toLongOrNull() }
                 .toSet()
