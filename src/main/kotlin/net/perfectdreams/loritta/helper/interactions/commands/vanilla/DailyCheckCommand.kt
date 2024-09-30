@@ -77,6 +77,7 @@ class DailyCheckCommand(val helper: LorittaHelper) : SlashCommandDeclarationWrap
 
             // Because we did stuff in a... unconventional way, we will get all matched user arguments in a unconventional way: By getting all resolved objects!
             val usersIds = args[options.userIds]
+                .replace(", ", "")
                 .split(" ")
                 .mapNotNull { it.toLongOrNull() }
                 .toSet()
