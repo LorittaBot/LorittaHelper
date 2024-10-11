@@ -1,12 +1,11 @@
 package net.perfectdreams.loritta.helper.interactions.commands.vanilla
 
-import dev.kord.common.entity.Snowflake
-import dev.kord.rest.request.KtorRequestException
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
 import io.ktor.http.content.*
 import kotlinx.datetime.toKotlinInstant
+import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import mu.KotlinLogging
@@ -14,7 +13,6 @@ import net.dv8tion.jda.api.entities.Activity
 import net.dv8tion.jda.api.entities.UserSnowflake
 import net.perfectdreams.loritta.cinnamon.pudding.tables.BannedUsers
 import net.perfectdreams.loritta.helper.LorittaHelper
-import net.perfectdreams.loritta.helper.LorittaHelperKord
 import net.perfectdreams.loritta.helper.tables.EconomyState
 import net.perfectdreams.loritta.helper.utils.TimeUtils
 import net.perfectdreams.loritta.helper.utils.extensions.await
@@ -126,7 +124,7 @@ class LoriToolsCommand(val helper: LorittaHelper) : SlashCommandDeclarationWrapp
                 for (result in results.filterIsInstance<UserBannedResult>()) {
                     try {
                         val response = Json.decodeFromString<PantufaRPCResponse>(
-                            LorittaHelperKord.http.post(pantufaUrl.removeSuffix("/") + "/rpc") {
+                            LorittaHelper.http.post(pantufaUrl.removeSuffix("/") + "/rpc") {
                                 setBody(
                                     TextContent(
                                         Json.encodeToString<PantufaRPCRequest>(
@@ -383,17 +381,19 @@ class LoriToolsCommand(val helper: LorittaHelper) : SlashCommandDeclarationWrapp
                             Color(88, 101, 242)
                         )
 
-                        try {
-                            helper.helperRest.guild.modifyGuildMember(
-                                Snowflake(helper.config.guilds.community.id),
-                                Snowflake(result.userId)
-                            ) {
-                                this.communicationDisabledUntil = null
-
-                                this.reason = "User was Loritta Unbanned!"
+                        for (guild in helper.jda.guilds) {
+                            val member = guild.getMemberById(result.userId)
+                            if (member != null) {
+                                try {
+                                    member.removeTimeout()
+                                        .reason("User was Loritta Unbanned!")
+                                        .await()
+                                } catch (e: Exception) {
+                                    // Maybe they aren't on the server or we don't have permission...
+                                    logger.warn(e) { "Something went wrong while trying to remove member $member timeout from $guild! Ignorining..." }
+                                }
                             }
-                        } catch (e: KtorRequestException) {
-                        } // Maybe they aren't on the server
+                        }
                     }
 
                     is UserIsNotBannedResult -> {

@@ -1,14 +1,14 @@
 package net.perfectdreams.loritta.helper.utils.buttonroles
 
-import dev.kord.common.entity.DiscordPartialEmoji
-import dev.kord.common.entity.Snowflake
-import net.perfectdreams.discordinteraktions.common.builder.message.MessageBuilder
+import dev.minn.jda.ktx.messages.InlineMessage
+import net.dv8tion.jda.api.entities.emoji.CustomEmoji
+import net.dv8tion.jda.api.entities.emoji.Emoji
 
 data class RoleButton(
     val label: String?,
-    val roleId: Snowflake,
-    val emoji: DiscordPartialEmoji,
+    val roleId: Long,
+    val emoji: CustomEmoji,
     val description: String?,
-    val messageReceive: MessageBuilder.(RoleButton) -> (Unit),
-    val messageRemove: MessageBuilder.(RoleButton) -> (Unit)
+    val messageReceive: InlineMessage<*>.(RoleButton) -> (Unit),
+    val messageRemove: InlineMessage<*>.(RoleButton) -> (Unit)
 )

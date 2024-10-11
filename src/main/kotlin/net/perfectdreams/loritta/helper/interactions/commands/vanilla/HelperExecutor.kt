@@ -1,7 +1,6 @@
 package net.perfectdreams.loritta.helper.interactions.commands.vanilla
 
 import net.perfectdreams.loritta.helper.LorittaHelper
-import net.perfectdreams.loritta.helper.utils.galleryofdreams.commands.GalleryOfDreamsUtils
 import net.perfectdreams.loritta.helper.utils.slash.PermissionLevel
 import net.perfectdreams.loritta.morenitta.interactions.commands.ApplicationCommandContext
 import net.perfectdreams.loritta.morenitta.interactions.commands.LorittaSlashCommandExecutor
@@ -26,7 +25,9 @@ abstract class HelperExecutor(
             332650495522897920L, // SparklyPower Staff
         )
 
-        val FAN_ARTS_MANAGER_ROLES = GalleryOfDreamsUtils.ALLOWED_ROLES.map { it.value.toLong() }
+        val FAN_ARTS_MANAGER_ROLES = listOf(
+            924649809103691786L
+        )
     }
 
     override suspend fun execute(context: ApplicationCommandContext, args: SlashCommandArguments) {

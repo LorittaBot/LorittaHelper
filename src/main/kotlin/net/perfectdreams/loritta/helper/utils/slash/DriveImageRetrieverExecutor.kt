@@ -1,12 +1,14 @@
 package net.perfectdreams.loritta.helper.utils.slash
 
-import net.perfectdreams.discordinteraktions.common.commands.ApplicationCommandContext
-import net.perfectdreams.discordinteraktions.common.commands.options.ApplicationCommandOptions
-import net.perfectdreams.discordinteraktions.common.commands.options.SlashCommandArguments
-import net.perfectdreams.loritta.helper.LorittaHelperKord
+import net.dv8tion.jda.api.utils.FileUpload
+import net.perfectdreams.loritta.morenitta.interactions.commands.ApplicationCommandContext
+import net.perfectdreams.loritta.morenitta.interactions.commands.options.ApplicationCommandOptions
+import net.perfectdreams.loritta.morenitta.interactions.commands.SlashCommandArguments
+import net.perfectdreams.loritta.helper.LorittaHelper
+import net.perfectdreams.loritta.helper.interactions.commands.vanilla.HelperExecutor
 import net.perfectdreams.loritta.helper.utils.GoogleDriveUtils
 
-class DriveImageRetrieverExecutor(helper: LorittaHelperKord) : HelperSlashExecutor(helper, PermissionLevel.HELPER) {
+class DriveImageRetrieverExecutor(helper: LorittaHelper) : HelperExecutor(helper, PermissionLevel.HELPER) {
     inner class Options : ApplicationCommandOptions() {
         val imageLink = string("drivelink", "Um link de uma imagem no GDrive")
     }
@@ -17,22 +19,22 @@ class DriveImageRetrieverExecutor(helper: LorittaHelperKord) : HelperSlashExecut
         val url = args[options.imageLink]
 
         if (url.startsWith("https://drive.google.com/file/d/")) {
-            context.deferChannelMessage()
+            context.deferChannelMessage(false)
 
             val imageData = GoogleDriveUtils.downloadGoogleDriveUrl(url.removeSuffix("/view").substringAfterLast("/"))
 
             if (imageData != null) {
-                context.sendMessage {
+                context.reply(false) {
                     content = "(─‿‿─)"
-                    addFile("image.png", imageData.inputStream())
+                    files += FileUpload.fromData(imageData.inputStream(), "image.png")
                 }
             } else {
-                context.sendMessage {
+                context.reply(false) {
                     content = "Link inválido da imagem do Drive"
                 }
             }
         } else {
-            context.sendMessage {
+            context.reply(false) {
                 content = "Link inválido da imagem do Drive"
             }
         }

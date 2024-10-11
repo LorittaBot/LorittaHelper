@@ -2,16 +2,17 @@ package net.perfectdreams.loritta.helper.utils.slash
 
 import net.dv8tion.jda.api.EmbedBuilder
 import net.dv8tion.jda.api.JDA
-import net.perfectdreams.discordinteraktions.common.commands.ApplicationCommandContext
-import net.perfectdreams.discordinteraktions.common.commands.options.ApplicationCommandOptions
-import net.perfectdreams.discordinteraktions.common.commands.options.SlashCommandArguments
-import net.perfectdreams.loritta.helper.LorittaHelperKord
+import net.perfectdreams.loritta.morenitta.interactions.commands.ApplicationCommandContext
+import net.perfectdreams.loritta.morenitta.interactions.commands.options.ApplicationCommandOptions
+import net.perfectdreams.loritta.morenitta.interactions.commands.SlashCommandArguments
+import net.perfectdreams.loritta.helper.LorittaHelper
+import net.perfectdreams.loritta.helper.interactions.commands.vanilla.HelperExecutor
 import net.perfectdreams.loritta.helper.utils.Emotes
 import net.perfectdreams.loritta.helper.utils.extensions.await
 import net.perfectdreams.loritta.helper.utils.generateserverreport.GenerateAppealsReport
 import net.perfectdreams.loritta.helper.utils.generateserverreport.GenerateServerReport
 
-class AttachDenyReasonExecutor(helper: LorittaHelperKord, val jda: JDA) : HelperSlashExecutor(helper, PermissionLevel.HELPER) {
+class AttachDenyReasonExecutor(helper: LorittaHelper, val jda: JDA) : HelperExecutor(helper, PermissionLevel.HELPER) {
     inner class Options : ApplicationCommandOptions() {
         val messageUrl = string("message_url", "Link da Mensagem")
 
@@ -37,7 +38,7 @@ class AttachDenyReasonExecutor(helper: LorittaHelperKord, val jda: JDA) : Helper
 
         try {
             if (channelId.toLong() !in VALID_CHANNEL_IDS) {
-                context.sendMessage {
+                context.reply(false) {
                     content= "${Emotes.LORI_THINKING} **|** O canal deste link não corresponde ao <#790308357713559582>, suspeito isso aí."
                 }
                 return
@@ -52,14 +53,14 @@ class AttachDenyReasonExecutor(helper: LorittaHelperKord, val jda: JDA) : Helper
             }
 
             if (message == null) {
-                context.sendMessage {
+                context.reply(false) {
                     content = "${Emotes.LORI_SOB} **|** Talvez isto não seja uma mensagem válida..."
                 }
                 return
             }
 
             if (message.author.idLong != jda.selfUser.idLong) {
-                context.sendMessage {
+                context.reply(false) {
                     content = "${Emotes.LORI_THINKING} **|** Essa mensagem não é uma mensagem enviada por mim!"
                 }
                 return
@@ -68,7 +69,7 @@ class AttachDenyReasonExecutor(helper: LorittaHelperKord, val jda: JDA) : Helper
             val firstEmbed = message.embeds.firstOrNull()
 
             if (firstEmbed == null) {
-                context.sendMessage {
+                context.reply(false) {
                     content = "${Emotes.LORI_THINKING} **|** Essa mensagem não tem embed"
                 }
                 return
@@ -91,7 +92,7 @@ class AttachDenyReasonExecutor(helper: LorittaHelperKord, val jda: JDA) : Helper
                 }
 
                 message.editMessageEmbeds(builder.build()).queue()
-                context.sendMessage {
+                context.reply(false) {
                     content = """${Emotes.LORI_PAT} **|** Motivo atualizado com sucesso!
                         |${Emotes.LORI_OWO} **|** Motivo anterior: `${oldReason}`
                         """.trimMargin()
@@ -104,11 +105,11 @@ class AttachDenyReasonExecutor(helper: LorittaHelperKord, val jda: JDA) : Helper
 
             message.editMessageEmbeds(builder.build()).queue()
 
-            context.sendMessage {
+            context.reply(false) {
                 content = "${Emotes.LORI_COFFEE} **|** Motivo atualizado com sucesso!"
             }
         } catch (e: Exception) {
-            context.sendMessage {
+            context.reply(false) {
                 content = "Alguma coisa deu errada ao processar este comando! Desculpe pelo ocorrido..."
             }
         }

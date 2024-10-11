@@ -1,20 +1,19 @@
 package net.perfectdreams.loritta.helper.utils.slash
 
-import net.perfectdreams.discordinteraktions.common.builder.message.embed
-import net.perfectdreams.discordinteraktions.common.commands.ApplicationCommandContext
-import net.perfectdreams.discordinteraktions.common.commands.options.ApplicationCommandOptions
-import net.perfectdreams.discordinteraktions.common.commands.options.SlashCommandArguments
-import net.perfectdreams.discordinteraktions.common.utils.footer
-import net.perfectdreams.loritta.helper.LorittaHelperKord
+import net.perfectdreams.loritta.helper.LorittaHelper
+import net.perfectdreams.loritta.helper.interactions.commands.vanilla.HelperExecutor
 import net.perfectdreams.loritta.helper.listeners.ApproveReportsOnReactionListener
 import net.perfectdreams.loritta.helper.tables.StaffProcessedReports
 import net.perfectdreams.loritta.helper.utils.StaffProcessedReportResult
+import net.perfectdreams.loritta.morenitta.interactions.commands.ApplicationCommandContext
+import net.perfectdreams.loritta.morenitta.interactions.commands.SlashCommandArguments
+import net.perfectdreams.loritta.morenitta.interactions.commands.options.ApplicationCommandOptions
 import org.jetbrains.exposed.sql.count
 import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.transactions.transaction
 import java.time.Instant
 
-class StatsReportsExecutor(helper: LorittaHelperKord) : HelperSlashExecutor(helper, PermissionLevel.HELPER) {
+class StatsReportsExecutor(helper: LorittaHelper) : HelperExecutor(helper, PermissionLevel.HELPER) {
     inner class Options : ApplicationCommandOptions() {
         val filter = optionalString("filter", "Filtro de data") {
             choice("Últimos 7 dias", "7")
@@ -56,7 +55,7 @@ class StatsReportsExecutor(helper: LorittaHelperKord) : HelperSlashExecutor(help
         }
 
 
-        context.sendMessage {
+        context.reply(false) {
             embed {
                 title = "Ranking de Denúncias Processadas"
 

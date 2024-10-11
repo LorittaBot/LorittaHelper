@@ -1,9 +1,11 @@
 package net.perfectdreams.loritta.helper.utils.slash
 
-import net.perfectdreams.discordinteraktions.common.commands.ApplicationCommandContext
-import net.perfectdreams.discordinteraktions.common.commands.options.ApplicationCommandOptions
-import net.perfectdreams.discordinteraktions.common.commands.options.SlashCommandArguments
-import net.perfectdreams.loritta.helper.LorittaHelperKord
+import net.dv8tion.jda.api.utils.FileUpload
+import net.perfectdreams.loritta.morenitta.interactions.commands.ApplicationCommandContext
+import net.perfectdreams.loritta.morenitta.interactions.commands.options.ApplicationCommandOptions
+import net.perfectdreams.loritta.morenitta.interactions.commands.SlashCommandArguments
+import net.perfectdreams.loritta.helper.LorittaHelper
+import net.perfectdreams.loritta.helper.interactions.commands.vanilla.HelperExecutor
 import net.perfectdreams.loritta.helper.tables.SonhosTransaction
 import net.perfectdreams.loritta.helper.utils.Constants
 import org.jetbrains.exposed.sql.SortOrder
@@ -12,7 +14,7 @@ import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.transactions.transaction
 import java.time.Instant
 
-class AllTransactionsExecutor(helper: LorittaHelperKord) : HelperSlashExecutor(helper, PermissionLevel.HELPER) {
+class AllTransactionsExecutor(helper: LorittaHelper) : HelperExecutor(helper, PermissionLevel.HELPER) {
     inner class Options : ApplicationCommandOptions() {
         val user = user("user", "Usuário para ver as transações")
     }
@@ -20,13 +22,13 @@ class AllTransactionsExecutor(helper: LorittaHelperKord) : HelperSlashExecutor(h
     override val options = Options()
 
     override suspend fun executeHelper(context: ApplicationCommandContext, args: SlashCommandArguments) {
-        context.deferChannelMessage()
+        context.deferChannelMessage(false)
 
-        val user = args[options.user]
+        val user = args[options.user].user
 
         val transactions = transaction(helper.databases.lorittaDatabase) {
             SonhosTransaction.select {
-                (SonhosTransaction.receivedBy eq user.id.value.toLong()) or (SonhosTransaction.givenBy eq user.id.value.toLong())
+                (SonhosTransaction.receivedBy eq user.idLong) or (SonhosTransaction.givenBy eq user.idLong)
             }.orderBy(SonhosTransaction.id, SortOrder.DESC)
                 .toList()
         }
@@ -41,8 +43,8 @@ class AllTransactionsExecutor(helper: LorittaHelperKord) : HelperSlashExecutor(h
             builder.append("\n")
         }
 
-        context.sendMessage {
-            addFile("transactions.txt", builder.toString().toByteArray(Charsets.UTF_8).inputStream())
+        context.reply(false) {
+            files += FileUpload.fromData(builder.toString().toByteArray(Charsets.UTF_8).inputStream(), "transactions.txt")
         }
     }
 }

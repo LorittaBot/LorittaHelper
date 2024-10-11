@@ -1,10 +1,11 @@
 package net.perfectdreams.loritta.helper
 
-import dev.kord.rest.service.RestClient
 import io.ktor.client.*
+import io.ktor.client.plugins.*
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import kotlinx.coroutines.*
+import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import mu.KotlinLogging
@@ -14,7 +15,9 @@ import net.dv8tion.jda.api.entities.Activity
 import net.dv8tion.jda.api.requests.GatewayIntent
 import net.dv8tion.jda.api.utils.MemberCachePolicy
 import net.perfectdreams.exposedpowerutils.sql.createOrUpdatePostgreSQLEnum
+import net.perfectdreams.galleryofdreams.client.GalleryOfDreamsClient
 import net.perfectdreams.loritta.helper.interactions.commands.vanilla.*
+import net.perfectdreams.loritta.helper.interactions.commands.vanilla.ButtonRoleSenderCommand
 import net.perfectdreams.loritta.helper.listeners.*
 import net.perfectdreams.loritta.helper.network.Databases
 import net.perfectdreams.loritta.helper.tables.SelectedResponsesLog
@@ -34,6 +37,7 @@ import net.perfectdreams.loritta.helper.utils.faqembed.FAQEmbedUpdaterPortuguese
 import net.perfectdreams.loritta.helper.utils.faqembed.FAQEmbedUpdaterSparklyPower
 import net.perfectdreams.loritta.helper.utils.faqembed.FAQEmbedUpdaterStaffFAQ
 import net.perfectdreams.loritta.helper.utils.generateserverreport.PendingReportsListTask
+import net.perfectdreams.loritta.helper.utils.slash.declarations.*
 import net.perfectdreams.loritta.helper.utils.tickets.TicketUtils
 import net.perfectdreams.loritta.helper.utils.topsonhos.TopSonhosRankingSender
 import net.perfectdreams.loritta.morenitta.interactions.InteractionsListener
@@ -73,18 +77,34 @@ class LorittaHelper(val config: LorittaHelperConfig, val fanArtsConfig: FanArtsC
 
     val timedTaskExecutor = Executors.newScheduledThreadPool(4)
     val databases = Databases(this)
-    val helperRest = RestClient(config.helper.token)
-    val lorittaRest = config.loritta.token.let { RestClient(it) }
     val commandManager = UnleashedCommandManager(this)
     val interactivityManager = InteractivityManager()
     val languageManager = LanguageManager(
-        LorittaHelperKord::class,
+        LorittaHelper::class,
         "en",
         "/languages/"
     )
 
     var dailyCatcherManager: DailyCatcherManager? = null
     var dailyShopWinners: DailyShopWinners? = null
+
+    val galleryOfDreamsClient = fanArtsConfig?.let {
+        GalleryOfDreamsClient(
+            "https://fanarts.perfectdreams.net/",
+            it.token,
+            HttpClient {
+                expectSuccess = false
+                followRedirects = false
+
+                // Because some fan arts are gigantic
+                install(HttpTimeout) {
+                    socketTimeoutMillis = 120_000
+                    connectTimeoutMillis = 120_000
+                    requestTimeoutMillis = 120_000
+                }
+            }
+        )
+    }
 
     fun start() {
         languageManager.loadLanguagesAndContexts()
@@ -154,6 +174,56 @@ class LorittaHelper(val config: LorittaHelperConfig, val fanArtsConfig: FanArtsC
         commandManager.register(ReportMessageSenderCommand(this))
         commandManager.register(ButtonRoleSenderCommand(this))
 
+        commandManager.register(CheckCommandsCommand(this))
+
+        commandManager.register(DailyCatcherCheckCommand(this))
+        commandManager.register(PendingScarletCommand(this, jda))
+        commandManager.register(PendingReportsCommand(this, jda))
+        commandManager.register(IPLocationCommand(this))
+        commandManager.register(AttachDenyReasonCommand(this, jda))
+        commandManager.register(AllTransactionsCommand(this))
+        commandManager.register(DirectDiscordCdnMessageCommand(this))
+
+        // ===[ BUTTON ROLES ]===
+        commandManager.register(ButtonRoleSenderCommand(this))
+        // commandManager.register(RoleToggleButtonExecutor(this))
+        // commandManager.register(RoleCoolBadgeButtonExecutor(this))
+        // commandManager.register(RoleColorButtonExecutor(this))
+
+        // ===[ TICKETS ]===
+        commandManager.register(DriveImageRetrieverCommand(this))
+
+        // ===[ REPORTS ]===
+        // commandManager.register(ShowUserIdExecutor(this))
+        // commandManager.register(ShowFilesExecutor(this))
+
+        // ===[ STATS ]===
+        commandManager.register(StatsCommand(this))
+
+        if (galleryOfDreamsClient != null) {
+            // ===[ FAN ARTS ]===
+            // commandManager.register(GalleryOfDreamsSlashCommand(this, galleryOfDreamsClient))
+
+            // commandManager.register(AddFanArtToGalleryMessageCommand(this, galleryOfDreamsClient))
+
+            // commandManager.register(AddFanArtToGalleryButtonExecutor(this, galleryOfDreamsClient))
+
+            // commandManager.register(AddFanArtSelectAttachmentSelectMenuExecutor(this, galleryOfDreamsClient))
+
+            // commandManager.register(AddFanArtSelectBadgesSelectMenuExecutor(this, galleryOfDreamsClient))
+
+            // commandManager.register(PatchFanArtOnGalleryButtonExecutor(this, galleryOfDreamsClient))
+
+            // commandManager.register(PatchFanArtSelectBadgesSelectMenuExecutor(this, galleryOfDreamsClient))
+        }
+
+        // TODO: Fix this!
+        /* if (lorittaRest != null) {
+            commandManager.register(RetrieveMessageCommand(this, lorittaRest))
+
+            commandManager.register(ServerMembersCommand(this, lorittaRest))
+        } */
+        
         if (config.loritta.database != null) {
             val dailyCatcher = DailyCatcherManager(this, jda)
 
@@ -206,14 +276,6 @@ class LorittaHelper(val config: LorittaHelperConfig, val fanArtsConfig: FanArtsC
 
         if (config.tasks.lorittaBannedRole.enabled)
             timedTaskExecutor.scheduleWithFixedDelay(LorittaBannedRoleTask(this, jda), 0, 15, TimeUnit.SECONDS)
-
-        // This is a hack!! TODO: Need to refactor to use JDA only
-        LorittaHelperKord(
-            config,
-            fanArtsConfig,
-            this,
-            jda
-        ).start()
     }
 
     fun launch(block: suspend CoroutineScope.() -> Unit) = GlobalScope.launch(executor) {

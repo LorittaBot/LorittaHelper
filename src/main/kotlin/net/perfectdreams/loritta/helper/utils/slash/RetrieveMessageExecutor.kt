@@ -1,16 +1,13 @@
 package net.perfectdreams.loritta.helper.utils.slash
 
-import dev.kord.common.entity.Snowflake
-import dev.kord.rest.json.JsonErrorCode
-import dev.kord.rest.request.KtorRequestException
-import dev.kord.rest.service.RestClient
-import net.perfectdreams.discordinteraktions.common.commands.ApplicationCommandContext
-import net.perfectdreams.discordinteraktions.common.commands.options.ApplicationCommandOptions
-import net.perfectdreams.discordinteraktions.common.commands.options.SlashCommandArguments
-import net.perfectdreams.loritta.helper.LorittaHelperKord
+import net.perfectdreams.loritta.morenitta.interactions.commands.ApplicationCommandContext
+import net.perfectdreams.loritta.morenitta.interactions.commands.options.ApplicationCommandOptions
+import net.perfectdreams.loritta.morenitta.interactions.commands.SlashCommandArguments
+import net.perfectdreams.loritta.helper.LorittaHelper
+import net.perfectdreams.loritta.helper.interactions.commands.vanilla.HelperExecutor
 import net.perfectdreams.sequins.text.StringUtils
 
-class RetrieveMessageExecutor(helper: LorittaHelperKord, val rest: RestClient) : HelperSlashExecutor(helper, PermissionLevel.HELPER) {
+class RetrieveMessageExecutor(helper: LorittaHelper/* , val rest: RestClient */) : HelperExecutor(helper, PermissionLevel.HELPER) {
     inner class Options : ApplicationCommandOptions() {
         val messageUrl = string("message_url", "Link da Mensagem")
     }
@@ -18,7 +15,7 @@ class RetrieveMessageExecutor(helper: LorittaHelperKord, val rest: RestClient) :
     override val options = Options()
 
     override suspend fun executeHelper(context: ApplicationCommandContext, args: SlashCommandArguments) {
-        val messageUrl = args[options.messageUrl]
+        /* val messageUrl = args[options.messageUrl]
 
         val split = messageUrl.split("/")
         val length = split.size
@@ -28,8 +25,8 @@ class RetrieveMessageExecutor(helper: LorittaHelperKord, val rest: RestClient) :
 
         try {
             val message = rest.channel.getMessage(
-                Snowflake(channelId),
-                Snowflake(messageId)
+                channelId,
+                messageId
             )
 
             val builder = StringBuilder()
@@ -51,7 +48,7 @@ class RetrieveMessageExecutor(helper: LorittaHelperKord, val rest: RestClient) :
             )
 
             if (message.content.length < 2000) {
-                context.sendMessage {
+                context.reply(false) {
                     content = builder.append("""
                                 |```
                                 |${message.content}
@@ -60,14 +57,14 @@ class RetrieveMessageExecutor(helper: LorittaHelperKord, val rest: RestClient) :
                     ).toString()
                 }
             } else {
-                context.sendMessage {
+                context.reply(false) {
                     content = builder.toString()
                 }
 
                 val chunkedLines = StringUtils.chunkedLines(message.content.split("\n"), 2000, true)
 
                 for (line in chunkedLines) {
-                    context.sendMessage {
+                    context.reply(false) {
                         content = """
                             |```
                             |${line}
@@ -78,22 +75,22 @@ class RetrieveMessageExecutor(helper: LorittaHelperKord, val rest: RestClient) :
             }
         } catch (e: KtorRequestException) {
             if (e.error?.code == JsonErrorCode.UnknownChannel) {
-                context.sendMessage {
+                context.reply(false) {
                     content = "Canal desconhecido!"
                 }
             }
 
             if (e.error?.code == JsonErrorCode.UnknownMessage) {
-                context.sendMessage {
+                context.reply(false) {
                     content = "Mensagem desconhecida!"
                 }
             }
 
             if (e.error?.code == JsonErrorCode.MissingAccess) {
-                context.sendMessage {
+                context.reply(false) {
                     content = "Não tenho permissão pra ver mensagens deste canal!"
                 }
             }
-        }
+        } */
     }
 }

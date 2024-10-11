@@ -1,14 +1,13 @@
 package net.perfectdreams.loritta.helper.utils.slash.declarations
 
-import net.perfectdreams.discordinteraktions.common.commands.SlashCommandDeclarationWrapper
-import net.perfectdreams.discordinteraktions.common.commands.slashCommand
+import net.perfectdreams.loritta.morenitta.interactions.commands.SlashCommandDeclarationWrapper
+import net.perfectdreams.loritta.morenitta.interactions.commands.slashCommand
 import net.perfectdreams.loritta.helper.LorittaHelper
-import net.perfectdreams.loritta.helper.LorittaHelperKord
 import net.perfectdreams.loritta.helper.utils.slash.StatsReportsExecutor
 import net.perfectdreams.loritta.helper.utils.slash.StatsTicketsExecutor
 
-class StatsCommand(val helper: LorittaHelperKord) : SlashCommandDeclarationWrapper {
-    override fun declaration() = slashCommand(
+class StatsCommand(val helper: LorittaHelper) : SlashCommandDeclarationWrapper {
+    override fun command() = slashCommand(
         "stats",
         "Estatísticas para a equipe da garotinha mais fof do mundo")
     {

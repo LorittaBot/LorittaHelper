@@ -5,9 +5,7 @@ import net.dv8tion.jda.api.interactions.components.buttons.ButtonStyle
 import net.perfectdreams.loritta.helper.LorittaHelper
 import net.perfectdreams.loritta.helper.utils.LorittaLandGuild
 import net.perfectdreams.loritta.helper.utils.buttonroles.LorittaCommunityRoleButtons
-import net.perfectdreams.loritta.helper.utils.buttonroles.LorittaCommunityRoleButtons.partialEmojiAsMention
 import net.perfectdreams.loritta.helper.utils.buttonroles.SparklyPowerRoleButtons
-import net.perfectdreams.loritta.helper.utils.extensions.toJDA
 import net.perfectdreams.loritta.morenitta.interactions.commands.*
 import net.perfectdreams.loritta.morenitta.interactions.commands.options.ApplicationCommandOptions
 import net.perfectdreams.loritta.morenitta.interactions.styled
@@ -62,7 +60,7 @@ class ButtonRoleSenderCommand(val loritta: LorittaHelper) : SlashCommandDeclarat
                                     Button.of(
                                         ButtonStyle.SECONDARY,
                                         "color-${LorittaLandGuild.LORITTA_COMMUNITY}:${it.roleId}",
-                                        it.emoji.toJDA()
+                                        it.emoji
                                     )
                                 }
                             )
@@ -91,7 +89,7 @@ class ButtonRoleSenderCommand(val loritta: LorittaHelper) : SlashCommandDeclarat
                                     Button.of(
                                         ButtonStyle.SECONDARY,
                                         "badge-${LorittaLandGuild.LORITTA_COMMUNITY}:${it.roleId}",
-                                        it.emoji.toJDA()
+                                        it.emoji
                                     )
                                 }
                             )
@@ -107,7 +105,7 @@ class ButtonRoleSenderCommand(val loritta: LorittaHelper) : SlashCommandDeclarat
                             description = buildString {
                                 for (roleInfo in LorittaCommunityRoleButtons.notifications) {
                                     append("**")
-                                    append(partialEmojiAsMention(roleInfo.emoji))
+                                    append(roleInfo.emoji.asMention)
                                     append(' ')
                                     append(roleInfo.label)
                                     append(':')
@@ -128,7 +126,7 @@ class ButtonRoleSenderCommand(val loritta: LorittaHelper) : SlashCommandDeclarat
                                     ButtonStyle.SECONDARY,
                                     "notif-${LorittaLandGuild.LORITTA_COMMUNITY}:${it.roleId}",
                                     it.label,
-                                    it.emoji.toJDA()
+                                    it.emoji
                                 )
                             }
                         )
@@ -157,7 +155,7 @@ class ButtonRoleSenderCommand(val loritta: LorittaHelper) : SlashCommandDeclarat
                                     Button.of(
                                         ButtonStyle.SECONDARY,
                                         "color-${LorittaLandGuild.SPARKLYPOWER}:${it.roleId}",
-                                        it.emoji.toJDA()
+                                        it.emoji
                                     )
                                 }
                             )
@@ -186,7 +184,7 @@ class ButtonRoleSenderCommand(val loritta: LorittaHelper) : SlashCommandDeclarat
                                     Button.of(
                                         ButtonStyle.SECONDARY,
                                         "badge-${LorittaLandGuild.SPARKLYPOWER}:${it.roleId}",
-                                        it.emoji.toJDA()
+                                        it.emoji
                                     )
                                 }
                             )
@@ -202,7 +200,7 @@ class ButtonRoleSenderCommand(val loritta: LorittaHelper) : SlashCommandDeclarat
                             description = buildString {
                                 for (roleInfo in SparklyPowerRoleButtons.notifications) {
                                     append("**")
-                                    append(partialEmojiAsMention(roleInfo.emoji))
+                                    append(roleInfo.emoji.asMention)
                                     append(' ')
                                     append(roleInfo.label)
                                     append(':')
@@ -223,7 +221,7 @@ class ButtonRoleSenderCommand(val loritta: LorittaHelper) : SlashCommandDeclarat
                                     ButtonStyle.SECONDARY,
                                     "notif-${LorittaLandGuild.SPARKLYPOWER}:${it.roleId}",
                                     it.label,
-                                    it.emoji.toJDA()
+                                    it.emoji
                                 )
                             }
                         )

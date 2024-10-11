@@ -189,10 +189,7 @@ class GenerateServerReport(val m: LorittaHelper) {
                     components.add(
                         Button.of(
                             ButtonStyle.SECONDARY,
-                            // Hack because this ain't Discord InteraKTions (yet!)
-                            "show_files:${ComponentDataUtils.encode(
-                                ShowFilesData()
-                            )}",
+                            "show_files",
                             "Mostrar arquivos",
                             Emoji.fromUnicode("\uD83D\uDDBC️")
                         )
@@ -204,9 +201,7 @@ class GenerateServerReport(val m: LorittaHelper) {
                         Button.of(
                             ButtonStyle.SECONDARY,
                             // Hack because this ain't Discord InteraKTions (yet!)
-                            "show_uid:${ComponentDataUtils.encode(
-                                ShowUserIdData(reportMessage.reportedUserId)
-                            )}",
+                            "show_uid:${reportMessage.reportedUserId}",
                             "Mostrar ID",
                             Emoji.fromUnicode("\uD83D\uDCDD")
                         )

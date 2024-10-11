@@ -20,7 +20,6 @@ version = "1.0.0"
 repositories {
     mavenLocal()
     mavenCentral()
-    maven("https://oss.sonatype.org/content/repositories/snapshots") // Required by Kord
     maven("https://repo.perfectdreams.net/")
     maven("https://jitpack.io")
     maven("https://m2.dv8tion.net/releases")
@@ -45,11 +44,6 @@ dependencies {
     // Pudding
     api("net.perfectdreams.loritta.cinnamon.pudding:client:0.0.2-SNAPSHOT")
     implementation("net.perfectdreams.loritta:loritta-serializable-commons-jvm:2023-20230809.225634-4")
-
-    // Remove this after everything has been migrated to InteraKTions Unleashed
-    implementation("dev.kord:kord-rest:0.8.x-lori-fork-20221109.172532-14")
-    implementation("dev.kord:kord-gateway:0.8.x-lori-fork-20221109.172532-15")
-    implementation("dev.kord:kord-core:0.8.x-lori-fork-20221109.172532-14")
 
     // Used to serialize state on components
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-protobuf:1.3.2")

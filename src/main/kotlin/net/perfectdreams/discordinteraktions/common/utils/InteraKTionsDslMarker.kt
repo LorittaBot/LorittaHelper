@@ -1,4 +1,0 @@
-package net.perfectdreams.discordinteraktions.common.utils
-
-@DslMarker
-annotation class InteraKTionsDslMarker

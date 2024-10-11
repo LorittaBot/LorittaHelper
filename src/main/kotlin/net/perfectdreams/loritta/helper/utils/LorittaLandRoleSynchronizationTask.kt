@@ -5,6 +5,7 @@ import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
 import kotlinx.coroutines.runBlocking
+import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 import mu.KotlinLogging
 import net.dv8tion.jda.api.JDA
@@ -178,11 +179,11 @@ class LorittaLandRoleSynchronizationTask(val m: LorittaHelper, val jda: JDA) : R
                 }
             } else {
                 // Remove custom colors
-                val filter = roles.filter { userRole -> LorittaCommunityRoleButtons.colors.any { it.roleId.value.toLong() == userRole.idLong } }
+                val filter = roles.filter { userRole -> LorittaCommunityRoleButtons.colors.any { it.roleId == userRole.idLong } }
                 roles.removeAll(filter)
 
                 // Remove custom badges if the user is not Level 10
-                val coolBadgesFilter = roles.filter { userRole -> LorittaCommunityRoleButtons.coolBadges.any { it.roleId.value.toLong() == userRole.idLong } }
+                val coolBadgesFilter = roles.filter { userRole -> LorittaCommunityRoleButtons.coolBadges.any { it.roleId == userRole.idLong } }
                 if (!member.roles.any { it.idLong == community.roles.level10 })
                     roles.removeAll(coolBadgesFilter)
 

@@ -4,17 +4,17 @@ import mu.KotlinLogging
 import net.dv8tion.jda.api.JDA
 import net.dv8tion.jda.api.entities.Message
 import net.dv8tion.jda.api.entities.emoji.Emoji
-import net.perfectdreams.discordinteraktions.common.commands.ApplicationCommandContext
-import net.perfectdreams.discordinteraktions.common.commands.options.ApplicationCommandOptions
-import net.perfectdreams.discordinteraktions.common.commands.options.ChoiceableCommandOptionBuilder
-import net.perfectdreams.discordinteraktions.common.commands.options.SlashCommandArguments
-import net.perfectdreams.loritta.helper.LorittaHelperKord
+import net.perfectdreams.loritta.morenitta.interactions.commands.ApplicationCommandContext
+import net.perfectdreams.loritta.morenitta.interactions.commands.options.ApplicationCommandOptions
+import net.perfectdreams.loritta.morenitta.interactions.commands.SlashCommandArguments
+import net.perfectdreams.loritta.helper.LorittaHelper
+import net.perfectdreams.loritta.helper.interactions.commands.vanilla.HelperExecutor
 import net.perfectdreams.loritta.helper.utils.dailycatcher.DailyCatcherManager
 import net.perfectdreams.loritta.helper.utils.dailycatcher.SuspiciousLevel
 import net.perfectdreams.loritta.helper.utils.extensions.await
 import net.perfectdreams.sequins.text.StringUtils
 
-class PendingScarletExecutor(helper: LorittaHelperKord, val jda: JDA) : HelperSlashExecutor(helper, PermissionLevel.ADMIN) {
+class PendingScarletExecutor(helper: LorittaHelper, val jda: JDA) : HelperExecutor(helper, PermissionLevel.ADMIN) {
     private val logger = KotlinLogging.logger {}
 
     inner class Options : ApplicationCommandOptions() {
@@ -28,7 +28,7 @@ class PendingScarletExecutor(helper: LorittaHelperKord, val jda: JDA) : HelperSl
     override val options = Options()
 
     override suspend fun executeHelper(context: ApplicationCommandContext, args: SlashCommandArguments) {
-        context.deferChannelMessage()
+        context.deferChannelMessage(false)
 
         val channel = jda.getTextChannelById(DailyCatcherManager.SCARLET_POLICE_CHANNEL_ID) ?: return
         val filterBy = args[options.type].let { SuspiciousLevel.valueOf(it) }
@@ -113,7 +113,7 @@ class PendingScarletExecutor(helper: LorittaHelperKord, val jda: JDA) : HelperSl
 
             // And now send them!
             for (line in chunkedLines) {
-                context.sendMessage {
+                context.reply(false) {
                     content = line
                 }
             }

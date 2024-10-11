@@ -1,9 +1,11 @@
 package net.perfectdreams.loritta.helper.listeners
 
 import com.github.benmanes.caffeine.cache.Caffeine
-import dev.kord.common.entity.Snowflake
 import dev.minn.jda.ktx.messages.MessageCreate
+import dev.minn.jda.ktx.messages.MessageEdit
 import io.ktor.http.*
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.withLock
 import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.put
@@ -14,8 +16,7 @@ import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent
 import net.dv8tion.jda.api.events.interaction.component.StringSelectInteractionEvent
 import net.dv8tion.jda.api.hooks.ListenerAdapter
 import net.dv8tion.jda.api.interactions.components.buttons.Button
-import net.perfectdreams.discordinteraktions.common.builder.message.MessageBuilder
-import net.perfectdreams.discordinteraktions.common.builder.message.create.InteractionOrFollowupMessageCreateBuilder
+import net.dv8tion.jda.api.utils.FileUpload
 import net.perfectdreams.loritta.api.messages.LorittaReply
 import net.perfectdreams.loritta.cinnamon.pudding.tables.BannedUsers
 import net.perfectdreams.loritta.helper.LorittaHelper
@@ -23,6 +24,7 @@ import net.perfectdreams.loritta.helper.i18n.I18nKeysData
 import net.perfectdreams.loritta.helper.tables.SelectedResponsesLog
 import net.perfectdreams.loritta.helper.tables.StartedSupportSolicitations
 import net.perfectdreams.loritta.helper.utils.ComponentDataUtils
+import net.perfectdreams.loritta.helper.utils.GoogleDriveUtils
 import net.perfectdreams.loritta.helper.utils.LorittaLandGuild
 import net.perfectdreams.loritta.helper.utils.buttonroles.GuildRolesData
 import net.perfectdreams.loritta.helper.utils.extensions.await
@@ -51,7 +53,9 @@ class ComponentInteractionListener(val m: LorittaHelper) : ListenerAdapter() {
 
     override fun onButtonInteraction(event: ButtonInteractionEvent) {
         logger.info { "Button Interaction ${event.user.idLong} - ${event.channel.idLong}: ${event.componentId}" }
-        val (id, data) = event.componentId.split(":")
+        val componentId = event.componentId
+        val id = componentId.substringBefore(":")
+        val data = componentId.substringAfter(":", missingDelimiterValue = "")
 
         if (id.contains("-")) {
             val split = id.split("-")
@@ -86,18 +90,55 @@ class ComponentInteractionListener(val m: LorittaHelper) : ListenerAdapter() {
             "open_report_form" -> {
                 openReportForm(event)
             }
+
+            "show_files" -> {
+                GlobalScope.launch {
+                    val defer = event.deferReply(true).await()
+                    val imagesField = event.message.embeds.first().fields.first { it.name == "Imagens" }
+
+                    val images = imagesField.value!!.split("\n")
+                        .mapNotNull {
+                            GoogleDriveUtils.downloadGoogleDriveUrl(
+                                it.removeSuffix("/view").substringAfterLast("/")
+                            )
+                        }
+
+                    if (images.isEmpty()) {
+                        defer.editOriginal(
+                            MessageEdit {
+                                content = "Nenhuma imagem encontrada..."
+                            }
+                        ).await()
+                        return@launch
+                    }
+
+                    defer.editOriginal(
+                        MessageEdit {
+                            for ((index, image) in images.withIndex()) {
+                                files += FileUpload.fromData(image.inputStream(), "image${index}.png")
+                            }
+                        }
+                    ).await()
+                }
+            }
+
+            "show_uid" -> {
+                GlobalScope.launch {
+                    event.reply(data).setEphemeral(false).await()
+                }
+            }
         }
     }
 
     private fun giveColorRole(event: ButtonInteractionEvent, data: String, guild: LorittaLandGuild) {
         val guildRolesData = mapOf(
             LorittaLandGuild.LORITTA_COMMUNITY to GuildRolesData(
-                Snowflake(297732013006389252L),
-                listOf(Snowflake(364201981016801281L))
+                297732013006389252L,
+                listOf(364201981016801281L)
             ),
             LorittaLandGuild.SPARKLYPOWER to GuildRolesData(
-                Snowflake(320248230917046282L),
-                listOf(Snowflake(332652664544428044L))
+                320248230917046282L,
+                listOf(332652664544428044L)
             )
         )
 
@@ -106,12 +147,12 @@ class ComponentInteractionListener(val m: LorittaHelper) : ListenerAdapter() {
 
         val guildData = guildRolesData[guild]!!
 
-        if (!event.member!!.roles.any { it.id in guildData.allowedRoles.map { it.value.toString() } }) {
-            event.interaction.reply("Para você pegar uma cor personalizada, você precisa ser ${guildData.allowedRoles.joinToString(" ou ") { "<@&${it.value}>" }}!").setEphemeral(true).queue()
+        if (!event.member!!.roles.any { it.idLong in guildData.allowedRoles }) {
+            event.interaction.reply("Para você pegar uma cor personalizada, você precisa ser ${guildData.allowedRoles.joinToString(" ou ") { "<@&${it}>" }}!").setEphemeral(true).queue()
             return
         }
 
-        val roleInformation = guild.colors.first { it.roleId == Snowflake(data.toLong()) }
+        val roleInformation = guild.colors.first { it.roleId == data.toLong() }
 
         if (data in event.member!!.roles.map { it.id }) {
             // remove role
@@ -120,12 +161,7 @@ class ComponentInteractionListener(val m: LorittaHelper) : ListenerAdapter() {
             event.guild!!.removeRoleFromMember(event.member!!, role!!).queue()
 
             val builtMessage = MessageCreate {
-                val kordMessage = InteractionOrFollowupMessageCreateBuilder(true)
-                    .apply {
-                        roleInformation.messageRemove.invoke(this, roleInformation)
-                    }
-
-                content = kordMessage.content
+                roleInformation.messageRemove.invoke(this, roleInformation)
             }
 
             event.interaction.reply(builtMessage).setEphemeral(true).queue()
@@ -133,7 +169,7 @@ class ComponentInteractionListener(val m: LorittaHelper) : ListenerAdapter() {
             // add role
             val role = event.guild!!.getRoleById(data)
 
-            val availableRoles = guild.colors.map { event.guild!!.getRoleById(it.roleId.value.toLong()) }
+            val availableRoles = guild.colors.map { event.guild!!.getRoleById(it.roleId) }
 
             // Remove other available roles that the user may have.
             val rolesToBeRemoved = event.member!!.roles.filter { it in availableRoles }
@@ -146,12 +182,7 @@ class ComponentInteractionListener(val m: LorittaHelper) : ListenerAdapter() {
             event.guild!!.addRoleToMember(event.member!!, role!!).queue()
 
             val builtMessage = MessageCreate {
-                val kordMessage = InteractionOrFollowupMessageCreateBuilder(true)
-                    .apply {
-                        roleInformation.messageReceive.invoke(this, roleInformation)
-                    }
-
-                content = kordMessage.content
+                roleInformation.messageReceive.invoke(this, roleInformation)
             }
 
             event.interaction.reply(builtMessage).setEphemeral(true).queue()
@@ -164,37 +195,32 @@ class ComponentInteractionListener(val m: LorittaHelper) : ListenerAdapter() {
 
         val guildRolesData = mapOf(
             LorittaLandGuild.LORITTA_COMMUNITY to GuildRolesData(
-                Snowflake(297732013006389252L),
-                listOf(Snowflake(364201981016801281L), Snowflake(655132411566358548L))
+                297732013006389252L,
+                listOf(364201981016801281L, 655132411566358548L)
             ),
             LorittaLandGuild.SPARKLYPOWER to GuildRolesData(
-                Snowflake(320248230917046282L),
-                listOf(Snowflake(332652664544428044L), Snowflake(834625069321551892L))
+                320248230917046282L,
+                listOf(332652664544428044L, 834625069321551892L)
             )
         )
 
         val guildData = guildRolesData[guild]!!
 
-        if (!event.member!!.roles.any { Snowflake(it.idLong) in guildData.allowedRoles}) {
-            event.interaction.reply("Para você pegar um ícone personalizado, você precisa ser ${guildData.allowedRoles.joinToString(" ou ") { "<@&${it.value}>" }}!").setEphemeral(true).queue()
+        if (!event.member!!.roles.any { it.idLong in guildData.allowedRoles }) {
+            event.interaction.reply("Para você pegar um ícone personalizado, você precisa ser ${guildData.allowedRoles.joinToString(" ou ") { "<@&${it}>" }}!").setEphemeral(true).queue()
             return
         }
 
-        val roleInformation = guild.coolBadges.first { it.roleId == Snowflake(data.toLong()) }
+        val roleInformation = guild.coolBadges.first { it.roleId == data.toLong() }
 
-        if (Snowflake(data.toLong()) in event.member!!.roles.map { Snowflake(it.idLong) }) {
+        if (data.toLong() in event.member!!.roles.map { it.idLong }) {
             // remove role
             val role = event.guild!!.getRoleById(data)
 
             event.guild!!.removeRoleFromMember(event.member!!, role!!).queue()
 
             val builtMessage = MessageCreate {
-                val kordMessage = InteractionOrFollowupMessageCreateBuilder(true)
-                    .apply {
-                        roleInformation.messageRemove.invoke(this, roleInformation)
-                    }
-
-                content = kordMessage.content
+                roleInformation.messageRemove.invoke(this, roleInformation)
             }
 
             event.interaction.reply(builtMessage).setEphemeral(true).queue()
@@ -202,7 +228,7 @@ class ComponentInteractionListener(val m: LorittaHelper) : ListenerAdapter() {
             // add role
             val role = event.guild!!.getRoleById(data)
 
-            val availableRoles = guild.coolBadges.map { event.guild!!.getRoleById(it.roleId.value.toLong()) }
+            val availableRoles = guild.coolBadges.map { event.guild!!.getRoleById(it.roleId) }
 
             // Remove other available roles that the user may have
             val rolesToBeRemoved = event.member!!.roles.filter { it in availableRoles }
@@ -214,12 +240,7 @@ class ComponentInteractionListener(val m: LorittaHelper) : ListenerAdapter() {
             event.guild!!.addRoleToMember(event.member!!, role!!).queue()
 
             val builtMessage = MessageCreate {
-                val kordMessage = InteractionOrFollowupMessageCreateBuilder(true)
-                    .apply {
-                        roleInformation.messageReceive.invoke(this, roleInformation)
-                    }
-
-                content = kordMessage.content
+                roleInformation.messageReceive.invoke(this, roleInformation)
             }
 
             event.interaction.reply(builtMessage).setEphemeral(true).queue()
@@ -230,21 +251,16 @@ class ComponentInteractionListener(val m: LorittaHelper) : ListenerAdapter() {
         if (!event.isFromGuild)
             return
 
-        val roleInformation = guild.notifications.first { it.roleId == Snowflake(data.toLong()) }
+        val roleInformation = guild.notifications.first { it.roleId == data.toLong() }
 
-        if (Snowflake(data.toLong()) in event.member!!.roles.map { Snowflake(it.idLong) }) {
+        if (data.toLong() in event.member!!.roles.map { it.idLong }) {
             // remove role
             val role = event.guild!!.getRoleById(data)
 
             event.guild!!.removeRoleFromMember(event.member!!, role!!).queue()
 
             val builtMessage = MessageCreate {
-                val kordMessage = InteractionOrFollowupMessageCreateBuilder(true)
-                    .apply {
-                        roleInformation.messageRemove.invoke(this, roleInformation)
-                    }
-
-                content = kordMessage.content
+                roleInformation.messageRemove.invoke(this, roleInformation)
             }
 
             event.interaction.reply(builtMessage).setEphemeral(true).queue()
@@ -255,12 +271,7 @@ class ComponentInteractionListener(val m: LorittaHelper) : ListenerAdapter() {
             event.guild!!.addRoleToMember(event.member!!, role!!).queue()
 
             val builtMessage = MessageCreate {
-                val kordMessage = InteractionOrFollowupMessageCreateBuilder(true)
-                    .apply {
-                        roleInformation.messageReceive.invoke(this, roleInformation)
-                    }
-
-                content = kordMessage.content
+                roleInformation.messageReceive.invoke(this, roleInformation)
             }
 
             event.interaction.reply(builtMessage).setEphemeral(true).queue()

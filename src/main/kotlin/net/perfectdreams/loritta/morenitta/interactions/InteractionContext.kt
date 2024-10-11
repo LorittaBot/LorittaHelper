@@ -73,39 +73,6 @@ abstract class InteractionContext(
         return this.loritta.jda.getTextChannelById(channelId)?.sendMessage(builtMessage)?.await()
     }
 
-    suspend inline fun chunkedReply(ephemeral: Boolean, builder: ChunkedMessageBuilder.() -> Unit = {}) {
-        // Chunked replies are replies that are chunked into multiple messages, depending on the length of the content
-        val createdMessage = ChunkedMessageBuilder().apply(builder)
-
-        val currentContent = StringBuilder()
-        val messages = mutableListOf<InlineMessage<MessageCreateData>.() -> Unit>()
-
-        for (line in createdMessage.content.lines()) {
-            if (currentContent.length + line.length + 1 > 2000) {
-                // Because this is a callback and that is invoked later, we need to do this at this way
-                val currentContentAsString = currentContent.toString()
-                messages.add {
-                    this.content = currentContentAsString
-                }
-                currentContent.clear()
-            }
-            currentContent.append(line)
-            currentContent.append("\n")
-        }
-
-        if (currentContent.isNotEmpty()) {
-            val currentContentAsString = currentContent.toString()
-            messages.add {
-                this.content = currentContentAsString
-            }
-        }
-
-        // TODO: Append anything else (components, files, etc) to the last message
-        for (message in messages) {
-            reply(ephemeral, message)
-        }
-    }
-
     /**
      * Throws a [CommandException] with a specific message [block], halting command execution
      *

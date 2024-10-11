@@ -5,17 +5,18 @@ import net.dv8tion.jda.api.JDA
 import net.dv8tion.jda.api.entities.Message
 import net.dv8tion.jda.api.entities.MessageType
 import net.dv8tion.jda.api.entities.emoji.CustomEmoji
-import net.perfectdreams.discordinteraktions.common.commands.ApplicationCommandContext
-import net.perfectdreams.discordinteraktions.common.commands.options.ApplicationCommandOptions
-import net.perfectdreams.discordinteraktions.common.commands.options.SlashCommandArguments
-import net.perfectdreams.loritta.helper.LorittaHelperKord
+import net.perfectdreams.loritta.morenitta.interactions.commands.ApplicationCommandContext
+import net.perfectdreams.loritta.morenitta.interactions.commands.options.ApplicationCommandOptions
+import net.perfectdreams.loritta.morenitta.interactions.commands.SlashCommandArguments
+import net.perfectdreams.loritta.helper.LorittaHelper
+import net.perfectdreams.loritta.helper.interactions.commands.vanilla.HelperExecutor
 import net.perfectdreams.loritta.helper.utils.Emotes
 import net.perfectdreams.loritta.helper.utils.extensions.await
 import net.perfectdreams.loritta.helper.utils.generateserverreport.GenerateAppealsReport
 import net.perfectdreams.loritta.helper.utils.generateserverreport.GenerateServerReport
 import net.perfectdreams.sequins.text.StringUtils
 
-class PendingReportsExecutor(helper: LorittaHelperKord, val jda: JDA) : HelperSlashExecutor(helper, PermissionLevel.ADMIN) {
+class PendingReportsExecutor(helper: LorittaHelper, val jda: JDA) : HelperExecutor(helper, PermissionLevel.ADMIN) {
     private val logger = KotlinLogging.logger {}
 
     inner class Options : ApplicationCommandOptions() {
@@ -28,7 +29,7 @@ class PendingReportsExecutor(helper: LorittaHelperKord, val jda: JDA) : HelperSl
     override val options = Options()
 
     override suspend fun executeHelper(context: ApplicationCommandContext, args: SlashCommandArguments) {
-        context.deferChannelMessage()
+        context.deferChannelMessage(false)
 
         val channelId = args[options.channel] ?: "${helper.config.guilds.community.channels.serverReports}"
         val channel = jda.getTextChannelById(channelId) ?: return
@@ -76,7 +77,7 @@ class PendingReportsExecutor(helper: LorittaHelperKord, val jda: JDA) : HelperSl
                 }
 
             if (notApprovedMessages.isEmpty()) {
-                context.sendMessage {
+                context.reply(false) {
                     content = "${Emotes.LORI_HEART} **|** Oba! Aparentemente não temos nenhuma denúncia/apelo pendente!"
                 }
                 return
@@ -115,7 +116,7 @@ class PendingReportsExecutor(helper: LorittaHelperKord, val jda: JDA) : HelperSl
 
             // And now send them!
             for (line in chunkedLines) {
-                context.sendMessage {
+                context.reply(false) {
                     content = line
                 }
             }

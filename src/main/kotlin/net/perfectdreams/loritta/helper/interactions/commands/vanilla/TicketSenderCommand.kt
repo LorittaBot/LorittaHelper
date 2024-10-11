@@ -1,19 +1,11 @@
 package net.perfectdreams.loritta.helper.interactions.commands.vanilla
 
-import dev.kord.common.Color
-import dev.kord.common.entity.ButtonStyle
-import dev.kord.common.entity.DiscordPartialEmoji
-import dev.kord.common.entity.Snowflake
-import dev.kord.rest.builder.message.create.actionRow
-import dev.kord.rest.builder.message.create.embed
 import dev.minn.jda.ktx.interactions.components.SelectOption
 import dev.minn.jda.ktx.interactions.components.StringSelectMenu
 import dev.minn.jda.ktx.messages.MessageCreate
 import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel
 import net.dv8tion.jda.api.entities.emoji.Emoji
 import net.dv8tion.jda.api.interactions.components.buttons.Button
-import net.perfectdreams.discordinteraktions.common.components.interactiveButton
-import net.perfectdreams.discordinteraktions.common.components.selectMenu
 import net.perfectdreams.loritta.api.messages.LorittaReply
 import net.perfectdreams.loritta.helper.LorittaHelper
 import net.perfectdreams.loritta.helper.i18n.I18nKeysData
@@ -35,6 +27,7 @@ import net.perfectdreams.loritta.helper.utils.tickets.systems.FirstFanArtTicketS
 import net.perfectdreams.loritta.helper.utils.tickets.systems.HelpDeskTicketSystem
 import net.perfectdreams.loritta.morenitta.interactions.commands.*
 import net.perfectdreams.loritta.morenitta.interactions.commands.options.ApplicationCommandOptions
+import java.awt.Color
 
 class TicketSenderCommand(val helper: LorittaHelper) : SlashCommandDeclarationWrapper {
     override fun command() = slashCommand(

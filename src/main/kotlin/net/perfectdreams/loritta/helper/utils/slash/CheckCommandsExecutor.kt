@@ -1,9 +1,10 @@
 package net.perfectdreams.loritta.helper.utils.slash
 
-import net.perfectdreams.discordinteraktions.common.commands.ApplicationCommandContext
-import net.perfectdreams.discordinteraktions.common.commands.options.ApplicationCommandOptions
-import net.perfectdreams.discordinteraktions.common.commands.options.SlashCommandArguments
-import net.perfectdreams.loritta.helper.LorittaHelperKord
+import net.perfectdreams.loritta.morenitta.interactions.commands.ApplicationCommandContext
+import net.perfectdreams.loritta.morenitta.interactions.commands.options.ApplicationCommandOptions
+import net.perfectdreams.loritta.morenitta.interactions.commands.SlashCommandArguments
+import net.perfectdreams.loritta.helper.LorittaHelper
+import net.perfectdreams.loritta.helper.interactions.commands.vanilla.HelperExecutor
 import net.perfectdreams.loritta.helper.tables.ExecutedCommandsLog
 import net.perfectdreams.loritta.helper.utils.dailycatcher.DailyCatcherManager
 import org.jetbrains.exposed.sql.SortOrder
@@ -11,7 +12,7 @@ import org.jetbrains.exposed.sql.count
 import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.transactions.transaction
 
-class CheckCommandsExecutor(helper: LorittaHelperKord) : HelperSlashExecutor(helper, PermissionLevel.HELPER) {
+class CheckCommandsExecutor(helper: LorittaHelper) : HelperExecutor(helper, PermissionLevel.HELPER) {
     inner class Options : ApplicationCommandOptions() {
         val user = user("user", "Usuário a ser verificado")
     }
@@ -19,15 +20,15 @@ class CheckCommandsExecutor(helper: LorittaHelperKord) : HelperSlashExecutor(hel
     override val options = Options()
 
     override suspend fun executeHelper(context: ApplicationCommandContext, args: SlashCommandArguments) {
-        context.deferChannelMessage()
-        val user = args[options.user]
+        context.deferChannelMessage(false)
+        val user = args[options.user].user
 
         val commandCountField = ExecutedCommandsLog.command.count()
 
         val commands = transaction(helper.databases.lorittaDatabase) {
             ExecutedCommandsLog.slice(ExecutedCommandsLog.command, commandCountField)
                 .select {
-                    ExecutedCommandsLog.userId eq user.id.value.toLong()
+                    ExecutedCommandsLog.userId eq user.idLong
                 }
                 .groupBy(ExecutedCommandsLog.command)
                 .orderBy(commandCountField, SortOrder.DESC)
@@ -35,7 +36,7 @@ class CheckCommandsExecutor(helper: LorittaHelperKord) : HelperSlashExecutor(hel
                 .toList()
         }
 
-        var input = "**Stats de comandos de ${user.id.value}**\n"
+        var input = "**Stats de comandos de ${user.idLong}**\n"
         input += "**Quantidade de comandos executados:** ${commands.sumBy { it[commandCountField].toInt() }}\n"
         input += "**Comandos de economia executados:** ${
             commands.filter { it[ExecutedCommandsLog.command] in DailyCatcherManager.ECONOMY_COMMANDS }
@@ -47,7 +48,7 @@ class CheckCommandsExecutor(helper: LorittaHelperKord) : HelperSlashExecutor(hel
             input += "**`${command[ExecutedCommandsLog.command]}`:** ${command[commandCountField]}\n"
         }
 
-        context.sendMessage {
+        context.reply(false) {
             content = input
         }
     }

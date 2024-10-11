@@ -1,25 +1,15 @@
 package net.perfectdreams.loritta.helper.utils.slash
 
-import net.perfectdreams.discordinteraktions.common.commands.ApplicationCommandContext
-import net.perfectdreams.discordinteraktions.common.commands.GuildApplicationCommandContext
-import net.perfectdreams.discordinteraktions.common.commands.MessageCommandExecutor
-import net.perfectdreams.discordinteraktions.common.commands.options.ApplicationCommandOptions
-import net.perfectdreams.discordinteraktions.common.commands.options.SlashCommandArguments
-import net.perfectdreams.discordinteraktions.common.entities.messages.Message
-import net.perfectdreams.loritta.helper.LorittaHelperKord
-import net.perfectdreams.loritta.helper.tables.SonhosTransaction
-import net.perfectdreams.loritta.helper.utils.Constants
-import net.perfectdreams.loritta.helper.utils.galleryofdreams.commands.GalleryOfDreamsUtils
-import org.jetbrains.exposed.sql.SortOrder
-import org.jetbrains.exposed.sql.or
-import org.jetbrains.exposed.sql.select
-import org.jetbrains.exposed.sql.transactions.transaction
-import java.time.Instant
+import net.dv8tion.jda.api.entities.Message
+import net.perfectdreams.loritta.helper.LorittaHelper
+import net.perfectdreams.loritta.helper.interactions.commands.vanilla.HelperExecutor
+import net.perfectdreams.loritta.morenitta.interactions.commands.ApplicationCommandContext
+import net.perfectdreams.loritta.morenitta.interactions.commands.LorittaMessageCommandExecutor
 
-class DirectDiscordCdnExecutor(helper: LorittaHelperKord) : MessageCommandExecutor() {
+class DirectDiscordCdnExecutor(helper: LorittaHelper) : LorittaMessageCommandExecutor() {
     override suspend fun execute(context: ApplicationCommandContext, targetMessage: Message) {
-        if (context !is GuildApplicationCommandContext || !context.member.roleIds.any { it in HelperSlashExecutor.HELPER_ROLES }) {
-            context.sendEphemeralMessage {
+        if (!context.member.roles.map { it.idLong }.any { it in HelperExecutor.HELPER_ROLES }) {
+            context.reply(true) {
                 content = "Você não tem o poder de usar isto!"
             }
             return
@@ -27,7 +17,7 @@ class DirectDiscordCdnExecutor(helper: LorittaHelperKord) : MessageCommandExecut
 
         val remappedUrls = targetMessage.attachments.map { it.url.replace("cdn.discordapp.com", "txt.lori.fun") }.joinToString("\n")
 
-        context.sendEphemeralMessage {
+        context.reply(true) {
             if (remappedUrls.isNotBlank()) {
                 content = targetMessage.attachments.map { it.url.replace("cdn.discordapp.com", "txt.lori.fun") }.joinToString("\n")
             } else {

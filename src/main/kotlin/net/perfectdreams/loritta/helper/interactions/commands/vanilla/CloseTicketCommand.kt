@@ -1,9 +1,6 @@
 package net.perfectdreams.loritta.helper.interactions.commands.vanilla
 
-import dev.kord.common.entity.optional.optional
-import dev.kord.rest.json.request.ChannelModifyPatchRequest
 import net.dv8tion.jda.api.entities.channel.ChannelType
-import net.dv8tion.jda.api.entities.channel.concrete.TextChannel
 import net.dv8tion.jda.api.entities.channel.concrete.ThreadChannel
 import net.perfectdreams.loritta.helper.LorittaHelper
 import net.perfectdreams.loritta.helper.i18n.I18nKeysData

@@ -1,15 +1,12 @@
 package net.perfectdreams.loritta.helper.utils.slash
 
-import dev.kord.common.entity.DiscordGuildMember
-import dev.kord.common.entity.Snowflake
-import dev.kord.rest.route.Position
-import dev.kord.rest.service.RestClient
-import net.perfectdreams.discordinteraktions.common.commands.ApplicationCommandContext
-import net.perfectdreams.discordinteraktions.common.commands.options.ApplicationCommandOptions
-import net.perfectdreams.discordinteraktions.common.commands.options.SlashCommandArguments
-import net.perfectdreams.loritta.helper.LorittaHelperKord
+import net.perfectdreams.loritta.morenitta.interactions.commands.ApplicationCommandContext
+import net.perfectdreams.loritta.morenitta.interactions.commands.options.ApplicationCommandOptions
+import net.perfectdreams.loritta.morenitta.interactions.commands.SlashCommandArguments
+import net.perfectdreams.loritta.helper.LorittaHelper
+import net.perfectdreams.loritta.helper.interactions.commands.vanilla.HelperExecutor
 
-class ServerMembersExecutor(helper: LorittaHelperKord, val rest: RestClient) : HelperSlashExecutor(helper, PermissionLevel.HELPER) {
+class ServerMembersExecutor(helper: LorittaHelper/* , val rest: RestClient */) : HelperExecutor(helper, PermissionLevel.HELPER) {
     inner class Options : ApplicationCommandOptions() {
         val guildId = string("guild_id", "ID do Servidor")
 
@@ -22,7 +19,7 @@ class ServerMembersExecutor(helper: LorittaHelperKord, val rest: RestClient) : H
     override val options = Options()
 
     override suspend fun executeHelper(context: ApplicationCommandContext, args: SlashCommandArguments) {
-        context.deferChannelMessage()
+        /* context.deferChannelMessage(false)
 
         val sortType = args[options.sortType]
         val guildId = args[options.guildId]
@@ -31,9 +28,9 @@ class ServerMembersExecutor(helper: LorittaHelperKord, val rest: RestClient) : H
 
         val allMembers = mutableListOf<DiscordGuildMember>()
 
-        var positionToBeChecked: Position.After? = Position.After(Snowflake(0))
+        var positionToBeChecked: Position.After? = Position.After(0)
         while (positionToBeChecked != null) {
-            val members = rest.guild.getGuildMembers(Snowflake(guildId), limit = 1000, after = positionToBeChecked)
+            val members = rest.guild.getGuildMembers(guildId), limit = 1000, after = positionToBeChecked
             allMembers.addAll(members)
             val maxIdInTheAllMembersList = members.maxByOrNull { it.user.value!!.id }
             positionToBeChecked = if (maxIdInTheAllMembersList != null) Position.After(maxIdInTheAllMembersList.user.value!!.id) else null
@@ -52,8 +49,8 @@ class ServerMembersExecutor(helper: LorittaHelperKord, val rest: RestClient) : H
             builder.append("\n")
         }
 
-        context.sendMessage {
-            addFile("servers.txt", builder.toString().toByteArray(Charsets.UTF_8).inputStream())
-        }
+        context.reply(false) {
+            files += FileUpload.fromData(builder.toString().toByteArray(Charsets.UTF_8).inputStream(), "servers.txt")
+        } */
     }
 }

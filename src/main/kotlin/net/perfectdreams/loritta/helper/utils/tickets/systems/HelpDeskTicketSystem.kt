@@ -1,8 +1,5 @@
 package net.perfectdreams.loritta.helper.utils.tickets.systems
 
-import dev.kord.common.entity.ArchiveDuration
-import dev.kord.common.entity.Snowflake
-import dev.kord.rest.service.RestClient
 import net.dv8tion.jda.api.JDA
 import net.dv8tion.jda.api.entities.channel.concrete.ThreadChannel
 import net.perfectdreams.loritta.helper.serverresponses.LorittaResponse
