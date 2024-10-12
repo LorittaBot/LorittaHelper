@@ -28,14 +28,6 @@ object SparklyPowerRoleButtons {
         // notifyStatus
     )
 
-    val notDemon = customBadge(
-        892197646599606302,
-        Emoji.fromCustom(
-            "NOTDEMON",
-            835210767540289597L,
-            false
-        )
-    )
     val leno = customBadge(
         892198360692449341,
         Emoji.fromCustom(
@@ -86,7 +78,6 @@ object SparklyPowerRoleButtons {
     )
 
     val coolBadges = listOf(
-        notDemon,
         leno,
         pantufaAmeno,
         sadCatComfy,
