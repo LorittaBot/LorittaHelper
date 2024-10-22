@@ -663,9 +663,15 @@ class LoriToolsCommand(val helper: LorittaHelper) : SlashCommandDeclarationWrapp
     }
 
     class LoriCheckDupesExecutor(helper: LorittaHelper) : HelperExecutor(helper, PermissionLevel.ADMIN) {
+        inner class Options : ApplicationCommandOptions() {
+            val dryRun = boolean("dry_run", "Se ativado, eu não irei banir as pessoas (modo de ensaio)")
+        }
+
+        override val options = Options()
+
         override suspend fun executeHelper(context: ApplicationCommandContext, args: SlashCommandArguments) {
             GlobalScope.launch {
-                helper.banEvasionChecker.checkAndBanDupeClientIds(context.user)
+                helper.banEvasionChecker.checkAndBanDupeClientIds(context.user, args[options.dryRun])
             }
 
             context.reply(false) {

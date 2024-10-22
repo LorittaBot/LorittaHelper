@@ -24,17 +24,20 @@ class CheckDupeClientIds(val helper: LorittaHelper) : RunnableCoroutine {
     private val mutex = Mutex()
 
     override suspend fun run() {
-        checkAndBanDupeClientIds(null)
+        checkAndBanDupeClientIds(null, false)
     }
 
-    suspend fun checkAndBanDupeClientIds(whoRequested: User?) {
+    suspend fun checkAndBanDupeClientIds(
+        whoRequested: User?,
+        dryRun: Boolean
+    ) {
         val channel = helper.jda.getTextChannelById(helper.config.guilds.community.channels.lorittaAutoMod)!!
 
         mutex.withLock {
             if (whoRequested != null) {
-                channel.sendMessage("${Emotes.LORI_COFFEE} Verificando meliantes que estão evadindo ban... Pedido por ${whoRequested.asMention}").await()
+                channel.sendMessage("${Emotes.LORI_COFFEE} Verificando meliantes que estão evadindo ban... Pedido por ${whoRequested.asMention} - Ensaio? $dryRun").await()
             } else {
-                channel.sendMessage("${Emotes.LORI_COFFEE} Verificando meliantes que estão evadindo ban... *Verificação automática*").await()
+                channel.sendMessage("${Emotes.LORI_COFFEE} Verificando meliantes que estão evadindo ban... *Verificação automática* - Ensaio? $dryRun").await()
             }
 
             val usersToBeBanned = transaction(helper.databases.lorittaDatabase) {
@@ -88,21 +91,25 @@ class CheckDupeClientIds(val helper: LorittaHelper) : RunnableCoroutine {
             }
 
             for (userToBeBanned in usersToBeBanned) {
-                channel.sendMessage("${Emotes.LORI_BAN_HAMMER} Banindo <@${userToBeBanned.userToBeBannedId}> (`${userToBeBanned.userToBeBannedId}`) pois ele é evasão de ban de <@${userToBeBanned.relatedUserId}> (`${userToBeBanned.relatedUserId}`), o meliante está banido por `${userToBeBanned.reason}`, o client ID dele é `${userToBeBanned.clientId}`, e atualmente ele possui ${userToBeBanned.sonhos} sonhos").await()
+                if (!dryRun) {
+                    channel.sendMessage("${Emotes.LORI_BAN_HAMMER} Banindo <@${userToBeBanned.userToBeBannedId}> (`${userToBeBanned.userToBeBannedId}`) pois ele é evasão de ban de <@${userToBeBanned.relatedUserId}> (`${userToBeBanned.relatedUserId}`), o meliante está banido por `${userToBeBanned.reason}`, o client ID dele é `${userToBeBanned.clientId}`, e atualmente ele possui ${userToBeBanned.sonhos} sonhos").await()
 
-                LoriToolsCommand.banUser(
-                    helper,
-                    helper.jda.selfUser.idLong,
-                    setOf(userToBeBanned.userToBeBannedId),
-                    "Evasão de Ban! (ID da conta banida: ${userToBeBanned.relatedUserId})",
-                    null
-                )
+                    LoriToolsCommand.banUser(
+                        helper,
+                        helper.jda.selfUser.idLong,
+                        setOf(userToBeBanned.userToBeBannedId),
+                        "Evasão de Ban! (ID da conta banida: ${userToBeBanned.relatedUserId})",
+                        null
+                    )
+                } else {
+                    channel.sendMessage("${Emotes.LORI_BAN_HAMMER} Banindo <@${userToBeBanned.userToBeBannedId}> (`${userToBeBanned.userToBeBannedId}`) pois ele é evasão de ban de <@${userToBeBanned.relatedUserId}> (`${userToBeBanned.relatedUserId}`), o meliante está banido por `${userToBeBanned.reason}`, o client ID dele é `${userToBeBanned.clientId}`, e atualmente ele possui ${userToBeBanned.sonhos} sonhos (ensaio, usuário não foi banido)").await()
+                }
             }
 
             if (whoRequested != null) {
-                channel.sendMessage("${Emotes.LORI_OWO} Verificação terminada. Gostou ${whoRequested.asMention}? Eu bani ${usersToBeBanned.size} meliantes!").await()
+                channel.sendMessage("${Emotes.LORI_OWO} Verificação terminada. Gostou ${whoRequested.asMention}? Eu bani ${usersToBeBanned.size} meliantes! - Ensaio? $dryRun").await()
             } else {
-                channel.sendMessage("${Emotes.LORI_OWO} Verificação terminada. Eu mesmo que pedi essa verificação, e ainda bani ${usersToBeBanned.size} meliantes. Sinceramente eu amei essa verificação que eu fiz, na minha humilde opinião ninguém da equipe conseguiria fazer ela melhor.").await()
+                channel.sendMessage("${Emotes.LORI_OWO} Verificação terminada. Eu mesmo que pedi essa verificação, e ainda bani ${usersToBeBanned.size} meliantes. Sinceramente eu amei essa verificação que eu fiz, na minha humilde opinião ninguém da equipe conseguiria fazer ela melhor. - Ensaio? $dryRun").await()
             }
         }
     }
