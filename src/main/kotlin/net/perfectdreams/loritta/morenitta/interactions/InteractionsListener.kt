@@ -36,11 +36,15 @@ class InteractionsListener(private val loritta: LorittaHelper) : ListenerAdapter
     private var hasAlreadyGloballyUpdatedTheCommands = false
 
     override fun onReady(event: ReadyEvent) {
-        val commands = loritta.commandManager.slashCommands.map { loritta.commandManager.convertDeclarationToJDA(it) } + loritta.commandManager.userCommands.map { loritta.commandManager.convertDeclarationToJDA(it) } + loritta.commandManager.messageCommands.map { loritta.commandManager.convertDeclarationToJDA(it) }
+        listOf(loritta.config.guilds.community.id, loritta.config.guilds.english.id, loritta.config.guilds.sparklyPower.id).forEach {
+            val guild = event.jda.getGuildById(it)!!
 
-        event.jda.updateCommands {
-            addCommands(*commands.toTypedArray())
-        }.queue()
+            val commands = loritta.commandManager.slashCommands.map { loritta.commandManager.convertDeclarationToJDA(it) } + loritta.commandManager.userCommands.map { loritta.commandManager.convertDeclarationToJDA(it) } + loritta.commandManager.messageCommands.map { loritta.commandManager.convertDeclarationToJDA(it) }
+
+            guild.updateCommands {
+                addCommands(*commands.toTypedArray())
+            }.queue()
+        }
     }
 
     override fun onSlashCommandInteraction(event: SlashCommandInteractionEvent) {

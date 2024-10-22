@@ -178,7 +178,7 @@ class LorittaHelper(val config: LorittaHelperConfig, val fanArtsConfig: FanArtsC
 
             // commandManager.register(PatchFanArtSelectBadgesSelectMenuExecutor(this, galleryOfDreamsClient))
         }
-        
+
         // We only care about specific intents
         val jda = JDABuilder.createLight(
             config.helper.token,
