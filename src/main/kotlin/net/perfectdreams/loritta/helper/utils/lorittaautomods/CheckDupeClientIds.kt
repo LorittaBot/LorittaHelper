@@ -103,7 +103,7 @@ class CheckDupeClientIds(val helper: LorittaHelper) : RunnableCoroutine {
                         if (userToBeBanned.relatedUserIds.size == 1) {
                             "Evasão de Ban! (ID da conta banida: ${userToBeBanned.relatedUserIds.first()})"
                         } else {
-                            "Evasão de Ban! (IDs de contas banidas: ${userToBeBanned.relatedUserIds.joinToString()})"
+                            "Evasão de Ban! (IDs das contas banidas: ${userToBeBanned.relatedUserIds.joinToString()})"
                         },
                         null
                     )
