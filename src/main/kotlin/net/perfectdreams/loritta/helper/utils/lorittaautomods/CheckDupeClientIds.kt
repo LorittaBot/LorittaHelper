@@ -74,34 +74,36 @@ class CheckDupeClientIds(val helper: LorittaHelper) : RunnableCoroutine {
                 val usersToBeBanned = mutableListOf<BannedUser>()
 
                 // We can't actually chunk by 65_535 because it is ALL PARAMETERS of the query (every client ID + the subquery)
-                allClientIds.chunked(65_530).forEach { clientIds ->
-                    val clientIdsThatAreBanned = Dailies
+                val clientIdsThatAreBanned = allClientIds.chunked(65_530).flatMap { clientIds ->
+                    Dailies
                         .innerJoin(BrowserFingerprints)
                         .innerJoin(BannedUsers, { Dailies.receivedById }, { BannedUsers.userId })
                         .selectAll()
                         .where {
-                            BrowserFingerprints.clientId inList clientIds and (BannedUsers.userId inSubQuery validBannedUsersList(now.toEpochMilli()))
+                            BrowserFingerprints.clientId inList clientIds and (BannedUsers.userId inSubQuery validBannedUsersList(
+                                now.toEpochMilli()
+                            ))
                         }
                         .toList()
+                }
 
-                    for (user in dailiesRecentlyRetrievedHours) {
-                        if (user[Dailies.receivedById] in alreadyChecked)
-                            continue
+                for (user in dailiesRecentlyRetrievedHours) {
+                    if (user[Dailies.receivedById] in alreadyChecked)
+                        continue
 
-                        val bannedUsersAssociatedWithThisUser = clientIdsThatAreBanned.filter { it[BrowserFingerprints.clientId] == user[BrowserFingerprints.clientId] }
+                    val bannedUsersAssociatedWithThisUser = clientIdsThatAreBanned.filter { it[BrowserFingerprints.clientId] == user[BrowserFingerprints.clientId] }
 
-                        if (bannedUsersAssociatedWithThisUser.isNotEmpty()) {
-                            usersToBeBanned.add(
-                                BannedUser(
-                                    user[Dailies.receivedById],
-                                    bannedUsersAssociatedWithThisUser.map { it[BannedUsers.userId] }.distinct(),
-                                    user[BrowserFingerprints.clientId],
-                                    bannedUsersAssociatedWithThisUser.minBy { it[BannedUsers.bannedAt] }[BannedUsers.reason],
-                                    user[Profiles.money]
-                                )
+                    if (bannedUsersAssociatedWithThisUser.isNotEmpty()) {
+                        usersToBeBanned.add(
+                            BannedUser(
+                                user[Dailies.receivedById],
+                                bannedUsersAssociatedWithThisUser.map { it[BannedUsers.userId] }.distinct(),
+                                user[BrowserFingerprints.clientId],
+                                bannedUsersAssociatedWithThisUser.minBy { it[BannedUsers.bannedAt] }[BannedUsers.reason],
+                                user[Profiles.money]
                             )
-                            alreadyChecked.add(user[Dailies.receivedById])
-                        }
+                        )
+                        alreadyChecked.add(user[Dailies.receivedById])
                     }
                 }
 
@@ -129,9 +131,9 @@ class CheckDupeClientIds(val helper: LorittaHelper) : RunnableCoroutine {
             }
 
             if (whoRequested != null) {
-                channel.sendMessage("${Emotes.LORI_OWO} Verificação terminada. Gostou ${whoRequested.asMention}? Eu bani ${usersToBeBanned.size} meliantes! - Ensaio? $dryRun").await()
+                channel.sendMessage("${Emotes.LORI_OWO} Verificação terminada. Gostou ${whoRequested.asMention}? Eu bani ${usersToBeBanned.size} meliantes! (${usersToBeBanned.sumOf { it.sonhos }} sonhos) - Ensaio? $dryRun").await()
             } else {
-                channel.sendMessage("${Emotes.LORI_OWO} Verificação terminada. Eu mesmo que pedi essa verificação, e ainda bani ${usersToBeBanned.size} meliantes. Sinceramente eu amei essa verificação que eu fiz, na minha humilde opinião ninguém da equipe conseguiria fazer ela melhor. - Ensaio? $dryRun").await()
+                channel.sendMessage("${Emotes.LORI_OWO} Verificação terminada. Eu mesmo que pedi essa verificação, e ainda bani ${usersToBeBanned.size} meliantes. (${usersToBeBanned.sumOf { it.sonhos }} sonhos) Sinceramente eu amei essa verificação que eu fiz, na minha humilde opinião ninguém da equipe conseguiria fazer ela melhor. - Ensaio? $dryRun").await()
             }
         }
     }
