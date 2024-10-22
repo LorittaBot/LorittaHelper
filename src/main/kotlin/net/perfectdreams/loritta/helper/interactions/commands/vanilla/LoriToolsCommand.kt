@@ -157,7 +157,7 @@ class LoriToolsCommand(val helper: LorittaHelper) : SlashCommandDeclarationWrapp
                         it[bannedAt] = System.currentTimeMillis()
                         it[BannedUsers.expiresAt] = expiresAt
                         it[BannedUsers.reason] = reason
-                        it[BannedUsers.bannedBy] = bannedBy
+                        it[BannedUsers.bannedBy] = bannedBy.idLong
                     }
                     results.add(UserBannedResult(banId.value, userId, reason))
                 }
