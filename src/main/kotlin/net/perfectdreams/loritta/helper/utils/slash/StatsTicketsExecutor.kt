@@ -8,9 +8,9 @@ import net.perfectdreams.loritta.helper.interactions.commands.vanilla.HelperExec
 import net.perfectdreams.loritta.helper.tables.StartedSupportSolicitations
 import net.perfectdreams.loritta.helper.tables.TicketMessagesActivity
 import net.perfectdreams.loritta.helper.utils.tickets.TicketUtils
-import org.jetbrains.exposed.sql.and
-import org.jetbrains.exposed.sql.countDistinct
-import org.jetbrains.exposed.sql.select
+import org.jetbrains.exposed.sql.*
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.greaterEq
 import org.jetbrains.exposed.sql.transactions.transaction
 import java.time.Instant
 
@@ -57,10 +57,8 @@ class StatsTicketsExecutor(helper: LorittaHelper) : HelperExecutor(helper, Permi
 
             val currentBanStatus = TicketMessagesActivity
                 .innerJoin(StartedSupportSolicitations)
-                .slice(TicketMessagesActivity.userId, resultCount)
-                .select {
-                    TicketMessagesActivity.timestamp greaterEq since and (StartedSupportSolicitations.systemType eq system)
-                }
+                .select(TicketMessagesActivity.userId, resultCount)
+                .where { TicketMessagesActivity.timestamp greaterEq since and (StartedSupportSolicitations.systemType eq system) }
                 .groupBy(TicketMessagesActivity.userId)
                 .toList()
 

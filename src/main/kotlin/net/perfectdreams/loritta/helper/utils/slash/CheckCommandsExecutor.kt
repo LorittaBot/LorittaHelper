@@ -7,9 +7,8 @@ import net.perfectdreams.loritta.helper.LorittaHelper
 import net.perfectdreams.loritta.helper.interactions.commands.vanilla.HelperExecutor
 import net.perfectdreams.loritta.helper.tables.ExecutedCommandsLog
 import net.perfectdreams.loritta.helper.utils.dailycatcher.DailyCatcherManager
-import org.jetbrains.exposed.sql.SortOrder
-import org.jetbrains.exposed.sql.count
-import org.jetbrains.exposed.sql.select
+import org.jetbrains.exposed.sql.*
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.transactions.transaction
 
 class CheckCommandsExecutor(helper: LorittaHelper) : HelperExecutor(helper, PermissionLevel.HELPER) {
@@ -26,10 +25,8 @@ class CheckCommandsExecutor(helper: LorittaHelper) : HelperExecutor(helper, Perm
         val commandCountField = ExecutedCommandsLog.command.count()
 
         val commands = transaction(helper.databases.lorittaDatabase) {
-            ExecutedCommandsLog.slice(ExecutedCommandsLog.command, commandCountField)
-                .select {
-                    ExecutedCommandsLog.userId eq user.idLong
-                }
+            ExecutedCommandsLog.select(ExecutedCommandsLog.command, commandCountField)
+                .where { ExecutedCommandsLog.userId eq user.idLong }
                 .groupBy(ExecutedCommandsLog.command)
                 .orderBy(commandCountField, SortOrder.DESC)
                 .limit(15)

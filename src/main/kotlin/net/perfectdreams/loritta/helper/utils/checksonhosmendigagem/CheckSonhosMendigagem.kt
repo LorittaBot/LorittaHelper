@@ -10,8 +10,8 @@ import net.perfectdreams.loritta.helper.utils.Emotes
 import net.perfectdreams.loritta.helper.utils.checkillegalnitrosell.CheckIllegalNitroSell
 import net.perfectdreams.loritta.helper.utils.splitWords
 import net.perfectdreams.loritta.helper.utils.toNaiveBayesClassifier
-import org.jetbrains.exposed.sql.and
-import org.jetbrains.exposed.sql.select
+import org.jetbrains.exposed.sql.*
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.transactions.transaction
 
 class CheckSonhosMendigagem(val m: LorittaHelper) {
@@ -173,9 +173,9 @@ class CheckSonhosMendigagem(val m: LorittaHelper) {
     fun onMessageReceived(event: MessageReceivedEvent) {
         if (event.channel.idLong in channels) {
             val memberXp = transaction(m.databases.lorittaDatabase) {
-                GuildProfiles.select {
-                    (GuildProfiles.userId eq event.author.idLong) and (GuildProfiles.guildId eq event.guild.idLong)
-                }.firstOrNull()?.get(GuildProfiles.xp)
+                GuildProfiles.selectAll()
+                    .where { (GuildProfiles.userId eq event.author.idLong) and (GuildProfiles.guildId eq event.guild.idLong) }
+                    .firstOrNull()?.get(GuildProfiles.xp)
             }
 
             if (memberXp != null && memberXp >= 5000) return

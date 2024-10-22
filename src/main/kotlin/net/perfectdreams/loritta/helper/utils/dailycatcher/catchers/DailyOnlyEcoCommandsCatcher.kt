@@ -16,11 +16,11 @@ import net.perfectdreams.loritta.helper.utils.dailycatcher.UserDailyRewardCache
 import net.perfectdreams.loritta.helper.utils.dailycatcher.UserInfoCache
 import net.perfectdreams.loritta.helper.utils.dailycatcher.reports.ReportOnlyEcoCatcher
 import org.apache.commons.text.similarity.LevenshteinDistance
-import org.jetbrains.exposed.sql.Database
-import org.jetbrains.exposed.sql.SortOrder
-import org.jetbrains.exposed.sql.and
-import org.jetbrains.exposed.sql.count
-import org.jetbrains.exposed.sql.select
+import org.jetbrains.exposed.sql.*
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.greaterEq
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.inList
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.lessEq
 import org.jetbrains.exposed.sql.transactions.transaction
 import java.sql.Connection
 import java.time.Instant
@@ -40,10 +40,10 @@ class DailyOnlyEcoCommandsCatcher(database: Database) : DailyCatcher<ReportOnlyE
     }
 
     override suspend fun catch(channel: Channel<ReportOnlyEcoCatcher>) {
-        val dailies = transaction(Connection.TRANSACTION_READ_UNCOMMITTED, 5, db = database) {
-            Dailies.select {
-                Dailies.receivedAt greaterEq DailyCatcherManager.yesterdayAtMidnight() and (Dailies.receivedAt lessEq DailyCatcherManager.yesterdayBeforeDaySwitch())
-            }.toList()
+        val dailies = transaction(Connection.TRANSACTION_READ_UNCOMMITTED, db = database) {
+            Dailies.selectAll()
+                .where { Dailies.receivedAt greaterEq DailyCatcherManager.yesterdayAtMidnight() and (Dailies.receivedAt lessEq DailyCatcherManager.yesterdayBeforeDaySwitch()) }
+                .toList()
         }
 
         // bulk stats
@@ -52,9 +52,9 @@ class DailyOnlyEcoCommandsCatcher(database: Database) : DailyCatcher<ReportOnlyE
         for ((chunkedIndex, chunkedDaily) in dailies.chunked(CHUNKED_EXECUTED_COMMAND_LOGS_COUNT).withIndex()) {
             logger.info { "Doing bulk command stats... Current index: $chunkedIndex" }
             val start = System.currentTimeMillis()
-            val commands = transaction(Connection.TRANSACTION_READ_UNCOMMITTED, 5, db = database) {
-                ExecutedCommandsLog.slice(ExecutedCommandsLog.command, ExecutedCommandsLog.userId, commandCountField)
-                    .select {
+            val commands = transaction(Connection.TRANSACTION_READ_UNCOMMITTED, db = database) {
+                ExecutedCommandsLog.select(ExecutedCommandsLog.command, ExecutedCommandsLog.userId, commandCountField)
+                    .where {
                         ExecutedCommandsLog.sentAt greaterEq DailyCatcherManager.fourteenDaysAgo() and (
                                 ExecutedCommandsLog.userId inList chunkedDaily.map { it[Dailies.receivedById] }
                                 )
@@ -91,9 +91,9 @@ class DailyOnlyEcoCommandsCatcher(database: Database) : DailyCatcher<ReportOnlyE
                     )
 
                     val sonhosTransactionsRelatedToTheUser = transaction(database) {
-                        SonhosTransaction.select {
-                            SonhosTransaction.givenBy eq userId and (SonhosTransaction.givenAt greaterEq DailyCatcherManager.sevenDaysAgoAtMidnight() and (SonhosTransaction.givenAt lessEq DailyCatcherManager.yesterdayBeforeDaySwitch()))
-                        }.toList()
+                        SonhosTransaction.selectAll()
+                            .where { SonhosTransaction.givenBy eq userId and (SonhosTransaction.givenAt greaterEq DailyCatcherManager.sevenDaysAgoAtMidnight() and (SonhosTransaction.givenAt lessEq DailyCatcherManager.yesterdayBeforeDaySwitch())) }
+                            .toList()
                     }
 
                     if (sonhosTransactionsRelatedToTheUser.isEmpty())
@@ -107,9 +107,9 @@ class DailyOnlyEcoCommandsCatcher(database: Database) : DailyCatcher<ReportOnlyE
                     val likelyToBeTheMainAccount = groupedBySortedReceivedBy.first()
 
                     val mainAccountGotDailyToday = transaction(database) {
-                        Dailies.select {
-                            Dailies.receivedById eq likelyToBeTheMainAccount.key and (Dailies.receivedAt greaterEq DailyCatcherManager.yesterdayAtMidnight() and (Dailies.receivedAt lessEq DailyCatcherManager.yesterdayBeforeDaySwitch()))
-                        }.count()
+                        Dailies.selectAll()
+                            .where { Dailies.receivedById eq likelyToBeTheMainAccount.key and (Dailies.receivedAt greaterEq DailyCatcherManager.yesterdayAtMidnight() and (Dailies.receivedAt lessEq DailyCatcherManager.yesterdayBeforeDaySwitch())) }
+                            .count()
                     }
 
                     // If the main account got daily today... then that's a big oof moment.

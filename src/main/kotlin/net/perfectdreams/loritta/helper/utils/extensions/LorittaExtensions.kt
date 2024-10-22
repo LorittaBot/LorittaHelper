@@ -3,17 +3,17 @@ package net.perfectdreams.loritta.helper.utils.extensions
 import net.dv8tion.jda.api.entities.User
 import net.perfectdreams.loritta.cinnamon.pudding.tables.BannedUsers
 import net.perfectdreams.loritta.helper.LorittaHelper
-import org.jetbrains.exposed.sql.ResultRow
-import org.jetbrains.exposed.sql.SortOrder
-import org.jetbrains.exposed.sql.and
-import org.jetbrains.exposed.sql.or
-import org.jetbrains.exposed.sql.select
+import org.jetbrains.exposed.sql.*
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.greaterEq
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.isNotNull
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.isNull
 import org.jetbrains.exposed.sql.transactions.transaction
 
 fun User.getBannedState(m: LorittaHelper): ResultRow? {
     return transaction(m.databases.lorittaDatabase) {
-        BannedUsers.select {
-            BannedUsers.userId eq this@getBannedState.idLong and
+        BannedUsers.selectAll().where {
+            BannedUsers.userId eq idLong and
                     (BannedUsers.valid eq true) and
                     (
                             BannedUsers.expiresAt.isNull()
@@ -23,8 +23,8 @@ fun User.getBannedState(m: LorittaHelper): ResultRow? {
                                                     (BannedUsers.expiresAt greaterEq System.currentTimeMillis()))
                             )
         }
-                .orderBy(BannedUsers.bannedAt, SortOrder.DESC)
-                .firstOrNull()
+            .orderBy(BannedUsers.bannedAt, SortOrder.DESC)
+            .firstOrNull()
     }
 }
 

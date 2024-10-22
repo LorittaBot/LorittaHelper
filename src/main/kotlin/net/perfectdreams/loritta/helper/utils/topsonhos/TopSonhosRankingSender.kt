@@ -13,8 +13,8 @@ import net.dv8tion.jda.api.utils.FileUpload
 import net.perfectdreams.loritta.cinnamon.pudding.tables.Profiles
 import net.perfectdreams.loritta.helper.LorittaHelper
 import net.perfectdreams.sequins.text.StringUtils
-import org.jetbrains.exposed.sql.SortOrder
-import org.jetbrains.exposed.sql.select
+import org.jetbrains.exposed.sql.*
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.neq
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 import java.io.File
 import java.time.Instant
@@ -30,9 +30,7 @@ class TopSonhosRankingSender(val m: LorittaHelper, val jda: JDA) {
     fun start() = GlobalScope.launch {
         while (true) {
             val results = newSuspendedTransaction(db = m.databases.lorittaDatabase) {
-                Profiles.select {
-                    Profiles.money neq 0
-                }.orderBy(Profiles.money, SortOrder.DESC)
+                Profiles.selectAll().where { Profiles.money neq 0 }.orderBy(Profiles.money, SortOrder.DESC)
                     .limit(ACCOUNTS_TO_BE_RETRIEVED)
                     .toList()
             }

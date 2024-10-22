@@ -8,9 +8,8 @@ import net.perfectdreams.loritta.helper.LorittaHelper
 import net.perfectdreams.loritta.helper.interactions.commands.vanilla.HelperExecutor
 import net.perfectdreams.loritta.helper.tables.SonhosTransaction
 import net.perfectdreams.loritta.helper.utils.Constants
-import org.jetbrains.exposed.sql.SortOrder
-import org.jetbrains.exposed.sql.or
-import org.jetbrains.exposed.sql.select
+import org.jetbrains.exposed.sql.*
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.transactions.transaction
 import java.time.Instant
 
@@ -27,9 +26,9 @@ class AllTransactionsExecutor(helper: LorittaHelper) : HelperExecutor(helper, Pe
         val user = args[options.user].user
 
         val transactions = transaction(helper.databases.lorittaDatabase) {
-            SonhosTransaction.select {
-                (SonhosTransaction.receivedBy eq user.idLong) or (SonhosTransaction.givenBy eq user.idLong)
-            }.orderBy(SonhosTransaction.id, SortOrder.DESC)
+            SonhosTransaction.selectAll()
+                .where { (SonhosTransaction.receivedBy eq user.idLong) or (SonhosTransaction.givenBy eq user.idLong) }
+                .orderBy(SonhosTransaction.id, SortOrder.DESC)
                 .toList()
         }
 

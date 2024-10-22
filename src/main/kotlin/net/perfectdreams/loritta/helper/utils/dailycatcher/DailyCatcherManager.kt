@@ -11,9 +11,11 @@ import net.perfectdreams.loritta.cinnamon.pudding.tables.BannedUsers
 import net.perfectdreams.loritta.helper.LorittaHelper
 import net.perfectdreams.loritta.helper.utils.dailycatcher.catchers.DailyOnlyEcoCommandsCatcher
 import net.perfectdreams.loritta.helper.utils.dailycatcher.reports.ReportOnlyEcoCatcher
-import org.jetbrains.exposed.sql.and
-import org.jetbrains.exposed.sql.or
-import org.jetbrains.exposed.sql.select
+import org.jetbrains.exposed.sql.*
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.greaterEq
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.isNotNull
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.isNull
 import org.jetbrains.exposed.sql.transactions.transaction
 import java.time.Instant
 import java.time.ZoneId
@@ -108,13 +110,15 @@ class DailyCatcherManager(val m: LorittaHelper, val jda: JDA) {
 
     fun doReports() {
         val bannedUsersIds = transaction(m.databases.lorittaDatabase) {
-            BannedUsers.slice(BannedUsers.userId)
-                .select {
+            BannedUsers.select(BannedUsers.userId)
+                .where {
                     (BannedUsers.valid eq true) and
-                            (BannedUsers.expiresAt.isNull() or (BannedUsers.expiresAt.isNotNull() and BannedUsers.expiresAt.greaterEq(System.currentTimeMillis())))
+                            (BannedUsers.expiresAt.isNull() or (BannedUsers.expiresAt.isNotNull() and BannedUsers.expiresAt.greaterEq(
+                                System.currentTimeMillis()
+                            )))
                 }
                 .map { it[BannedUsers.userId] }
-                    .toSet()
+                .toSet()
         }
 
         val portugueseStaffChannel = jda.getTextChannelById(community.channels.staff)

@@ -1,10 +1,8 @@
 package net.perfectdreams.loritta.helper.utils.dailycatcher
 
 import net.perfectdreams.loritta.cinnamon.pudding.tables.Dailies
-import org.jetbrains.exposed.sql.Database
-import org.jetbrains.exposed.sql.ResultRow
-import org.jetbrains.exposed.sql.SortOrder
-import org.jetbrains.exposed.sql.select
+import org.jetbrains.exposed.sql.*
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.transactions.transaction
 
 class UserDailyRewardCache {
@@ -19,9 +17,7 @@ class UserDailyRewardCache {
     }
 
     fun retrieveUserLastDailyReward(database: Database, userId: Long) = transaction(database) {
-        Dailies.select {
-            Dailies.receivedById eq userId
-        }.orderBy(Dailies.receivedAt, SortOrder.DESC)
-                .firstOrNull()
+        Dailies.selectAll().where { Dailies.receivedById eq userId }.orderBy(Dailies.receivedAt, SortOrder.DESC)
+            .firstOrNull()
     }
 }

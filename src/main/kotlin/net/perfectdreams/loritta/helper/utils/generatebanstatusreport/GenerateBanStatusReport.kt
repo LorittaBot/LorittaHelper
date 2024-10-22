@@ -6,8 +6,8 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent
 import net.perfectdreams.loritta.cinnamon.pudding.tables.BannedUsers
 import net.perfectdreams.loritta.helper.LorittaHelper
 import net.perfectdreams.loritta.helper.utils.extensions.await
-import org.jetbrains.exposed.sql.SortOrder
-import org.jetbrains.exposed.sql.select
+import org.jetbrains.exposed.sql.*
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.transactions.transaction
 
 class GenerateBanStatusReport(val m: LorittaHelper) {
@@ -30,9 +30,9 @@ class GenerateBanStatusReport(val m: LorittaHelper) {
         val userId = embed.footer!!.text!!.removePrefix("ID do usuário: ")
 
         val bannedState = transaction(m.databases.lorittaDatabase) {
-            BannedUsers.select { BannedUsers.userId eq userId.toLong() }
-                    .orderBy(BannedUsers.bannedAt, SortOrder.DESC)
-                    .firstOrNull()
+            BannedUsers.selectAll().where { BannedUsers.userId eq userId.toLong() }
+                .orderBy(BannedUsers.bannedAt, SortOrder.DESC)
+                .firstOrNull()
         }
 
         val responseStuff = """

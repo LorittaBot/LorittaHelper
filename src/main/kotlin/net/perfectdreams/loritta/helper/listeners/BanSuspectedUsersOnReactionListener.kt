@@ -10,9 +10,9 @@ import net.perfectdreams.loritta.cinnamon.pudding.tables.BannedUsers
 import net.perfectdreams.loritta.helper.LorittaHelper
 import net.perfectdreams.loritta.helper.utils.dailycatcher.DailyCatcherManager
 import net.perfectdreams.loritta.helper.utils.extensions.await
-import org.jetbrains.exposed.sql.and
-import org.jetbrains.exposed.sql.insert
-import org.jetbrains.exposed.sql.select
+import org.jetbrains.exposed.sql.*
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.isNull
 import org.jetbrains.exposed.sql.transactions.transaction
 
 class BanSuspectedUsersOnReactionListener(val m: LorittaHelper): ListenerAdapter() {
@@ -91,9 +91,9 @@ class BanSuspectedUsersOnReactionListener(val m: LorittaHelper): ListenerAdapter
                     logger.info { "Banning $id for $reason" }
 
                     val successfullyBanned = transaction(m.databases.lorittaDatabase) {
-                        if (BannedUsers.select {
-                                BannedUsers.userId eq id and (BannedUsers.valid eq true) and (BannedUsers.expiresAt.isNull())
-                            }.count() != 0L) {
+                        if (BannedUsers.selectAll()
+                                .where { BannedUsers.userId eq id and (BannedUsers.valid eq true) and (BannedUsers.expiresAt.isNull()) }
+                                .count() != 0L) {
                             false
                         } else {
                             BannedUsers.insert {

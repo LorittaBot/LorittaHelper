@@ -14,12 +14,9 @@ import net.perfectdreams.loritta.helper.utils.dailycatcher.ExecutedCommandsStats
 import net.perfectdreams.loritta.helper.utils.dailycatcher.SonhosTransactionWrapper
 import net.perfectdreams.loritta.helper.utils.dailycatcher.SuspiciousLevel
 import net.perfectdreams.loritta.helper.utils.dailycatcher.UserDailyRewardCache
-import org.jetbrains.exposed.sql.Database
-import org.jetbrains.exposed.sql.ResultRow
-import org.jetbrains.exposed.sql.SortOrder
-import org.jetbrains.exposed.sql.and
-import org.jetbrains.exposed.sql.count
-import org.jetbrains.exposed.sql.select
+import org.jetbrains.exposed.sql.*
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.inList
 import org.jetbrains.exposed.sql.transactions.transaction
 
 abstract class DailyCatcher<T>(val database: Database) {
@@ -27,15 +24,13 @@ abstract class DailyCatcher<T>(val database: Database) {
     abstract fun buildReportMessage(jda: JDA, bannedUsersIds: Set<Long>, report: T): DailyCatcherMessage
 
     fun retrieveSonhos(userId: Long): Long? = transaction(database) {
-        Profiles.select { Profiles.id eq userId }
-                .firstOrNull()?.get(Profiles.money)
+        Profiles.selectAll().where { Profiles.id eq userId }
+            .firstOrNull()?.get(Profiles.money)
     }
 
     fun retrieveUserLastDailyReward(userId: Long) = transaction(database) {
-        Dailies.select {
-            Dailies.receivedById eq userId
-        }.orderBy(Dailies.receivedAt, SortOrder.DESC)
-                .firstOrNull()
+        Dailies.selectAll().where { Dailies.receivedById eq userId }.orderBy(Dailies.receivedAt, SortOrder.DESC)
+            .firstOrNull()
     }
 
     /**
@@ -48,13 +43,11 @@ abstract class DailyCatcher<T>(val database: Database) {
         val commandCountField = ExecutedCommandsLog.command.count()
 
         val commands = transaction(database) {
-            ExecutedCommandsLog.slice(ExecutedCommandsLog.command, commandCountField)
-                    .select {
-                        ExecutedCommandsLog.userId eq userId
-                    }
-                    .groupBy(ExecutedCommandsLog.command)
-                    .orderBy(commandCountField, SortOrder.DESC)
-                    .toList()
+            ExecutedCommandsLog.select(ExecutedCommandsLog.command, commandCountField)
+                .where { ExecutedCommandsLog.userId eq userId }
+                .groupBy(ExecutedCommandsLog.command)
+                .orderBy(commandCountField, SortOrder.DESC)
+                .toList()
         }
 
         val cmdQuantity = commands.sumBy { it[commandCountField].toInt() }
@@ -86,7 +79,7 @@ abstract class DailyCatcher<T>(val database: Database) {
         var input = ""
 
         val dailies = transaction(database) {
-            SonhosTransaction.select {
+            SonhosTransaction.selectAll().where {
                 SonhosTransaction.receivedBy inList ids and
                         (SonhosTransaction.reason eq SonhosPaymentReason.DAILY)
             }.orderBy(SonhosTransaction.givenAt, SortOrder.DESC).toList()

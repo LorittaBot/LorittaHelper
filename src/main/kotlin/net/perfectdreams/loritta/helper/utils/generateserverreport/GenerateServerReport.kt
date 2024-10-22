@@ -24,10 +24,11 @@ import net.perfectdreams.loritta.helper.utils.ComponentDataUtils
 import net.perfectdreams.loritta.helper.utils.Constants
 import net.perfectdreams.loritta.helper.utils.GoogleDriveUtils
 import net.perfectdreams.loritta.helper.utils.extensions.await
-import org.jetbrains.exposed.sql.SortOrder
-import org.jetbrains.exposed.sql.and
-import org.jetbrains.exposed.sql.or
-import org.jetbrains.exposed.sql.select
+import org.jetbrains.exposed.sql.*
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.greaterEq
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.isNotNull
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.isNull
 import org.jetbrains.exposed.sql.transactions.transaction
 import java.awt.Color
 import java.net.HttpURLConnection
@@ -273,7 +274,7 @@ class GenerateServerReport(val m: LorittaHelper) {
         userId: Long
     ): String {
         val userBanned = transaction(m.databases.lorittaDatabase) {
-            BannedUsers.select {
+            BannedUsers.selectAll().where {
                 BannedUsers.userId eq userId and
                         (BannedUsers.valid eq true) and
                         (

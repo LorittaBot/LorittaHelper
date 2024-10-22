@@ -11,11 +11,12 @@ import net.perfectdreams.loritta.helper.LorittaHelper
 import net.perfectdreams.loritta.helper.utils.Constants
 import net.perfectdreams.loritta.morenitta.interactions.commands.*
 import net.perfectdreams.loritta.morenitta.interactions.commands.options.ApplicationCommandOptions
-import org.jetbrains.exposed.sql.SortOrder
+import org.jetbrains.exposed.sql.*
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.greaterEq
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.inList
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.isNotNull
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.isNull
-import org.jetbrains.exposed.sql.and
-import org.jetbrains.exposed.sql.or
-import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.transactions.transaction
 import java.time.Instant
 import java.util.*
@@ -94,9 +95,8 @@ class DailyCheckCommand(val helper: LorittaHelper) : SlashCommandDeclarationWrap
             val matchedSameClientIds = mutableMapOf<UUID, MutableSet<Long>>()
 
             val dailies = transaction(helper.databases.lorittaDatabase) {
-                Dailies.leftJoin(BrowserFingerprints).select {
-                    Dailies.receivedById inList usersIds
-                }.orderBy(Dailies.id, SortOrder.DESC)
+                Dailies.leftJoin(BrowserFingerprints).selectAll().where { Dailies.receivedById inList usersIds }
+                    .orderBy(Dailies.id, SortOrder.DESC)
                     .toList()
             }
 
@@ -202,9 +202,8 @@ class DailyCheckCommand(val helper: LorittaHelper) : SlashCommandDeclarationWrap
             val idToEmotes = mutableMapOf<Long, String>()
 
             val dailies = transaction(helper.databases.lorittaDatabase) {
-                Dailies.leftJoin(BrowserFingerprints).select {
-                    Dailies.ip inList ips
-                }.orderBy(Dailies.id, SortOrder.DESC)
+                Dailies.leftJoin(BrowserFingerprints).selectAll().where { Dailies.ip inList ips }
+                    .orderBy(Dailies.id, SortOrder.DESC)
                     .toList()
             }
 
@@ -265,9 +264,9 @@ class DailyCheckCommand(val helper: LorittaHelper) : SlashCommandDeclarationWrap
             }
 
             val banStates = transaction(helper.databases.lorittaDatabase) {
-                BannedUsers.select {
-                    BannedUsers.userId inList foundIds and (BannedUsers.valid eq true) and (BannedUsers.expiresAt.isNull() or (BannedUsers.expiresAt.isNotNull() and (BannedUsers.expiresAt greaterEq System.currentTimeMillis())))
-                }.toList()
+                BannedUsers.selectAll()
+                    .where { BannedUsers.userId inList foundIds and (BannedUsers.valid eq true) and (BannedUsers.expiresAt.isNull() or (BannedUsers.expiresAt.isNotNull() and (BannedUsers.expiresAt greaterEq System.currentTimeMillis()))) }
+                    .toList()
             }
 
             context.reply(true) {
@@ -331,9 +330,8 @@ class DailyCheckCommand(val helper: LorittaHelper) : SlashCommandDeclarationWrap
             val idToEmotes = mutableMapOf<Long, String>()
 
             val dailies = transaction(helper.databases.lorittaDatabase) {
-                Dailies.leftJoin(BrowserFingerprints).select {
-                    BrowserFingerprints.clientId inList clientIds
-                }.orderBy(Dailies.id, SortOrder.DESC)
+                Dailies.leftJoin(BrowserFingerprints).selectAll()
+                    .where { BrowserFingerprints.clientId inList clientIds }.orderBy(Dailies.id, SortOrder.DESC)
                     .toList()
             }
 
@@ -394,9 +392,9 @@ class DailyCheckCommand(val helper: LorittaHelper) : SlashCommandDeclarationWrap
             }
 
             val banStates = transaction(helper.databases.lorittaDatabase) {
-                BannedUsers.select {
-                    BannedUsers.userId inList foundIds and (BannedUsers.valid eq true) and (BannedUsers.expiresAt.isNull() or (BannedUsers.expiresAt.isNotNull() and (BannedUsers.expiresAt greaterEq System.currentTimeMillis())))
-                }.toList()
+                BannedUsers.selectAll()
+                    .where { BannedUsers.userId inList foundIds and (BannedUsers.valid eq true) and (BannedUsers.expiresAt.isNull() or (BannedUsers.expiresAt.isNotNull() and (BannedUsers.expiresAt greaterEq System.currentTimeMillis()))) }
+                    .toList()
             }
 
             context.reply(true) {

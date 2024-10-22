@@ -16,9 +16,8 @@ import net.perfectdreams.loritta.helper.tables.StartedSupportSolicitations
 import net.perfectdreams.loritta.helper.tables.TicketMessagesActivity
 import net.perfectdreams.loritta.helper.utils.ComponentDataUtils
 import net.perfectdreams.loritta.helper.utils.tickets.systems.HelpDeskTicketSystem
-import org.jetbrains.exposed.sql.SortOrder
-import org.jetbrains.exposed.sql.insert
-import org.jetbrains.exposed.sql.select
+import org.jetbrains.exposed.sql.*
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.transactions.transaction
 import java.time.Instant
 import java.util.*
@@ -41,9 +40,9 @@ class TicketListener(private val helper: LorittaHelper) {
 
         // Track user message
         transaction(helper.databases.helperDatabase) {
-            val startedSupportSolicitation = StartedSupportSolicitations.select {
-                StartedSupportSolicitations.threadId eq event.channel.idLong
-            }.orderBy(StartedSupportSolicitations.startedAt, SortOrder.DESC)
+            val startedSupportSolicitation = StartedSupportSolicitations.selectAll()
+                .where { StartedSupportSolicitations.threadId eq event.channel.idLong }
+                .orderBy(StartedSupportSolicitations.startedAt, SortOrder.DESC)
                 .limit(1)
                 .firstOrNull()
 

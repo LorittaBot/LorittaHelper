@@ -36,6 +36,10 @@ import net.perfectdreams.loritta.helper.utils.tickets.TicketsCache
 import net.perfectdreams.loritta.helper.utils.tickets.systems.HelpDeskTicketSystem
 import net.perfectdreams.loritta.helper.utils.tickets.systems.SparklyPowerHelpDeskTicketSystem
 import org.jetbrains.exposed.sql.*
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.greaterEq
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.isNotNull
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.isNull
 import org.jetbrains.exposed.sql.transactions.transaction
 import java.time.Instant
 import java.util.concurrent.TimeUnit
@@ -306,7 +310,7 @@ class ComponentInteractionListener(val m: LorittaHelper) : ListenerAdapter() {
 
             // Check if user is banned from Loritta, because it is super annoying them creating tickets just to ask them to be unbanned
             val currentBanState = transaction(m.databases.lorittaDatabase) {
-                BannedUsers.select {
+                BannedUsers.selectAll().where {
                     BannedUsers.userId eq event.user.idLong and
                             (BannedUsers.valid eq true) and
                             (

@@ -8,8 +8,8 @@ import net.perfectdreams.loritta.helper.utils.StaffProcessedReportResult
 import net.perfectdreams.loritta.morenitta.interactions.commands.ApplicationCommandContext
 import net.perfectdreams.loritta.morenitta.interactions.commands.SlashCommandArguments
 import net.perfectdreams.loritta.morenitta.interactions.commands.options.ApplicationCommandOptions
-import org.jetbrains.exposed.sql.count
-import org.jetbrains.exposed.sql.select
+import org.jetbrains.exposed.sql.*
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.greaterEq
 import org.jetbrains.exposed.sql.transactions.transaction
 import java.time.Instant
 
@@ -39,11 +39,11 @@ class StatsReportsExecutor(helper: LorittaHelper) : HelperExecutor(helper, Permi
         val result = transaction(helper.databases.helperDatabase) {
             val resultCount = StaffProcessedReports.result.count()
 
-            val currentBanStatus = StaffProcessedReports.slice(StaffProcessedReports.userId, StaffProcessedReports.result, resultCount).select {
-                StaffProcessedReports.timestamp greaterEq since
-            }
-                .groupBy(StaffProcessedReports.userId, StaffProcessedReports.result)
-                .toList()
+            val currentBanStatus =
+                StaffProcessedReports.select(StaffProcessedReports.userId, StaffProcessedReports.result, resultCount)
+                    .where { StaffProcessedReports.timestamp greaterEq since }
+                    .groupBy(StaffProcessedReports.userId, StaffProcessedReports.result)
+                    .toList()
 
             currentBanStatus.map { it[StaffProcessedReports.userId] }.toSet().map { userId ->
                 UserStatsResult(

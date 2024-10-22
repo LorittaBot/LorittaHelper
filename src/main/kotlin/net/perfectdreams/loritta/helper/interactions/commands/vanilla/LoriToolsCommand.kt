@@ -29,6 +29,10 @@ import net.perfectdreams.pantufa.rpc.PantufaRPCRequest
 import net.perfectdreams.pantufa.rpc.PantufaRPCResponse
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.greaterEq
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.inList
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.isNotNull
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.isNull
 import org.jetbrains.exposed.sql.transactions.transaction
 import java.awt.Color
 import java.time.Duration
@@ -78,7 +82,7 @@ class LoriToolsCommand(val helper: LorittaHelper) : SlashCommandDeclarationWrapp
         ) {
             val results = mutableListOf<BanResult>()
             transaction(helper.databases.lorittaDatabase) {
-                val currentBanStatuses = BannedUsers.select {
+                val currentBanStatuses = BannedUsers.selectAll().where {
                     BannedUsers.userId inList userIds and
                             (BannedUsers.valid eq true) and
                             (
@@ -336,7 +340,7 @@ class LoriToolsCommand(val helper: LorittaHelper) : SlashCommandDeclarationWrapp
             val results = mutableListOf<UnbanResult>()
             transaction(helper.databases.lorittaDatabase) {
                 // Checks if the user has any valid bans
-                val currentBanStatuses = BannedUsers.select {
+                val currentBanStatuses = BannedUsers.selectAll().where {
                     BannedUsers.userId inList userIds and
                             (BannedUsers.valid eq true) and
                             (
@@ -445,7 +449,7 @@ class LoriToolsCommand(val helper: LorittaHelper) : SlashCommandDeclarationWrapp
             val results = transaction(helper.databases.lorittaDatabase) {
                 val results = mutableListOf<BanRenameResult>()
 
-                val currentBansStatus = BannedUsers.select {
+                val currentBansStatus = BannedUsers.selectAll().where {
                     BannedUsers.userId inList userIds and
                             (BannedUsers.valid eq true) and
                             (

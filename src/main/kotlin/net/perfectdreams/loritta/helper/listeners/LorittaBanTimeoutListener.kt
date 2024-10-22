@@ -5,6 +5,10 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter
 import net.perfectdreams.loritta.cinnamon.pudding.tables.BannedUsers
 import net.perfectdreams.loritta.helper.LorittaHelper
 import org.jetbrains.exposed.sql.*
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.greaterEq
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.isNotNull
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.isNull
 import org.jetbrains.exposed.sql.transactions.transaction
 import java.time.Duration
 
@@ -23,7 +27,7 @@ class LorittaBanTimeoutListener(val m: LorittaHelper): ListenerAdapter() {
 
     private fun getBannedState(m: LorittaHelper, userId: Long): ResultRow? {
         return transaction(m.databases.lorittaDatabase) {
-            BannedUsers.select {
+            BannedUsers.selectAll().where {
                 BannedUsers.userId eq userId and
                         (BannedUsers.valid eq true) and
                         (

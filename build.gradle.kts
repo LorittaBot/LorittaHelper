@@ -67,9 +67,9 @@ dependencies {
     // Database
     implementation("org.postgresql:postgresql:42.3.3")
     implementation("com.zaxxer:HikariCP:5.0.1")
-    implementation("org.jetbrains.exposed:exposed-core:0.41.1")
-    implementation("org.jetbrains.exposed:exposed-dao:0.41.1")
-    implementation("org.jetbrains.exposed:exposed-jdbc:0.41.1")
+    implementation("org.jetbrains.exposed:exposed-core:0.55.0")
+    implementation("org.jetbrains.exposed:exposed-dao:0.55.0")
+    implementation("org.jetbrains.exposed:exposed-jdbc:0.55.0")
     implementation("net.perfectdreams.exposedpowerutils:postgres-power-utils:1.2.1")
     implementation("net.perfectdreams.exposedpowerutils:postgres-java-time:1.2.1")
     api("net.perfectdreams.exposedpowerutils:exposed-power-utils:1.2.1")
