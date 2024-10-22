@@ -6,6 +6,7 @@ import net.dv8tion.jda.api.entities.User
 import net.perfectdreams.loritta.cinnamon.pudding.services.UsersService
 import net.perfectdreams.loritta.cinnamon.pudding.tables.BannedUsers
 import net.perfectdreams.loritta.cinnamon.pudding.tables.Dailies
+import net.perfectdreams.loritta.cinnamon.pudding.tables.Profiles
 import net.perfectdreams.loritta.cinnamon.pudding.tablesrefactorlater.BrowserFingerprints
 import net.perfectdreams.loritta.helper.LorittaHelper
 import net.perfectdreams.loritta.helper.interactions.commands.vanilla.LoriToolsCommand
@@ -40,12 +41,12 @@ class CheckDupeClientIds(val helper: LorittaHelper) : RunnableCoroutine {
                 val now = Instant.now()
                     .minusSeconds(86_400)
 
-                val dailiesGotInLast24Hours = Dailies.innerJoin(BrowserFingerprints)
+                val dailiesGotInLast24Hours = Dailies
+                    .innerJoin(BrowserFingerprints)
+                    .innerJoin(Profiles, { Profiles.id }, { Dailies.receivedById })
                     .selectAll()
                     .where {
-                        Dailies.receivedAt greaterEq now.toEpochMilli() and (Dailies.receivedById notInSubQuery UsersService.validBannedUsersList(
-                            now.toEpochMilli()
-                        ))
+                        Dailies.receivedAt greaterEq now.toEpochMilli() and (Dailies.receivedById notInSubQuery UsersService.validBannedUsersList(now.toEpochMilli()))
                     }
                     .toList()
 
@@ -75,7 +76,8 @@ class CheckDupeClientIds(val helper: LorittaHelper) : RunnableCoroutine {
                                 user[Dailies.receivedById],
                                 clientIdThatAreBanned[BannedUsers.userId],
                                 clientIdThatAreBanned[BrowserFingerprints.clientId],
-                                clientIdThatAreBanned[BannedUsers.reason]
+                                clientIdThatAreBanned[BannedUsers.reason],
+                                user[Profiles.money]
                             )
                         )
                         alreadyChecked.add(clientIdThatAreBanned[BannedUsers.userId])
@@ -86,7 +88,7 @@ class CheckDupeClientIds(val helper: LorittaHelper) : RunnableCoroutine {
             }
 
             for (userToBeBanned in usersToBeBanned) {
-                channel.sendMessage("${Emotes.LORI_BAN_HAMMER} Banindo <@${userToBeBanned.userToBeBannedId}> (`${userToBeBanned.userToBeBannedId}`) pois ele é evasão de ban de <@${userToBeBanned.relatedUserId}> (`${userToBeBanned.relatedUserId}`), o meliante está banido por `${userToBeBanned.reason}` e o client ID dele é `${userToBeBanned.clientId}`").await()
+                channel.sendMessage("${Emotes.LORI_BAN_HAMMER} Banindo <@${userToBeBanned.userToBeBannedId}> (`${userToBeBanned.userToBeBannedId}`) pois ele é evasão de ban de <@${userToBeBanned.relatedUserId}> (`${userToBeBanned.relatedUserId}`), o meliante está banido por `${userToBeBanned.reason}`, o client ID dele é `${userToBeBanned.clientId}`, e atualmente ele possui ${userToBeBanned.sonhos} sonhos").await()
 
                 LoriToolsCommand.banUser(
                     helper,
@@ -109,6 +111,7 @@ class CheckDupeClientIds(val helper: LorittaHelper) : RunnableCoroutine {
         val userToBeBannedId: Long,
         val relatedUserId: Long,
         val clientId: UUID,
-        val reason: String
+        val reason: String,
+        val sonhos: Long
     )
 }
