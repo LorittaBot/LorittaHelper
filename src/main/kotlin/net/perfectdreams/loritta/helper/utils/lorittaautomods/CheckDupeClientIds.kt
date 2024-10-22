@@ -86,7 +86,7 @@ class CheckDupeClientIds(val helper: LorittaHelper) : RunnableCoroutine {
             }
 
             for (userToBeBanned in usersToBeBanned) {
-                channel.sendMessage("${Emotes.LORI_BAN_HAMMER} Banindo <@${userToBeBanned.userToBeBannedId}> (${userToBeBanned.userToBeBannedId}) pois ele é evasão de ban de <@${userToBeBanned.relatedUserId}> (`${userToBeBanned.relatedUserId}`), o meliante está banido por `${userToBeBanned.reason}` e o client ID dele é `${userToBeBanned.clientId}`").await()
+                channel.sendMessage("${Emotes.LORI_BAN_HAMMER} Banindo <@${userToBeBanned.userToBeBannedId}> (`${userToBeBanned.userToBeBannedId}`) pois ele é evasão de ban de <@${userToBeBanned.relatedUserId}> (`${userToBeBanned.relatedUserId}`), o meliante está banido por `${userToBeBanned.reason}` e o client ID dele é `${userToBeBanned.clientId}`").await()
 
                 LoriToolsCommand.banUser(
                     helper,

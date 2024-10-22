@@ -277,7 +277,7 @@ class LorittaHelper(val config: LorittaHelperConfig, val fanArtsConfig: FanArtsC
             LocalTime.of(5, 0),
             banEvasionChecker
         )
-        
+
         FAQEmbedUpdaterPortuguese(this, jda).start()
         FAQEmbedUpdaterEnglish(this, jda).start()
         FAQEmbedUpdaterSparklyPower(this, jda).start()
