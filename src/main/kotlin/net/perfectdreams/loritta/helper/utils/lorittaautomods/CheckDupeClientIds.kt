@@ -3,6 +3,7 @@ package net.perfectdreams.loritta.helper.utils.lorittaautomods
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import net.dv8tion.jda.api.entities.User
+import net.dv8tion.jda.api.utils.TimeFormat
 import net.perfectdreams.loritta.cinnamon.pudding.services.UsersService
 import net.perfectdreams.loritta.cinnamon.pudding.tables.BannedUsers
 import net.perfectdreams.loritta.cinnamon.pudding.tables.Profiles
@@ -50,9 +51,9 @@ class CheckDupeClientIds(val helper: LorittaHelper) : RunnableCoroutine {
 
         mutex.withLock {
             if (whoRequested != null) {
-                channel.sendMessage("${Emotes.LORI_COFFEE} Verificando meliantes que estão evadindo ban... Pedido por ${whoRequested.asMention} - Ensaio? $dryRun").await()
+                channel.sendMessage("# ${Emotes.SUPER_VIEIRINHA} VERIFICAÇÃO DE MELIANTES - ${TimeFormat.DATE_TIME_SHORT.format(Instant.now())}\n${Emotes.LORI_COFFEE} Verificando meliantes que estão evadindo ban... Pedido por ${whoRequested.asMention} - Ensaio? $dryRun").await()
             } else {
-                channel.sendMessage("${Emotes.LORI_COFFEE} Verificando meliantes que estão evadindo ban... *Verificação automática* - Ensaio? $dryRun").await()
+                channel.sendMessage("# ${Emotes.SUPER_VIEIRINHA} VERIFICAÇÃO DE MELIANTES - ${TimeFormat.DATE_TIME_SHORT.format(Instant.now())}\n${Emotes.LORI_COFFEE} Verificando meliantes que estão evadindo ban... *Verificação automática* - Ensaio? $dryRun").await()
             }
 
             val usersToBeBanned = transaction(helper.databases.lorittaDatabase) {
