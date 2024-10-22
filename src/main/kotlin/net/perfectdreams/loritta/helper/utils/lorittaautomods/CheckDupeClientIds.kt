@@ -112,7 +112,7 @@ class CheckDupeClientIds(val helper: LorittaHelper) : RunnableCoroutine {
 
                     LoriToolsCommand.banUser(
                         helper,
-                        helper.jda.selfUser.idLong,
+                        helper.jda.selfUser,
                         setOf(userToBeBanned.userToBeBannedId),
                         if (userToBeBanned.relatedUserIds.size == 1) {
                             "Evasão de Ban! (ID da conta banida: ${userToBeBanned.relatedUserIds.first()})"

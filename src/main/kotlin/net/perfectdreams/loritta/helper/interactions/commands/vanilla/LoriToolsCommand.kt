@@ -12,6 +12,7 @@ import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import mu.KotlinLogging
 import net.dv8tion.jda.api.entities.Activity
+import net.dv8tion.jda.api.entities.User
 import net.dv8tion.jda.api.entities.UserSnowflake
 import net.perfectdreams.loritta.cinnamon.pudding.tables.BannedUsers
 import net.perfectdreams.loritta.helper.LorittaHelper
@@ -86,7 +87,7 @@ class LoriToolsCommand(val helper: LorittaHelper) : SlashCommandDeclarationWrapp
             reason: String,
             expiresAt: Long?
         ) {
-            val results = banUser(helper, context.user.idLong, userIds, reason, expiresAt)
+            val results = banUser(helper, context.user, userIds, reason, expiresAt)
 
             for (result in results.results) {
                 when (result) {
@@ -100,24 +101,6 @@ class LoriToolsCommand(val helper: LorittaHelper) : SlashCommandDeclarationWrapp
                                     appendLine("Player ${sparklyResult.userName} foi banido do SparklyPower!")
                                 }
                             }
-                        }
-
-                        LoriToolsUtils.logToSaddestOfTheSads(
-                            helper,
-                            context.user,
-                            result.userId,
-                            "Usuário banido de usar a Loritta",
-                            expiresAt,
-                            reason,
-                            Color(237, 66, 69)
-                        )
-
-                        try {
-                            val guild = helper.jda.getGuildById(helper.config.guilds.community.id)
-                            guild?.timeoutFor(UserSnowflake.fromId(result.userId), Duration.ofDays(28))
-                                ?.reason("User is Loritta Banned!")
-                                ?.await()
-                        } catch (e: Exception) {
                         }
                     }
                     is UserIsAlreadyBannedResult -> {
@@ -135,7 +118,7 @@ class LoriToolsCommand(val helper: LorittaHelper) : SlashCommandDeclarationWrapp
 
         suspend fun banUser(
             helper: LorittaHelper,
-            bannedBy: Long,
+            bannedBy: User,
             userIds: Set<Long>,
             reason: String,
             expiresAt: Long?
@@ -209,6 +192,30 @@ class LoriToolsCommand(val helper: LorittaHelper) : SlashCommandDeclarationWrapp
                         // If an exception is thrown
                         logger.warn(e) { "Something went wrong while relaying user ${result.userId} ban to SparklyPower" }
                     }
+                }
+            }
+
+            for (result in results) {
+                when (result) {
+                    is UserBannedResult -> {
+                        LoriToolsUtils.logToSaddestOfTheSads(
+                            helper,
+                            bannedBy,
+                            result.userId,
+                            "Usuário banido de usar a Loritta",
+                            expiresAt,
+                            reason,
+                            Color(237, 66, 69)
+                        )
+
+                        try {
+                            val guild = helper.jda.getGuildById(helper.config.guilds.community.id)
+                            guild?.timeoutFor(UserSnowflake.fromId(result.userId), Duration.ofDays(28))
+                                ?.reason("User is Loritta Banned!")
+                                ?.await()
+                        } catch (e: Exception) { }
+                    }
+                    is UserIsAlreadyBannedResult -> {}
                 }
             }
 
