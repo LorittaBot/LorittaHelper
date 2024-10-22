@@ -12,7 +12,7 @@ import net.perfectdreams.loritta.helper.utils.extensions.await
 import net.perfectdreams.loritta.helper.utils.generateserverreport.GenerateAppealsReport
 import net.perfectdreams.loritta.helper.utils.generateserverreport.GenerateServerReport
 
-class AttachDenyReasonExecutor(helper: LorittaHelper, val jda: JDA) : HelperExecutor(helper, PermissionLevel.HELPER) {
+class AttachDenyReasonExecutor(helper: LorittaHelper) : HelperExecutor(helper, PermissionLevel.HELPER) {
     inner class Options : ApplicationCommandOptions() {
         val messageUrl = string("message_url", "Link da Mensagem")
 
@@ -27,6 +27,7 @@ class AttachDenyReasonExecutor(helper: LorittaHelper, val jda: JDA) : HelperExec
     )
 
     override suspend fun executeHelper(context: ApplicationCommandContext, args: SlashCommandArguments) {
+        val jda = context.user.jda
         val messageUrl = args[options.messageUrl]
         val reason = args[options.reason]
 

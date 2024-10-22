@@ -6,11 +6,11 @@ import net.perfectdreams.loritta.morenitta.interactions.commands.slashCommand
 import net.perfectdreams.loritta.helper.LorittaHelper
 import net.perfectdreams.loritta.helper.utils.slash.AttachDenyReasonExecutor
 
-class AttachDenyReasonCommand(val helper: LorittaHelper, val jda: JDA) : SlashCommandDeclarationWrapper {
+class AttachDenyReasonCommand(val helper: LorittaHelper) : SlashCommandDeclarationWrapper {
     override fun command() = slashCommand(
         "attachdenyreason",
         "Adiciona na mensagem da denúncia o motivo por qual ela foi negada"
     ) {
-        executor = AttachDenyReasonExecutor(helper, jda)
+        executor = AttachDenyReasonExecutor(helper)
     }
 }

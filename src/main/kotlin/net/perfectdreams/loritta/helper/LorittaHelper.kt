@@ -139,10 +139,10 @@ class LorittaHelper(val config: LorittaHelperConfig, val fanArtsConfig: FanArtsC
         commandManager.register(CheckCommandsCommand(this))
 
         commandManager.register(DailyCatcherCheckCommand(this))
-        commandManager.register(PendingScarletCommand(this, jda))
-        commandManager.register(PendingReportsCommand(this, jda))
+        commandManager.register(PendingScarletCommand(this))
+        commandManager.register(PendingReportsCommand(this))
         commandManager.register(IPLocationCommand(this))
-        commandManager.register(AttachDenyReasonCommand(this, jda))
+        commandManager.register(AttachDenyReasonCommand(this))
         commandManager.register(AllTransactionsCommand(this))
         commandManager.register(DirectDiscordCdnMessageCommand(this))
 

@@ -6,11 +6,11 @@ import net.perfectdreams.loritta.morenitta.interactions.commands.slashCommand
 import net.perfectdreams.loritta.helper.LorittaHelper
 import net.perfectdreams.loritta.helper.utils.slash.PendingReportsExecutor
 
-class PendingReportsCommand(val helper: LorittaHelper, val jda: JDA) : SlashCommandDeclarationWrapper {
+class PendingReportsCommand(val helper: LorittaHelper) : SlashCommandDeclarationWrapper {
     override fun command() = slashCommand(
         "pendingreports",
         "Veja os reports/apelos pendentes do mês! \uD83D\uDC6E")
     {
-        executor = PendingReportsExecutor(helper, jda)
+        executor = PendingReportsExecutor(helper)
     }
 }

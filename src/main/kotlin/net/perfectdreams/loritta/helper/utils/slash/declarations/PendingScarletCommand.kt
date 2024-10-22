@@ -6,11 +6,11 @@ import net.perfectdreams.loritta.morenitta.interactions.commands.slashCommand
 import net.perfectdreams.loritta.helper.LorittaHelper
 import net.perfectdreams.loritta.helper.utils.slash.PendingScarletExecutor
 
-class PendingScarletCommand(val helper: LorittaHelper, val jda: JDA) : SlashCommandDeclarationWrapper {
+class PendingScarletCommand(val helper: LorittaHelper) : SlashCommandDeclarationWrapper {
     override fun command() = slashCommand(
         "pendingscarlet",
         "Scarlet Police, on Ghetto Patrol \uD83D\uDC83")
     {
-        executor = PendingScarletExecutor(helper, jda)
+        executor = PendingScarletExecutor(helper)
     }
 }

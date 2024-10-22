@@ -16,7 +16,7 @@ import net.perfectdreams.loritta.helper.utils.generateserverreport.GenerateAppea
 import net.perfectdreams.loritta.helper.utils.generateserverreport.GenerateServerReport
 import net.perfectdreams.sequins.text.StringUtils
 
-class PendingReportsExecutor(helper: LorittaHelper, val jda: JDA) : HelperExecutor(helper, PermissionLevel.ADMIN) {
+class PendingReportsExecutor(helper: LorittaHelper) : HelperExecutor(helper, PermissionLevel.ADMIN) {
     private val logger = KotlinLogging.logger {}
 
     inner class Options : ApplicationCommandOptions() {
@@ -29,6 +29,7 @@ class PendingReportsExecutor(helper: LorittaHelper, val jda: JDA) : HelperExecut
     override val options = Options()
 
     override suspend fun executeHelper(context: ApplicationCommandContext, args: SlashCommandArguments) {
+        val jda = context.user.jda
         context.deferChannelMessage(false)
 
         val channelId = args[options.channel] ?: "${helper.config.guilds.community.channels.serverReports}"

@@ -14,7 +14,7 @@ import net.perfectdreams.loritta.helper.utils.dailycatcher.SuspiciousLevel
 import net.perfectdreams.loritta.helper.utils.extensions.await
 import net.perfectdreams.sequins.text.StringUtils
 
-class PendingScarletExecutor(helper: LorittaHelper, val jda: JDA) : HelperExecutor(helper, PermissionLevel.ADMIN) {
+class PendingScarletExecutor(helper: LorittaHelper) : HelperExecutor(helper, PermissionLevel.ADMIN) {
     private val logger = KotlinLogging.logger {}
 
     inner class Options : ApplicationCommandOptions() {
@@ -28,6 +28,7 @@ class PendingScarletExecutor(helper: LorittaHelper, val jda: JDA) : HelperExecut
     override val options = Options()
 
     override suspend fun executeHelper(context: ApplicationCommandContext, args: SlashCommandArguments) {
+        val jda = context.user.jda
         context.deferChannelMessage(false)
 
         val channel = jda.getTextChannelById(DailyCatcherManager.SCARLET_POLICE_CHANNEL_ID) ?: return
