@@ -67,13 +67,12 @@ class CheckDupeClientIds(val helper: LorittaHelper) : RunnableCoroutine {
                     .toList()
 
                 val usersToBeBanned = mutableListOf<BannedUser>()
-                val alreadyChecked = mutableSetOf<Long>()
 
                 for (clientIdThatAreBanned in clientIdsThatAreBanned) {
-                    if (!alreadyChecked.contains(clientIdThatAreBanned[BannedUsers.userId])) {
-                        val user = dailiesGotInLast24Hours.first { it[BrowserFingerprints.clientId] == clientIdThatAreBanned[BrowserFingerprints.clientId] }
-                        // println("User ${user[Dailies.receivedById]} should be banned because ${clientIdThatAreBanned[BannedUsers.userId]} is banned")
+                    val users = dailiesGotInLast24Hours.filter { it[BrowserFingerprints.clientId] == clientIdThatAreBanned[BrowserFingerprints.clientId] }
+                    // println("User ${user[Dailies.receivedById]} should be banned because ${clientIdThatAreBanned[BannedUsers.userId]} is banned")
 
+                    for (user in users) {
                         usersToBeBanned.add(
                             BannedUser(
                                 user[Dailies.receivedById],
@@ -83,7 +82,6 @@ class CheckDupeClientIds(val helper: LorittaHelper) : RunnableCoroutine {
                                 user[Profiles.money]
                             )
                         )
-                        alreadyChecked.add(clientIdThatAreBanned[BannedUsers.userId])
                     }
                 }
 
