@@ -4,6 +4,8 @@ import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
 import io.ktor.http.content.*
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import kotlinx.datetime.toKotlinInstant
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
@@ -68,6 +70,10 @@ class LoriToolsCommand(val helper: LorittaHelper) : SlashCommandDeclarationWrapp
         subcommand("status", "Altera o status da Loritta") {
             executor = LoriStatusExecutor(helper)
         }
+
+        subcommand("checkdupes", "Verifica pessoas evadindo ban") {
+            executor = LoriStatusExecutor(helper)
+        }
     }
 
     companion object {
@@ -80,82 +86,12 @@ class LoriToolsCommand(val helper: LorittaHelper) : SlashCommandDeclarationWrapp
             reason: String,
             expiresAt: Long?
         ) {
-            val results = mutableListOf<BanResult>()
-            transaction(helper.databases.lorittaDatabase) {
-                val currentBanStatuses = BannedUsers.selectAll().where {
-                    BannedUsers.userId inList userIds and
-                            (BannedUsers.valid eq true) and
-                            (
-                                    BannedUsers.expiresAt.isNull()
-                                            or
-                                            (BannedUsers.expiresAt.isNotNull() and (BannedUsers.expiresAt greaterEq System.currentTimeMillis())))
-                }
-                    .orderBy(BannedUsers.bannedAt, SortOrder.DESC)
-                    .toList()
+            val results = banUser(helper, context.user.idLong, userIds, reason, expiresAt)
 
-                for (currentBanStatus in currentBanStatuses) {
-                    results.add(
-                        UserIsAlreadyBannedResult(
-                            currentBanStatus[BannedUsers.userId],
-                            currentBanStatus[BannedUsers.reason],
-                            currentBanStatus[BannedUsers.expiresAt],
-                            currentBanStatus[BannedUsers.bannedBy]
-                        )
-                    )
-                }
-
-                val bannedUsersIds = currentBanStatuses.map { it[BannedUsers.userId] }
-                val usersThatCanBeBanned = userIds.filter { it !in bannedUsersIds }
-
-                for (userId in usersThatCanBeBanned) {
-                    val banId = BannedUsers.insertAndGetId {
-                        it[BannedUsers.userId] = userId
-                        it[valid] = true
-                        it[bannedAt] = System.currentTimeMillis()
-                        it[BannedUsers.expiresAt] = expiresAt
-                        it[BannedUsers.reason] = reason
-                        it[bannedBy] = context.user.idLong
-                    }
-                    results.add(UserBannedResult(banId.value, userId, reason))
-                }
-            }
-
-            // Get all banned users and relay them to SparklyPower
-            val sparklyResults = mutableMapOf<UserBannedResult, BanSparklyPowerPlayerLorittaBannedResponse>()
-            val pantufaUrl = helper.config.pantufaUrl
-
-            if (pantufaUrl != null) {
-                for (result in results.filterIsInstance<UserBannedResult>()) {
-                    try {
-                        val response = Json.decodeFromString<PantufaRPCResponse>(
-                            LorittaHelper.http.post(pantufaUrl.removeSuffix("/") + "/rpc") {
-                                setBody(
-                                    TextContent(
-                                        Json.encodeToString<PantufaRPCRequest>(
-                                            BanSparklyPowerPlayerLorittaBannedRequest(
-                                                result.userId,
-                                                result.reason
-                                            )
-                                        ),
-                                        ContentType.Application.Json
-                                    )
-                                )
-                            }.bodyAsText()
-                        )
-
-                        if (response is BanSparklyPowerPlayerLorittaBannedResponse)
-                            sparklyResults[result] = response
-                    } catch (e: Exception) {
-                        // If an exception is thrown
-                        logger.warn(e) { "Something went wrong while relaying user ${result.userId} ban to SparklyPower" }
-                    }
-                }
-            }
-
-            for (result in results) {
+            for (result in results.results) {
                 when (result) {
                     is UserBannedResult -> {
-                        val sparklyResult = sparklyResults[result]
+                        val sparklyResult = results.sparklyResults[result]
 
                         context.reply(true) {
                             content = buildString {
@@ -197,20 +133,110 @@ class LoriToolsCommand(val helper: LorittaHelper) : SlashCommandDeclarationWrapp
             }
         }
 
-        private sealed class BanResult
+        suspend fun banUser(
+            helper: LorittaHelper,
+            bannedBy: Long,
+            userIds: Set<Long>,
+            reason: String,
+            expiresAt: Long?
+        ): LorittaBanResult {
+            val results = mutableListOf<BanResult>()
+            transaction(helper.databases.lorittaDatabase) {
+                val currentBanStatuses = BannedUsers.selectAll().where {
+                    BannedUsers.userId inList userIds and
+                            (BannedUsers.valid eq true) and
+                            (
+                                    BannedUsers.expiresAt.isNull()
+                                            or
+                                            (BannedUsers.expiresAt.isNotNull() and (BannedUsers.expiresAt greaterEq System.currentTimeMillis())))
+                }
+                    .orderBy(BannedUsers.bannedAt, SortOrder.DESC)
+                    .toList()
 
-        private class UserBannedResult(
+                for (currentBanStatus in currentBanStatuses) {
+                    results.add(
+                        UserIsAlreadyBannedResult(
+                            currentBanStatus[BannedUsers.userId],
+                            currentBanStatus[BannedUsers.reason],
+                            currentBanStatus[BannedUsers.expiresAt],
+                            currentBanStatus[BannedUsers.bannedBy]
+                        )
+                    )
+                }
+
+                val bannedUsersIds = currentBanStatuses.map { it[BannedUsers.userId] }
+                val usersThatCanBeBanned = userIds.filter { it !in bannedUsersIds }
+
+                for (userId in usersThatCanBeBanned) {
+                    val banId = BannedUsers.insertAndGetId {
+                        it[BannedUsers.userId] = userId
+                        it[valid] = true
+                        it[bannedAt] = System.currentTimeMillis()
+                        it[BannedUsers.expiresAt] = expiresAt
+                        it[BannedUsers.reason] = reason
+                        it[BannedUsers.bannedBy] = bannedBy
+                    }
+                    results.add(UserBannedResult(banId.value, userId, reason))
+                }
+            }
+
+            // Get all banned users and relay them to SparklyPower
+            val sparklyResults = mutableMapOf<UserBannedResult, BanSparklyPowerPlayerLorittaBannedResponse>()
+            val pantufaUrl = helper.config.pantufaUrl
+
+            if (pantufaUrl != null) {
+                for (result in results.filterIsInstance<UserBannedResult>()) {
+                    try {
+                        val response = Json.decodeFromString<PantufaRPCResponse>(
+                            LorittaHelper.http.post(pantufaUrl.removeSuffix("/") + "/rpc") {
+                                setBody(
+                                    TextContent(
+                                        Json.encodeToString<PantufaRPCRequest>(
+                                            BanSparklyPowerPlayerLorittaBannedRequest(
+                                                result.userId,
+                                                result.reason
+                                            )
+                                        ),
+                                        ContentType.Application.Json
+                                    )
+                                )
+                            }.bodyAsText()
+                        )
+
+                        if (response is BanSparklyPowerPlayerLorittaBannedResponse)
+                            sparklyResults[result] = response
+                    } catch (e: Exception) {
+                        // If an exception is thrown
+                        logger.warn(e) { "Something went wrong while relaying user ${result.userId} ban to SparklyPower" }
+                    }
+                }
+            }
+
+            return LorittaBanResult(
+                results,
+                sparklyResults
+            )
+        }
+
+        sealed class BanResult
+
+        class UserBannedResult(
             val id: Long,
             val userId: Long,
             val reason: String
         ) : BanResult()
 
-        private class UserIsAlreadyBannedResult(
+        class UserIsAlreadyBannedResult(
             val userId: Long,
             val reason: String,
             val expiresAt: Long?,
             val bannedBy: Long?
         ) : BanResult()
+
+        data class LorittaBanResult(
+            val results: List<BanResult>,
+            val sparklyResults: Map<UserBannedResult, BanSparklyPowerPlayerLorittaBannedResponse>
+        )
     }
 
     class LoriBanExecutor(helper: LorittaHelper) : HelperExecutor(helper, PermissionLevel.ADMIN) {
@@ -632,6 +658,20 @@ class LoriToolsCommand(val helper: LorittaHelper) : SlashCommandDeclarationWrapp
                         content = "Não autorizado, tem certeza que o token da API está correto?"
                     }
                 }
+            }
+        }
+    }
+
+    class LoriCheckDupesExecutor(helper: LorittaHelper) : HelperExecutor(helper, PermissionLevel.ADMIN) {
+        override suspend fun executeHelper(context: ApplicationCommandContext, args: SlashCommandArguments) {
+            GlobalScope.launch {
+                helper.banEvasionChecker.checkAndBanDupeClientIds(context.user)
+            }
+
+            context.reply(false) {
+                styled(
+                    "Você solicitou uma verificação de contas evadindo ban, em breve eu irei processar e enviar no <#${helper.config.guilds.community.channels.lorittaAutoMod}> :3"
+                )
             }
         }
     }

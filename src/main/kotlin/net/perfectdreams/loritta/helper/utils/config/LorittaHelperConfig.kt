@@ -86,7 +86,8 @@ data class LorittaHelperConfig(
                 val openBar: Long,
                 val sadCatsTribunal: Long,
                 val reportsRelay: Long,
-                val appeals: Long
+                val appeals: Long,
+                val lorittaAutoMod: Long
             )
 
             @Serializable

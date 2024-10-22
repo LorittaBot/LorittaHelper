@@ -37,6 +37,8 @@ import net.perfectdreams.loritta.helper.utils.faqembed.FAQEmbedUpdaterPortuguese
 import net.perfectdreams.loritta.helper.utils.faqembed.FAQEmbedUpdaterSparklyPower
 import net.perfectdreams.loritta.helper.utils.faqembed.FAQEmbedUpdaterStaffFAQ
 import net.perfectdreams.loritta.helper.utils.generateserverreport.PendingReportsListTask
+import net.perfectdreams.loritta.helper.utils.lorittaautomods.CheckDupeClientIds
+import net.perfectdreams.loritta.helper.utils.scheduleCoroutineEveryDayAtSpecificTime
 import net.perfectdreams.loritta.helper.utils.slash.declarations.*
 import net.perfectdreams.loritta.helper.utils.tickets.TicketUtils
 import net.perfectdreams.loritta.helper.utils.topsonhos.TopSonhosRankingSender
@@ -48,6 +50,7 @@ import net.perfectdreams.loritta.serializable.dashboard.responses.LorittaDashboa
 import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.transactions.transaction
 import java.time.LocalDateTime
+import java.time.LocalTime
 import java.time.ZoneId
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
@@ -87,6 +90,7 @@ class LorittaHelper(val config: LorittaHelperConfig, val fanArtsConfig: FanArtsC
 
     var dailyCatcherManager: DailyCatcherManager? = null
     var dailyShopWinners: DailyShopWinners? = null
+    val banEvasionChecker = CheckDupeClientIds(this)
 
     val galleryOfDreamsClient = fanArtsConfig?.let {
         GalleryOfDreamsClient(
@@ -105,6 +109,8 @@ class LorittaHelper(val config: LorittaHelperConfig, val fanArtsConfig: FanArtsC
             }
         )
     }
+
+    val tasksScope = CoroutineScope(Dispatchers.Default + SupervisorJob())
 
     fun start() {
         languageManager.loadLanguagesAndContexts()
@@ -265,6 +271,13 @@ class LorittaHelper(val config: LorittaHelperConfig, val fanArtsConfig: FanArtsC
             TimeUnit.MINUTES
         )
 
+        scheduleCoroutineEveryDayAtSpecificTime(
+            CheckDupeClientIds::class.simpleName!!,
+            tasksScope,
+            LocalTime.of(5, 0),
+            banEvasionChecker
+        )
+        
         FAQEmbedUpdaterPortuguese(this, jda).start()
         FAQEmbedUpdaterEnglish(this, jda).start()
         FAQEmbedUpdaterSparklyPower(this, jda).start()
