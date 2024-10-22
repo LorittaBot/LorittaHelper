@@ -58,9 +58,9 @@ class CheckDupeClientIds(val helper: LorittaHelper) : RunnableCoroutine {
 
             val usersToBeBanned = transaction(helper.databases.lorittaDatabase) {
                 val now = Instant.now()
-                    .minusSeconds(86_400)
+                    .minusSeconds(604_800) // 7 days
 
-                val dailiesGotInLast24Hours = Dailies
+                val dailiesRecentlyRetrievedHours = Dailies
                     .innerJoin(BrowserFingerprints)
                     .innerJoin(Profiles, { Profiles.id }, { Dailies.receivedById })
                     .selectAll()
@@ -69,37 +69,38 @@ class CheckDupeClientIds(val helper: LorittaHelper) : RunnableCoroutine {
                     }
                     .toList()
 
-                val clientIds = dailiesGotInLast24Hours.map { it[BrowserFingerprints.clientId] }
-
-                val clientIdsThatAreBanned = Dailies
-                    .innerJoin(BrowserFingerprints)
-                    .innerJoin(BannedUsers, { Dailies.receivedById }, { BannedUsers.userId })
-                    .selectAll()
-                    .where {
-                        BrowserFingerprints.clientId inList clientIds and (BannedUsers.userId inSubQuery validBannedUsersList(now.toEpochMilli()))
-                    }
-                    .toList()
-
-                val usersToBeBanned = mutableListOf<BannedUser>()
+                val allClientIds = dailiesRecentlyRetrievedHours.map { it[BrowserFingerprints.clientId] }
                 val alreadyChecked = mutableSetOf<Long>()
+                val usersToBeBanned = mutableListOf<BannedUser>()
 
-                for (user in dailiesGotInLast24Hours) {
-                    if (user[Dailies.receivedById] in alreadyChecked)
-                        continue
+                allClientIds.chunked(65_535).forEach { clientIds ->
+                    val clientIdsThatAreBanned = Dailies
+                        .innerJoin(BrowserFingerprints)
+                        .innerJoin(BannedUsers, { Dailies.receivedById }, { BannedUsers.userId })
+                        .selectAll()
+                        .where {
+                            BrowserFingerprints.clientId inList clientIds and (BannedUsers.userId inSubQuery validBannedUsersList(now.toEpochMilli()))
+                        }
+                        .toList()
+                    
+                    for (user in dailiesRecentlyRetrievedHours) {
+                        if (user[Dailies.receivedById] in alreadyChecked)
+                            continue
 
-                    val bannedUsersAssociatedWithThisUser = clientIdsThatAreBanned.filter { it[BrowserFingerprints.clientId] == user[BrowserFingerprints.clientId] }
+                        val bannedUsersAssociatedWithThisUser = clientIdsThatAreBanned.filter { it[BrowserFingerprints.clientId] == user[BrowserFingerprints.clientId] }
 
-                    if (bannedUsersAssociatedWithThisUser.isNotEmpty()) {
-                        usersToBeBanned.add(
-                            BannedUser(
-                                user[Dailies.receivedById],
-                                bannedUsersAssociatedWithThisUser.map { it[BannedUsers.userId] }.distinct(),
-                                user[BrowserFingerprints.clientId],
-                                bannedUsersAssociatedWithThisUser.minBy { it[BannedUsers.bannedAt] }[BannedUsers.reason],
-                                user[Profiles.money]
+                        if (bannedUsersAssociatedWithThisUser.isNotEmpty()) {
+                            usersToBeBanned.add(
+                                BannedUser(
+                                    user[Dailies.receivedById],
+                                    bannedUsersAssociatedWithThisUser.map { it[BannedUsers.userId] }.distinct(),
+                                    user[BrowserFingerprints.clientId],
+                                    bannedUsersAssociatedWithThisUser.minBy { it[BannedUsers.bannedAt] }[BannedUsers.reason],
+                                    user[Profiles.money]
+                                )
                             )
-                        )
-                        alreadyChecked.add(user[Dailies.receivedById])
+                            alreadyChecked.add(user[Dailies.receivedById])
+                        }
                     }
                 }
 
