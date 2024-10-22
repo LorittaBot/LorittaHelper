@@ -127,50 +127,6 @@ class LorittaHelper(val config: LorittaHelperConfig, val fanArtsConfig: FanArtsC
             )
         }
 
-        // We only care about specific intents
-        val jda = JDABuilder.createLight(
-            config.helper.token,
-            GatewayIntent.DIRECT_MESSAGES,
-            GatewayIntent.MESSAGE_CONTENT,
-            GatewayIntent.GUILD_MESSAGES,
-            GatewayIntent.GUILD_BANS,
-            GatewayIntent.GUILD_MEMBERS,
-            GatewayIntent.GUILD_MESSAGE_REACTIONS
-        )
-            .addEventListeners(
-                InteractionsListener(this),
-                MessageListener(this),
-                BanListener(this),
-                CheckLoriBannedUsersListener(this),
-                PrivateMessageListener(this),
-                ApproveReportsOnReactionListener(this),
-                AddReactionsToMessagesListener(this),
-                ApproveAppealsOnReactionListener(this),
-                CreateSparklyThreadsListener(),
-                LorittaBanTimeoutListener(this),
-                ComponentInteractionListener(this),
-                AutoCloseTicketWhenMemberLeavesListener(this),
-            )
-            .setMemberCachePolicy(
-                MemberCachePolicy.ALL
-            )
-            .setRawEventsEnabled(true)
-            .setActivity(Activity.customStatus("https://youtu.be/CNPdO5TZ1DQ"))
-            .build()
-            .awaitReady()
-
-        this.jda = jda
-        ticketUtils = TicketUtils(this)
-        
-        runBlocking {
-            for (system in ticketUtils.systems.values) {
-                val type = system.systemType
-                val cache = system.cache
-                logger.info { "Populating ${type}'s ticket cache..." }
-                cache.populateCache()
-                logger.info { "Now tracking ${cache.tickets.size} tickets!" }
-            }
-        }
 
         commandManager.register(LoriToolsCommand(this))
         commandManager.register(TicketUtilsCommand(this))
@@ -221,6 +177,51 @@ class LorittaHelper(val config: LorittaHelperConfig, val fanArtsConfig: FanArtsC
             // commandManager.register(PatchFanArtOnGalleryButtonExecutor(this, galleryOfDreamsClient))
 
             // commandManager.register(PatchFanArtSelectBadgesSelectMenuExecutor(this, galleryOfDreamsClient))
+        }
+        
+        // We only care about specific intents
+        val jda = JDABuilder.createLight(
+            config.helper.token,
+            GatewayIntent.DIRECT_MESSAGES,
+            GatewayIntent.MESSAGE_CONTENT,
+            GatewayIntent.GUILD_MESSAGES,
+            GatewayIntent.GUILD_BANS,
+            GatewayIntent.GUILD_MEMBERS,
+            GatewayIntent.GUILD_MESSAGE_REACTIONS
+        )
+            .addEventListeners(
+                InteractionsListener(this),
+                MessageListener(this),
+                BanListener(this),
+                CheckLoriBannedUsersListener(this),
+                PrivateMessageListener(this),
+                ApproveReportsOnReactionListener(this),
+                AddReactionsToMessagesListener(this),
+                ApproveAppealsOnReactionListener(this),
+                CreateSparklyThreadsListener(),
+                LorittaBanTimeoutListener(this),
+                ComponentInteractionListener(this),
+                AutoCloseTicketWhenMemberLeavesListener(this),
+            )
+            .setMemberCachePolicy(
+                MemberCachePolicy.ALL
+            )
+            .setRawEventsEnabled(true)
+            .setActivity(Activity.customStatus("https://youtu.be/CNPdO5TZ1DQ"))
+            .build()
+            .awaitReady()
+
+        this.jda = jda
+        ticketUtils = TicketUtils(this)
+        
+        runBlocking {
+            for (system in ticketUtils.systems.values) {
+                val type = system.systemType
+                val cache = system.cache
+                logger.info { "Populating ${type}'s ticket cache..." }
+                cache.populateCache()
+                logger.info { "Now tracking ${cache.tickets.size} tickets!" }
+            }
         }
 
         // TODO: Fix this!
