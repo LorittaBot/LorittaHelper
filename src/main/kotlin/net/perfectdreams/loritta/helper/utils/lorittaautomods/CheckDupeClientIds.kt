@@ -5,9 +5,9 @@ import kotlinx.coroutines.sync.withLock
 import net.dv8tion.jda.api.entities.User
 import net.perfectdreams.loritta.cinnamon.pudding.services.UsersService
 import net.perfectdreams.loritta.cinnamon.pudding.tables.BannedUsers
-import net.perfectdreams.loritta.cinnamon.pudding.tables.Dailies
 import net.perfectdreams.loritta.cinnamon.pudding.tables.Profiles
 import net.perfectdreams.loritta.cinnamon.pudding.tablesrefactorlater.BrowserFingerprints
+import net.perfectdreams.loritta.cinnamon.pudding.tablesrefactorlater.Dailies
 import net.perfectdreams.loritta.helper.LorittaHelper
 import net.perfectdreams.loritta.helper.interactions.commands.vanilla.LoriToolsCommand
 import net.perfectdreams.loritta.helper.utils.Emotes
