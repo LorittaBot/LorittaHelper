@@ -15,12 +15,27 @@ import net.perfectdreams.loritta.helper.utils.RunnableCoroutine
 import net.perfectdreams.loritta.helper.utils.extensions.await
 import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.innerJoin
+import org.jetbrains.exposed.sql.or
 import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.transaction
 import java.time.Instant
-import java.util.UUID
+import java.util.*
 
 class CheckDupeClientIds(val helper: LorittaHelper) : RunnableCoroutine {
+    companion object {
+        fun validBannedUsersList(currentMillis: Long) = BannedUsers.select(BannedUsers.userId).where {
+            (BannedUsers.valid eq true) and
+                    (
+                            BannedUsers.expiresAt.isNull()
+                                    or
+                                    (
+                                            BannedUsers.expiresAt.isNotNull() and
+                                                    (BannedUsers.expiresAt greaterEq currentMillis))
+                            )
+
+        }
+    }
+
     private val mutex = Mutex()
 
     override suspend fun run() {
@@ -49,7 +64,7 @@ class CheckDupeClientIds(val helper: LorittaHelper) : RunnableCoroutine {
                     .innerJoin(Profiles, { Profiles.id }, { Dailies.receivedById })
                     .selectAll()
                     .where {
-                        Dailies.receivedAt greaterEq now.toEpochMilli() and (Dailies.receivedById notInSubQuery UsersService.validBannedUsersList(now.toEpochMilli()))
+                        Dailies.receivedAt greaterEq now.toEpochMilli() and (Dailies.receivedById notInSubQuery validBannedUsersList(now.toEpochMilli()))
                     }
                     .toList()
 
@@ -60,9 +75,7 @@ class CheckDupeClientIds(val helper: LorittaHelper) : RunnableCoroutine {
                     .innerJoin(BannedUsers, { Dailies.receivedById }, { BannedUsers.userId })
                     .selectAll()
                     .where {
-                        BrowserFingerprints.clientId inList clientIds and (BannedUsers.userId inSubQuery UsersService.validBannedUsersList(
-                            now.toEpochMilli()
-                        ))
+                        BrowserFingerprints.clientId inList clientIds and (BannedUsers.userId inSubQuery validBannedUsersList(now.toEpochMilli()))
                     }
                     .toList()
 
