@@ -40,7 +40,7 @@ class InteractionsListener(private val loritta: LorittaHelper) : ListenerAdapter
 
         event.jda.updateCommands {
             addCommands(*commands.toTypedArray())
-        }.complete()
+        }.queue()
     }
 
     override fun onSlashCommandInteraction(event: SlashCommandInteractionEvent) {
