@@ -65,7 +65,7 @@ dependencies {
     implementation("com.ibm.icu:icu4j:71.1")
 
     // Database
-    implementation("org.postgresql:postgresql:42.3.3")
+    implementation("org.postgresql:postgresql:42.7.4")
     implementation("com.zaxxer:HikariCP:5.0.1")
     implementation("org.jetbrains.exposed:exposed-core:0.55.0")
     implementation("org.jetbrains.exposed:exposed-dao:0.55.0")

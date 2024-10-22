@@ -73,7 +73,8 @@ class CheckDupeClientIds(val helper: LorittaHelper) : RunnableCoroutine {
                 val alreadyChecked = mutableSetOf<Long>()
                 val usersToBeBanned = mutableListOf<BannedUser>()
 
-                allClientIds.chunked(65_535).forEach { clientIds ->
+                // We can't actually chunk by 65_535 because it is ALL PARAMETERS of the query (every client ID + the subquery)
+                allClientIds.chunked(65_530).forEach { clientIds ->
                     val clientIdsThatAreBanned = Dailies
                         .innerJoin(BrowserFingerprints)
                         .innerJoin(BannedUsers, { Dailies.receivedById }, { BannedUsers.userId })
@@ -82,7 +83,7 @@ class CheckDupeClientIds(val helper: LorittaHelper) : RunnableCoroutine {
                             BrowserFingerprints.clientId inList clientIds and (BannedUsers.userId inSubQuery validBannedUsersList(now.toEpochMilli()))
                         }
                         .toList()
-                    
+
                     for (user in dailiesRecentlyRetrievedHours) {
                         if (user[Dailies.receivedById] in alreadyChecked)
                             continue
