@@ -95,7 +95,7 @@ jib {
     }
 
     from {
-        image = "openjdk:17-slim-bullseye"
+        image = "eclipse-temurin:21-jammy"
     }
 }
 
