@@ -35,6 +35,14 @@ class InteractionsListener(private val loritta: LorittaHelper) : ListenerAdapter
     }
     private var hasAlreadyGloballyUpdatedTheCommands = false
 
+    override fun onReady(event: ReadyEvent) {
+        val commands = loritta.commandManager.slashCommands.map { loritta.commandManager.convertDeclarationToJDA(it) } + loritta.commandManager.userCommands.map { loritta.commandManager.convertDeclarationToJDA(it) } + loritta.commandManager.messageCommands.map { loritta.commandManager.convertDeclarationToJDA(it) }
+
+        event.jda.updateCommands {
+            addCommands(*commands.toTypedArray())
+        }.complete()
+    }
+
     override fun onSlashCommandInteraction(event: SlashCommandInteractionEvent) {
         GlobalScope.launch {
             var rootDeclaration: SlashCommandDeclaration? = null
