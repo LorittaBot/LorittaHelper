@@ -72,7 +72,7 @@ class LoriToolsCommand(val helper: LorittaHelper) : SlashCommandDeclarationWrapp
         }
 
         subcommand("checkdupes", "Verifica pessoas evadindo ban") {
-            executor = LoriStatusExecutor(helper)
+            executor = LoriCheckDupesExecutor(helper)
         }
     }
 
