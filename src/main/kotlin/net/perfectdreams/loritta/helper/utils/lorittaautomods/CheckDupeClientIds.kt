@@ -107,7 +107,7 @@ class CheckDupeClientIds(val helper: LorittaHelper) : RunnableCoroutine {
 
             for (userToBeBanned in usersToBeBanned) {
                 if (!dryRun) {
-                    channel.sendMessage("${Emotes.LORI_BAN_HAMMER} Banindo <@${userToBeBanned.userToBeBannedId}> (`${userToBeBanned.userToBeBannedId}`) pois ele é evasão de ban de ${userToBeBanned.relatedUserIds.joinToString { "<@${userToBeBanned.relatedUserIds}> (`${userToBeBanned.relatedUserIds}`)"}}, o meliante está banido por `${userToBeBanned.reason}` (motivo do ban mais antigo), o client ID dele é `${userToBeBanned.clientId}`, e atualmente ele possui ${userToBeBanned.sonhos} sonhos").await()
+                    channel.sendMessage("${Emotes.LORI_BAN_HAMMER} Banindo <@${userToBeBanned.userToBeBannedId}> (`${userToBeBanned.userToBeBannedId}`) pois ele é evasão de ban de ${userToBeBanned.relatedUserIds.joinToString { "<@$it> (`$it`)"}}, o meliante está banido por `${userToBeBanned.reason}` (motivo do ban mais antigo), o client ID dele é `${userToBeBanned.clientId}`, e atualmente ele possui ${userToBeBanned.sonhos} sonhos").await()
 
                     LoriToolsCommand.banUser(
                         helper,
@@ -121,7 +121,7 @@ class CheckDupeClientIds(val helper: LorittaHelper) : RunnableCoroutine {
                         null
                     )
                 } else {
-                    channel.sendMessage("${Emotes.LORI_BAN_HAMMER} Banindo <@${userToBeBanned.userToBeBannedId}> (`${userToBeBanned.userToBeBannedId}`) pois ele é evasão de ban de ${userToBeBanned.relatedUserIds.joinToString { "<@${userToBeBanned.relatedUserIds}> (`${userToBeBanned.relatedUserIds}`)"}}, o meliante está banido por `${userToBeBanned.reason}` (motivo do ban mais antigo), o client ID dele é `${userToBeBanned.clientId}`, e atualmente ele possui ${userToBeBanned.sonhos} sonhos (ensaio, usuário não foi banido)").await()
+                    channel.sendMessage("${Emotes.LORI_BAN_HAMMER} Banindo <@${userToBeBanned.userToBeBannedId}> (`${userToBeBanned.userToBeBannedId}`) pois ele é evasão de ban de ${userToBeBanned.relatedUserIds.joinToString { "<@$it> (`$it`)"}}, o meliante está banido por `${userToBeBanned.reason}` (motivo do ban mais antigo), o client ID dele é `${userToBeBanned.clientId}`, e atualmente ele possui ${userToBeBanned.sonhos} sonhos (ensaio, usuário não foi banido)").await()
                 }
             }
 
