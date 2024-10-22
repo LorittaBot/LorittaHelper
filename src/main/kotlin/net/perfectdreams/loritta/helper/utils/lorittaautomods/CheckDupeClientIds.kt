@@ -67,21 +67,25 @@ class CheckDupeClientIds(val helper: LorittaHelper) : RunnableCoroutine {
                     .toList()
 
                 val usersToBeBanned = mutableListOf<BannedUser>()
+                val alreadyChecked = mutableSetOf<Long>()
 
-                for (clientIdThatAreBanned in clientIdsThatAreBanned) {
-                    val users = dailiesGotInLast24Hours.filter { it[BrowserFingerprints.clientId] == clientIdThatAreBanned[BrowserFingerprints.clientId] }
-                    // println("User ${user[Dailies.receivedById]} should be banned because ${clientIdThatAreBanned[BannedUsers.userId]} is banned")
+                for (user in dailiesGotInLast24Hours) {
+                    if (user[Dailies.receivedById] !in alreadyChecked)
+                        continue
 
-                    for (user in users) {
+                    val bannedUsersAssociatedWithThisUser = clientIdsThatAreBanned.filter { it[BrowserFingerprints.clientId] == user[BrowserFingerprints.clientId] }
+
+                    if (bannedUsersAssociatedWithThisUser.isNotEmpty()) {
                         usersToBeBanned.add(
                             BannedUser(
                                 user[Dailies.receivedById],
-                                clientIdThatAreBanned[BannedUsers.userId],
-                                clientIdThatAreBanned[BrowserFingerprints.clientId],
-                                clientIdThatAreBanned[BannedUsers.reason],
+                                bannedUsersAssociatedWithThisUser.map { it[BannedUsers.userId] },
+                                user[BrowserFingerprints.clientId],
+                                bannedUsersAssociatedWithThisUser.minBy { it[BannedUsers.bannedAt] }[BannedUsers.reason],
                                 user[Profiles.money]
                             )
                         )
+                        alreadyChecked.add(user[Dailies.receivedById])
                     }
                 }
 
@@ -90,17 +94,21 @@ class CheckDupeClientIds(val helper: LorittaHelper) : RunnableCoroutine {
 
             for (userToBeBanned in usersToBeBanned) {
                 if (!dryRun) {
-                    channel.sendMessage("${Emotes.LORI_BAN_HAMMER} Banindo <@${userToBeBanned.userToBeBannedId}> (`${userToBeBanned.userToBeBannedId}`) pois ele é evasão de ban de <@${userToBeBanned.relatedUserId}> (`${userToBeBanned.relatedUserId}`), o meliante está banido por `${userToBeBanned.reason}`, o client ID dele é `${userToBeBanned.clientId}`, e atualmente ele possui ${userToBeBanned.sonhos} sonhos").await()
+                    channel.sendMessage("${Emotes.LORI_BAN_HAMMER} Banindo <@${userToBeBanned.userToBeBannedId}> (`${userToBeBanned.userToBeBannedId}`) pois ele é evasão de ban de ${userToBeBanned.relatedUserIds.joinToString { "<@${userToBeBanned.relatedUserIds}> (`${userToBeBanned.relatedUserIds}`)"}}, o meliante está banido por `${userToBeBanned.reason}` (motivo do ban mais antigo), o client ID dele é `${userToBeBanned.clientId}`, e atualmente ele possui ${userToBeBanned.sonhos} sonhos").await()
 
                     LoriToolsCommand.banUser(
                         helper,
                         helper.jda.selfUser.idLong,
                         setOf(userToBeBanned.userToBeBannedId),
-                        "Evasão de Ban! (ID da conta banida: ${userToBeBanned.relatedUserId})",
+                        if (userToBeBanned.relatedUserIds.size == 1) {
+                            "Evasão de Ban! (ID da conta banida: ${userToBeBanned.relatedUserIds.first()})"
+                        } else {
+                            "Evasão de Ban! (IDs de contas banidas: ${userToBeBanned.relatedUserIds.joinToString()})"
+                        },
                         null
                     )
                 } else {
-                    channel.sendMessage("${Emotes.LORI_BAN_HAMMER} Banindo <@${userToBeBanned.userToBeBannedId}> (`${userToBeBanned.userToBeBannedId}`) pois ele é evasão de ban de <@${userToBeBanned.relatedUserId}> (`${userToBeBanned.relatedUserId}`), o meliante está banido por `${userToBeBanned.reason}`, o client ID dele é `${userToBeBanned.clientId}`, e atualmente ele possui ${userToBeBanned.sonhos} sonhos (ensaio, usuário não foi banido)").await()
+                    channel.sendMessage("${Emotes.LORI_BAN_HAMMER} Banindo <@${userToBeBanned.userToBeBannedId}> (`${userToBeBanned.userToBeBannedId}`) pois ele é evasão de ban de ${userToBeBanned.relatedUserIds.joinToString { "<@${userToBeBanned.relatedUserIds}> (`${userToBeBanned.relatedUserIds}`)"}}, o meliante está banido por `${userToBeBanned.reason}` (motivo do ban mais antigo), o client ID dele é `${userToBeBanned.clientId}`, e atualmente ele possui ${userToBeBanned.sonhos} sonhos (ensaio, usuário não foi banido)").await()
                 }
             }
 
@@ -114,7 +122,7 @@ class CheckDupeClientIds(val helper: LorittaHelper) : RunnableCoroutine {
 
     private data class BannedUser(
         val userToBeBannedId: Long,
-        val relatedUserId: Long,
+        val relatedUserIds: List<Long>,
         val clientId: UUID,
         val reason: String,
         val sonhos: Long
