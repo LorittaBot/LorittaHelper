@@ -11,6 +11,7 @@ import net.perfectdreams.loritta.cinnamon.pudding.tablesrefactorlater.BrowserFin
 import net.perfectdreams.loritta.cinnamon.pudding.tablesrefactorlater.Dailies
 import net.perfectdreams.loritta.helper.LorittaHelper
 import net.perfectdreams.loritta.helper.interactions.commands.vanilla.LoriToolsCommand
+import net.perfectdreams.loritta.helper.tables.LorittaAutoModIgnoredClientIds
 import net.perfectdreams.loritta.helper.utils.Emotes
 import net.perfectdreams.loritta.helper.utils.RunnableCoroutine
 import net.perfectdreams.loritta.helper.utils.extensions.await
@@ -56,6 +57,14 @@ class CheckDupeClientIds(val helper: LorittaHelper) : RunnableCoroutine {
                 channel.sendMessage("# ${Emotes.SUPER_VIEIRINHA} VERIFICAÇÃO DE MELIANTES - ${TimeFormat.DATE_TIME_SHORT.format(Instant.now())}\n${Emotes.LORI_COFFEE} Verificando meliantes que estão evadindo ban... *Verificação automática* - Ensaio? $dryRun").await()
             }
 
+            val whitelistedClientIds = transaction(helper.databases.helperDatabase) {
+                LorittaAutoModIgnoredClientIds.selectAll()
+                    .map {
+                        it[LorittaAutoModIgnoredClientIds.clientId]
+                    }
+                    .toSet()
+            }
+
             val usersToBeBanned = transaction(helper.databases.lorittaDatabase) {
                 val now = Instant.now()
                     .minusSeconds(604_800) // 7 days
@@ -88,6 +97,9 @@ class CheckDupeClientIds(val helper: LorittaHelper) : RunnableCoroutine {
                 }
 
                 for (user in dailiesRecentlyRetrievedHours) {
+                    if (user[BrowserFingerprints.clientId] in whitelistedClientIds)
+                        continue
+
                     if (user[Dailies.receivedById] in alreadyChecked)
                         continue
 

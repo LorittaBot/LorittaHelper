@@ -20,10 +20,7 @@ import net.perfectdreams.loritta.helper.interactions.commands.vanilla.*
 import net.perfectdreams.loritta.helper.interactions.commands.vanilla.ButtonRoleSenderCommand
 import net.perfectdreams.loritta.helper.listeners.*
 import net.perfectdreams.loritta.helper.network.Databases
-import net.perfectdreams.loritta.helper.tables.SelectedResponsesLog
-import net.perfectdreams.loritta.helper.tables.StaffProcessedReports
-import net.perfectdreams.loritta.helper.tables.StartedSupportSolicitations
-import net.perfectdreams.loritta.helper.tables.TicketMessagesActivity
+import net.perfectdreams.loritta.helper.tables.*
 import net.perfectdreams.loritta.helper.utils.LanguageManager
 import net.perfectdreams.loritta.helper.utils.LorittaLandRoleSynchronizationTask
 import net.perfectdreams.loritta.helper.utils.StaffProcessedReportResult
@@ -123,7 +120,8 @@ class LorittaHelper(val config: LorittaHelperConfig, val fanArtsConfig: FanArtsC
                 SelectedResponsesLog,
                 StaffProcessedReports,
                 StartedSupportSolicitations,
-                TicketMessagesActivity
+                TicketMessagesActivity,
+                LorittaAutoModIgnoredClientIds
             )
         }
 

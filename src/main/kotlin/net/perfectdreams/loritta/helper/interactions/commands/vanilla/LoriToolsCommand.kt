@@ -17,6 +17,7 @@ import net.dv8tion.jda.api.entities.UserSnowflake
 import net.perfectdreams.loritta.cinnamon.pudding.tables.BannedUsers
 import net.perfectdreams.loritta.helper.LorittaHelper
 import net.perfectdreams.loritta.helper.tables.EconomyState
+import net.perfectdreams.loritta.helper.tables.LorittaAutoModIgnoredClientIds
 import net.perfectdreams.loritta.helper.utils.TimeUtils
 import net.perfectdreams.loritta.helper.utils.extensions.await
 import net.perfectdreams.loritta.helper.utils.slash.LoriToolsUtils
@@ -39,6 +40,7 @@ import org.jetbrains.exposed.sql.SqlExpressionBuilder.isNull
 import org.jetbrains.exposed.sql.transactions.transaction
 import java.awt.Color
 import java.time.Duration
+import java.time.Instant
 import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
@@ -74,6 +76,14 @@ class LoriToolsCommand(val helper: LorittaHelper) : SlashCommandDeclarationWrapp
 
         subcommand("checkdupes", "Verifica pessoas evadindo ban") {
             executor = LoriCheckDupesExecutor(helper)
+        }
+
+        subcommand("dupeignore", "Adiciona um ID da whitelist") {
+            executor = LoriAddClientIdToIgnoredDupeListExecutor(helper)
+        }
+
+        subcommand("dupeunignore", "Remove um ID da whitelist") {
+            executor = LoriRemoveClientIdFromIgnoredDupeListExecutor(helper)
         }
     }
 
@@ -684,6 +694,59 @@ class LoriToolsCommand(val helper: LorittaHelper) : SlashCommandDeclarationWrapp
             context.reply(false) {
                 styled(
                     "Você solicitou uma verificação de contas evadindo ban, em breve eu irei processar e enviar no <#${helper.config.guilds.community.channels.lorittaAutoMod}> :3"
+                )
+            }
+        }
+    }
+
+    class LoriAddClientIdToIgnoredDupeListExecutor(helper: LorittaHelper) : HelperExecutor(helper, PermissionLevel.ADMIN) {
+        inner class Options : ApplicationCommandOptions() {
+            val clientId = string("client_id", "Client ID")
+            val reason = string("reason", "O motivo de adicionar na lista de ignorar")
+        }
+
+        override val options = Options()
+
+        override suspend fun executeHelper(context: ApplicationCommandContext, args: SlashCommandArguments) {
+            val clientId = UUID.fromString(args[options.clientId])
+
+            transaction(helper.databases.helperDatabase) {
+                LorittaAutoModIgnoredClientIds.insert {
+                    it[LorittaAutoModIgnoredClientIds.clientId] = clientId
+                    it[LorittaAutoModIgnoredClientIds.addedBy] = context.user.idLong
+                    it[LorittaAutoModIgnoredClientIds.addedAt] = Instant.now()
+                    it[LorittaAutoModIgnoredClientIds.reason] = args[options.reason]
+                }
+            }
+
+            context.reply(false) {
+                styled(
+                    "Adicionado Client ID na lista de ignorar"
+                )
+            }
+        }
+    }
+
+    class LoriRemoveClientIdFromIgnoredDupeListExecutor(helper: LorittaHelper) : HelperExecutor(helper, PermissionLevel.ADMIN) {
+        inner class Options : ApplicationCommandOptions() {
+            val clientId = string("client_id", "Client ID")
+            val reason = string("reason", "O motivo de adicionar na lista de ignorar")
+        }
+
+        override val options = Options()
+
+        override suspend fun executeHelper(context: ApplicationCommandContext, args: SlashCommandArguments) {
+            val clientId = UUID.fromString(args[options.clientId])
+
+            transaction(helper.databases.helperDatabase) {
+                LorittaAutoModIgnoredClientIds.deleteWhere {
+                    LorittaAutoModIgnoredClientIds.clientId eq clientId
+                }
+            }
+
+            context.reply(false) {
+                styled(
+                    "Removido Client ID da lista de ignorar"
                 )
             }
         }
