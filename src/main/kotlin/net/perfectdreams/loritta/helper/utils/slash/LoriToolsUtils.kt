@@ -64,6 +64,8 @@ object LoriToolsUtils {
             MessageCreate {
                 embed {
                     author("${moderator.name}#${moderator.discriminator} (${moderator.id})", null, moderator.avatarUrl)
+
+                    embed()
                 }
             }
         ).await()
