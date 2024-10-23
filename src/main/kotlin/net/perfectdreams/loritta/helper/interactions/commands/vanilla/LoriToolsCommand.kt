@@ -708,6 +708,8 @@ class LoriToolsCommand(val helper: LorittaHelper) : SlashCommandDeclarationWrapp
         override val options = Options()
 
         override suspend fun executeHelper(context: ApplicationCommandContext, args: SlashCommandArguments) {
+            context.deferChannelMessage(false)
+
             val clientId = UUID.fromString(args[options.clientId])
 
             transaction(helper.databases.helperDatabase) {
@@ -719,9 +721,17 @@ class LoriToolsCommand(val helper: LorittaHelper) : SlashCommandDeclarationWrapp
                 }
             }
 
+            LoriToolsUtils.logToSaddestOfTheSads(
+                helper,
+                context.user,
+            ) {
+                this.title = "$clientId | Adicionado Client ID na Whitelist"
+                field("Motivo", args[options.reason], true)
+            }
+
             context.reply(false) {
                 styled(
-                    "Adicionado Client ID na lista de ignorar"
+                    "Adicionado Client ID na whitelist"
                 )
             }
         }
@@ -736,6 +746,8 @@ class LoriToolsCommand(val helper: LorittaHelper) : SlashCommandDeclarationWrapp
         override val options = Options()
 
         override suspend fun executeHelper(context: ApplicationCommandContext, args: SlashCommandArguments) {
+            context.deferChannelMessage(false)
+
             val clientId = UUID.fromString(args[options.clientId])
 
             transaction(helper.databases.helperDatabase) {
@@ -744,9 +756,17 @@ class LoriToolsCommand(val helper: LorittaHelper) : SlashCommandDeclarationWrapp
                 }
             }
 
+            LoriToolsUtils.logToSaddestOfTheSads(
+                helper,
+                context.user,
+            ) {
+                this.title = "$clientId | Removido Client ID da Whitelist"
+                field("Motivo", args[options.reason], true)
+            }
+
             context.reply(false) {
                 styled(
-                    "Removido Client ID da lista de ignorar"
+                    "Removido Client ID da whitelist"
                 )
             }
         }

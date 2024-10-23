@@ -1,5 +1,6 @@
 package net.perfectdreams.loritta.helper.utils.slash
 
+import dev.minn.jda.ktx.messages.InlineEmbed
 import dev.minn.jda.ktx.messages.MessageCreate
 import net.dv8tion.jda.api.entities.User
 import net.dv8tion.jda.api.utils.TimeFormat
@@ -45,6 +46,24 @@ object LoriToolsUtils {
                             "${punishedUser.name}#${punishedUser.discriminator} (${punishedUser.id})",
                             punishedUser.avatarUrl
                         )
+                }
+            }
+        ).await()
+    }
+
+    suspend fun logToSaddestOfTheSads(
+        helper: LorittaHelper,
+        moderator: User,
+        embed: InlineEmbed.() -> (Unit),
+    ) {
+        val community = helper.config.guilds.community
+
+        val channel = helper.jda.getTextChannelById(community.channels.saddestOfTheSads) ?: return
+
+        channel.sendMessage(
+            MessageCreate {
+                embed {
+                    author("${moderator.name}#${moderator.discriminator} (${moderator.id})", null, moderator.avatarUrl)
                 }
             }
         ).await()
