@@ -97,9 +97,6 @@ class CheckDupeClientIds(val helper: LorittaHelper) : RunnableCoroutine {
                 }
 
                 for (user in dailiesRecentlyRetrievedHours) {
-                    if (user[BrowserFingerprints.clientId] in whitelistedClientIds)
-                        continue
-
                     if (user[Dailies.receivedById] in alreadyChecked)
                         continue
 
@@ -112,7 +109,8 @@ class CheckDupeClientIds(val helper: LorittaHelper) : RunnableCoroutine {
                                 bannedUsersAssociatedWithThisUser.map { it[BannedUsers.userId] }.distinct(),
                                 user[BrowserFingerprints.clientId],
                                 bannedUsersAssociatedWithThisUser.minBy { it[BannedUsers.bannedAt] }[BannedUsers.reason],
-                                user[Profiles.money]
+                                user[Profiles.money],
+                                user[BrowserFingerprints.clientId] in whitelistedClientIds
                             )
                         )
                         alreadyChecked.add(user[Dailies.receivedById])
@@ -123,29 +121,40 @@ class CheckDupeClientIds(val helper: LorittaHelper) : RunnableCoroutine {
             }
 
             for (userToBeBanned in usersToBeBanned) {
-                if (!dryRun) {
-                    channel.sendMessage("${Emotes.LORI_BAN_HAMMER} Banindo <@${userToBeBanned.userToBeBannedId}> (`${userToBeBanned.userToBeBannedId}`) pois ele é evasão de ban de ${userToBeBanned.relatedUserIds.joinToString { "<@$it> (`$it`)"}}, o meliante está banido por `${userToBeBanned.reason}` (motivo do ban mais antigo), o client ID dele é `${userToBeBanned.clientId}`, e atualmente ele possui ${userToBeBanned.sonhos} sonhos").await()
-
-                    LoriToolsCommand.banUser(
-                        helper,
-                        helper.jda.selfUser,
-                        setOf(userToBeBanned.userToBeBannedId),
-                        if (userToBeBanned.relatedUserIds.size == 1) {
-                            "Evasão de Ban! (ID da conta banida: ${userToBeBanned.relatedUserIds.first()})"
-                        } else {
-                            "Evasão de Ban! (IDs das contas banidas: ${userToBeBanned.relatedUserIds.joinToString()})"
-                        },
-                        null
-                    )
+                if (userToBeBanned.isClientIdWhitelisted) {
+                    if (!dryRun) {
+                        channel.sendMessage("${Emotes.LORI_BAN_HAMMER} Não irei banir <@${userToBeBanned.userToBeBannedId}> (`${userToBeBanned.userToBeBannedId}`) mesmo sendo evasão de ban de ${userToBeBanned.relatedUserIds.joinToString { "<@$it> (`$it`)" }} pois o Client ID dele está na whitelist, o client ID dele é `${userToBeBanned.clientId}`").await()
+                    } else {
+                        channel.sendMessage("${Emotes.LORI_PAC} Não irei banir <@${userToBeBanned.userToBeBannedId}> (`${userToBeBanned.userToBeBannedId}`) mesmo sendo evasão de ban de ${userToBeBanned.relatedUserIds.joinToString { "<@$it> (`$it`)" }} pois o Client ID dele está na whitelist, o client ID dele é `${userToBeBanned.clientId}` (ensaio, usuário não foi banido)").await()
+                    }
                 } else {
-                    channel.sendMessage("${Emotes.LORI_BAN_HAMMER} Banindo <@${userToBeBanned.userToBeBannedId}> (`${userToBeBanned.userToBeBannedId}`) pois ele é evasão de ban de ${userToBeBanned.relatedUserIds.joinToString { "<@$it> (`$it`)"}}, o meliante está banido por `${userToBeBanned.reason}` (motivo do ban mais antigo), o client ID dele é `${userToBeBanned.clientId}`, e atualmente ele possui ${userToBeBanned.sonhos} sonhos (ensaio, usuário não foi banido)").await()
+                    if (!dryRun) {
+                        channel.sendMessage("${Emotes.LORI_BAN_HAMMER} Banindo <@${userToBeBanned.userToBeBannedId}> (`${userToBeBanned.userToBeBannedId}`) pois ele é evasão de ban de ${userToBeBanned.relatedUserIds.joinToString { "<@$it> (`$it`)" }}, o meliante está banido por `${userToBeBanned.reason}` (motivo do ban mais antigo), o client ID dele é `${userToBeBanned.clientId}`, e atualmente ele possui ${userToBeBanned.sonhos} sonhos")
+                            .await()
+
+                        LoriToolsCommand.banUser(
+                            helper,
+                            helper.jda.selfUser,
+                            setOf(userToBeBanned.userToBeBannedId),
+                            if (userToBeBanned.relatedUserIds.size == 1) {
+                                "Evasão de Ban! (ID da conta banida: ${userToBeBanned.relatedUserIds.first()})"
+                            } else {
+                                "Evasão de Ban! (IDs das contas banidas: ${userToBeBanned.relatedUserIds.joinToString()})"
+                            },
+                            null
+                        )
+                    } else {
+                        channel.sendMessage("${Emotes.LORI_BAN_HAMMER} Banindo <@${userToBeBanned.userToBeBannedId}> (`${userToBeBanned.userToBeBannedId}`) pois ele é evasão de ban de ${userToBeBanned.relatedUserIds.joinToString { "<@$it> (`$it`)" }}, o meliante está banido por `${userToBeBanned.reason}` (motivo do ban mais antigo), o client ID dele é `${userToBeBanned.clientId}`, e atualmente ele possui ${userToBeBanned.sonhos} sonhos (ensaio, usuário não foi banido)").await()
+                    }
                 }
             }
 
+            val usersThatGotReallyBanned = usersToBeBanned.filter { !it.isClientIdWhitelisted }
+
             if (whoRequested != null) {
-                channel.sendMessage("${Emotes.LORI_OWO} Verificação terminada. Gostou ${whoRequested.asMention}? Eu bani ${usersToBeBanned.size} meliantes! (${usersToBeBanned.sumOf { it.sonhos }} sonhos) - Ensaio? $dryRun").await()
+                channel.sendMessage("${Emotes.LORI_OWO} Verificação terminada. Gostou ${whoRequested.asMention}? Eu bani ${usersThatGotReallyBanned.size} meliantes! (${usersThatGotReallyBanned.sumOf { it.sonhos }} sonhos) - Ensaio? $dryRun").await()
             } else {
-                channel.sendMessage("${Emotes.LORI_OWO} Verificação terminada. Eu mesmo que pedi essa verificação, e ainda bani ${usersToBeBanned.size} meliantes. (${usersToBeBanned.sumOf { it.sonhos }} sonhos) Sinceramente eu amei essa verificação que eu fiz, na minha humilde opinião ninguém da equipe conseguiria fazer ela melhor. - Ensaio? $dryRun").await()
+                channel.sendMessage("${Emotes.LORI_OWO} Verificação terminada. Eu mesmo que pedi essa verificação, e ainda bani ${usersThatGotReallyBanned.size} meliantes. (${usersThatGotReallyBanned.sumOf { it.sonhos }} sonhos) Sinceramente eu amei essa verificação que eu fiz, na minha humilde opinião ninguém da equipe conseguiria fazer ela melhor. - Ensaio? $dryRun").await()
             }
         }
     }
@@ -155,6 +164,7 @@ class CheckDupeClientIds(val helper: LorittaHelper) : RunnableCoroutine {
         val relatedUserIds: List<Long>,
         val clientId: UUID,
         val reason: String,
-        val sonhos: Long
+        val sonhos: Long,
+        val isClientIdWhitelisted: Boolean,
     )
 }
