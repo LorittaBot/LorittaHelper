@@ -712,13 +712,31 @@ class LoriToolsCommand(val helper: LorittaHelper) : SlashCommandDeclarationWrapp
 
             val clientId = UUID.fromString(args[options.clientId])
 
-            transaction(helper.databases.helperDatabase) {
+            val success = transaction(helper.databases.helperDatabase) {
+                val alreadyExists = LorittaAutoModIgnoredClientIds.selectAll()
+                    .where {
+                        LorittaAutoModIgnoredClientIds.clientId eq clientId
+                    }
+                    .count() > 0
+
+                if (alreadyExists)
+                    return@transaction false
                 LorittaAutoModIgnoredClientIds.insert {
                     it[LorittaAutoModIgnoredClientIds.clientId] = clientId
                     it[LorittaAutoModIgnoredClientIds.addedBy] = context.user.idLong
                     it[LorittaAutoModIgnoredClientIds.addedAt] = Instant.now()
                     it[LorittaAutoModIgnoredClientIds.reason] = args[options.reason]
                 }
+                return@transaction true
+            }
+
+            if (!success) {
+                context.reply(false) {
+                    styled(
+                        "O Client ID já está na whitelist!"
+                    )
+                }
+                return
             }
 
             LoriToolsUtils.logToSaddestOfTheSads(
