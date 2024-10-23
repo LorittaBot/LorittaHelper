@@ -164,6 +164,7 @@ class DailyCheckCommand(val helper: LorittaHelper) : SlashCommandDeclarationWrap
 
                 if (messageContent.length > 2_000) {
                     this.content = "*mensagem grande demais*"
+                    files += FileUpload.fromData(messageContent.toByteArray(Charsets.UTF_8).inputStream(), "description.txt")
                 } else {
                     this.content = messageContent
                 }
@@ -291,6 +292,7 @@ class DailyCheckCommand(val helper: LorittaHelper) : SlashCommandDeclarationWrap
 
                 if (messageContent.length > 2_000) {
                     this.content = "*mensagem grande demais*"
+                    files += FileUpload.fromData(messageContent.toByteArray(Charsets.UTF_8).inputStream(), "description.txt")
                 } else {
                     this.content = messageContent
                 }
@@ -419,6 +421,7 @@ class DailyCheckCommand(val helper: LorittaHelper) : SlashCommandDeclarationWrap
 
                 if (messageContent.length > 2_000) {
                     this.content = "*mensagem grande demais*"
+                    files += FileUpload.fromData(messageContent.toByteArray(Charsets.UTF_8).inputStream(), "description.txt")
                 } else {
                     this.content = messageContent
                 }
