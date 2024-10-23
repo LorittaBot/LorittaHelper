@@ -123,7 +123,7 @@ class CheckDupeClientIds(val helper: LorittaHelper) : RunnableCoroutine {
             for (userToBeBanned in usersToBeBanned) {
                 if (userToBeBanned.isClientIdWhitelisted) {
                     if (!dryRun) {
-                        channel.sendMessage("${Emotes.LORI_BAN_HAMMER} Não irei banir <@${userToBeBanned.userToBeBannedId}> (`${userToBeBanned.userToBeBannedId}`) mesmo sendo evasão de ban de ${userToBeBanned.relatedUserIds.joinToString { "<@$it> (`$it`)" }} pois o Client ID dele está na whitelist, o client ID dele é `${userToBeBanned.clientId}`").await()
+                        channel.sendMessage("${Emotes.LORI_PAC} Não irei banir <@${userToBeBanned.userToBeBannedId}> (`${userToBeBanned.userToBeBannedId}`) mesmo sendo evasão de ban de ${userToBeBanned.relatedUserIds.joinToString { "<@$it> (`$it`)" }} pois o Client ID dele está na whitelist, o client ID dele é `${userToBeBanned.clientId}`").await()
                     } else {
                         channel.sendMessage("${Emotes.LORI_PAC} Não irei banir <@${userToBeBanned.userToBeBannedId}> (`${userToBeBanned.userToBeBannedId}`) mesmo sendo evasão de ban de ${userToBeBanned.relatedUserIds.joinToString { "<@$it> (`$it`)" }} pois o Client ID dele está na whitelist, o client ID dele é `${userToBeBanned.clientId}` (ensaio, usuário não foi banido)").await()
                     }
