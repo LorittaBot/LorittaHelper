@@ -67,14 +67,14 @@ class CheckDupeClientIds(val helper: LorittaHelper) : RunnableCoroutine {
 
             val usersToBeBanned = transaction(helper.databases.lorittaDatabase) {
                 val now = Instant.now()
-                    .minusSeconds(604_800) // 7 days
+                val nowInThePast = now.minusSeconds(604_800) // 7 days
 
                 val dailiesRecentlyRetrievedHours = Dailies
                     .innerJoin(BrowserFingerprints)
                     .innerJoin(Profiles, { Profiles.id }, { Dailies.receivedById })
                     .selectAll()
                     .where {
-                        Dailies.receivedAt greaterEq now.toEpochMilli() and (Dailies.receivedById notInSubQuery validBannedUsersList(now.toEpochMilli()))
+                        Dailies.receivedAt greaterEq nowInThePast.toEpochMilli() and (Dailies.receivedById notInSubQuery validBannedUsersList(now.toEpochMilli()))
                     }
                     .toList()
 
