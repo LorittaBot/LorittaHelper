@@ -194,6 +194,7 @@ class CheckSonhosMendigagem(val m: LorittaHelper) {
                     event.channel.sendMessage(buildReply("warned-beg").joinToString("\n") { it.build(event.author) })
                         .setMessageReference(event.message)
                         .queue()
+                    return
                 }
             }
         }
