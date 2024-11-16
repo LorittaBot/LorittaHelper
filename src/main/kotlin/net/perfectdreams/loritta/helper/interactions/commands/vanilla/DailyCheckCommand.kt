@@ -76,7 +76,6 @@ class DailyCheckCommand(val helper: LorittaHelper) : SlashCommandDeclarationWrap
         override suspend fun execute(context: ApplicationCommandContext, args: SlashCommandArguments) {
             context.deferChannelMessage(true)
 
-            // Because we did stuff in a... unconventional way, we will get all matched user arguments in a unconventional way: By getting all resolved objects!
             val usersIds = args[options.userIds]
                 .replace(", ", "")
                 .split(" ")
@@ -153,10 +152,9 @@ class DailyCheckCommand(val helper: LorittaHelper) : SlashCommandDeclarationWrap
 
             context.reply(true) {
                 val messageContent = buildString {
-                    val moreThanOneUsersMatches = matchedSameClientIds.filter { it.value.size > 1 }
-                    if (moreThanOneUsersMatches.isNotEmpty()) {
-                        appendLine("**Loritta Client IDs com múltiplos users:**")
-                        for (matchedSameClientId in moreThanOneUsersMatches) {
+                    if (matchedSameClientIds.isNotEmpty()) {
+                        appendLine("**Loritta Client IDs:**")
+                        for (matchedSameClientId in matchedSameClientIds) {
                             appendLine("- **${matchedSameClientId.key}:** ${matchedSameClientId.value.joinToString()}")
                         }
                     }
@@ -176,12 +174,7 @@ class DailyCheckCommand(val helper: LorittaHelper) : SlashCommandDeclarationWrap
 
     inner class DailyCheckByIpExecutor : LorittaSlashCommandExecutor() {
         inner class Options : ApplicationCommandOptions() {
-            init {
-                // Register 25 different users
-                repeat(25) {
-                    optionalString("ip${it + 1}", "IP para ver os dailies")
-                }
-            }
+            val ips = string("ips", "IP para ver os dailies")
         }
 
         override val options = Options()
@@ -189,8 +182,9 @@ class DailyCheckCommand(val helper: LorittaHelper) : SlashCommandDeclarationWrap
         override suspend fun execute(context: ApplicationCommandContext, args: SlashCommandArguments) {
             context.deferChannelMessage(true)
 
-            // Because we did stuff in a... unconventional way, we will get all matched user arguments in a unconventional way: By getting all resolved objects!
-            val ips = context.event.options.map { it.asString }
+            val ips = args[options.ips]
+                .replace(", ", "")
+                .split(" ")
 
             if (ips.isEmpty()) {
                 context.reply(true) {
@@ -281,10 +275,9 @@ class DailyCheckCommand(val helper: LorittaHelper) : SlashCommandDeclarationWrap
                         }
                         appendLine()
                     }
-                    val moreThanOneUsersMatches = matchedSameClientIds.filter { it.value.size > 1 }
-                    if (moreThanOneUsersMatches.isNotEmpty()) {
-                        appendLine("**Loritta Client IDs com múltiplos users:**")
-                        for (matchedSameClientId in moreThanOneUsersMatches) {
+                    if (matchedSameClientIds.isNotEmpty()) {
+                        appendLine("**Loritta Client IDs:**")
+                        for (matchedSameClientId in matchedSameClientIds) {
                             appendLine("- **${matchedSameClientId.key}:** ${matchedSameClientId.value.joinToString()}")
                         }
                     }
@@ -304,12 +297,7 @@ class DailyCheckCommand(val helper: LorittaHelper) : SlashCommandDeclarationWrap
 
     inner class DailyCheckByLorittaClientIdExecutor : LorittaSlashCommandExecutor() {
         inner class Options : ApplicationCommandOptions() {
-            init {
-                // Register 25 different users
-                repeat(25) {
-                    optionalString("cid${it + 1}", "Client ID para ver os dailies")
-                }
-            }
+            val clientIds = string("cids", "Client IDs para ver os dailies")
         }
 
         override val options = Options()
@@ -318,7 +306,9 @@ class DailyCheckCommand(val helper: LorittaHelper) : SlashCommandDeclarationWrap
             context.deferChannelMessage(true)
 
             // Because we did stuff in a... unconventional way, we will get all matched user arguments in a unconventional way: By getting all resolved objects!
-            val clientIds = context.event.options.map { it.asString }
+            val clientIds = args[options.clientIds]
+                .replace(", ", "")
+                .split(" ")
                 .map { UUID.fromString(it) }
 
             if (clientIds.isEmpty()) {
@@ -410,10 +400,9 @@ class DailyCheckCommand(val helper: LorittaHelper) : SlashCommandDeclarationWrap
                         }
                         appendLine()
                     }
-                    val moreThanOneUsersMatches = matchedSameClientIds.filter { it.value.size > 1 }
-                    if (moreThanOneUsersMatches.isNotEmpty()) {
-                        appendLine("**Loritta Client IDs com múltiplos users:**")
-                        for (matchedSameClientId in moreThanOneUsersMatches) {
+                    if (matchedSameClientIds.isNotEmpty()) {
+                        appendLine("**Loritta Client IDs:**")
+                        for (matchedSameClientId in matchedSameClientIds) {
                             appendLine("- **${matchedSameClientId.key}:** ${matchedSameClientId.value.joinToString()}")
                         }
                     }
