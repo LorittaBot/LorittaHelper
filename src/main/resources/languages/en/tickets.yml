@@ -1,6 +1,7 @@
 tickets:
   creatingATicket: "Creating a ticket for you... Hang tight!"
   closingYourTicket: "Closing your ticket... I hope your question was solved!"
+  lockingYourTicket: "Locking your ticket... Let's control this mess!"
   youAlreadyCreatedATicketRecently: "You created a ticket just recently! Did you know that creating new threads makes me tired? {loriSob} You will be able to create a new ticket in {time}..."
   ticketWasCreated: "Your ticket was created! Please send your super amazing question there: {channel}"
   autoResponseSolved: "If I solved your question, please, click on the button to close the ticket! Don't worry, if you have more questions in the future, you will be able to open another ticket then!"
@@ -16,6 +17,7 @@ tickets:
   createATicketIfQuestionWasntFound: "Still didn't find your question? Then create a ticket by clicking the \"Open Ticket\" button, option which creates a private channel where you can direct your question to {lorittaSupport}!"
   clickToFindYourQuestion: "Click to search for support to your question!"
   ticketClosed: "Ticket closed by {user}, thank you and goodbye!"
+  ticketLocked: "Ticket locked by {user}, only staff members can reply!"
   ticketAutoClosedUserLeftServer: "Ticket was automatically closed because the creator of the ticket left the support server... :("
   threadCreated:
     ready: "Done! I prepared a ticket for you, please ask your question and wait until our support staff comes here to answer your question."

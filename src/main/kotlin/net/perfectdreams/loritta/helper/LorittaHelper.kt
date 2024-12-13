@@ -129,6 +129,7 @@ class LorittaHelper(val config: LorittaHelperConfig, val fanArtsConfig: FanArtsC
         commandManager.register(LoriToolsCommand(this))
         commandManager.register(TicketUtilsCommand(this))
         commandManager.register(CloseTicketCommand(this))
+        commandManager.register(LockTicketCommand(this))
         commandManager.register(DailyCheckCommand(this))
         commandManager.register(TicketSenderCommand(this))
         commandManager.register(ReportMessageSenderCommand(this))
