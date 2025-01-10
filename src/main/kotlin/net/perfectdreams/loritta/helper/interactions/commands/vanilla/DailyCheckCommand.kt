@@ -2,6 +2,7 @@ package net.perfectdreams.loritta.helper.interactions.commands.vanilla
 
 import dev.minn.jda.ktx.coroutines.await
 import net.dv8tion.jda.api.entities.User
+import net.dv8tion.jda.api.interactions.components.buttons.ButtonStyle
 import net.dv8tion.jda.api.utils.FileUpload
 import net.perfectdreams.loritta.cinnamon.pudding.tables.BannedUsers
 import net.perfectdreams.loritta.cinnamon.pudding.tablesrefactorlater.BrowserFingerprints
@@ -168,6 +169,28 @@ class DailyCheckCommand(val helper: LorittaHelper) : SlashCommandDeclarationWrap
                 }
 
                 files += FileUpload.fromData(builder.toString().toByteArray(Charsets.UTF_8).inputStream(), "dailies.txt")
+
+                actionRow(
+                    helper.interactivityManager.buttonForUser(
+                        context.user,
+                        ButtonStyle.PRIMARY,
+                        "Enviar User IDs"
+                    ) {
+                        it.reply(true) {
+                            content = matchedSameClientIds.values.flatten().toSet().joinToString(" ")
+                        }
+                    },
+
+                    helper.interactivityManager.buttonForUser(
+                        context.user,
+                        ButtonStyle.PRIMARY,
+                        "Enviar Client IDs"
+                    ) {
+                        it.reply(true) {
+                            content = matchedSameClientIds.keys.joinToString(", ")
+                        }
+                    }
+                )
             }
         }
     }
@@ -291,6 +314,27 @@ class DailyCheckCommand(val helper: LorittaHelper) : SlashCommandDeclarationWrap
                 }
 
                 files += FileUpload.fromData(builder.toString().toByteArray(Charsets.UTF_8).inputStream(), "dailies.txt")
+
+                actionRow(
+                    helper.interactivityManager.buttonForUser(
+                        context.user,
+                        ButtonStyle.PRIMARY,
+                        "Enviar User IDs"
+                    ) {
+                        it.reply(true) {
+                            content = foundIds.joinToString(", ")
+                        }
+                    },
+                    helper.interactivityManager.buttonForUser(
+                        context.user,
+                        ButtonStyle.PRIMARY,
+                        "Enviar Client IDs"
+                    ) {
+                        it.reply(true) {
+                            content = matchedSameClientIds.keys.joinToString(", ")
+                        }
+                    }
+                )
             }
         }
     }
@@ -416,6 +460,27 @@ class DailyCheckCommand(val helper: LorittaHelper) : SlashCommandDeclarationWrap
                 }
 
                 files += FileUpload.fromData(builder.toString().toByteArray(Charsets.UTF_8).inputStream(), "dailies.txt")
+
+                actionRow(
+                    helper.interactivityManager.buttonForUser(
+                        context.user,
+                        ButtonStyle.PRIMARY,
+                        "Enviar User IDs"
+                    ) {
+                        it.reply(true) {
+                            content = foundIds.joinToString(", ")
+                        }
+                    },
+                    helper.interactivityManager.buttonForUser(
+                        context.user,
+                        ButtonStyle.PRIMARY,
+                        "Enviar Client IDs"
+                    ) {
+                        it.reply(true) {
+                            content = matchedSameClientIds.keys.joinToString(", ")
+                        }
+                    }
+                )
             }
         }
     }
