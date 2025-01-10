@@ -78,7 +78,7 @@ class DailyCheckCommand(val helper: LorittaHelper) : SlashCommandDeclarationWrap
             context.deferChannelMessage(true)
 
             val usersIds = args[options.userIds]
-                .replace(", ", "")
+                .replace(", ", " ")
                 .split(" ")
                 .mapNotNull { it.toLongOrNull() }
                 .toSet()
@@ -206,7 +206,7 @@ class DailyCheckCommand(val helper: LorittaHelper) : SlashCommandDeclarationWrap
             context.deferChannelMessage(true)
 
             val ips = args[options.ips]
-                .replace(", ", "")
+                .replace(", ", " ")
                 .split(" ")
 
             if (ips.isEmpty()) {
@@ -351,7 +351,7 @@ class DailyCheckCommand(val helper: LorittaHelper) : SlashCommandDeclarationWrap
 
             // Because we did stuff in a... unconventional way, we will get all matched user arguments in a unconventional way: By getting all resolved objects!
             val clientIds = args[options.clientIds]
-                .replace(", ", "")
+                .replace(", ", " ")
                 .split(" ")
                 .map { UUID.fromString(it) }
 
