@@ -403,6 +403,22 @@ class ComponentInteractionListener(val m: LorittaHelper) : ListenerAdapter() {
             // We need to add the user to the thread after it is unarchived!
             threadChannel.addThreadMember(event.user).await()
 
+            if (systemInfo is HelpDeskTicketSystem) {
+                val supportRole = member.guild.getRoleById(systemInfo.supportRoleId)
+
+                if (supportRole != null) {
+                    // Attempt to remove any thread member that isn't the user or staff
+                    val threadMembers = threadChannel.retrieveThreadMembers().await()
+                    for (threadMember in threadMembers) {
+                        if (threadMember.idLong != member.idLong && !threadMember.member.roles.contains(supportRole)) {
+                            threadChannel.removeThreadMember(threadMember.user).await()
+                        }
+                    }
+                } else {
+                    logger.warn("Missing role ${systemInfo.supportRoleId} in ${event.guild.idLong}! Bug?")
+                }
+            }
+
             cachedTickets.tickets[event.user.idLong] = TicketsCache.DiscordThreadTicketData(ticketThreadId)
 
             transaction(m.databases.helperDatabase) {
