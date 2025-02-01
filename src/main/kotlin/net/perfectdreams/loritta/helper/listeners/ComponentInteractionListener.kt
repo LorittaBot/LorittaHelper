@@ -415,7 +415,7 @@ class ComponentInteractionListener(val m: LorittaHelper) : ListenerAdapter() {
                         }
                     }
                 } else {
-                    logger.warn("Missing role ${systemInfo.supportRoleId} in ${event.guild.idLong}! Bug?")
+                    logger.warn("Missing role ${systemInfo.supportRoleId} in ${member.guild.idLong}! Bug?")
                 }
             }
 
