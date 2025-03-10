@@ -1,6 +1,7 @@
 tickets:
   creatingATicket: "Criando um ticket para você... Segure firme!"
   closingYourTicket: "Fechando o seu ticket... Eu espero que a sua dúvida foi resolvida!"
+  lockingYourTicket: "Trancando o seu ticket... Vamos controlar essa várzea!"
   youAlreadyCreatedATicketRecently: "Você criou um ticket recentemente! Me deixe descansar um pouquinho pois ficar criando threads toda hora cansa, sabia? {loriSob} Você poderá abrir um novo ticket {time}..."
   ticketWasCreated: "Seu ticket foi criado! Por favor mande a sua pergunta super incrível no ticket: {channel}"
   autoResponseSolved: "Se a minha resposta resolveu a sua dúvida, por favor, clique no botão para encerrar o ticket! Não se preocupe, caso você tenha outra dúvida no futuro, você poderá abrir outro ticket!"
@@ -17,6 +18,7 @@ tickets:
   createATicketIfQuestionWasntFound: "Mesmo assim não encontrou a sua pergunta? Então crie um ticket clicando no botão de \"Abrir Ticket\", isto irá criar um canal privado que irá permitir você perguntar a sua dúvida para o {lorittaSupport}! Eu espero que a gente possa te ajudar com a sua dúvida!!"
   clickToFindYourQuestion: "Clique para encontrar a sua dúvida!"
   ticketClosed: "Ticket encerrado por {user}, obrigada e até a próxima!"
+  ticketLocked: "Ticket trancado por {user}, somente membros da equipe podem responder!"
   ticketAutoClosedUserLeftServer: "Ticket foi automaticamente fechado pois o criador do ticket saiu do servidor de suporte... :("
   threadCreated:
     ready: "Prontinho! Eu criei um ticket para você, faça sua pergunta e aguarde até que um membro da equipe venha tirar sua dúvida."
